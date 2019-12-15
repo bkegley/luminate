@@ -1,0 +1,9 @@
+schema:
+  - './src/schema/**/!(index.ts)*.ts'
+generates:
+  src/types.d.ts:
+    plugins:
+      - typescript
+      - typescript-resolvers
+    config:
+      useIndexSignature: true

@@ -15,12 +15,16 @@
     "validate": "yarn lint && yarn prettier -- --list-different && yarn test"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "^1.9.1",
+    "@graphql-codegen/typescript": "^1.9.1",
+    "@graphql-codegen/typescript-resolvers": "^1.9.1",
     "elint": "^1.11.1",
     "eslint-config-prettier": "^6.7.0",
     "husky": "^3.1.0",
     "jest": "^24.9.0",
     "lerna": "^3.19.0",
     "prettier": "^1.19.1",
+    "rimraf": "^3.0.0",
     "typescript": "^3.7.3"
   }
 }

@@ -1,0 +1,23 @@
+{
+  "name": "@luminate/server-graphql",
+  "version": "0.0.1",
+  "main": "index.js",
+  "author": "Bryan Kegley <hi@bryankegley.me>",
+  "license": "MIT",
+  "scripts": {
+    "develop": "nodemon --watch src/ --ignore src/index.d -e ts --exec \"npm run start\"",
+    "build": "rimraf ./dist && tsc",
+    "start": "node dist/index.js",
+    "prestart": "yarn build",
+    "generate": "graphql-codegen",
+    "prebuild": "yarn generate"
+  },
+  "dependencies": {
+    "apollo-server-express": "^2.9.13",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "@types/node-fetch": "^2.5.4",
+    "nodemon": "^2.0.2"
+  }
+}
