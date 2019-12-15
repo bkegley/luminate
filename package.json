@@ -1,0 +1,26 @@
+{
+  "name": "luminate-workspace",
+  "license": "MIT",
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  },
+  "scripts": {
+    "test": "lerna run test",
+    "lint": "lerna run lint",
+    "prettier": "prettier \"**/*.+(js|jsx|ts|tsx|json|yml|yaml|css|less|scss|md|mdx|graphql)\"",
+    "format": "yarn prettier -- --write",
+    "validate": "yarn lint && yarn prettier -- --list-different && yarn test"
+  },
+  "devDependencies": {
+    "elint": "^1.11.1",
+    "eslint-config-prettier": "^6.7.0",
+    "husky": "^3.1.0",
+    "jest": "^24.9.0",
+    "lerna": "^3.19.0",
+    "prettier": "^1.19.1",
+    "typescript": "^3.7.3"
+  }
+}
