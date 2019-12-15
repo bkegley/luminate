@@ -2,11 +2,14 @@ import {ApolloServer, CorsOptions} from 'apollo-server-express'
 import express from 'express'
 const app = express()
 
-import {typeDefs} from './schema'
+import {typeDefs, resolvers} from './schema'
+import createDbConnection from './db/createDbConnection'
+import models from './db/models'
 
 const PORT = process.env.PORT || 3000
 
 const startServer = async () => {
+  await createDbConnection()
   // configure cors
   const whitelist = [`http://localhost:${PORT}`, 'http://localhost:8000']
 
@@ -25,6 +28,14 @@ const startServer = async () => {
 
   const server = new ApolloServer({
     typeDefs,
+    resolvers,
+    context: ({req, res}) => {
+      return {
+        req,
+        res,
+        models,
+      }
+    },
     playground:
       process.env.NODE_ENV === 'production'
         ? false
