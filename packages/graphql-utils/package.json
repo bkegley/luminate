@@ -11,6 +11,6 @@
     "prestart": "yarn build"
   },
   "dependencies": {
-    "@luminate/server-graphql": "*"
+    "@luminate/server-luminate": "*"
   }
 }

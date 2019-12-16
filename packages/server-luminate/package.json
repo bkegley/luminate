@@ -1,5 +1,5 @@
 {
-  "name": "@luminate/server-graphql",
+  "name": "@luminate/server-luminate",
   "version": "0.0.1",
   "main": "dist/index.js",
   "types": "src/types.d.ts",

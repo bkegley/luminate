@@ -1,5 +1,5 @@
 import {parseCursorHash} from './cursor'
-import {QueryInput, Maybe} from '@luminate/server-graphql'
+import {QueryInput, Maybe} from '@luminate/server-luminate'
 
 type TQueryInput = Maybe<QueryInput>[] | Maybe<QueryInput> | undefined | null
 
