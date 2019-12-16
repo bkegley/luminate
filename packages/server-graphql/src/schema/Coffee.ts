@@ -1,5 +1,6 @@
 import {gql} from 'apollo-server-express'
-import {Resolvers} from '../types'
+import {Coffee, Resolvers} from '../types'
+import {createCursorHash, parseArgs} from '@luminate/graphql-utils'
 
 export const typeDefs = gql`
   type Coffee {
@@ -9,6 +10,18 @@ export const typeDefs = gql`
     region: Region
     varieties: [Variety]
     elevation: String
+    createdAt: String
+    updatedAt: String
+  }
+
+  type CoffeeConnection {
+    pageInfo: PageInfo!
+    edges: [CoffeeEdge!]!
+  }
+
+  type CoffeeEdge {
+    cursor: String
+    node: Coffee
   }
 
   input CreateCoffeeCoffeeInput {
@@ -17,7 +30,7 @@ export const typeDefs = gql`
   }
 
   extend type Query {
-    listCoffees: [Coffee]
+    listCoffees(cursor: String, limit: Int, query: [QueryInput]): CoffeeConnection!
     getCoffee(id: ID!): Coffee
   }
 
@@ -29,9 +42,46 @@ export const typeDefs = gql`
 export const resolvers: Resolvers = {
   Query: {
     listCoffees: async (parent, args, {models}) => {
+      const cursor = args.cursor || createCursorHash(new Date().toString())
+      const limit = args.limit || 100
+      const query = args.query
+
       const {Coffee} = models
-      const coffees = Coffee.find()
-      return coffees
+      const coffeesPlusOne = await Coffee.find({...parseArgs({cursor, query})}, null, {
+        sort: '-updatedAt',
+        limit: limit ? limit + 1 : 100 + 1,
+      })
+
+      if (!coffeesPlusOne.length) {
+        return {
+          pageInfo: {
+            hasNextPage: false,
+            nextCursor: '',
+            previousCursor: '',
+          },
+          edges: [],
+        }
+      }
+
+      const hasNextPage = coffeesPlusOne.length > limit
+      const coffees = hasNextPage ? coffeesPlusOne.slice(0, -1) : coffeesPlusOne
+      const nextCursor = createCursorHash(coffeesPlusOne[coffeesPlusOne.length - 1].updatedAt)
+
+      const data = {
+        pageInfo: {
+          hasNextPage,
+          nextCursor,
+          previousCursor: '',
+        },
+        edges: coffees.map((coffee: any) => {
+          return {
+            node: coffee,
+            cursor: createCursorHash(coffee.updatedAt),
+          }
+        }),
+      }
+
+      return data
     },
     getCoffee: async (parent, {id}, {models}, info) => {
       const {Coffee} = models
@@ -49,7 +99,6 @@ export const resolvers: Resolvers = {
   Coffee: {
     country: async (parent, args, {models}) => {
       const {Country} = models
-      console.log({parent})
       const country = await Country.findById(parent.country)
       return country
     },
