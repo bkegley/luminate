@@ -5,6 +5,9 @@ const Variety = new mongoose.Schema(
     name: {
       type: String,
     },
+    background: {
+      type: String,
+    },
   },
   {
     timestamps: true,

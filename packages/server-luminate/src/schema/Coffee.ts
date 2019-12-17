@@ -1,6 +1,6 @@
 import {gql} from 'apollo-server-express'
-import {Resolvers} from '../types'
 import {createConnectionResults} from '@luminate/graphql-utils'
+import {Resolvers} from '../types'
 
 export const typeDefs = gql`
   type Coffee {
@@ -24,9 +24,24 @@ export const typeDefs = gql`
     node: Coffee
   }
 
-  input CreateCoffeeCoffeeInput {
+  input CreateCoffeeInput {
     name: String
+    country: ID
     region: ID
+    farm: ID
+    farmZone: ID
+    varieties: [ID]
+    elevation: String
+  }
+
+  input UpdateCoffeeInput {
+    name: String
+    country: ID
+    region: ID
+    farm: ID
+    farmZone: ID
+    varieties: [ID]
+    elevation: String
   }
 
   extend type Query {
@@ -35,7 +50,9 @@ export const typeDefs = gql`
   }
 
   extend type Mutation {
-    createCoffee(input: CreateCoffeeCoffeeInput!): Coffee
+    createCoffee(input: CreateCoffeeInput!): Coffee
+    updateCoffee(id: ID!, input: UpdateCoffeeInput!): Coffee
+    deleteCoffee(id: ID!): Coffee
   }
 `
 
@@ -59,12 +76,32 @@ export const resolvers: Resolvers = {
       const coffee = await new Coffee(input).save()
       return coffee
     },
+    updateCoffee: async (parent, {id, input}, {models}) => {
+      const {Coffee} = models
+      const coffee = await Coffee.findByIdAndUpdate(id, input, {new: true})
+      return coffee
+    },
+    deleteCoffee: async (parent, {id}, {models}) => {
+      const {Coffee} = models
+      const coffee = await Coffee.findByIdAndDelete(id)
+      return coffee
+    },
   },
   Coffee: {
     country: async (parent, args, {models}) => {
       const {Country} = models
       const country = await Country.findById(parent.country)
       return country
+    },
+    region: async (parent, args, {models}) => {
+      const {Region} = models
+      const region = await Region.findById(parent.region)
+      return region
+    },
+    varieties: async (parent, args, {models}) => {
+      const {Variety} = models
+      const varieties = await Variety.find({_id: parent.varieties})
+      return varieties
     },
   },
 }
