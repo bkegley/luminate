@@ -1,6 +1,6 @@
 import {gql} from 'apollo-server-express'
-import {Coffee, Resolvers} from '../types'
-import {createCursorHash, parseArgs} from '@luminate/graphql-utils'
+import {Resolvers} from '../types'
+import {createConnectionResults} from '@luminate/graphql-utils'
 
 export const typeDefs = gql`
   type Coffee {
@@ -42,47 +42,10 @@ export const typeDefs = gql`
 export const resolvers: Resolvers = {
   Query: {
     listCoffees: async (parent, args, {models}) => {
-      const cursor = args.cursor || createCursorHash(new Date())
-      const limit = args.limit || 100
-      const query = args.query
-
       const {Coffee} = models
 
-      const coffeesPlusOne = await Coffee.find({...parseArgs({cursor, query})}, null, {
-        sort: '-updatedAt',
-        limit: limit ? limit + 1 : 100 + 1,
-      })
-
-      if (!coffeesPlusOne.length) {
-        return {
-          pageInfo: {
-            hasNextPage: false,
-            nextCursor: null,
-            previousCursor: '',
-          },
-          edges: [],
-        }
-      }
-
-      const hasNextPage = coffeesPlusOne.length > limit
-      const coffees = hasNextPage ? coffeesPlusOne.slice(0, -1) : coffeesPlusOne
-      const nextCursor = hasNextPage ? createCursorHash(coffeesPlusOne[coffeesPlusOne.length - 1].updatedAt) : null
-
-      const data = {
-        pageInfo: {
-          hasNextPage,
-          nextCursor,
-          previousCursor: '',
-        },
-        edges: coffees.map((coffee: any) => {
-          return {
-            node: coffee,
-            cursor: createCursorHash(coffee.updatedAt),
-          }
-        }),
-      }
-
-      return data
+      const results = await createConnectionResults({args, model: Coffee})
+      return results
     },
     getCoffee: async (parent, {id}, {models}, info) => {
       const {Coffee} = models

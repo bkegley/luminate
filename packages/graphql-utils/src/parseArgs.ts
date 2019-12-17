@@ -1,7 +1,7 @@
 import {parseCursorHash} from './cursor'
 import {QueryInput, Maybe} from '@luminate/server-luminate'
 
-type TQueryInput = Maybe<QueryInput>[] | Maybe<QueryInput> | undefined | null
+export type TQueryInput = Maybe<QueryInput>[] | Maybe<QueryInput> | undefined | null
 
 const queryInputMap = (query: TQueryInput) => {
   if (!query) return null
