@@ -42,11 +42,12 @@ export const typeDefs = gql`
 export const resolvers: Resolvers = {
   Query: {
     listCoffees: async (parent, args, {models}) => {
-      const cursor = args.cursor || createCursorHash(new Date().toString())
+      const cursor = args.cursor || createCursorHash(new Date())
       const limit = args.limit || 100
       const query = args.query
 
       const {Coffee} = models
+
       const coffeesPlusOne = await Coffee.find({...parseArgs({cursor, query})}, null, {
         sort: '-updatedAt',
         limit: limit ? limit + 1 : 100 + 1,
@@ -56,7 +57,7 @@ export const resolvers: Resolvers = {
         return {
           pageInfo: {
             hasNextPage: false,
-            nextCursor: '',
+            nextCursor: null,
             previousCursor: '',
           },
           edges: [],
@@ -65,7 +66,7 @@ export const resolvers: Resolvers = {
 
       const hasNextPage = coffeesPlusOne.length > limit
       const coffees = hasNextPage ? coffeesPlusOne.slice(0, -1) : coffeesPlusOne
-      const nextCursor = createCursorHash(coffeesPlusOne[coffeesPlusOne.length - 1].updatedAt)
+      const nextCursor = hasNextPage ? createCursorHash(coffeesPlusOne[coffeesPlusOne.length - 1].updatedAt) : null
 
       const data = {
         pageInfo: {

@@ -41,7 +41,9 @@ const parseArgs = (args: Args) => {
   return {
     ...remainingArgs,
     ...queryInputMap(query),
-    updatedAt: {$lte: parseCursorHash(cursor)},
+    updatedAt: {
+      $lte: parseCursorHash(cursor),
+    },
   }
 }
 
