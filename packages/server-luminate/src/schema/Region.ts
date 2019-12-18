@@ -1,6 +1,6 @@
 import {gql} from 'apollo-server-express'
-import {createConnectionResults} from '@luminate/graphql-utils'
-import {Resolvers} from '../types'
+import {createConnectionResults, LoaderFn} from '@luminate/graphql-utils'
+import {Resolvers, Region, Farm} from '../types'
 
 export const typeDefs = gql`
   type Region {
@@ -80,21 +80,26 @@ export const resolvers: Resolvers = {
       return countries.load(parent.country)
     },
     farms: async (parent, args, {loaders}) => {
-      const {farmsOfRegions} = loaders
-      return farmsOfRegions.load(parent.id)
+      const {farmsOfRegion} = loaders
+      return farmsOfRegion.load(parent.id)
     },
   },
 }
 
-export const loaders = {
-  regions: async (ids: string[], models: any) => {
+export interface RegionLoaders {
+  regions: LoaderFn<Region>
+  farmsOfRegion: LoaderFn<Farm[]>
+}
+
+export const loaders: RegionLoaders = {
+  regions: async (ids, models) => {
     const {Region} = models
     const regions = await Region.find({_id: ids})
     return ids.map(id => {
       return regions.find((region: any) => region._id.toString() === id.toString())
     })
   },
-  farmsOfRegions: async (ids: string[], models: any) => {
+  farmsOfRegion: async (ids, models) => {
     const {Farm} = models
     const farms = await Farm.find({region: ids})
     return ids.map(id => {

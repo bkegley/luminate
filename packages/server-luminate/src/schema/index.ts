@@ -1,12 +1,37 @@
 import merge from 'lodash.merge'
 
-import {typeDefs as coffeeTypeDefs, resolvers as coffeeResolvers, loaders as coffeeLoaders} from './Coffee'
-import {typeDefs as countryTypeDefs, resolvers as countryResolvers, loaders as countryLoaders} from './Country'
+import {
+  typeDefs as coffeeTypeDefs,
+  resolvers as coffeeResolvers,
+  loaders as coffeeLoaders,
+  CoffeeLoaders,
+} from './Coffee'
+import {
+  typeDefs as countryTypeDefs,
+  resolvers as countryResolvers,
+  loaders as countryLoaders,
+  CountryLoaders,
+} from './Country'
 import {typeDefs as defaultTypeDefs} from './defaults'
-import {typeDefs as farmTypeDefs, resolvers as farmResolvers, loaders as farmLoaders} from './Farm'
-import {typeDefs as farmZoneTypeDefs, resolvers as farmZoneResolvers, loaders as farmZoneLoaders} from './FarmZone'
-import {typeDefs as regionTypeDefs, resolvers as regionResolvers, loaders as regionLoaders} from './Region'
-import {typeDefs as varietyTypeDefs, resolvers as varietyResolvers, loaders as varietyLoaders} from './Variety'
+import {typeDefs as farmTypeDefs, resolvers as farmResolvers, loaders as farmLoaders, FarmLoaders} from './Farm'
+import {
+  typeDefs as farmZoneTypeDefs,
+  resolvers as farmZoneResolvers,
+  loaders as farmZoneLoaders,
+  FarmZoneLoaders,
+} from './FarmZone'
+import {
+  typeDefs as regionTypeDefs,
+  resolvers as regionResolvers,
+  loaders as regionLoaders,
+  RegionLoaders,
+} from './Region'
+import {
+  typeDefs as varietyTypeDefs,
+  resolvers as varietyResolvers,
+  loaders as varietyLoaders,
+  VarietyLoaders,
+} from './Variety'
 
 export const typeDefs = [
   coffeeTypeDefs,
@@ -27,4 +52,19 @@ export const resolvers = merge(
   varietyResolvers,
 )
 
-export const loaders = merge(coffeeLoaders, countryLoaders, farmLoaders, farmZoneLoaders, regionLoaders, varietyLoaders)
+export interface Loaders
+  extends CoffeeLoaders,
+    CountryLoaders,
+    FarmLoaders,
+    FarmZoneLoaders,
+    RegionLoaders,
+    VarietyLoaders {}
+
+export const loaders: Loaders = merge(
+  coffeeLoaders,
+  countryLoaders,
+  farmLoaders,
+  farmZoneLoaders,
+  regionLoaders,
+  varietyLoaders,
+)

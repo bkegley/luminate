@@ -1,6 +1,6 @@
 import {gql} from 'apollo-server-express'
-import {createConnectionResults} from '@luminate/graphql-utils'
-import {Resolvers} from '../types'
+import {createConnectionResults, LoaderFn} from '@luminate/graphql-utils'
+import {Resolvers, FarmZone} from '../types'
 
 export const typeDefs = gql`
   type FarmZone {
@@ -96,8 +96,12 @@ export const resolvers: Resolvers = {
   },
 }
 
-export const loaders = {
-  farmZones: async (ids: string[], models: any) => {
+export interface FarmZoneLoaders {
+  farmZones: LoaderFn<FarmZone>
+}
+
+export const loaders: FarmZoneLoaders = {
+  farmZones: async (ids, models) => {
     const {FarmZone} = models
     const farmZones = await FarmZone.find({_id: ids})
     return ids.map(id => farmZones.find((farmZone: any) => farmZone._id.toString() === id.toString()))

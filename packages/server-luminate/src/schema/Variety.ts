@@ -1,6 +1,6 @@
 import {gql} from 'apollo-server-express'
-import {createConnectionResults} from '@luminate/graphql-utils'
-import {Resolvers} from '../types'
+import {createConnectionResults, LoaderFn} from '@luminate/graphql-utils'
+import {Resolvers, Variety} from '../types'
 
 export const typeDefs = gql`
   type Variety {
@@ -81,8 +81,12 @@ export const resolvers: Resolvers = {
   },
 }
 
-export const loaders = {
-  varieties: async (ids: string[], models: any) => {
+export interface VarietyLoaders {
+  varieties: LoaderFn<Variety>
+}
+
+export const loaders: VarietyLoaders = {
+  varieties: async (ids, models) => {
     const {Variety} = models
     const varieties = await Variety.find({_id: ids})
     return ids.map(id => {

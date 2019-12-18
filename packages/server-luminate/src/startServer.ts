@@ -2,7 +2,7 @@ import {ApolloServer, CorsOptions} from 'apollo-server-express'
 import express from 'express'
 const app = express()
 
-import {typeDefs, resolvers, loaders as loadersObject} from './schema'
+import {typeDefs, resolvers, loaders as loadersObject, Loaders} from './schema'
 import createDbConnection from './db/createDbConnection'
 import models from './db/models'
 import DataLoader from 'dataloader'
@@ -31,15 +31,13 @@ const startServer = async () => {
     typeDefs,
     resolvers,
     context: ({req, res}) => {
-      const loaders = Object.keys(loadersObject).reduce((acc, loaderName) => {
+      const loaders: Loaders = Object.keys(loadersObject).reduce((acc, loaderName) => {
         return {
           ...acc,
-          [loaderName]: new DataLoader(ids =>
-            //@ts-ignore
-            loadersObject[loaderName](ids, models),
-          ),
+          //@ts-ignore
+          [loaderName]: new DataLoader(ids => loadersObject[loaderName](ids, models)),
         }
-      }, {})
+      }, Object.assign(Object.keys(loadersObject)))
       return {
         req,
         res,
