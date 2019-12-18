@@ -64,10 +64,9 @@ export const resolvers: Resolvers = {
       const results = await createConnectionResults({args, model: Coffee})
       return results
     },
-    getCoffee: async (parent, {id}, {models}, info) => {
-      const {Coffee} = models
-      const coffee = await Coffee.findById(id)
-      return coffee
+    getCoffee: async (parent, {id}, {loaders}, info) => {
+      const {coffees} = loaders
+      return coffees.load(id)
     },
   },
   Mutation: {
@@ -88,20 +87,33 @@ export const resolvers: Resolvers = {
     },
   },
   Coffee: {
-    country: async (parent, args, {models}) => {
-      const {Country} = models
-      const country = await Country.findById(parent.country)
-      return country
+    country: async (parent, args, {loaders}) => {
+      const {countries} = loaders
+      return countries.load(parent.country)
     },
-    region: async (parent, args, {models}) => {
-      const {Region} = models
-      const region = await Region.findById(parent.region)
-      return region
+    region: async (parent, args, {loaders}) => {
+      const {region} = loaders
+      return region.load(parent.region)
     },
-    varieties: async (parent, args, {models}) => {
-      const {Variety} = models
-      const varieties = await Variety.find({_id: parent.varieties})
-      return varieties
+    varieties: async (parent, args, {models, loaders}) => {
+      const {varietiesOfCoffee} = loaders
+      return varietiesOfCoffee.load(parent.varieties)
     },
+  },
+}
+
+export const loaders = {
+  coffees: async (ids: string[], models: any) => {
+    const {Coffee} = models
+    const coffees = await Coffee.find({_id: ids})
+    return ids.map(id => coffees.find((coffee: any) => coffee._id.toString() === id.toString()))
+  },
+  varietiesOfCoffee: async (ids: Array<string[]>, models: any) => {
+    const {Variety} = models
+    const varieties = await Variety.find({_id: ids.flat(Infinity)})
+
+    return ids.map(id => {
+      return varieties.filter((variety: any) => id.includes(variety.id))
+    })
   },
 }

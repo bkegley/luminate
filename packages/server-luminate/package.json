@@ -16,6 +16,7 @@
   "dependencies": {
     "@luminate/graphql-utils": "*",
     "apollo-server-express": "^2.9.13",
+    "dataloader": "^2.0.0",
     "express": "^4.17.1",
     "lodash.merge": "^4.6.2",
     "mongoose": "^5.8.1"

@@ -49,10 +49,9 @@ export const resolvers: Resolvers = {
       const results = await createConnectionResults({args, model: Country})
       return results
     },
-    getCountry: async (parent, {id}, {models}, info) => {
-      const {Country} = models
-      const country = await Country.findById(id)
-      return country
+    getCountry: async (parent, {id}, {models, loaders}, info) => {
+      const {countries} = loaders
+      return countries.load(id)
     },
   },
   Mutation: {
@@ -73,10 +72,24 @@ export const resolvers: Resolvers = {
     },
   },
   Country: {
-    regions: async (parent, args, {models}) => {
-      const {Region} = models
-      const regions = await Region.find({country: parent.id})
-      return regions
+    regions: async (parent, args, {loaders}) => {
+      const {regionsOfCountry} = loaders
+      return regionsOfCountry.load(parent.id)
     },
+  },
+}
+
+export const loaders = {
+  countries: async (ids: string[], models: any) => {
+    const {Country} = models
+    const countries = await Country.find({_id: ids})
+    return ids.map(id => countries.find((country: any) => country._id.toString() === id.toString()))
+  },
+  regionsOfCountry: async (ids: string[], models: any) => {
+    const {Region} = models
+    const regions = await Region.find({country: ids})
+    return ids.map(id => {
+      return regions.filter((region: any) => region.country && region.country.toString() === id)
+    })
   },
 }

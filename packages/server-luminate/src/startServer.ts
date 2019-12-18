@@ -2,9 +2,10 @@ import {ApolloServer, CorsOptions} from 'apollo-server-express'
 import express from 'express'
 const app = express()
 
-import {typeDefs, resolvers} from './schema'
+import {typeDefs, resolvers, loaders as loadersObject} from './schema'
 import createDbConnection from './db/createDbConnection'
 import models from './db/models'
+import DataLoader from 'dataloader'
 
 const PORT = process.env.PORT || 3000
 
@@ -30,10 +31,20 @@ const startServer = async () => {
     typeDefs,
     resolvers,
     context: ({req, res}) => {
+      const loaders = Object.keys(loadersObject).reduce((acc, loaderName) => {
+        return {
+          ...acc,
+          [loaderName]: new DataLoader(ids =>
+            //@ts-ignore
+            loadersObject[loaderName](ids, models),
+          ),
+        }
+      }, {})
       return {
         req,
         res,
         models,
+        loaders,
       }
     },
     playground:

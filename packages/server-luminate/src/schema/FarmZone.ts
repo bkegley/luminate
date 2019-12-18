@@ -77,22 +77,29 @@ export const resolvers: Resolvers = {
     },
   },
   FarmZone: {
-    farm: async (parent, args, {models}) => {
+    farm: async (parent, args, {loaders}) => {
+      const {farms} = loaders
+      return farms.load(parent.farm)
+    },
+    country: async (parent, args, {loaders, models}) => {
       const {Farm} = models
+      const {countries} = loaders
       const farm = await Farm.findById(parent.farm)
-      return farm
+      return countries.load(farm.country)
     },
-    country: async (parent, args, {models}) => {
-      const {Country, Farm} = models
+    region: async (parent, args, {loaders, models}) => {
+      const {Farm} = models
+      const {regions} = loaders
       const farm = await Farm.findById(parent.farm)
-      const country = await Country.findById(farm.country)
-      return country
+      return regions.load(farm.region)
     },
-    region: async (parent, args, {models}) => {
-      const {Region, Farm} = models
-      const farm = await Farm.findById(parent.farm)
-      const region = await Region.findById(farm.region)
-      return region
-    },
+  },
+}
+
+export const loaders = {
+  farmZones: async (ids: string[], models: any) => {
+    const {FarmZone} = models
+    const farmZones = await FarmZone.find({_id: ids})
+    return ids.map(id => farmZones.find((farmZone: any) => farmZone._id.toString() === id.toString()))
   },
 }

@@ -1,12 +1,12 @@
 import merge from 'lodash.merge'
 
-import {typeDefs as coffeeTypeDefs, resolvers as coffeeResolvers} from './Coffee'
-import {typeDefs as countryTypeDefs, resolvers as countryResolvers} from './Country'
+import {typeDefs as coffeeTypeDefs, resolvers as coffeeResolvers, loaders as coffeeLoaders} from './Coffee'
+import {typeDefs as countryTypeDefs, resolvers as countryResolvers, loaders as countryLoaders} from './Country'
 import {typeDefs as defaultTypeDefs} from './defaults'
-import {typeDefs as farmTypeDefs, resolvers as farmResolvers} from './Farm'
-import {typeDefs as farmZoneTypeDefs, resolvers as farmZoneResolvers} from './FarmZone'
-import {typeDefs as regionTypeDefs, resolvers as regionResolvers} from './Region'
-import {typeDefs as varietyTypeDefs, resolvers as varietyResolvers} from './Variety'
+import {typeDefs as farmTypeDefs, resolvers as farmResolvers, loaders as farmLoaders} from './Farm'
+import {typeDefs as farmZoneTypeDefs, resolvers as farmZoneResolvers, loaders as farmZoneLoaders} from './FarmZone'
+import {typeDefs as regionTypeDefs, resolvers as regionResolvers, loaders as regionLoaders} from './Region'
+import {typeDefs as varietyTypeDefs, resolvers as varietyResolvers, loaders as varietyLoaders} from './Variety'
 
 export const typeDefs = [
   coffeeTypeDefs,
@@ -26,3 +26,5 @@ export const resolvers = merge(
   regionResolvers,
   varietyResolvers,
 )
+
+export const loaders = merge(coffeeLoaders, countryLoaders, farmLoaders, farmZoneLoaders, regionLoaders, varietyLoaders)

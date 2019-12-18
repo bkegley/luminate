@@ -52,10 +52,9 @@ export const resolvers: Resolvers = {
       const results = await createConnectionResults({args, model: Region})
       return results
     },
-    getRegion: async (parent, {id}, {models}, info) => {
-      const {Region} = models
-      const region = await Region.findById(id)
-      return region
+    getRegion: async (parent, {id}, {loaders}, info) => {
+      const {regions} = loaders
+      return regions.load(id)
     },
   },
   Mutation: {
@@ -76,15 +75,30 @@ export const resolvers: Resolvers = {
     },
   },
   Region: {
-    country: async (parent, args, {models}) => {
-      const {Country} = models
-      const country = await Country.findById(parent.country)
-      return country
+    country: async (parent, args, {loaders}) => {
+      const {countries} = loaders
+      return countries.load(parent.country)
     },
-    farms: async (parent, args, {models}) => {
-      const {Farm} = models
-      const farms = await Farm.find({region: parent.id})
-      return farms
+    farms: async (parent, args, {loaders}) => {
+      const {farmsOfRegions} = loaders
+      return farmsOfRegions.load(parent.id)
     },
+  },
+}
+
+export const loaders = {
+  regions: async (ids: string[], models: any) => {
+    const {Region} = models
+    const regions = await Region.find({_id: ids})
+    return ids.map(id => {
+      return regions.find((region: any) => region._id.toString() === id.toString())
+    })
+  },
+  farmsOfRegions: async (ids: string[], models: any) => {
+    const {Farm} = models
+    const farms = await Farm.find({region: ids})
+    return ids.map(id => {
+      return farms.filter((farm: any) => farm.region.toString() === id.toString())
+    })
   },
 }

@@ -50,10 +50,9 @@ export const resolvers: Resolvers = {
       const results = await createConnectionResults({args, model: Variety})
       return results
     },
-    getVariety: async (parent, {id}, {models}, info) => {
-      const {Variety} = models
-      const variety = await Variety.findById(id)
-      return variety
+    getVariety: async (parent, {id}, {loaders}, info) => {
+      const {varieties} = loaders
+      return varieties.load(id)
     },
   },
   Mutation: {
@@ -79,5 +78,15 @@ export const resolvers: Resolvers = {
       const coffees = await Coffee.find({varieties: parent.id})
       return coffees
     },
+  },
+}
+
+export const loaders = {
+  varieties: async (ids: string[], models: any) => {
+    const {Variety} = models
+    const varieties = await Variety.find({_id: ids})
+    return ids.map(id => {
+      return varieties.find((variety: any) => variety._id.toString() === id.toString())
+    })
   },
 }
