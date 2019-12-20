@@ -3,14 +3,13 @@ import express from 'express'
 const app = express()
 
 import {typeDefs, resolvers, loaders as loadersObject, Loaders} from './schema'
-import createDbConnection from './db/createDbConnection'
-import models from './db/models'
+import {createMongoConnection, models} from '@luminate/mongo'
 import DataLoader from 'dataloader'
 
 const PORT = process.env.PORT || 3000
 
 const startServer = async () => {
-  await createDbConnection()
+  await createMongoConnection()
   // configure cors
   const whitelist = [`http://localhost:${PORT}`, 'http://localhost:8000']
 

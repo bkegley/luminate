@@ -5,11 +5,4 @@ import FarmZone from './FarmZone'
 import Region from './Region'
 import Variety from './Variety'
 
-export default {
-  Coffee,
-  Country,
-  Farm,
-  FarmZone,
-  Region,
-  Variety,
-}
+export {Coffee, Country, Farm, FarmZone, Region, Variety}

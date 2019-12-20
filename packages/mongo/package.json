@@ -1,0 +1,14 @@
+{
+  "name": "@luminate/mongo",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "author": "Bryan Kegley <hi@bryankegley.me>",
+  "license": "MIT",
+  "scripts": {
+    "develop": "rimraf ./dist && tsc -w",
+    "build": "rimraf ./dist && tsc"
+  },
+  "dependencies": {
+    "mongoose": "^5.8.1"
+  }
+}
