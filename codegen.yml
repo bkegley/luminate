@@ -1,0 +1,12 @@
+schema:
+  - './packages/graphql-utils/src/schema/**/*.ts'
+  # - './src/schema/**/!(index.ts)*.ts'
+generates:
+  packages/server-luminate/src/types.d.ts:
+    schema:
+      - './packages/server-luminate/src/schema/**/!(index.ts)*.ts'
+    plugins:
+      - typescript
+      - typescript-resolvers
+    config:
+      useIndexSignature: true

@@ -12,7 +12,8 @@
     "lint": "lerna run lint",
     "prettier": "prettier \"**/*.+(js|jsx|ts|tsx|json|yml|yaml|css|less|scss|md|mdx|graphql)\"",
     "format": "yarn prettier -- --write",
-    "validate": "yarn lint && yarn prettier -- --list-different && yarn test"
+    "validate": "yarn lint && yarn prettier -- --list-different && yarn test",
+    "generate": "graphql-codegen"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^1.9.1",
