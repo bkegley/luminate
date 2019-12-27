@@ -24,7 +24,7 @@ const createConnectionResults = async ({args, model}: CreateConnectionResultsArg
   const limit = args.limit || 100
   const query = args.query
 
-  const documentsPlusOne = await model.find({...parseArgs({cursor, query})}, null, {
+  const documentsPlusOne = await model.find({...args, ...parseArgs({cursor, query})}, null, {
     sort: '-updatedAt',
     limit: limit ? limit + 1 : 100 + 1,
   })
