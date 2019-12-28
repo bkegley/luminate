@@ -8,6 +8,13 @@ import DataLoader from 'dataloader'
 
 const PORT = process.env.PORT || 3000
 
+export interface Context {
+  req: express.Request
+  res: express.Response
+  models: typeof models
+  loaders: Loaders
+}
+
 const startServer = async () => {
   await createMongoConnection()
   // configure cors

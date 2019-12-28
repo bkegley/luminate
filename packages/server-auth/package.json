@@ -9,15 +9,18 @@
     "develop": "nodemon --watch src/ --ignore src/index.d -e ts --exec \"npm run start\"",
     "build": "rimraf ./dist && tsc",
     "start": "node dist/startServer.js",
-    "prestart": "yarn build",
-    "generate": "graphql-codegen",
-    "prebuild": "yarn generate"
+    "prestart": "yarn build"
   },
   "dependencies": {
     "@luminate/graphql-utils": "*",
     "@luminate/mongo": "*",
     "apollo-server-express": "^2.9.14",
+    "bcrypt": "^3.0.7",
+    "dataloader": "^2.0.0",
     "express": "^4.17.1",
     "lodash.merge": "^4.6.2"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^3.0.0"
   }
 }

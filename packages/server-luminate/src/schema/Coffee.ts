@@ -108,12 +108,12 @@ export interface CoffeeLoaders {
 }
 
 export const loaders: CoffeeLoaders = {
-  coffees: async (ids: string[], models: any) => {
+  coffees: async (ids, models: any) => {
     const {Coffee} = models
     const coffees = await Coffee.find({_id: ids})
     return ids.map(id => coffees.find((coffee: any) => coffee._id.toString() === id.toString()))
   },
-  varietiesOfCoffee: async (ids: Array<string[]>, models: any) => {
+  varietiesOfCoffee: async (ids, models: any) => {
     const {Variety} = models
     const varieties = await Variety.find({_id: ids.flat(Infinity)})
 

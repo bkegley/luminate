@@ -1,4 +1,5 @@
 import { GraphQLResolveInfo } from 'graphql';
+import { Context } from './startServer';
 export type Maybe<T> = T | null;
 export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
@@ -137,13 +138,13 @@ export type FarmZoneEdge = {
 
 export type Mutation = {
    __typename?: 'Mutation',
+  _mutation?: Maybe<Scalars['String']>,
   createCoffee?: Maybe<Coffee>,
   updateCoffee?: Maybe<Coffee>,
   deleteCoffee?: Maybe<Coffee>,
   createCountry?: Maybe<Country>,
   updateCountry?: Maybe<Country>,
   deleteCountry?: Maybe<Country>,
-  _mutation?: Maybe<Scalars['String']>,
   createFarm?: Maybe<Farm>,
   updateFarm?: Maybe<Farm>,
   deleteFarm?: Maybe<Farm>,
@@ -273,11 +274,11 @@ export type PageInfo = {
 
 export type Query = {
    __typename?: 'Query',
+  _query?: Maybe<Scalars['String']>,
   listCoffees: CoffeeConnection,
   getCoffee?: Maybe<Coffee>,
   listCountries: CountryConnection,
   getCountry?: Maybe<Country>,
-  _query?: Maybe<Scalars['String']>,
   listFarms: FarmConnection,
   getFarm?: Maybe<Farm>,
   listFarmZones: FarmZoneConnection,
@@ -607,7 +608,7 @@ export type ResolversParentTypes = ResolversObject<{
   Subscription: {},
 }>;
 
-export type CoffeeResolvers<ContextType = any, ParentType extends ResolversParentTypes['Coffee'] = ResolversParentTypes['Coffee']> = ResolversObject<{
+export type CoffeeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Coffee'] = ResolversParentTypes['Coffee']> = ResolversObject<{
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>,
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   country?: Resolver<Maybe<ResolversTypes['Country']>, ParentType, ContextType>,
@@ -618,17 +619,17 @@ export type CoffeeResolvers<ContextType = any, ParentType extends ResolversParen
   updatedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
 }>;
 
-export type CoffeeConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['CoffeeConnection'] = ResolversParentTypes['CoffeeConnection']> = ResolversObject<{
+export type CoffeeConnectionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['CoffeeConnection'] = ResolversParentTypes['CoffeeConnection']> = ResolversObject<{
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>,
   edges?: Resolver<Array<ResolversTypes['CoffeeEdge']>, ParentType, ContextType>,
 }>;
 
-export type CoffeeEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['CoffeeEdge'] = ResolversParentTypes['CoffeeEdge']> = ResolversObject<{
+export type CoffeeEdgeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['CoffeeEdge'] = ResolversParentTypes['CoffeeEdge']> = ResolversObject<{
   cursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   node?: Resolver<Maybe<ResolversTypes['Coffee']>, ParentType, ContextType>,
 }>;
 
-export type CountryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Country'] = ResolversParentTypes['Country']> = ResolversObject<{
+export type CountryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Country'] = ResolversParentTypes['Country']> = ResolversObject<{
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>,
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   regions?: Resolver<Maybe<Array<Maybe<ResolversTypes['Region']>>>, ParentType, ContextType>,
@@ -636,17 +637,17 @@ export type CountryResolvers<ContextType = any, ParentType extends ResolversPare
   updatedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
 }>;
 
-export type CountryConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['CountryConnection'] = ResolversParentTypes['CountryConnection']> = ResolversObject<{
+export type CountryConnectionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['CountryConnection'] = ResolversParentTypes['CountryConnection']> = ResolversObject<{
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>,
   edges?: Resolver<Array<ResolversTypes['CountryEdge']>, ParentType, ContextType>,
 }>;
 
-export type CountryEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['CountryEdge'] = ResolversParentTypes['CountryEdge']> = ResolversObject<{
+export type CountryEdgeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['CountryEdge'] = ResolversParentTypes['CountryEdge']> = ResolversObject<{
   cursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   node?: Resolver<Maybe<ResolversTypes['Country']>, ParentType, ContextType>,
 }>;
 
-export type FarmResolvers<ContextType = any, ParentType extends ResolversParentTypes['Farm'] = ResolversParentTypes['Farm']> = ResolversObject<{
+export type FarmResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Farm'] = ResolversParentTypes['Farm']> = ResolversObject<{
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>,
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   country?: Resolver<Maybe<ResolversTypes['Country']>, ParentType, ContextType>,
@@ -656,17 +657,17 @@ export type FarmResolvers<ContextType = any, ParentType extends ResolversParentT
   updatedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
 }>;
 
-export type FarmConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['FarmConnection'] = ResolversParentTypes['FarmConnection']> = ResolversObject<{
+export type FarmConnectionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['FarmConnection'] = ResolversParentTypes['FarmConnection']> = ResolversObject<{
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>,
   edges?: Resolver<Array<ResolversTypes['FarmEdge']>, ParentType, ContextType>,
 }>;
 
-export type FarmEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['FarmEdge'] = ResolversParentTypes['FarmEdge']> = ResolversObject<{
+export type FarmEdgeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['FarmEdge'] = ResolversParentTypes['FarmEdge']> = ResolversObject<{
   cursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   node?: Resolver<Maybe<ResolversTypes['Farm']>, ParentType, ContextType>,
 }>;
 
-export type FarmZoneResolvers<ContextType = any, ParentType extends ResolversParentTypes['FarmZone'] = ResolversParentTypes['FarmZone']> = ResolversObject<{
+export type FarmZoneResolvers<ContextType = Context, ParentType extends ResolversParentTypes['FarmZone'] = ResolversParentTypes['FarmZone']> = ResolversObject<{
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>,
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   country?: Resolver<Maybe<ResolversTypes['Country']>, ParentType, ContextType>,
@@ -676,24 +677,24 @@ export type FarmZoneResolvers<ContextType = any, ParentType extends ResolversPar
   updatedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
 }>;
 
-export type FarmZoneConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['FarmZoneConnection'] = ResolversParentTypes['FarmZoneConnection']> = ResolversObject<{
+export type FarmZoneConnectionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['FarmZoneConnection'] = ResolversParentTypes['FarmZoneConnection']> = ResolversObject<{
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>,
   edges?: Resolver<Array<ResolversTypes['FarmZoneEdge']>, ParentType, ContextType>,
 }>;
 
-export type FarmZoneEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['FarmZoneEdge'] = ResolversParentTypes['FarmZoneEdge']> = ResolversObject<{
+export type FarmZoneEdgeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['FarmZoneEdge'] = ResolversParentTypes['FarmZoneEdge']> = ResolversObject<{
   cursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   node?: Resolver<Maybe<ResolversTypes['FarmZone']>, ParentType, ContextType>,
 }>;
 
-export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
+export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
+  _mutation?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   createCoffee?: Resolver<Maybe<ResolversTypes['Coffee']>, ParentType, ContextType, RequireFields<MutationCreateCoffeeArgs, 'input'>>,
   updateCoffee?: Resolver<Maybe<ResolversTypes['Coffee']>, ParentType, ContextType, RequireFields<MutationUpdateCoffeeArgs, 'id' | 'input'>>,
   deleteCoffee?: Resolver<Maybe<ResolversTypes['Coffee']>, ParentType, ContextType, RequireFields<MutationDeleteCoffeeArgs, 'id'>>,
   createCountry?: Resolver<Maybe<ResolversTypes['Country']>, ParentType, ContextType, RequireFields<MutationCreateCountryArgs, 'input'>>,
   updateCountry?: Resolver<Maybe<ResolversTypes['Country']>, ParentType, ContextType, RequireFields<MutationUpdateCountryArgs, 'id' | 'input'>>,
   deleteCountry?: Resolver<Maybe<ResolversTypes['Country']>, ParentType, ContextType, RequireFields<MutationDeleteCountryArgs, 'id'>>,
-  _mutation?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   createFarm?: Resolver<Maybe<ResolversTypes['Farm']>, ParentType, ContextType, RequireFields<MutationCreateFarmArgs, 'input'>>,
   updateFarm?: Resolver<Maybe<ResolversTypes['Farm']>, ParentType, ContextType, RequireFields<MutationUpdateFarmArgs, 'id' | 'input'>>,
   deleteFarm?: Resolver<Maybe<ResolversTypes['Farm']>, ParentType, ContextType, RequireFields<MutationDeleteFarmArgs, 'id'>>,
@@ -708,18 +709,18 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   deleteVariety?: Resolver<Maybe<ResolversTypes['Variety']>, ParentType, ContextType, RequireFields<MutationDeleteVarietyArgs, 'id'>>,
 }>;
 
-export type PageInfoResolvers<ContextType = any, ParentType extends ResolversParentTypes['PageInfo'] = ResolversParentTypes['PageInfo']> = ResolversObject<{
+export type PageInfoResolvers<ContextType = Context, ParentType extends ResolversParentTypes['PageInfo'] = ResolversParentTypes['PageInfo']> = ResolversObject<{
   hasNextPage?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>,
   prevCursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   nextCursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
 }>;
 
-export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
+export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
+  _query?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   listCoffees?: Resolver<ResolversTypes['CoffeeConnection'], ParentType, ContextType, QueryListCoffeesArgs>,
   getCoffee?: Resolver<Maybe<ResolversTypes['Coffee']>, ParentType, ContextType, RequireFields<QueryGetCoffeeArgs, 'id'>>,
   listCountries?: Resolver<ResolversTypes['CountryConnection'], ParentType, ContextType, QueryListCountriesArgs>,
   getCountry?: Resolver<Maybe<ResolversTypes['Country']>, ParentType, ContextType, RequireFields<QueryGetCountryArgs, 'id'>>,
-  _query?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   listFarms?: Resolver<ResolversTypes['FarmConnection'], ParentType, ContextType, QueryListFarmsArgs>,
   getFarm?: Resolver<Maybe<ResolversTypes['Farm']>, ParentType, ContextType, RequireFields<QueryGetFarmArgs, 'id'>>,
   listFarmZones?: Resolver<ResolversTypes['FarmZoneConnection'], ParentType, ContextType, QueryListFarmZonesArgs>,
@@ -730,7 +731,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   getVariety?: Resolver<Maybe<ResolversTypes['Variety']>, ParentType, ContextType, RequireFields<QueryGetVarietyArgs, 'id'>>,
 }>;
 
-export type RegionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Region'] = ResolversParentTypes['Region']> = ResolversObject<{
+export type RegionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Region'] = ResolversParentTypes['Region']> = ResolversObject<{
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>,
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   country?: Resolver<Maybe<ResolversTypes['Country']>, ParentType, ContextType>,
@@ -739,21 +740,21 @@ export type RegionResolvers<ContextType = any, ParentType extends ResolversParen
   updatedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
 }>;
 
-export type RegionConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['RegionConnection'] = ResolversParentTypes['RegionConnection']> = ResolversObject<{
+export type RegionConnectionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['RegionConnection'] = ResolversParentTypes['RegionConnection']> = ResolversObject<{
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>,
   edges?: Resolver<Array<ResolversTypes['RegionEdge']>, ParentType, ContextType>,
 }>;
 
-export type RegionEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['RegionEdge'] = ResolversParentTypes['RegionEdge']> = ResolversObject<{
+export type RegionEdgeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['RegionEdge'] = ResolversParentTypes['RegionEdge']> = ResolversObject<{
   cursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   node?: Resolver<Maybe<ResolversTypes['Region']>, ParentType, ContextType>,
 }>;
 
-export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = ResolversObject<{
+export type SubscriptionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = ResolversObject<{
   _subscription?: SubscriptionResolver<Maybe<ResolversTypes['String']>, "_subscription", ParentType, ContextType>,
 }>;
 
-export type VarietyResolvers<ContextType = any, ParentType extends ResolversParentTypes['Variety'] = ResolversParentTypes['Variety']> = ResolversObject<{
+export type VarietyResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Variety'] = ResolversParentTypes['Variety']> = ResolversObject<{
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>,
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   background?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
@@ -762,17 +763,17 @@ export type VarietyResolvers<ContextType = any, ParentType extends ResolversPare
   updatedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
 }>;
 
-export type VarietyConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['VarietyConnection'] = ResolversParentTypes['VarietyConnection']> = ResolversObject<{
+export type VarietyConnectionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['VarietyConnection'] = ResolversParentTypes['VarietyConnection']> = ResolversObject<{
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>,
   edges?: Resolver<Array<ResolversTypes['VarietyEdge']>, ParentType, ContextType>,
 }>;
 
-export type VarietyEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['VarietyEdge'] = ResolversParentTypes['VarietyEdge']> = ResolversObject<{
+export type VarietyEdgeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['VarietyEdge'] = ResolversParentTypes['VarietyEdge']> = ResolversObject<{
   cursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   node?: Resolver<Maybe<ResolversTypes['Variety']>, ParentType, ContextType>,
 }>;
 
-export type Resolvers<ContextType = any> = ResolversObject<{
+export type Resolvers<ContextType = Context> = ResolversObject<{
   Coffee?: CoffeeResolvers<ContextType>,
   CoffeeConnection?: CoffeeConnectionResolvers<ContextType>,
   CoffeeEdge?: CoffeeEdgeResolvers<ContextType>,
@@ -802,4 +803,4 @@ export type Resolvers<ContextType = any> = ResolversObject<{
  * @deprecated
  * Use "Resolvers" root object instead. If you wish to get "IResolvers", add "typesPrefix: I" to your config.
 */
-export type IResolvers<ContextType = any> = Resolvers<ContextType>;
+export type IResolvers<ContextType = Context> = Resolvers<ContextType>;

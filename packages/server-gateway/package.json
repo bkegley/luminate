@@ -1,0 +1,7 @@
+{
+  "name": "@luminate/server-gateway",
+  "version": "0.0.1",
+  "main": "index.js",
+  "author": "Bryan Kegley <hi@bryankegley.me>",
+  "license": "MIT"
+}

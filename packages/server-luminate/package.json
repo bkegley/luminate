@@ -9,9 +9,7 @@
     "develop": "nodemon --watch src/ --ignore src/index.d -e ts --exec \"npm run start\"",
     "build": "rimraf ./dist && tsc",
     "start": "node dist/startServer.js",
-    "prestart": "yarn build",
-    "generate": "graphql-codegen",
-    "prebuild": "yarn generate"
+    "prestart": "yarn build"
   },
   "dependencies": {
     "@luminate/graphql-utils": "*",
