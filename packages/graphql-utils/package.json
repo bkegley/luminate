@@ -2,6 +2,7 @@
   "name": "@luminate/graphql-utils",
   "version": "0.0.1",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "author": "Bryan Kegley <hi@bryankegley.me>",
   "license": "MIT",
   "scripts": {
@@ -11,6 +12,7 @@
     "prestart": "yarn build"
   },
   "dependencies": {
-    "@luminate/server-luminate": "*"
+    "@luminate/server-luminate": "*",
+    "dataloader": "^2.0.0"
   }
 }
