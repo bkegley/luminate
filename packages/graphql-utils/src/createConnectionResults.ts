@@ -1,4 +1,4 @@
-import {Model, Document} from 'mongoose'
+import * as mongoose from 'mongoose'
 import {parseArgs, TQueryInput} from './parseArgs'
 import {createCursorHash} from './cursor'
 
@@ -9,14 +9,15 @@ interface ArgsInput {
   [x: string]: any
 }
 
-interface DocumentWithTimestamps extends Document {
+export interface DocumentWithTimestamps extends mongoose.Document {
+  id: string
   createdAt: string
   updatedAt: string
 }
 
 interface CreateConnectionResultsArgs {
   args: ArgsInput
-  model: Model<DocumentWithTimestamps, {updatedAt: string}>
+  model: mongoose.Model<DocumentWithTimestamps>
 }
 
 const createConnectionResults = async ({args, model}: CreateConnectionResultsArgs) => {

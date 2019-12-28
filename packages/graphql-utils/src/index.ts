@@ -7,7 +7,7 @@ export type LoaderContext<L> = {
   [K in keyof L]: Dataloader<string, ExtractGraphQLType<L[K]>>
 }
 
-export {createConnectionResults} from './createConnectionResults'
+export {createConnectionResults, DocumentWithTimestamps} from './createConnectionResults'
 export {createCursorHash, parseCursorHash} from './cursor'
 export {parseArgs} from './parseArgs'
 export {sharedTypeDefs} from './schema/sharedTypeDefs'
