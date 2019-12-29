@@ -5,6 +5,7 @@ const app = express()
 import {typeDefs, resolvers, loaders as loadersObject, Loaders} from './schema'
 import {createMongoConnection, models} from '@luminate/mongo'
 import DataLoader from 'dataloader'
+import {LoaderContext} from '@luminate/graphql-utils'
 
 const PORT = process.env.PORT || 3000
 
@@ -12,7 +13,7 @@ export interface Context {
   req: express.Request
   res: express.Response
   models: typeof models
-  loaders: Loaders
+  loaders: LoaderContext<Loaders>
 }
 
 const startServer = async () => {
