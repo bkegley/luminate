@@ -32,7 +32,7 @@ export const sharedTypeDefs = gql`
 
   input QueryInput {
     field: String!
-    value: String!
+    value: String
     operator: OperatorEnum
   }
 `

@@ -21,7 +21,7 @@ const getQueryValue = (query: QueryInput | null) => {
     case 'gte':
     case 'lt':
     case 'lte': {
-      return {[query.field]: {[`$${query.operator}`]: query.value}}
+      return {[query.field]: {[`$${query.operator}`]: query.value || null}}
     }
     case 'contains':
     case 'containsSensitive':
