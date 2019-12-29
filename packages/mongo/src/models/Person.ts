@@ -1,4 +1,4 @@
-import * as mongoose from 'mongoose'
+import mongoose from 'mongoose'
 import extendSchema from '../extendSchema'
 import Role from './Role'
 import bcrypt from 'bcrypt'

@@ -1,5 +1,5 @@
 import {BatchLoadFn, default as Dataloader} from 'dataloader'
-import * as mongoose from 'mongoose'
+import mongoose from 'mongoose'
 import {models as dbModels} from '@luminate/mongo'
 
 export type LoaderFn<T> = (ids: string[], models: typeof dbModels) => ReturnType<BatchLoadFn<string, T>>

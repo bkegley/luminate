@@ -1,4 +1,4 @@
-import * as mongoose from 'mongoose'
+import mongoose from 'mongoose'
 import {DocumentWithTimestamps} from '@luminate/graphql-utils'
 
 export interface VarietyDocument extends DocumentWithTimestamps {

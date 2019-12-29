@@ -1,4 +1,4 @@
-import * as mongoose from 'mongoose'
+import mongoose from 'mongoose'
 
 export interface RoleDocument extends mongoose.Document {
   name: string

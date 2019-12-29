@@ -1,4 +1,4 @@
-import * as mongoose from 'mongoose'
+import mongoose from 'mongoose'
 import {parseArgs, TQueryInput} from './parseArgs'
 import {createCursorHash} from './cursor'
 
