@@ -15,20 +15,30 @@ export interface DocumentWithTimestamps extends mongoose.Document {
   updatedAt: string
 }
 
-interface CreateConnectionResultsArgs {
+interface CreateConnectionResultsArgs<T extends DocumentWithTimestamps> {
   args: ArgsInput
-  model: mongoose.Model<DocumentWithTimestamps>
+  model: mongoose.Model<T>
 }
 
-const createConnectionResults = async ({args, model}: CreateConnectionResultsArgs) => {
+type ExtractModelType<T> = T extends mongoose.Model<infer M> ? M : never
+
+export async function createConnectionResults<T extends DocumentWithTimestamps>({
+  args,
+  model,
+}: CreateConnectionResultsArgs<T>) {
+  // export async function createConnectionResults({args, model}: CreateConnectionResultsArgs<mongoose.Document>) {
   const cursor = args.cursor || createCursorHash(new Date())
   const limit = args.limit || 100
   const query = args.query
 
-  const documentsPlusOne = await model.find({...args, ...parseArgs({cursor, query})}, null, {
-    sort: '-updatedAt',
-    limit: limit ? limit + 1 : 100 + 1,
-  })
+  const documentsPlusOne: Array<ExtractModelType<typeof model>> = await model.find(
+    {...args, ...parseArgs({cursor, query})},
+    null,
+    {
+      sort: '-updatedAt',
+      limit: limit ? limit + 1 : 100 + 1,
+    },
+  )
 
   if (!documentsPlusOne.length) {
     return {
@@ -52,7 +62,7 @@ const createConnectionResults = async ({args, model}: CreateConnectionResultsArg
       nextCursor,
       previousCursor: '',
     },
-    edges: documents.map((document: any) => {
+    edges: documents.map(document => {
       return {
         node: document,
         cursor: createCursorHash(document.updatedAt),
@@ -62,5 +72,3 @@ const createConnectionResults = async ({args, model}: CreateConnectionResultsArg
 
   return data
 }
-
-export {createConnectionResults}
