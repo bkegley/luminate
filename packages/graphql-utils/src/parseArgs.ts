@@ -53,4 +53,4 @@ const parseArgs = (args: Args) => {
   }
 }
 
-export {parseArgs}
+export {parseArgs, queryInputMap}

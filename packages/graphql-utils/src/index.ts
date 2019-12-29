@@ -12,5 +12,5 @@ export type LoaderContext<L> = {
 
 export {createConnectionResults, DocumentWithTimestamps} from './createConnectionResults'
 export {createCursorHash, parseCursorHash} from './cursor'
-export {parseArgs} from './parseArgs'
+export {parseArgs, queryInputMap} from './parseArgs'
 export {sharedTypeDefs} from './schema/sharedTypeDefs'
