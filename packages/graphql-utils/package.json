@@ -12,7 +12,10 @@
     "prestart": "yarn build"
   },
   "dependencies": {
-    "@luminate/server-luminate": "*",
+    "@luminate/mongo": "*",
     "dataloader": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/mongoose": "^5.5.36"
   }
 }
