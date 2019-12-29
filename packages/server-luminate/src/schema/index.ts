@@ -1,31 +1,37 @@
 import merge from 'lodash.merge'
 
+import {sharedTypeDefs} from '@luminate/graphql-utils'
+
 import {
   typeDefs as coffeeTypeDefs,
   resolvers as coffeeResolvers,
   loaders as coffeeLoaders,
   CoffeeLoaders,
 } from './Coffee'
+
 import {
   typeDefs as countryTypeDefs,
   resolvers as countryResolvers,
   loaders as countryLoaders,
   CountryLoaders,
 } from './Country'
-import {typeDefs as defaultTypeDefs} from './defaults'
+
 import {typeDefs as farmTypeDefs, resolvers as farmResolvers, loaders as farmLoaders, FarmLoaders} from './Farm'
+
 import {
   typeDefs as farmZoneTypeDefs,
   resolvers as farmZoneResolvers,
   loaders as farmZoneLoaders,
   FarmZoneLoaders,
 } from './FarmZone'
+
 import {
   typeDefs as regionTypeDefs,
   resolvers as regionResolvers,
   loaders as regionLoaders,
   RegionLoaders,
 } from './Region'
+
 import {
   typeDefs as varietyTypeDefs,
   resolvers as varietyResolvers,
@@ -34,9 +40,9 @@ import {
 } from './Variety'
 
 export const typeDefs = [
+  sharedTypeDefs,
   coffeeTypeDefs,
   countryTypeDefs,
-  defaultTypeDefs,
   farmTypeDefs,
   farmZoneTypeDefs,
   regionTypeDefs,

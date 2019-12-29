@@ -1,6 +1,7 @@
 import {gql} from 'apollo-server-express'
 import {createConnectionResults, LoaderFn} from '@luminate/graphql-utils'
-import {Resolvers, Variety} from '../types'
+import {Resolvers} from '../types'
+import {VarietyDocument} from '@luminate/mongo'
 
 export const typeDefs = gql`
   type Variety {
@@ -82,7 +83,7 @@ export const resolvers: Resolvers = {
 }
 
 export interface VarietyLoaders {
-  varieties: LoaderFn<Variety>
+  varieties: LoaderFn<VarietyDocument>
 }
 
 export const loaders: VarietyLoaders = {
@@ -90,7 +91,9 @@ export const loaders: VarietyLoaders = {
     const {Variety} = models
     const varieties = await Variety.find({_id: ids})
     return ids.map(id => {
-      return varieties.find((variety: any) => variety._id.toString() === id.toString())
+      const variety = varieties.find((variety: any) => variety._id.toString() === id.toString())
+      if (!variety) throw new Error('Document not found')
+      return variety
     })
   },
 }

@@ -1,6 +1,7 @@
 import {gql} from 'apollo-server-express'
 import {createConnectionResults, LoaderFn} from '@luminate/graphql-utils'
-import {Resolvers, Coffee, Variety} from '../types'
+import {Resolvers} from '../types'
+import {CoffeeDocument, VarietyDocument} from '@luminate/mongo'
 
 export const typeDefs = gql`
   type Coffee {
@@ -60,7 +61,6 @@ export const resolvers: Resolvers = {
   Query: {
     listCoffees: async (parent, args, {models}) => {
       const {Coffee} = models
-
       const results = await createConnectionResults({args, model: Coffee})
       return results
     },
@@ -89,36 +89,51 @@ export const resolvers: Resolvers = {
   Coffee: {
     country: async (parent, args, {loaders}) => {
       const {countries} = loaders
+      if (!parent.country) return null
       return countries.load(parent.country)
     },
     region: async (parent, args, {loaders}) => {
-      const {region} = loaders
-      return region.load(parent.region)
+      const {regions} = loaders
+      if (!parent.region) return null
+      return regions.load(parent.region)
     },
     varieties: async (parent, args, {models, loaders}) => {
       const {varietiesOfCoffee} = loaders
-      return varietiesOfCoffee.load(parent.varieties)
+      if (!parent.varieties) return null
+      return Promise.all(parent.varieties.map(id => varietiesOfCoffee.load(id)))
     },
   },
 }
 
 export interface CoffeeLoaders {
-  coffees: LoaderFn<Coffee>
-  varietiesOfCoffee: LoaderFn<Variety[]>
+  coffees: LoaderFn<CoffeeDocument>
+  varietiesOfCoffee: LoaderFn<VarietyDocument>
 }
 
 export const loaders: CoffeeLoaders = {
-  coffees: async (ids, models: any) => {
+  coffees: async (ids, models) => {
     const {Coffee} = models
     const coffees = await Coffee.find({_id: ids})
-    return ids.map(id => coffees.find((coffee: any) => coffee._id.toString() === id.toString()))
-  },
-  varietiesOfCoffee: async (ids, models: any) => {
-    const {Variety} = models
-    const varieties = await Variety.find({_id: ids.flat(Infinity)})
-
     return ids.map(id => {
-      return varieties.filter((variety: any) => id.includes(variety.id))
+      const coffee = coffees.find(coffee => coffee._id.toString() === id.toString())
+      if (!coffee) throw new Error('Document not found')
+      return coffee
     })
+  },
+  varietiesOfCoffee: async (ids, models) => {
+    const {Variety} = models
+    const varieties = await Variety.find({_id: ids})
+    return ids.map(id => {
+      const variety = varieties.find(variety => variety._id.toString() === id.toString())
+      if (!variety) throw new Error('Document not found')
+      return variety
+    })
+
+    // const {Variety} = models
+    // const varieties = await Variety.find({_id: ids.flat(Infinity)})
+
+    // return ids.map(id => {
+    //   return varieties.filter(variety => id.toString().includes(variety.id))
+    // })
   },
 }

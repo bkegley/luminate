@@ -1,6 +1,7 @@
 import {gql} from 'apollo-server-express'
 import {createConnectionResults, LoaderFn} from '@luminate/graphql-utils'
-import {Resolvers, Farm, FarmZone} from '../types'
+import {Resolvers} from '../types'
+import {FarmDocument, FarmZoneDocument} from '@luminate/mongo'
 
 export const typeDefs = gql`
   type Farm {
@@ -51,7 +52,6 @@ export const resolvers: Resolvers = {
   Query: {
     listFarms: async (parent, args, {models}) => {
       const {Farm} = models
-
       const results = await createConnectionResults({args, model: Farm})
       return results
     },
@@ -80,10 +80,12 @@ export const resolvers: Resolvers = {
   Farm: {
     country: async (parent, args, {loaders}) => {
       const {countries} = loaders
+      if (!parent.country) return null
       return countries.load(parent.country)
     },
     region: async (parent, args, {loaders}) => {
       const {regions} = loaders
+      if (!parent.region) return null
       return regions.load(parent.region)
     },
     farmZones: async (parent, args, {models, loaders}) => {
@@ -94,15 +96,19 @@ export const resolvers: Resolvers = {
 }
 
 export interface FarmLoaders {
-  farms: LoaderFn<Farm>
-  farmZonesOfFarm: LoaderFn<FarmZone[]>
+  farms: LoaderFn<FarmDocument>
+  farmZonesOfFarm: LoaderFn<FarmZoneDocument[]>
 }
 
 export const loaders: FarmLoaders = {
   farms: async (ids, models) => {
     const {Farm} = models
     const farms = await Farm.find({_id: ids})
-    return ids.map(id => farms.find((farm: any) => farm._id.toString() === id.toString()))
+    return ids.map(id => {
+      const farm = farms.find((farm: any) => farm._id.toString() === id.toString())
+      if (!farm) throw new Error('Document not found')
+      return farm
+    })
   },
   farmZonesOfFarm: async (ids, models) => {
     const {FarmZone} = models

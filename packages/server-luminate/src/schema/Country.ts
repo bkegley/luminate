@@ -1,6 +1,7 @@
 import {gql} from 'apollo-server-express'
 import {createConnectionResults, LoaderFn} from '@luminate/graphql-utils'
-import {Resolvers, Country, Region} from '../types'
+import {Resolvers, Country} from '../types'
+import {CountryDocument, RegionDocument} from '@luminate/mongo'
 
 export const typeDefs = gql`
   type Country {
@@ -45,7 +46,6 @@ export const resolvers: Resolvers = {
   Query: {
     listCountries: async (parent, args, {models}) => {
       const {Country} = models
-
       const results = await createConnectionResults({args, model: Country})
       return results
     },
@@ -80,21 +80,25 @@ export const resolvers: Resolvers = {
 }
 
 export interface CountryLoaders {
-  countries: LoaderFn<Country>
-  regionsOfCountry: LoaderFn<Region[]>
+  countries: LoaderFn<CountryDocument>
+  regionsOfCountry: LoaderFn<RegionDocument[]>
 }
 
 export const loaders: CountryLoaders = {
   countries: async (ids, models) => {
     const {Country} = models
     const countries = await Country.find({_id: ids})
-    return ids.map(id => countries.find((country: any) => country._id.toString() === id.toString()))
+    return ids.map(id => {
+      const country = countries.find(country => country._id.toString() === id.toString())
+      if (!country) throw new Error('Document not found')
+      return country
+    })
   },
   regionsOfCountry: async (ids, models) => {
     const {Region} = models
     const regions = await Region.find({country: ids})
     return ids.map(id => {
-      return regions.filter((region: any) => region.country && region.country.toString() === id)
+      return regions.filter(region => region.country && region.country.toString() === id)
     })
   },
 }
