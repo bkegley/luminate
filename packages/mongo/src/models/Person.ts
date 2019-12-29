@@ -2,11 +2,10 @@ import * as mongoose from 'mongoose'
 import extendSchema from '../extendSchema'
 import Role from './Role'
 import bcrypt from 'bcrypt'
-import Scope, {IScope} from './Scope'
 const saltRounds = 10
 import {DocumentWithTimestamps} from '@luminate/graphql-utils'
 
-export interface IPerson extends DocumentWithTimestamps {
+export interface PersonDocument extends DocumentWithTimestamps {
   firstName?: string
   lastName?: string
   email?: Array<IEmail>
@@ -14,7 +13,7 @@ export interface IPerson extends DocumentWithTimestamps {
   type: ['user' | 'contact' | 'person']
 }
 
-export interface IUser extends IPerson {
+export interface UserDocument extends PersonDocument {
   username?: string
   password?: string
   authTokens?: Array<IAuthToken>
@@ -123,7 +122,7 @@ const UserSchema = extendSchema(
   {timestamps: true},
 )
 
-UserSchema.pre<IUser>('save', async function(next) {
+UserSchema.pre<UserDocument>('save', async function(next) {
   if (this.password) {
     const hashedPassword = await bcrypt.hash(this.password, saltRounds).then(res => res)
     this.password = hashedPassword
@@ -131,11 +130,11 @@ UserSchema.pre<IUser>('save', async function(next) {
   next()
 })
 
-UserSchema.virtual('scopes').get(async function(this: IUser) {
+UserSchema.virtual('scopes').get(async function(this: UserDocument) {
   const roles = await Role.find({_id: this.roles}).populate('scopes')
   console.log({roles})
   return roles.map(role => role.scopes)
 })
 
-export const Person = mongoose.model<IPerson>('person', PersonSchema, 'people')
-export const User = mongoose.model<IUser>('user', UserSchema, 'people')
+export const Person = mongoose.model<PersonDocument>('person', PersonSchema, 'people')
+export const User = mongoose.model<UserDocument>('user', UserSchema, 'people')

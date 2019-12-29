@@ -1,7 +1,7 @@
 import * as mongoose from 'mongoose'
 import {DocumentWithTimestamps} from '@luminate/graphql-utils'
 
-export interface IVariety extends DocumentWithTimestamps {
+export interface VarietyDocument extends DocumentWithTimestamps {
   name: string
   background?: string
 }
@@ -21,4 +21,4 @@ const Variety = new mongoose.Schema(
   },
 )
 
-export default mongoose.model<IVariety>('variety', Variety, 'varieties')
+export default mongoose.model<VarietyDocument>('variety', Variety, 'varieties')

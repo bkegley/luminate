@@ -1,7 +1,7 @@
 import * as mongoose from 'mongoose'
 import {DocumentWithTimestamps} from '@luminate/graphql-utils'
 
-export interface IRegion extends DocumentWithTimestamps {
+export interface RegionDocument extends DocumentWithTimestamps {
   name: string
   country?: mongoose.Types.ObjectId
 }
@@ -22,4 +22,4 @@ const Region = new mongoose.Schema(
   },
 )
 
-export default mongoose.model<IRegion>('region', Region)
+export default mongoose.model<RegionDocument>('region', Region)

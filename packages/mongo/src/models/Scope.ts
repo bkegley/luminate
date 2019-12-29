@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 
-export interface IScope extends mongoose.Document {
+export interface ScopeDocument extends mongoose.Document {
   name: string
   resource: string
   operation: 'read' | 'write'
@@ -34,10 +34,10 @@ export const ScopeSchema = new mongoose.Schema(
   },
 )
 
-ScopeSchema.pre<IScope>('save', async function(next) {
+ScopeSchema.pre<ScopeDocument>('save', async function(next) {
   const name = `${this.operation}: ${this.resource}`
   this.name = name
   next()
 })
 
-export default mongoose.model<IScope>('scope', ScopeSchema)
+export default mongoose.model<ScopeDocument>('scope', ScopeSchema)

@@ -1,4 +1,4 @@
 import createMongoConnection from './createMongoConnection'
-import * as models from './models'
+export * from './models'
 
-export {createMongoConnection, models}
+export {createMongoConnection}

@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose'
 
-export interface IRole extends mongoose.Document {
+export interface RoleDocument extends mongoose.Document {
   name: string
   scopes?: string[]
   createdAt: Date
@@ -23,4 +23,4 @@ const RoleSchema = new mongoose.Schema(
   {timestamps: true},
 )
 
-export default mongoose.model<IRole>('role', RoleSchema)
+export default mongoose.model<RoleDocument>('role', RoleSchema)

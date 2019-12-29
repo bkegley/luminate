@@ -1,7 +1,7 @@
 import * as mongoose from 'mongoose'
 import {DocumentWithTimestamps} from '@luminate/graphql-utils'
 
-export interface ICoffee extends DocumentWithTimestamps {
+export interface CoffeeDocument extends DocumentWithTimestamps {
   name: string
   country?: mongoose.Types.ObjectId
   region?: mongoose.Types.ObjectId
@@ -46,4 +46,4 @@ const Coffee = new mongoose.Schema(
   {timestamps: true},
 )
 
-export default mongoose.model<ICoffee>('coffee', Coffee)
+export default mongoose.model<CoffeeDocument>('coffee', Coffee)

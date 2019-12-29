@@ -1,7 +1,7 @@
 import * as mongoose from 'mongoose'
 import {DocumentWithTimestamps} from '@luminate/graphql-utils'
 
-export interface IFarmZone extends DocumentWithTimestamps {
+export interface FarmZoneDocument extends DocumentWithTimestamps {
   name: string
   farm?: mongoose.Types.ObjectId
 }
@@ -20,4 +20,4 @@ const FarmZone = new mongoose.Schema(
   {timestamps: true},
 )
 
-export default mongoose.model<IFarmZone>('farmZone', FarmZone)
+export default mongoose.model<FarmZoneDocument>('farmZone', FarmZone)
