@@ -264,7 +264,8 @@ export enum OperatorEnum {
   Gte = 'gte',
   Lt = 'lt',
   Lte = 'lte',
-  Contains = 'contains'
+  Contains = 'contains',
+  ContainsSensitive = 'containsSensitive'
 }
 
 export type PageInfo = {

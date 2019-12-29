@@ -27,6 +27,7 @@ export const sharedTypeDefs = gql`
     lt
     lte
     contains
+    containsSensitive
   }
 
   input QueryInput {

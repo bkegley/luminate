@@ -26,17 +26,16 @@ export async function createConnectionResults<T extends DocumentWithTimestamps>(
   args,
   model,
 }: CreateConnectionResultsArgs<T>) {
-  // export async function createConnectionResults({args, model}: CreateConnectionResultsArgs<mongoose.Document>) {
-  const cursor = args.cursor || createCursorHash(new Date())
-  const limit = args.limit || 100
-  const query = args.query
+  const {cursor, limit, query, ...remainingArgs} = args
+  const cursorWithDefault = cursor || createCursorHash(new Date())
+  const limitWithDefault = limit || 100
 
   const documentsPlusOne: Array<ExtractModelType<typeof model>> = await model.find(
-    {...args, ...parseArgs({cursor, query})},
+    {...remainingArgs, ...parseArgs({cursor: cursorWithDefault, query})},
     null,
     {
       sort: '-updatedAt',
-      limit: limit ? limit + 1 : 100 + 1,
+      limit: limitWithDefault + 1,
     },
   )
 
@@ -51,7 +50,7 @@ export async function createConnectionResults<T extends DocumentWithTimestamps>(
     }
   }
 
-  const hasNextPage = documentsPlusOne.length > limit
+  const hasNextPage = documentsPlusOne.length > limitWithDefault
   const documents = hasNextPage ? documentsPlusOne.slice(0, -1) : documentsPlusOne
 
   const nextCursor = hasNextPage ? createCursorHash(documentsPlusOne[documentsPlusOne.length - 1].updatedAt) : null

@@ -24,8 +24,14 @@ const getQueryValue = (query: QueryInput | null) => {
       return {[query.field]: {[`$${query.operator}`]: query.value}}
     }
     case 'contains':
+    case 'containsSensitive':
     default: {
-      return {[query.field]: {$regex: `.*${query.value}.*`}}
+      return {
+        [query.field]: Object.assign(
+          {$regex: `.*${query.value}.*`},
+          query.operator === 'contains' ? {$options: 'i'} : null,
+        ),
+      }
     }
   }
 }
