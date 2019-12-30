@@ -10,6 +10,7 @@ module.exports = {
       config: {
         contextType: './startServer#Context',
         useIndexSignature: true,
+        federation: true,
         mappers: {
           Coffee: '@luminate/mongo#CoffeeDocument',
           Country: '@luminate/mongo#CountryDocument',
@@ -20,13 +21,13 @@ module.exports = {
         },
       },
     },
-
     'packages/server-auth/src/types.d.ts': {
       schema: ['./packages/server-auth/src/schema/**/!(index.ts)*.ts'],
       plugins: ['typescript', 'typescript-resolvers'],
       config: {
         contextType: './startServer#Context',
         useIndexSignature: true,
+        federation: true,
         defaultMapper: 'Partial<{T}>',
       },
     },
