@@ -6,7 +6,13 @@ export type Scalars = {
   Boolean: boolean,
   Int: number,
   Float: number,
+  _FieldSet: any,
 };
+
+
+
+
+
 
 export type Mutation = {
    __typename?: 'Mutation',

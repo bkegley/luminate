@@ -37,6 +37,12 @@ const typeDefs = gql`
 
   input UpdateCuppingInput {
     description: String
+    coffees: [CuppingCoffeeInput]
+  }
+
+  input CuppingCoffeeInput {
+    sessionCoffeeId: ID!
+    coffee: ID
   }
 
   extend type Query {

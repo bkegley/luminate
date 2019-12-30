@@ -41,6 +41,11 @@ export type CuppingCoffee = {
   coffee?: Maybe<Coffee>,
 };
 
+export type CuppingCoffeeInput = {
+  sessionCoffeeId: Scalars['ID'],
+  coffee?: Maybe<Scalars['ID']>,
+};
+
 export type CuppingConnection = {
    __typename?: 'CuppingConnection',
   pageInfo: PageInfo,
@@ -127,6 +132,7 @@ export type Subscription = {
 
 export type UpdateCuppingInput = {
   description?: Maybe<Scalars['String']>,
+  coffees?: Maybe<Array<Maybe<CuppingCoffeeInput>>>,
 };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
@@ -222,6 +228,7 @@ export type ResolversTypes = ResolversObject<{
   Mutation: ResolverTypeWrapper<{}>,
   CreateCuppingInput: CreateCuppingInput,
   UpdateCuppingInput: UpdateCuppingInput,
+  CuppingCoffeeInput: CuppingCoffeeInput,
   Subscription: ResolverTypeWrapper<{}>,
 }>;
 
@@ -243,6 +250,7 @@ export type ResolversParentTypes = ResolversObject<{
   Mutation: {},
   CreateCuppingInput: CreateCuppingInput,
   UpdateCuppingInput: UpdateCuppingInput,
+  CuppingCoffeeInput: CuppingCoffeeInput,
   Subscription: {},
 }>;
 

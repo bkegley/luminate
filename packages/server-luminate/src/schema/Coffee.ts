@@ -4,7 +4,7 @@ import {Resolvers} from '../types'
 import {CoffeeDocument, VarietyDocument} from '@luminate/mongo'
 
 const typeDefs = gql`
-  type Coffee {
+  type Coffee @key(fields: "id") {
     id: ID!
     name: String
     country: Country
@@ -87,6 +87,10 @@ const resolvers: Resolvers = {
     },
   },
   Coffee: {
+    __resolveReference: (object, {loaders}) => {
+      const {coffees} = loaders
+      return coffees.load(object.id)
+    },
     country: async (parent, args, {loaders}) => {
       const {countries} = loaders
       if (!parent.country) return null

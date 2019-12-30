@@ -10,6 +10,18 @@ const Cupping = new mongoose.Schema(
     description: {
       type: String,
     },
+    coffees: [
+      {
+        sessionCoffeeId: {
+          type: String,
+          required: true,
+        },
+        coffee: {
+          type: mongoose.Types.ObjectId,
+          ref: 'coffee',
+        },
+      },
+    ],
   },
   {timestamps: true},
 )
