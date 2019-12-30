@@ -38,6 +38,10 @@ module.exports = {
         contextType: './startServer#Context',
         useIndexSignature: true,
         federation: true,
+        mappers: {
+          Cupping: '@luminate/mongo#CuppingDocument',
+          CuppingCoffee: '@luminate/mongo#CoffeeCuppingDocument',
+        },
       },
     },
   },

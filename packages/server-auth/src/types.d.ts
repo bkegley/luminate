@@ -26,7 +26,6 @@ export type CreateUserInput = {
 
 export type Mutation = {
    __typename?: 'Mutation',
-  _mutation?: Maybe<Scalars['String']>,
   createUser?: Maybe<User>,
   updateUser?: Maybe<User>,
   deleteUser?: Maybe<User>,
@@ -75,7 +74,6 @@ export type PageInfo = {
 
 export type Query = {
    __typename?: 'Query',
-  _query?: Maybe<Scalars['String']>,
   listUsers: UserConnection,
   getUser?: Maybe<User>,
 };
@@ -96,11 +94,6 @@ export type QueryInput = {
   field: Scalars['String'],
   value?: Maybe<Scalars['String']>,
   operator?: Maybe<OperatorEnum>,
-};
-
-export type Subscription = {
-   __typename?: 'Subscription',
-  _subscription?: Maybe<Scalars['String']>,
 };
 
 export type UpdatePasswordInput = {
@@ -220,7 +213,6 @@ export type ResolversTypes = ResolversObject<{
   CreateUserInput: ResolverTypeWrapper<Partial<CreateUserInput>>,
   UpdateUserInput: ResolverTypeWrapper<Partial<UpdateUserInput>>,
   UpdatePasswordInput: ResolverTypeWrapper<Partial<UpdatePasswordInput>>,
-  Subscription: ResolverTypeWrapper<{}>,
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -240,11 +232,9 @@ export type ResolversParentTypes = ResolversObject<{
   CreateUserInput: Partial<CreateUserInput>,
   UpdateUserInput: Partial<UpdateUserInput>,
   UpdatePasswordInput: Partial<UpdatePasswordInput>,
-  Subscription: {},
 }>;
 
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
-  _query?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   listUsers?: Resolver<ResolversTypes['UserConnection'], ParentType, ContextType, QueryListUsersArgs>,
   getUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryGetUserArgs, 'id'>>,
 }>;
@@ -272,15 +262,10 @@ export type UserResolvers<ContextType = Context, ParentType extends ResolversPar
 }>;
 
 export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
-  _mutation?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   createUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'input'>>,
   updateUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationUpdateUserArgs, 'id' | 'input'>>,
   deleteUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationDeleteUserArgs, 'id'>>,
   updatePassword?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationUpdatePasswordArgs, 'id' | 'input'>>,
-}>;
-
-export type SubscriptionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = ResolversObject<{
-  _subscription?: SubscriptionResolver<Maybe<ResolversTypes['String']>, "_subscription", ParentType, ContextType>,
 }>;
 
 export type Resolvers<ContextType = Context> = ResolversObject<{
@@ -290,7 +275,6 @@ export type Resolvers<ContextType = Context> = ResolversObject<{
   UserEdge?: UserEdgeResolvers<ContextType>,
   User?: UserResolvers<ContextType>,
   Mutation?: MutationResolvers<ContextType>,
-  Subscription?: SubscriptionResolvers<ContextType>,
 }>;
 
 

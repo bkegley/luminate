@@ -4,7 +4,7 @@ import {Resolvers} from '../types'
 import {CuppingDocument} from '@luminate/mongo'
 
 const typeDefs = gql`
-  type Cupping {
+  type Cupping @key(fields: "id") {
     id: ID!
     description: String
     coffees: [CuppingCoffee]
@@ -14,7 +14,7 @@ const typeDefs = gql`
 
   type CuppingCoffee {
     sessionCoffeeId: ID!
-    coffee: Coffee
+    coffee: Coffee!
   }
 
   extend type Coffee @key(fields: "id") {
@@ -84,6 +84,11 @@ const resolvers: Resolvers = {
       const {Cupping} = models
       const cupping = await Cupping.findByIdAndDelete(id)
       return cupping
+    },
+  },
+  CuppingCoffee: {
+    coffee: parent => {
+      return {__typename: 'Coffee', id: parent.coffee}
     },
   },
 }

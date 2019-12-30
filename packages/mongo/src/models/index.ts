@@ -1,6 +1,6 @@
 import Coffee, {CoffeeDocument} from './Coffee'
 import Country, {CountryDocument} from './Country'
-import Cupping, {CuppingDocument} from './Cupping'
+import Cupping, {CuppingDocument, CoffeeCuppingDocument} from './Cupping'
 import Farm, {FarmDocument} from './Farm'
 import FarmZone, {FarmZoneDocument} from './FarmZone'
 import {Person, User, PersonDocument, UserDocument} from './Person'
@@ -15,6 +15,7 @@ export {
   CoffeeDocument,
   CountryDocument,
   CuppingDocument,
+  CoffeeCuppingDocument,
   FarmDocument,
   FarmZoneDocument,
   PersonDocument,

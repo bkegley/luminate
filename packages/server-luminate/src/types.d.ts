@@ -146,7 +146,6 @@ export type FarmZoneEdge = {
 
 export type Mutation = {
    __typename?: 'Mutation',
-  _mutation?: Maybe<Scalars['String']>,
   createCoffee?: Maybe<Coffee>,
   updateCoffee?: Maybe<Coffee>,
   deleteCoffee?: Maybe<Coffee>,
@@ -283,7 +282,6 @@ export type PageInfo = {
 
 export type Query = {
    __typename?: 'Query',
-  _query?: Maybe<Scalars['String']>,
   listCoffees: CoffeeConnection,
   getCoffee?: Maybe<Coffee>,
   listCountries: CountryConnection,
@@ -396,11 +394,6 @@ export type RegionEdge = {
    __typename?: 'RegionEdge',
   cursor?: Maybe<Scalars['String']>,
   node?: Maybe<Region>,
-};
-
-export type Subscription = {
-   __typename?: 'Subscription',
-  _subscription?: Maybe<Scalars['String']>,
 };
 
 export type UpdateCoffeeInput = {
@@ -575,7 +568,6 @@ export type ResolversTypes = ResolversObject<{
   UpdateRegionInput: UpdateRegionInput,
   CreateVarietyInput: CreateVarietyInput,
   UpdateVarietyInput: UpdateVarietyInput,
-  Subscription: ResolverTypeWrapper<{}>,
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -619,11 +611,9 @@ export type ResolversParentTypes = ResolversObject<{
   UpdateRegionInput: UpdateRegionInput,
   CreateVarietyInput: CreateVarietyInput,
   UpdateVarietyInput: UpdateVarietyInput,
-  Subscription: {},
 }>;
 
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
-  _query?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   listCoffees?: Resolver<ResolversTypes['CoffeeConnection'], ParentType, ContextType, QueryListCoffeesArgs>,
   getCoffee?: Resolver<Maybe<ResolversTypes['Coffee']>, ParentType, ContextType, RequireFields<QueryGetCoffeeArgs, 'id'>>,
   listCountries?: Resolver<ResolversTypes['CountryConnection'], ParentType, ContextType, QueryListCountriesArgs>,
@@ -763,7 +753,6 @@ export type VarietyEdgeResolvers<ContextType = Context, ParentType extends Resol
 }>;
 
 export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
-  _mutation?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   createCoffee?: Resolver<Maybe<ResolversTypes['Coffee']>, ParentType, ContextType, RequireFields<MutationCreateCoffeeArgs, 'input'>>,
   updateCoffee?: Resolver<Maybe<ResolversTypes['Coffee']>, ParentType, ContextType, RequireFields<MutationUpdateCoffeeArgs, 'id' | 'input'>>,
   deleteCoffee?: Resolver<Maybe<ResolversTypes['Coffee']>, ParentType, ContextType, RequireFields<MutationDeleteCoffeeArgs, 'id'>>,
@@ -782,10 +771,6 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   createVariety?: Resolver<Maybe<ResolversTypes['Variety']>, ParentType, ContextType, RequireFields<MutationCreateVarietyArgs, 'input'>>,
   updateVariety?: Resolver<Maybe<ResolversTypes['Variety']>, ParentType, ContextType, RequireFields<MutationUpdateVarietyArgs, 'id' | 'input'>>,
   deleteVariety?: Resolver<Maybe<ResolversTypes['Variety']>, ParentType, ContextType, RequireFields<MutationDeleteVarietyArgs, 'id'>>,
-}>;
-
-export type SubscriptionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = ResolversObject<{
-  _subscription?: SubscriptionResolver<Maybe<ResolversTypes['String']>, "_subscription", ParentType, ContextType>,
 }>;
 
 export type Resolvers<ContextType = Context> = ResolversObject<{
@@ -810,7 +795,6 @@ export type Resolvers<ContextType = Context> = ResolversObject<{
   VarietyConnection?: VarietyConnectionResolvers<ContextType>,
   VarietyEdge?: VarietyEdgeResolvers<ContextType>,
   Mutation?: MutationResolvers<ContextType>,
-  Subscription?: SubscriptionResolvers<ContextType>,
 }>;
 
 
