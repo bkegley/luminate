@@ -1,24 +1,16 @@
 import {ApolloServer, CorsOptions} from 'apollo-server-express'
-import {buildFederatedSchema} from '@apollo/federation'
+import {ApolloGateway} from '@apollo/gateway'
 import express from 'express'
 const app = express()
 
-import {schemas, loaders as loadersObject, Loaders} from './schema'
-import {createMongoConnection, models} from '@luminate/mongo'
-import DataLoader from 'dataloader'
-import {LoaderContext} from '@luminate/graphql-utils'
-
-const PORT = process.env.PORT || 3002
+const PORT = process.env.PORT || 3000
 
 export interface Context {
   req: express.Request
   res: express.Response
-  models: typeof models
-  loaders: LoaderContext<Loaders>
 }
 
 const startServer = async () => {
-  await createMongoConnection()
   // configure cors
   const whitelist = [`http://localhost:${PORT}`, 'http://localhost:8000']
 
@@ -35,21 +27,20 @@ const startServer = async () => {
     credentials: true,
   }
 
+  const gateway = new ApolloGateway({
+    serviceList: [
+      {name: 'luminate', url: 'http://localhost:3001/graphql'},
+      {name: 'sensory-eval', url: 'http://localhost:3002/graphql'},
+    ],
+  })
+
   const server = new ApolloServer({
-    schema: buildFederatedSchema(schemas),
+    gateway,
+    subscriptions: false,
     context: ({req, res}) => {
-      const loaders: Loaders = Object.keys(loadersObject).reduce((acc, loaderName) => {
-        return {
-          ...acc,
-          //@ts-ignore
-          [loaderName]: new DataLoader(ids => loadersObject[loaderName](ids, models)),
-        }
-      }, Object.assign(Object.keys(loadersObject)))
       return {
         req,
         res,
-        models,
-        loaders,
       }
     },
     playground:
