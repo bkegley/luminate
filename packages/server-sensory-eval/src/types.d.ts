@@ -17,42 +17,52 @@ export type Scalars = {
 
 
 
-export type CreateUserInput = {
-  firstName?: Maybe<Scalars['String']>,
-  lastName?: Maybe<Scalars['String']>,
-  username: Scalars['String'],
-  password: Scalars['String'],
+export type CreateCuppingInput = {
+  description?: Maybe<Scalars['String']>,
+};
+
+export type Cupping = {
+   __typename?: 'Cupping',
+  id: Scalars['ID'],
+  description?: Maybe<Scalars['String']>,
+  createdAt?: Maybe<Scalars['String']>,
+  updatedAt?: Maybe<Scalars['String']>,
+};
+
+export type CuppingConnection = {
+   __typename?: 'CuppingConnection',
+  pageInfo: PageInfo,
+  edges: Array<CuppingEdge>,
+};
+
+export type CuppingEdge = {
+   __typename?: 'CuppingEdge',
+  cursor?: Maybe<Scalars['String']>,
+  node?: Maybe<Cupping>,
 };
 
 export type Mutation = {
    __typename?: 'Mutation',
   _mutation?: Maybe<Scalars['String']>,
-  createUser?: Maybe<User>,
-  updateUser?: Maybe<User>,
-  deleteUser?: Maybe<User>,
-  updatePassword?: Maybe<Scalars['Boolean']>,
+  createCupping?: Maybe<Cupping>,
+  updateCupping?: Maybe<Cupping>,
+  deleteCupping?: Maybe<Cupping>,
 };
 
 
-export type MutationCreateUserArgs = {
-  input: CreateUserInput
+export type MutationCreateCuppingArgs = {
+  input: CreateCuppingInput
 };
 
 
-export type MutationUpdateUserArgs = {
+export type MutationUpdateCuppingArgs = {
   id: Scalars['ID'],
-  input: UpdateUserInput
+  input: UpdateCuppingInput
 };
 
 
-export type MutationDeleteUserArgs = {
+export type MutationDeleteCuppingArgs = {
   id: Scalars['ID']
-};
-
-
-export type MutationUpdatePasswordArgs = {
-  id: Scalars['ID'],
-  input: UpdatePasswordInput
 };
 
 export enum OperatorEnum {
@@ -76,19 +86,19 @@ export type PageInfo = {
 export type Query = {
    __typename?: 'Query',
   _query?: Maybe<Scalars['String']>,
-  listUsers: UserConnection,
-  getUser?: Maybe<User>,
+  listCuppings: CuppingConnection,
+  getCupping?: Maybe<Cupping>,
 };
 
 
-export type QueryListUsersArgs = {
+export type QueryListCuppingsArgs = {
   cursor?: Maybe<Scalars['String']>,
   limit?: Maybe<Scalars['Int']>,
   query?: Maybe<Array<Maybe<QueryInput>>>
 };
 
 
-export type QueryGetUserArgs = {
+export type QueryGetCuppingArgs = {
   id: Scalars['ID']
 };
 
@@ -103,34 +113,8 @@ export type Subscription = {
   _subscription?: Maybe<Scalars['String']>,
 };
 
-export type UpdatePasswordInput = {
-  currentPassword: Scalars['String'],
-  newPassword: Scalars['String'],
-};
-
-export type UpdateUserInput = {
-  firstName?: Maybe<Scalars['String']>,
-  lastName?: Maybe<Scalars['String']>,
-  username?: Maybe<Scalars['String']>,
-};
-
-export type User = {
-   __typename?: 'User',
-  id: Scalars['ID'],
-  firstName?: Maybe<Scalars['String']>,
-  lastName?: Maybe<Scalars['String']>,
-};
-
-export type UserConnection = {
-   __typename?: 'UserConnection',
-  pageInfo: PageInfo,
-  edges: Array<UserEdge>,
-};
-
-export type UserEdge = {
-   __typename?: 'UserEdge',
-  cursor?: Maybe<Scalars['String']>,
-  node?: Maybe<User>,
+export type UpdateCuppingInput = {
+  description?: Maybe<Scalars['String']>,
 };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
@@ -206,52 +190,50 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = ResolversObject<{
   Query: ResolverTypeWrapper<{}>,
-  String: ResolverTypeWrapper<Partial<Scalars['String']>>,
-  Int: ResolverTypeWrapper<Partial<Scalars['Int']>>,
-  QueryInput: ResolverTypeWrapper<Partial<QueryInput>>,
-  OperatorEnum: ResolverTypeWrapper<Partial<OperatorEnum>>,
-  UserConnection: ResolverTypeWrapper<Partial<UserConnection>>,
-  PageInfo: ResolverTypeWrapper<Partial<PageInfo>>,
-  Boolean: ResolverTypeWrapper<Partial<Scalars['Boolean']>>,
-  UserEdge: ResolverTypeWrapper<Partial<UserEdge>>,
-  User: ResolverTypeWrapper<Partial<User>>,
-  ID: ResolverTypeWrapper<Partial<Scalars['ID']>>,
+  String: ResolverTypeWrapper<Scalars['String']>,
+  Int: ResolverTypeWrapper<Scalars['Int']>,
+  QueryInput: QueryInput,
+  OperatorEnum: OperatorEnum,
+  CuppingConnection: ResolverTypeWrapper<CuppingConnection>,
+  PageInfo: ResolverTypeWrapper<PageInfo>,
+  Boolean: ResolverTypeWrapper<Scalars['Boolean']>,
+  CuppingEdge: ResolverTypeWrapper<CuppingEdge>,
+  Cupping: ResolverTypeWrapper<Cupping>,
+  ID: ResolverTypeWrapper<Scalars['ID']>,
   Mutation: ResolverTypeWrapper<{}>,
-  CreateUserInput: ResolverTypeWrapper<Partial<CreateUserInput>>,
-  UpdateUserInput: ResolverTypeWrapper<Partial<UpdateUserInput>>,
-  UpdatePasswordInput: ResolverTypeWrapper<Partial<UpdatePasswordInput>>,
+  CreateCuppingInput: CreateCuppingInput,
+  UpdateCuppingInput: UpdateCuppingInput,
   Subscription: ResolverTypeWrapper<{}>,
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = ResolversObject<{
   Query: {},
-  String: Partial<Scalars['String']>,
-  Int: Partial<Scalars['Int']>,
-  QueryInput: Partial<QueryInput>,
-  OperatorEnum: Partial<OperatorEnum>,
-  UserConnection: Partial<UserConnection>,
-  PageInfo: Partial<PageInfo>,
-  Boolean: Partial<Scalars['Boolean']>,
-  UserEdge: Partial<UserEdge>,
-  User: Partial<User>,
-  ID: Partial<Scalars['ID']>,
+  String: Scalars['String'],
+  Int: Scalars['Int'],
+  QueryInput: QueryInput,
+  OperatorEnum: OperatorEnum,
+  CuppingConnection: CuppingConnection,
+  PageInfo: PageInfo,
+  Boolean: Scalars['Boolean'],
+  CuppingEdge: CuppingEdge,
+  Cupping: Cupping,
+  ID: Scalars['ID'],
   Mutation: {},
-  CreateUserInput: Partial<CreateUserInput>,
-  UpdateUserInput: Partial<UpdateUserInput>,
-  UpdatePasswordInput: Partial<UpdatePasswordInput>,
+  CreateCuppingInput: CreateCuppingInput,
+  UpdateCuppingInput: UpdateCuppingInput,
   Subscription: {},
 }>;
 
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   _query?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
-  listUsers?: Resolver<ResolversTypes['UserConnection'], ParentType, ContextType, QueryListUsersArgs>,
-  getUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryGetUserArgs, 'id'>>,
+  listCuppings?: Resolver<ResolversTypes['CuppingConnection'], ParentType, ContextType, QueryListCuppingsArgs>,
+  getCupping?: Resolver<Maybe<ResolversTypes['Cupping']>, ParentType, ContextType, RequireFields<QueryGetCuppingArgs, 'id'>>,
 }>;
 
-export type UserConnectionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['UserConnection'] = ResolversParentTypes['UserConnection']> = ResolversObject<{
+export type CuppingConnectionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['CuppingConnection'] = ResolversParentTypes['CuppingConnection']> = ResolversObject<{
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>,
-  edges?: Resolver<Array<ResolversTypes['UserEdge']>, ParentType, ContextType>,
+  edges?: Resolver<Array<ResolversTypes['CuppingEdge']>, ParentType, ContextType>,
 }>;
 
 export type PageInfoResolvers<ContextType = Context, ParentType extends ResolversParentTypes['PageInfo'] = ResolversParentTypes['PageInfo']> = ResolversObject<{
@@ -260,23 +242,23 @@ export type PageInfoResolvers<ContextType = Context, ParentType extends Resolver
   nextCursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
 }>;
 
-export type UserEdgeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['UserEdge'] = ResolversParentTypes['UserEdge']> = ResolversObject<{
+export type CuppingEdgeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['CuppingEdge'] = ResolversParentTypes['CuppingEdge']> = ResolversObject<{
   cursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
-  node?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>,
+  node?: Resolver<Maybe<ResolversTypes['Cupping']>, ParentType, ContextType>,
 }>;
 
-export type UserResolvers<ContextType = Context, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = ResolversObject<{
+export type CuppingResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Cupping'] = ResolversParentTypes['Cupping']> = ResolversObject<{
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>,
-  firstName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
-  lastName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+  createdAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+  updatedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
 }>;
 
 export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   _mutation?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
-  createUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'input'>>,
-  updateUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationUpdateUserArgs, 'id' | 'input'>>,
-  deleteUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationDeleteUserArgs, 'id'>>,
-  updatePassword?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationUpdatePasswordArgs, 'id' | 'input'>>,
+  createCupping?: Resolver<Maybe<ResolversTypes['Cupping']>, ParentType, ContextType, RequireFields<MutationCreateCuppingArgs, 'input'>>,
+  updateCupping?: Resolver<Maybe<ResolversTypes['Cupping']>, ParentType, ContextType, RequireFields<MutationUpdateCuppingArgs, 'id' | 'input'>>,
+  deleteCupping?: Resolver<Maybe<ResolversTypes['Cupping']>, ParentType, ContextType, RequireFields<MutationDeleteCuppingArgs, 'id'>>,
 }>;
 
 export type SubscriptionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = ResolversObject<{
@@ -285,10 +267,10 @@ export type SubscriptionResolvers<ContextType = Context, ParentType extends Reso
 
 export type Resolvers<ContextType = Context> = ResolversObject<{
   Query?: QueryResolvers<ContextType>,
-  UserConnection?: UserConnectionResolvers<ContextType>,
+  CuppingConnection?: CuppingConnectionResolvers<ContextType>,
   PageInfo?: PageInfoResolvers<ContextType>,
-  UserEdge?: UserEdgeResolvers<ContextType>,
-  User?: UserResolvers<ContextType>,
+  CuppingEdge?: CuppingEdgeResolvers<ContextType>,
+  Cupping?: CuppingResolvers<ContextType>,
   Mutation?: MutationResolvers<ContextType>,
   Subscription?: SubscriptionResolvers<ContextType>,
 }>;
