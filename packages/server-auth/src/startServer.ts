@@ -1,8 +1,9 @@
 import {ApolloServer, CorsOptions} from 'apollo-server-express'
+import {buildFederatedSchema} from '@apollo/federation'
 import express from 'express'
 const app = express()
 
-import {typeDefs, resolvers, loaders as loadersObject, Loaders} from './schema'
+import {schemas, loaders as loadersObject, Loaders} from './schema'
 import {createMongoConnection, models} from '@luminate/mongo'
 import DataLoader from 'dataloader'
 import {LoaderContext} from '@luminate/graphql-utils'
@@ -35,8 +36,7 @@ const startServer = async () => {
   }
 
   const server = new ApolloServer({
-    typeDefs,
-    resolvers,
+    schema: buildFederatedSchema(schemas),
     context: ({req, res}): Context => {
       const loaders = Object.keys(loadersObject).reduce((acc, loaderName) => {
         return {

@@ -3,7 +3,7 @@ import {createConnectionResults, LoaderFn} from '@luminate/graphql-utils'
 import {Resolvers, Country} from '../types'
 import {CountryDocument, RegionDocument} from '@luminate/mongo'
 
-export const typeDefs = gql`
+const typeDefs = gql`
   type Country {
     id: ID!
     name: String
@@ -42,7 +42,7 @@ export const typeDefs = gql`
   }
 `
 
-export const resolvers: Resolvers = {
+const resolvers: Resolvers = {
   Query: {
     listCountries: async (parent, args, {models}) => {
       const {Country} = models
@@ -102,3 +102,5 @@ export const loaders: CountryLoaders = {
     })
   },
 }
+
+export const schema = {typeDefs, resolvers}

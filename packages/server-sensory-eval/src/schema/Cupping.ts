@@ -3,12 +3,22 @@ import {createConnectionResults, LoaderFn} from '@luminate/graphql-utils'
 import {Resolvers} from '../types'
 import {CuppingDocument} from '@luminate/mongo'
 
-export const typeDefs = gql`
+const typeDefs = gql`
   type Cupping {
     id: ID!
     description: String
+    coffees: [CuppingCoffee]
     createdAt: String
     updatedAt: String
+  }
+
+  type CuppingCoffee {
+    sessionCoffeeId: ID!
+    coffee: Coffee
+  }
+
+  extend type Coffee @key(fields: "id") {
+    id: ID! @external
   }
 
   type CuppingConnection {
@@ -41,7 +51,7 @@ export const typeDefs = gql`
   }
 `
 
-export const resolvers: Resolvers = {
+const resolvers: Resolvers = {
   Query: {
     listCuppings: async (parent, args, {models}) => {
       const {Cupping} = models
@@ -87,3 +97,5 @@ export const loaders: CuppingLoaders = {
     })
   },
 }
+
+export const schema = {typeDefs, resolvers}

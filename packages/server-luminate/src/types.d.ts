@@ -372,7 +372,7 @@ export type QueryGetVarietyArgs = {
 
 export type QueryInput = {
   field: Scalars['String'],
-  value: Scalars['String'],
+  value?: Maybe<Scalars['String']>,
   operator?: Maybe<OperatorEnum>,
 };
 

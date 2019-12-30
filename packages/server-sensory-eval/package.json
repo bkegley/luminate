@@ -11,6 +11,7 @@
     "prestart": "yarn build"
   },
   "dependencies": {
+    "@apollo/federation": "^0.11.2",
     "@luminate/graphql-utils": "*",
     "@luminate/mongo": "*",
     "apollo-server-express": "^2.9.13",

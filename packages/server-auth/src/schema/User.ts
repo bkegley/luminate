@@ -3,7 +3,7 @@ import {createConnectionResults, LoaderFn} from '@luminate/graphql-utils'
 import bcrypt from 'bcrypt'
 import {Resolvers, User} from '../types'
 
-export const typeDefs = gql`
+const typeDefs = gql`
   type User {
     id: ID!
     firstName: String
@@ -51,7 +51,7 @@ export const typeDefs = gql`
   }
 `
 
-export const resolvers: Resolvers = {
+const resolvers: Resolvers = {
   Query: {
     listUsers: async (parent, args, {models}) => {
       const {User} = models
@@ -108,7 +108,11 @@ export const loaders: UserLoaders = {
     const {User} = models
     const users = await User.find({_id: ids})
     return ids.map(id => {
-      return users.find((user: any) => user._id.toString() === id.toString())
+      const user = users.find((user: any) => user._id.toString() === id.toString())
+      if (!user) throw new Error('Document not found')
+      return user
     })
   },
 }
+
+export const schema = {typeDefs, resolvers}
