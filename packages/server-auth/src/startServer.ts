@@ -4,17 +4,18 @@ import express from 'express'
 const app = express()
 
 import {schemas, loaders as loadersObject, Loaders} from './schema'
-import {createMongoConnection, models} from '@luminate/mongo'
+import {createMongoConnection, models, UserDocument} from '@luminate/mongo'
 import DataLoader from 'dataloader'
-import {LoaderContext} from '@luminate/graphql-utils'
+import {LoaderContext, parseUserFromRequest} from '@luminate/graphql-utils'
 
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 3003
 
 export interface Context {
   req: express.Request
   res: express.Response
   models: typeof models
   loaders: LoaderContext<Loaders>
+  user: UserDocument | null
 }
 
 const startServer = async () => {
@@ -45,11 +46,15 @@ const startServer = async () => {
           [loaderName]: new DataLoader(ids => loadersObject[loaderName](ids, models)),
         }
       }, Object.assign(Object.keys(loadersObject)))
+
+      const user = parseUserFromRequest(req)
+
       return {
         req,
         res,
         models,
         loaders,
+        user,
       }
     },
     playground:

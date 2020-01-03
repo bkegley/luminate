@@ -1,7 +1,12 @@
 import {ApolloServer, CorsOptions} from 'apollo-server-express'
-import {ApolloGateway} from '@apollo/gateway'
+import {ApolloGateway, RemoteGraphQLDataSource} from '@apollo/gateway'
+import {createMongoConnection, models} from '@luminate/mongo'
+import {parseToken} from '@luminate/graphql-utils'
+import cookieParser from 'cookie-parser'
 import express from 'express'
 const app = express()
+
+app.use(cookieParser())
 
 const PORT = process.env.PORT || 3000
 
@@ -10,7 +15,28 @@ export interface Context {
   res: express.Response
 }
 
+class AuthenticatedDataSource extends RemoteGraphQLDataSource {
+  // add x-auth-user header to all service requests
+  willSendRequest({request, context}: {request: any; context: any}) {
+    const userString = JSON.stringify(context.user)
+    if (userString) {
+      request.http.headers.set('x-auth-user', Buffer.from(userString).toString('base64'))
+    }
+  }
+
+  // forward set-cookie headers to final response
+  async process({request, context}: {request: any; context: any}) {
+    const response = await super.process({request, context})
+    const setCookieHeader = response.http?.headers.get('set-cookie')
+    if (setCookieHeader) {
+      context.res.set('set-cookie', setCookieHeader)
+    }
+    return response
+  }
+}
+
 const startServer = async () => {
+  await createMongoConnection()
   // configure cors
   const whitelist = [`http://localhost:${PORT}`, 'http://localhost:8000']
 
@@ -29,18 +55,33 @@ const startServer = async () => {
 
   const gateway = new ApolloGateway({
     serviceList: [
+      {name: 'auth', url: 'http://localhost:3003/graphql'},
       {name: 'luminate', url: 'http://localhost:3001/graphql'},
       {name: 'sensory-eval', url: 'http://localhost:3002/graphql'},
     ],
+    buildService: ({url}) => {
+      return new AuthenticatedDataSource({url})
+    },
   })
 
   const server = new ApolloServer({
     gateway,
     subscriptions: false,
-    context: ({req, res}) => {
+    context: async ({req, res}) => {
+      let token, user
+      if (req.cookies.id) {
+        try {
+          token = parseToken(req.cookies.id, 'hellothereyouguys')
+          if (token) {
+            user = await models.User.findById(token.userId)
+          }
+        } catch (err) {}
+      }
+
       return {
         req,
         res,
+        user,
       }
     },
     playground:

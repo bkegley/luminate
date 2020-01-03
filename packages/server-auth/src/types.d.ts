@@ -30,6 +30,8 @@ export type Mutation = {
   updateUser?: Maybe<User>,
   deleteUser?: Maybe<User>,
   updatePassword?: Maybe<Scalars['Boolean']>,
+  login?: Maybe<Scalars['Boolean']>,
+  logout?: Maybe<Scalars['Boolean']>,
 };
 
 
@@ -52,6 +54,12 @@ export type MutationDeleteUserArgs = {
 export type MutationUpdatePasswordArgs = {
   id: Scalars['ID'],
   input: UpdatePasswordInput
+};
+
+
+export type MutationLoginArgs = {
+  username: Scalars['String'],
+  password: Scalars['String']
 };
 
 export enum OperatorEnum {
@@ -266,6 +274,8 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   updateUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationUpdateUserArgs, 'id' | 'input'>>,
   deleteUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationDeleteUserArgs, 'id'>>,
   updatePassword?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationUpdatePasswordArgs, 'id' | 'input'>>,
+  login?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationLoginArgs, 'username' | 'password'>>,
+  logout?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>,
 }>;
 
 export type Resolvers<ContextType = Context> = ResolversObject<{
