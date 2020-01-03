@@ -6,7 +6,7 @@ const app = express()
 import {schemas, loaders as loadersObject, Loaders} from './schema'
 import {createMongoConnection, models, UserDocument} from '@luminate/mongo'
 import DataLoader from 'dataloader'
-import {LoaderContext, parseToken, parseUserFromRequest} from '@luminate/graphql-utils'
+import {LoaderContext, parseUserFromRequest} from '@luminate/graphql-utils'
 
 const PORT = process.env.PORT || 3001
 

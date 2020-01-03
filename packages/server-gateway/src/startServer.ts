@@ -2,6 +2,7 @@ import {ApolloServer, CorsOptions} from 'apollo-server-express'
 import {ApolloGateway, RemoteGraphQLDataSource} from '@apollo/gateway'
 import {createMongoConnection, models} from '@luminate/mongo'
 import {parseToken} from '@luminate/graphql-utils'
+import tokenJSON from './token.json'
 import cookieParser from 'cookie-parser'
 import express from 'express'
 const app = express()
@@ -71,7 +72,7 @@ const startServer = async () => {
       let token, user
       if (req.cookies.id) {
         try {
-          token = parseToken(req.cookies.id, 'hellothereyouguys')
+          token = parseToken(req.cookies.id, tokenJSON.token)
           if (token) {
             user = await models.User.findById(token.userId)
           }

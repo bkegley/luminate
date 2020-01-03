@@ -7,6 +7,7 @@ import {schemas, loaders as loadersObject, Loaders} from './schema'
 import {createMongoConnection, models, UserDocument} from '@luminate/mongo'
 import DataLoader from 'dataloader'
 import {LoaderContext, parseUserFromRequest} from '@luminate/graphql-utils'
+import token from './token.json'
 
 const PORT = process.env.PORT || 3003
 

@@ -2,6 +2,7 @@ import {gql} from 'apollo-server-express'
 import {createConnectionResults, LoaderFn, createToken} from '@luminate/graphql-utils'
 import bcrypt from 'bcrypt'
 import {Resolvers, User} from '../types'
+import tokenJSON from '../token.json'
 
 const typeDefs = gql`
   type User {
@@ -105,7 +106,7 @@ const resolvers: Resolvers = {
 
       if (!user) return false
 
-      const token = createToken(user.id, 'hellothereyouguys')
+      const token = createToken(user.id, tokenJSON.token)
 
       res.cookie('id', token, {
         httpOnly: false,
