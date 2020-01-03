@@ -13,7 +13,9 @@
     "prettier": "prettier \"**/*.+(js|jsx|ts|tsx|json|yml|yaml|css|less|scss|md|mdx|graphql)\"",
     "format": "yarn prettier -- --write",
     "validate": "yarn lint && yarn prettier -- --list-different && yarn test",
-    "generate": "graphql-codegen && yarn format"
+    "generate": "graphql-codegen && yarn format",
+    "develop:services": "lerna run develop --parallel --scope={@luminate/server-auth,@luminate/server-luminate,@luminate/server-sensory-eval}",
+    "develop:gateway": "lerna run develop --parallel --scope=@luminate/server-gateway"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^1.9.1",
