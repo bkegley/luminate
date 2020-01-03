@@ -3,7 +3,7 @@ import {createConnectionResults, LoaderFn} from '@luminate/graphql-utils'
 import {Resolvers} from '../types'
 import {VarietyDocument} from '@luminate/mongo'
 
-export const typeDefs = gql`
+const typeDefs = gql`
   type Variety {
     id: ID!
     name: String
@@ -43,7 +43,7 @@ export const typeDefs = gql`
   }
 `
 
-export const resolvers: Resolvers = {
+const resolvers: Resolvers = {
   Query: {
     listVarieties: async (parent, args, {models}) => {
       const {Variety} = models
@@ -97,3 +97,5 @@ export const loaders: VarietyLoaders = {
     })
   },
 }
+
+export const schema = {typeDefs, resolvers}

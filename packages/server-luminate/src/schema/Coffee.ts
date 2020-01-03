@@ -3,8 +3,8 @@ import {createConnectionResults, LoaderFn} from '@luminate/graphql-utils'
 import {Resolvers} from '../types'
 import {CoffeeDocument, VarietyDocument} from '@luminate/mongo'
 
-export const typeDefs = gql`
-  type Coffee {
+const typeDefs = gql`
+  type Coffee @key(fields: "id") {
     id: ID!
     name: String
     country: Country
@@ -57,7 +57,7 @@ export const typeDefs = gql`
   }
 `
 
-export const resolvers: Resolvers = {
+const resolvers: Resolvers = {
   Query: {
     listCoffees: async (parent, args, {models}) => {
       const {Coffee} = models
@@ -87,6 +87,10 @@ export const resolvers: Resolvers = {
     },
   },
   Coffee: {
+    __resolveReference: (object, {loaders}) => {
+      const {coffees} = loaders
+      return coffees.load(object.id)
+    },
     country: async (parent, args, {loaders}) => {
       const {countries} = loaders
       if (!parent.country) return null
@@ -128,12 +132,7 @@ export const loaders: CoffeeLoaders = {
       if (!variety) throw new Error('Document not found')
       return variety
     })
-
-    // const {Variety} = models
-    // const varieties = await Variety.find({_id: ids.flat(Infinity)})
-
-    // return ids.map(id => {
-    //   return varieties.filter(variety => id.toString().includes(variety.id))
-    // })
   },
 }
+
+export const schema = {typeDefs, resolvers}

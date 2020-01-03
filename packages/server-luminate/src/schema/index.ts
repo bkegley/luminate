@@ -2,61 +2,27 @@ import merge from 'lodash.merge'
 
 import {sharedTypeDefs} from '@luminate/graphql-utils'
 
-import {
-  typeDefs as coffeeTypeDefs,
-  resolvers as coffeeResolvers,
-  loaders as coffeeLoaders,
-  CoffeeLoaders,
-} from './Coffee'
+import {loaders as coffeeLoaders, CoffeeLoaders, schema as coffeeSchema} from './Coffee'
 
-import {
-  typeDefs as countryTypeDefs,
-  resolvers as countryResolvers,
-  loaders as countryLoaders,
-  CountryLoaders,
-} from './Country'
+import {loaders as countryLoaders, CountryLoaders, schema as countrySchema} from './Country'
 
-import {typeDefs as farmTypeDefs, resolvers as farmResolvers, loaders as farmLoaders, FarmLoaders} from './Farm'
+import {loaders as farmLoaders, FarmLoaders, schema as farmSchema} from './Farm'
 
-import {
-  typeDefs as farmZoneTypeDefs,
-  resolvers as farmZoneResolvers,
-  loaders as farmZoneLoaders,
-  FarmZoneLoaders,
-} from './FarmZone'
+import {loaders as farmZoneLoaders, FarmZoneLoaders, schema as farmZoneSchema} from './FarmZone'
 
-import {
-  typeDefs as regionTypeDefs,
-  resolvers as regionResolvers,
-  loaders as regionLoaders,
-  RegionLoaders,
-} from './Region'
+import {loaders as regionLoaders, RegionLoaders, schema as regionSchema} from './Region'
 
-import {
-  typeDefs as varietyTypeDefs,
-  resolvers as varietyResolvers,
-  loaders as varietyLoaders,
-  VarietyLoaders,
-} from './Variety'
+import {loaders as varietyLoaders, VarietyLoaders, schema as varietySchema} from './Variety'
 
-export const typeDefs = [
-  sharedTypeDefs,
-  coffeeTypeDefs,
-  countryTypeDefs,
-  farmTypeDefs,
-  farmZoneTypeDefs,
-  regionTypeDefs,
-  varietyTypeDefs,
+export const schemas = [
+  {typeDefs: sharedTypeDefs},
+  coffeeSchema,
+  countrySchema,
+  farmSchema,
+  farmZoneSchema,
+  regionSchema,
+  varietySchema,
 ]
-
-export const resolvers = merge(
-  coffeeResolvers,
-  countryResolvers,
-  farmResolvers,
-  farmZoneResolvers,
-  regionResolvers,
-  varietyResolvers,
-)
 
 export interface Loaders
   extends CoffeeLoaders,

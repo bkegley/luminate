@@ -8,11 +8,6 @@ export type Scalars = {
   Float: number,
 };
 
-export type Mutation = {
-   __typename?: 'Mutation',
-  _mutation?: Maybe<Scalars['String']>,
-};
-
 export enum OperatorEnum {
   Eq = 'eq',
   Ne = 'ne',
@@ -31,18 +26,8 @@ export type PageInfo = {
   nextCursor?: Maybe<Scalars['String']>,
 };
 
-export type Query = {
-   __typename?: 'Query',
-  _query?: Maybe<Scalars['String']>,
-};
-
 export type QueryInput = {
   field: Scalars['String'],
   value?: Maybe<Scalars['String']>,
   operator?: Maybe<OperatorEnum>,
-};
-
-export type Subscription = {
-   __typename?: 'Subscription',
-  _subscription?: Maybe<Scalars['String']>,
 };

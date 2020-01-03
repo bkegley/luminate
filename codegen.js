@@ -4,12 +4,23 @@ module.exports = {
     'packages/graphql-utils/src/types.ts': {
       plugins: ['typescript'],
     },
+    'packages/server-auth/src/types.d.ts': {
+      schema: ['./packages/server-auth/src/schema/**/!(index.ts)*.ts'],
+      plugins: ['typescript', 'typescript-resolvers'],
+      config: {
+        contextType: './startServer#Context',
+        useIndexSignature: true,
+        federation: true,
+        defaultMapper: 'Partial<{T}>',
+      },
+    },
     'packages/server-luminate/src/types.d.ts': {
       schema: ['./packages/server-luminate/src/schema/**/!(index.ts)*.ts'],
       plugins: ['typescript', 'typescript-resolvers'],
       config: {
         contextType: './startServer#Context',
         useIndexSignature: true,
+        federation: true,
         mappers: {
           Coffee: '@luminate/mongo#CoffeeDocument',
           Country: '@luminate/mongo#CountryDocument',
@@ -20,14 +31,17 @@ module.exports = {
         },
       },
     },
-
-    'packages/server-auth/src/types.d.ts': {
-      schema: ['./packages/server-auth/src/schema/**/!(index.ts)*.ts'],
+    'packages/server-sensory-eval/src/types.d.ts': {
+      schema: ['./packages/server-sensory-eval/src/schema/**/!(index.ts)*.ts'],
       plugins: ['typescript', 'typescript-resolvers'],
       config: {
         contextType: './startServer#Context',
         useIndexSignature: true,
-        defaultMapper: 'Partial<{T}>',
+        federation: true,
+        mappers: {
+          Cupping: '@luminate/mongo#CuppingDocument',
+          CuppingCoffee: '@luminate/mongo#CoffeeCuppingDocument',
+        },
       },
     },
   },

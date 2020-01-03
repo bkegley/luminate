@@ -1,12 +1,9 @@
 import merge from 'lodash.merge'
 
 import {sharedTypeDefs} from '@luminate/graphql-utils'
-import {typeDefs as userTypeDefs, resolvers as userResolvers, loaders as userLoaders, UserLoaders} from './User'
-import {BatchLoadFn} from 'dataloader'
+import {loaders as userLoaders, UserLoaders, schema as userSchema} from './User'
 
-export const typeDefs = [sharedTypeDefs, userTypeDefs]
-
-export const resolvers = merge(userResolvers)
+export const schemas = [{typeDefs: sharedTypeDefs}, userSchema]
 
 export interface Loaders extends UserLoaders {}
 

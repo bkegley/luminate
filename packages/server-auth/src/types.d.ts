@@ -9,7 +9,13 @@ export type Scalars = {
   Boolean: boolean,
   Int: number,
   Float: number,
+  _FieldSet: any,
 };
+
+
+
+
+
 
 export type CreateUserInput = {
   firstName?: Maybe<Scalars['String']>,
@@ -20,11 +26,12 @@ export type CreateUserInput = {
 
 export type Mutation = {
    __typename?: 'Mutation',
-  _mutation?: Maybe<Scalars['String']>,
   createUser?: Maybe<User>,
   updateUser?: Maybe<User>,
   deleteUser?: Maybe<User>,
   updatePassword?: Maybe<Scalars['Boolean']>,
+  login?: Maybe<Scalars['Boolean']>,
+  logout?: Maybe<Scalars['Boolean']>,
 };
 
 
@@ -49,6 +56,12 @@ export type MutationUpdatePasswordArgs = {
   input: UpdatePasswordInput
 };
 
+
+export type MutationLoginArgs = {
+  username: Scalars['String'],
+  password: Scalars['String']
+};
+
 export enum OperatorEnum {
   Eq = 'eq',
   Ne = 'ne',
@@ -69,7 +82,6 @@ export type PageInfo = {
 
 export type Query = {
    __typename?: 'Query',
-  _query?: Maybe<Scalars['String']>,
   listUsers: UserConnection,
   getUser?: Maybe<User>,
 };
@@ -90,11 +102,6 @@ export type QueryInput = {
   field: Scalars['String'],
   value?: Maybe<Scalars['String']>,
   operator?: Maybe<OperatorEnum>,
-};
-
-export type Subscription = {
-   __typename?: 'Subscription',
-  _subscription?: Maybe<Scalars['String']>,
 };
 
 export type UpdatePasswordInput = {
@@ -214,7 +221,6 @@ export type ResolversTypes = ResolversObject<{
   CreateUserInput: ResolverTypeWrapper<Partial<CreateUserInput>>,
   UpdateUserInput: ResolverTypeWrapper<Partial<UpdateUserInput>>,
   UpdatePasswordInput: ResolverTypeWrapper<Partial<UpdatePasswordInput>>,
-  Subscription: ResolverTypeWrapper<{}>,
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -234,15 +240,16 @@ export type ResolversParentTypes = ResolversObject<{
   CreateUserInput: Partial<CreateUserInput>,
   UpdateUserInput: Partial<UpdateUserInput>,
   UpdatePasswordInput: Partial<UpdatePasswordInput>,
-  Subscription: {},
 }>;
 
-export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
-  _mutation?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
-  createUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'input'>>,
-  updateUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationUpdateUserArgs, 'id' | 'input'>>,
-  deleteUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationDeleteUserArgs, 'id'>>,
-  updatePassword?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationUpdatePasswordArgs, 'id' | 'input'>>,
+export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
+  listUsers?: Resolver<ResolversTypes['UserConnection'], ParentType, ContextType, QueryListUsersArgs>,
+  getUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryGetUserArgs, 'id'>>,
+}>;
+
+export type UserConnectionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['UserConnection'] = ResolversParentTypes['UserConnection']> = ResolversObject<{
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>,
+  edges?: Resolver<Array<ResolversTypes['UserEdge']>, ParentType, ContextType>,
 }>;
 
 export type PageInfoResolvers<ContextType = Context, ParentType extends ResolversParentTypes['PageInfo'] = ResolversParentTypes['PageInfo']> = ResolversObject<{
@@ -251,14 +258,9 @@ export type PageInfoResolvers<ContextType = Context, ParentType extends Resolver
   nextCursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
 }>;
 
-export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
-  _query?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
-  listUsers?: Resolver<ResolversTypes['UserConnection'], ParentType, ContextType, QueryListUsersArgs>,
-  getUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryGetUserArgs, 'id'>>,
-}>;
-
-export type SubscriptionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = ResolversObject<{
-  _subscription?: SubscriptionResolver<Maybe<ResolversTypes['String']>, "_subscription", ParentType, ContextType>,
+export type UserEdgeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['UserEdge'] = ResolversParentTypes['UserEdge']> = ResolversObject<{
+  cursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+  node?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>,
 }>;
 
 export type UserResolvers<ContextType = Context, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = ResolversObject<{
@@ -267,24 +269,22 @@ export type UserResolvers<ContextType = Context, ParentType extends ResolversPar
   lastName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
 }>;
 
-export type UserConnectionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['UserConnection'] = ResolversParentTypes['UserConnection']> = ResolversObject<{
-  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>,
-  edges?: Resolver<Array<ResolversTypes['UserEdge']>, ParentType, ContextType>,
-}>;
-
-export type UserEdgeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['UserEdge'] = ResolversParentTypes['UserEdge']> = ResolversObject<{
-  cursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
-  node?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>,
+export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
+  createUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'input'>>,
+  updateUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationUpdateUserArgs, 'id' | 'input'>>,
+  deleteUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationDeleteUserArgs, 'id'>>,
+  updatePassword?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationUpdatePasswordArgs, 'id' | 'input'>>,
+  login?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationLoginArgs, 'username' | 'password'>>,
+  logout?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>,
 }>;
 
 export type Resolvers<ContextType = Context> = ResolversObject<{
-  Mutation?: MutationResolvers<ContextType>,
-  PageInfo?: PageInfoResolvers<ContextType>,
   Query?: QueryResolvers<ContextType>,
-  Subscription?: SubscriptionResolvers<ContextType>,
-  User?: UserResolvers<ContextType>,
   UserConnection?: UserConnectionResolvers<ContextType>,
+  PageInfo?: PageInfoResolvers<ContextType>,
   UserEdge?: UserEdgeResolvers<ContextType>,
+  User?: UserResolvers<ContextType>,
+  Mutation?: MutationResolvers<ContextType>,
 }>;
 
 

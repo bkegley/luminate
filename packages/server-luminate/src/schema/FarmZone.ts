@@ -3,7 +3,7 @@ import {createConnectionResults, LoaderFn} from '@luminate/graphql-utils'
 import {Resolvers} from '../types'
 import {FarmZoneDocument} from '@luminate/mongo'
 
-export const typeDefs = gql`
+const typeDefs = gql`
   type FarmZone {
     id: ID!
     name: String
@@ -46,7 +46,7 @@ export const typeDefs = gql`
   }
 `
 
-export const resolvers: Resolvers = {
+const resolvers: Resolvers = {
   Query: {
     listFarmZones: async (parent, args, {models}) => {
       const {FarmZone} = models
@@ -121,3 +121,5 @@ export const loaders: FarmZoneLoaders = {
     })
   },
 }
+
+export const schema = {typeDefs, resolvers}
