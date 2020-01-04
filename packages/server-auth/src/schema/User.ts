@@ -3,7 +3,7 @@ import {createConnectionResults, LoaderFn, createToken} from '@luminate/graphql-
 import bcrypt from 'bcrypt'
 import {Resolvers} from '../types'
 import tokenJSON from '../token.json'
-import {UserDocument} from '@luminate/mongo'
+import {UserDocument, ScopeDocument} from '@luminate/mongo'
 
 const typeDefs = gql`
   type User {
@@ -12,6 +12,7 @@ const typeDefs = gql`
     firstName: String
     lastName: String
     roles: [Role]
+    scopes: [Scope]
   }
 
   type UserConnection {
@@ -135,6 +136,21 @@ const resolvers: Resolvers = {
       const {roles} = loaders
       if (!parent.roles) return null
       return Promise.all(parent.roles.map(id => roles.load(id)))
+    },
+    scopes: async (parent, args, {loaders, models}) => {
+      const {Role} = models
+      const roles = await Role.find({_id: parent.roles})
+
+      if (!roles) return null
+
+      const {scopes} = loaders
+      const allScopeIds = roles.reduce((acc, role) => {
+        return acc.concat(
+          role.scopes?.filter(id => !acc.find(existingId => existingId.toString() === id.toString())) || [],
+        )
+      }, [] as string[])
+
+      return Promise.all(allScopeIds.map(id => scopes.load(id)))
     },
   },
 }

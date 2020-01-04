@@ -239,6 +239,7 @@ export type User = {
   firstName?: Maybe<Scalars['String']>
   lastName?: Maybe<Scalars['String']>
   roles?: Maybe<Array<Maybe<Role>>>
+  scopes?: Maybe<Array<Maybe<Scope>>>
 }
 
 export type UserConnection = {
@@ -484,6 +485,7 @@ export type UserResolvers<
   firstName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   lastName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   roles?: Resolver<Maybe<Array<Maybe<ResolversTypes['Role']>>>, ParentType, ContextType>
+  scopes?: Resolver<Maybe<Array<Maybe<ResolversTypes['Scope']>>>, ParentType, ContextType>
 }>
 
 export type MutationResolvers<
