@@ -1,6 +1,6 @@
 import {ApolloServer, CorsOptions} from 'apollo-server-express'
 import {ApolloGateway, RemoteGraphQLDataSource} from '@apollo/gateway'
-import {createMongoConnection, models} from '@luminate/mongo'
+import {createMongoConnection, models, RoleDocument, ScopeDocument, UserWithScopesDocument} from '@luminate/mongo'
 import {parseToken} from '@luminate/graphql-utils'
 import tokenJSON from './token.json'
 import cookieParser from 'cookie-parser'
@@ -14,6 +14,7 @@ const PORT = process.env.PORT || 3000
 export interface Context {
   req: express.Request
   res: express.Response
+  user: UserWithScopesDocument
 }
 
 class AuthenticatedDataSource extends RemoteGraphQLDataSource {
@@ -74,7 +75,23 @@ const startServer = async () => {
         try {
           token = parseToken(req.cookies.id, tokenJSON.token)
           if (token) {
-            user = await models.User.findById(token.userId)
+            const dbUser = await models.User.findById(token.userId).populate({
+              path: 'roles',
+              populate: {path: 'scopes'},
+            })
+
+            const roles = (dbUser?.roles as unknown) as RoleDocument[]
+
+            user = {
+              ...dbUser,
+              scopes: roles.reduce((acc, role) => {
+                const scopes = (role.scopes as unknown) as ScopeDocument[]
+                const newScopes = scopes.filter(
+                  scope => !acc.find(existingScope => existingScope._id.toString() === scope._id.toString()),
+                )
+                return acc.concat(newScopes)
+              }, [] as ScopeDocument[]),
+            }
           }
         } catch (err) {}
       }

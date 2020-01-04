@@ -11,7 +11,11 @@ module.exports = {
         contextType: './startServer#Context',
         useIndexSignature: true,
         federation: true,
-        defaultMapper: 'Partial<{T}>',
+        mappers: {
+          Role: '@luminate/mongo#RoleDocument',
+          Scope: '@luminate/mongo#ScopeDocument',
+          User: '@luminate/mongo#UserDocument',
+        },
       },
     },
     'packages/server-luminate/src/types.d.ts': {

@@ -1,19 +1,17 @@
 import mongoose from 'mongoose'
+import {DocumentWithTimestamps} from '@luminate/graphql-utils'
 
-export interface ScopeDocument extends mongoose.Document {
+export interface ScopeDocument extends DocumentWithTimestamps {
   name: string
   resource: string
   operation: 'read' | 'write'
   category?: string
-  createdAt: Date
-  updatedAt: Date
 }
 
 export const ScopeSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: true,
     },
     resource: {
       type: String,

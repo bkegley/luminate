@@ -1,10 +1,10 @@
 import mongoose from 'mongoose'
+import {DocumentWithTimestamps} from '@luminate/graphql-utils'
+import {ScopeDocument} from './Scope'
 
-export interface RoleDocument extends mongoose.Document {
+export interface RoleDocument extends DocumentWithTimestamps {
   name: string
   scopes?: string[]
-  createdAt: Date
-  updatedAt: Date
 }
 
 const RoleSchema = new mongoose.Schema(

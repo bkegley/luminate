@@ -3,7 +3,7 @@ import Country, {CountryDocument} from './Country'
 import Cupping, {CuppingDocument, CoffeeCuppingDocument} from './Cupping'
 import Farm, {FarmDocument} from './Farm'
 import FarmZone, {FarmZoneDocument} from './FarmZone'
-import {Person, User, PersonDocument, UserDocument} from './Person'
+import {Person, User, PersonDocument, UserDocument, UserWithScopesDocument} from './Person'
 import Region, {RegionDocument} from './Region'
 import Role, {RoleDocument} from './Role'
 import Scope, {ScopeDocument} from './Scope'
@@ -20,6 +20,7 @@ export {
   FarmZoneDocument,
   PersonDocument,
   UserDocument,
+  UserWithScopesDocument,
   RegionDocument,
   RoleDocument,
   ScopeDocument,

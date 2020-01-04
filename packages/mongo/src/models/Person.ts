@@ -4,6 +4,7 @@ import Role from './Role'
 import bcrypt from 'bcrypt'
 const saltRounds = 10
 import {DocumentWithTimestamps} from '@luminate/graphql-utils'
+import {ScopeDocument} from './Scope'
 
 export interface PersonDocument extends DocumentWithTimestamps {
   firstName?: string
@@ -19,6 +20,10 @@ export interface UserDocument extends PersonDocument {
   authTokens?: Array<IAuthToken>
   roles?: string[]
   lastLoggedIn?: Date
+}
+
+export interface UserWithScopesDocument extends UserDocument {
+  scopes?: ScopeDocument[]
 }
 
 type ContactType = 'work' | 'home' | 'mobile' | 'other'
@@ -111,10 +116,12 @@ const UserSchema = extendSchema(
         },
       },
     ],
-    roles: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'role',
-    },
+    roles: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'role',
+      },
+    ],
     lastLoggedIn: {
       type: Date,
     },
@@ -128,12 +135,6 @@ UserSchema.pre<UserDocument>('save', async function(next) {
     this.password = hashedPassword
   }
   next()
-})
-
-UserSchema.virtual('scopes').get(async function(this: UserDocument) {
-  const roles = await Role.find({_id: this.roles}).populate('scopes')
-  console.log({roles})
-  return roles.map(role => role.scopes)
 })
 
 export const Person = mongoose.model<PersonDocument>('person', PersonSchema, 'people')

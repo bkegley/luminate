@@ -1,8 +1,9 @@
 import {gql} from 'apollo-server-express'
 import {createConnectionResults, LoaderFn, createToken} from '@luminate/graphql-utils'
 import bcrypt from 'bcrypt'
-import {Resolvers, User} from '../types'
+import {Resolvers} from '../types'
 import tokenJSON from '../token.json'
+import {UserDocument} from '@luminate/mongo'
 
 const typeDefs = gql`
   type User {
@@ -10,6 +11,7 @@ const typeDefs = gql`
     username: String
     firstName: String
     lastName: String
+    roles: [Role]
   }
 
   type UserConnection {
@@ -27,12 +29,14 @@ const typeDefs = gql`
     lastName: String
     username: String!
     password: String!
+    roles: [ID!]
   }
 
   input UpdateUserInput {
     firstName: String
     lastName: String
     username: String
+    roles: [ID!]
   }
 
   input UpdatePasswordInput {
@@ -122,10 +126,17 @@ const resolvers: Resolvers = {
       return true
     },
   },
+  User: {
+    roles: async (parent, args, {loaders}) => {
+      const {roles} = loaders
+      if (!parent.roles) return null
+      return Promise.all(parent.roles.map(id => roles.load(id)))
+    },
+  },
 }
 
 export interface UserLoaders {
-  users: LoaderFn<User>
+  users: LoaderFn<UserDocument>
 }
 
 export const loaders: UserLoaders = {
