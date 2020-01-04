@@ -54,7 +54,7 @@ const typeDefs = gql`
     updateUser(id: ID!, input: UpdateUserInput!): User
     deleteUser(id: ID!): User
     updatePassword(id: ID!, input: UpdatePasswordInput!): Boolean
-    login(username: String!, password: String!): Boolean
+    login(username: String!, password: String!): User
     logout: Boolean
   }
 `
@@ -108,7 +108,11 @@ const resolvers: Resolvers = {
       const {User} = models
       const user = await User.findOne({username})
 
-      if (!user) return false
+      if (!user) return null
+
+      const passwordMatches = await bcrypt.compare(password, user.password)
+
+      if (!passwordMatches) return null
 
       const token = createToken(user.id, tokenJSON.token)
 
@@ -117,7 +121,7 @@ const resolvers: Resolvers = {
         secure: false,
       })
 
-      return true
+      return user
     },
     logout: (parent, args, {res}) => {
       res.cookie('id', '', {

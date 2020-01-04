@@ -15,8 +15,8 @@ export interface PersonDocument extends DocumentWithTimestamps {
 }
 
 export interface UserDocument extends PersonDocument {
-  username?: string
-  password?: string
+  username: string
+  password: string
   authTokens?: Array<IAuthToken>
   roles?: string[]
   lastLoggedIn?: Date
@@ -102,9 +102,11 @@ const UserSchema = extendSchema(
     username: {
       type: String,
       unique: true,
+      required: true,
     },
     password: {
       type: String,
+      required: true,
     },
     authTokens: [
       {
