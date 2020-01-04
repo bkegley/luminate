@@ -3,7 +3,7 @@ import {createConnectionResults, LoaderFn, createToken} from '@luminate/graphql-
 import bcrypt from 'bcrypt'
 import {Resolvers} from '../types'
 import tokenJSON from '../token.json'
-import {UserDocument, ScopeDocument} from '@luminate/mongo'
+import {UserDocument} from '@luminate/mongo'
 
 const typeDefs = gql`
   type User {
