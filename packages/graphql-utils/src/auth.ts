@@ -8,7 +8,7 @@ const createToken = (userId: string, secret: string) => {
       userId,
     },
     secret,
-    {expiresIn: '30s'},
+    {expiresIn: '1d'},
   )
   return token
 }
