@@ -1,5 +1,5 @@
-import {gql} from 'apollo-server-express'
-import {createConnectionResults, LoaderFn} from '@luminate/graphql-utils'
+import {gql, AuthenticationError} from 'apollo-server-express'
+import {createConnectionResults, LoaderFn, hasScopes} from '@luminate/graphql-utils'
 import {Resolvers} from '../types'
 import {CoffeeDocument, VarietyDocument} from '@luminate/mongo'
 
@@ -59,7 +59,9 @@ const typeDefs = gql`
 
 const resolvers: Resolvers = {
   Query: {
-    listCoffees: async (parent, args, {models}) => {
+    listCoffees: async (parent, args, {models, user}) => {
+      // const isAuthorized = hasScopes(user, ['read: Coffee'])
+      // if (!isAuthorized) throw new Error('Not authorized!')
       const {Coffee} = models
       const results = await createConnectionResults({args, model: Coffee})
       return results
@@ -91,7 +93,11 @@ const resolvers: Resolvers = {
       const {coffees} = loaders
       return coffees.load(object.id)
     },
-    country: async (parent, args, {loaders}) => {
+    country: async (parent, args, {loaders, user}) => {
+      await hasScopes(user, ['read: Coffee']).catch((err: Error) => {
+        throw err
+      })
+
       const {countries} = loaders
       if (!parent.country) return null
       return countries.load(parent.country)
