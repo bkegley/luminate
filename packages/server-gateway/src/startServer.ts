@@ -58,7 +58,7 @@ const startServer = async () => {
   const gateway = new ApolloGateway({
     serviceList: [
       {name: 'auth', url: 'http://localhost:3003/graphql'},
-      {name: 'luminate', url: 'http://localhost:3001/graphql'},
+      {name: 'encyclopedia', url: 'http://localhost:3001/graphql'},
       {name: 'sensory-eval', url: 'http://localhost:3002/graphql'},
     ],
     buildService: ({url}) => {

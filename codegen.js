@@ -18,8 +18,8 @@ module.exports = {
         },
       },
     },
-    'packages/server-luminate/src/types.d.ts': {
-      schema: ['./packages/server-luminate/src/schema/**/!(index.ts)*.ts'],
+    'packages/server-encyclopedia/src/types.d.ts': {
+      schema: ['./packages/server-encyclopedia/src/schema/**/!(index.ts)*.ts'],
       plugins: ['typescript', 'typescript-resolvers'],
       config: {
         contextType: './startServer#Context',

@@ -14,7 +14,7 @@
     "format": "yarn prettier -- --write",
     "validate": "yarn lint && yarn prettier -- --list-different && yarn test",
     "generate": "graphql-codegen && yarn format",
-    "develop:services": "lerna run develop --parallel --scope={@luminate/server-auth,@luminate/server-luminate,@luminate/server-sensory-eval}",
+    "develop:services": "lerna run develop --parallel --scope={@luminate/server-auth,@luminate/server-encyclopedia,@luminate/server-sensory-eval}",
     "develop:gateway": "lerna run develop --parallel --scope=@luminate/server-gateway"
   },
   "devDependencies": {

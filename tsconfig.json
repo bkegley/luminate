@@ -6,6 +6,6 @@
     {"path": "packages/mongo"},
     {"path": "packages/server-auth"},
     {"path": "packages/server-gateway"},
-    {"path": "packages/server-luminate"}
+    {"path": "packages/server-encyclopedia"}
   ]
 }
