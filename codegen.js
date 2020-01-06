@@ -63,14 +63,6 @@ const serverGenerates = {
   },
 }
 
-const generates = Object.assign(
-  {},
-  process.argv.find(arg => arg === 'client') ? clientGenerates : null,
-  process.argv.find(arg => arg === 'server') ? serverGenerates : null,
-)
-
-console.log({generates, args: process.argv})
-
 module.exports = {
   schema: ['./packages/graphql-utils/src/schema/**/*.ts'],
   generates: Object.assign(
