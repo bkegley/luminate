@@ -1,0 +1,10 @@
+query listUsersQuery {
+  listUsers {
+    edges {
+      node {
+        id
+        username
+      }
+    }
+  }
+}

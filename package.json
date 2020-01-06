@@ -13,13 +13,17 @@
     "prettier": "prettier \"**/*.+(js|jsx|ts|tsx|json|yml|yaml|css|less|scss|md|mdx|graphql)\"",
     "format": "yarn prettier -- --write",
     "validate": "yarn lint && yarn prettier -- --list-different && yarn test",
-    "generate": "graphql-codegen && yarn format",
+    "generate": "graphql-codegen  --server --client && yarn format",
+    "generate:server": "graphql-codegen  --server && yarn format",
+    "generate:client": "graphql-codegen --client  && yarn format",
     "develop:services": "lerna run develop --parallel --scope={@luminate/server-auth,@luminate/server-encyclopedia,@luminate/server-sensory-eval}",
     "develop:gateway": "lerna run develop --parallel --scope=@luminate/server-gateway"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^1.9.1",
     "@graphql-codegen/typescript": "^1.9.1",
+    "@graphql-codegen/typescript-operations": "^1.10.0",
+    "@graphql-codegen/typescript-react-apollo": "^1.10.0",
     "@graphql-codegen/typescript-resolvers": "^1.9.1",
     "elint": "^1.11.1",
     "eslint-config-prettier": "^6.7.0",

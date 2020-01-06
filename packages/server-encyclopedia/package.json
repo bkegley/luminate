@@ -6,7 +6,7 @@
   "author": "Bryan Kegley <hi@bryankegley.me>",
   "license": "MIT",
   "scripts": {
-    "develop": "nodemon --watch src/ --ignore src/index.d -e ts --exec \"npm run start\"",
+    "develop": "nodemon --watch src/ --ignore src/index.d --ignore src/types.d -e ts --exec \"npm run start\"",
     "build": "rimraf ./dist && tsc",
     "start": "node dist/startServer.js",
     "prestart": "yarn build"
