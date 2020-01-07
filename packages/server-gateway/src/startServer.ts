@@ -70,27 +70,28 @@ const startServer = async () => {
     gateway,
     subscriptions: false,
     context: async ({req, res}) => {
-      let token, user
+      let token
+      let user: UserWithScopesDocument | null | undefined
+
       if (req.cookies.id) {
         try {
           token = parseToken(req.cookies.id, tokenJSON.token)
           if (token) {
-            const dbUser = await models.User.findById(token.userId).populate({
+            user = await models.User.findById(token.userId).populate({
               path: 'roles',
               populate: {path: 'scopes'},
             })
 
-            const roles = (dbUser?.roles as unknown) as RoleDocument[]
+            const roles = (user?.roles as unknown) as RoleDocument[]
 
-            user = {
-              ...dbUser,
-              scopes: roles.reduce((acc, role) => {
+            if (user) {
+              user.scopes = roles.reduce((acc, role) => {
                 const scopes = (role.scopes as unknown) as ScopeDocument[]
                 const newScopes = scopes.filter(
                   scope => !acc.find(existingScope => existingScope._id.toString() === scope._id.toString()),
                 )
                 return acc.concat(newScopes)
-              }, [] as ScopeDocument[]),
+              }, [] as ScopeDocument[])
             }
           }
         } catch (err) {}
