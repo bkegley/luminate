@@ -1,4 +1,4 @@
-query listUsersQuery {
+query listUsers {
   listUsers {
     edges {
       node {

@@ -399,6 +399,7 @@ export type Query = {
   getScope?: Maybe<Scope>
   listUsers: UserConnection
   getUser?: Maybe<User>
+  hydrateMe?: Maybe<User>
   listCoffees: CoffeeConnection
   getCoffee?: Maybe<Coffee>
   listCountries: CountryConnection
@@ -692,16 +693,16 @@ export type VarietyEdge = {
   node?: Maybe<Variety>
 }
 
-export type ListUsersQueryQueryVariables = {}
+export type ListUsersQueryVariables = {}
 
-export type ListUsersQueryQuery = {__typename: 'Query'} & {
+export type ListUsersQuery = {__typename: 'Query'} & {
   listUsers: {__typename: 'UserConnection'} & {
     edges: Array<{__typename: 'UserEdge'} & {node: Maybe<{__typename: 'User'} & Pick<User, 'id' | 'username'>>}>
   }
 }
 
-export const ListUsersQueryDocument = gql`
-  query listUsersQuery {
+export const ListUsersDocument = gql`
+  query listUsers {
     listUsers {
       edges {
         node {
@@ -714,36 +715,30 @@ export const ListUsersQueryDocument = gql`
 `
 
 /**
- * __useListUsersQueryQuery__
+ * __useListUsersQuery__
  *
- * To run a query within a React component, call `useListUsersQueryQuery` and pass it any options that fit your needs.
- * When your component renders, `useListUsersQueryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useListUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useListUsersQueryQuery({
+ * const { data, loading, error } = useListUsersQuery({
  *   variables: {
  *   },
  * });
  */
-export function useListUsersQueryQuery(
-  baseOptions?: ApolloReactHooks.QueryHookOptions<ListUsersQueryQuery, ListUsersQueryQueryVariables>,
+export function useListUsersQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<ListUsersQuery, ListUsersQueryVariables>,
 ) {
-  return ApolloReactHooks.useQuery<ListUsersQueryQuery, ListUsersQueryQueryVariables>(
-    ListUsersQueryDocument,
-    baseOptions,
-  )
+  return ApolloReactHooks.useQuery<ListUsersQuery, ListUsersQueryVariables>(ListUsersDocument, baseOptions)
 }
-export function useListUsersQueryLazyQuery(
-  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ListUsersQueryQuery, ListUsersQueryQueryVariables>,
+export function useListUsersLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ListUsersQuery, ListUsersQueryVariables>,
 ) {
-  return ApolloReactHooks.useLazyQuery<ListUsersQueryQuery, ListUsersQueryQueryVariables>(
-    ListUsersQueryDocument,
-    baseOptions,
-  )
+  return ApolloReactHooks.useLazyQuery<ListUsersQuery, ListUsersQueryVariables>(ListUsersDocument, baseOptions)
 }
-export type ListUsersQueryQueryHookResult = ReturnType<typeof useListUsersQueryQuery>
-export type ListUsersQueryLazyQueryHookResult = ReturnType<typeof useListUsersQueryLazyQuery>
-export type ListUsersQueryQueryResult = ApolloReactCommon.QueryResult<ListUsersQueryQuery, ListUsersQueryQueryVariables>
+export type ListUsersQueryHookResult = ReturnType<typeof useListUsersQuery>
+export type ListUsersLazyQueryHookResult = ReturnType<typeof useListUsersLazyQuery>
+export type ListUsersQueryResult = ApolloReactCommon.QueryResult<ListUsersQuery, ListUsersQueryVariables>
