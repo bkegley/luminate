@@ -1,7 +1,7 @@
 {
   "name": "@luminate/gatsby-theme-luminate",
   "version": "0.0.1",
-  "main": "src/index.js",
+  "main": "src/index.tsx",
   "author": "Bryan Kegley <hi@bryankegley.me>",
   "license": "MIT",
   "scripts": {
