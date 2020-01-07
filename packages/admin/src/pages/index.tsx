@@ -1,6 +1,6 @@
 import React from 'react'
 import {useListUsersQuery} from '../graphql'
-import {UserProvider, useUser} from '../../../gatsby-theme-luminate/src'
+import {UserProvider, useUser, useLogin, useLogout} from '@luminate/gatsby-theme-luminate'
 
 const IndexPage = () => {
   const {error, loading, data} = useListUsersQuery()
@@ -26,8 +26,7 @@ const IndexPage = () => {
 function Login() {
   const [username, setUsername] = React.useState('')
   const [password, setPassword] = React.useState('')
-  const {login, data} = useUser()
-  console.log({data})
+  const [login, {error, loading, data}] = useLogin()
   return (
     <div>
       <h1>Login</h1>
