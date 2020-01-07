@@ -72,8 +72,10 @@ const resolvers: Resolvers = {
       const {users} = loaders
       return users.load(id)
     },
-    hydrateMe: async (parent, args, {user}) => {
-      return user
+    hydrateMe: async (parent, args, {user, loaders}) => {
+      const {users} = loaders
+      if (!user) return null
+      return users.load(user._id)
     },
   },
   Mutation: {
@@ -122,7 +124,7 @@ const resolvers: Resolvers = {
       const token = createToken(user.id, tokenJSON.token)
 
       res.cookie('id', token, {
-        httpOnly: false,
+        httpOnly: true,
         secure: false,
       })
 
