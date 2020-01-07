@@ -48,6 +48,7 @@ const typeDefs = gql`
   extend type Query {
     listUsers(cursor: String, limit: Int, query: [QueryInput]): UserConnection!
     getUser(id: ID!): User
+    hydrateMe: User
   }
 
   extend type Mutation {
@@ -70,6 +71,9 @@ const resolvers: Resolvers = {
     getUser: async (parent, {id}, {loaders}, info) => {
       const {users} = loaders
       return users.load(id)
+    },
+    hydrateMe: async (parent, args, {user}) => {
+      return user
     },
   },
   Mutation: {

@@ -128,6 +128,7 @@ export type Query = {
   getScope?: Maybe<Scope>
   listUsers: UserConnection
   getUser?: Maybe<User>
+  hydrateMe?: Maybe<User>
 }
 
 export type QueryListRolesArgs = {
@@ -393,6 +394,7 @@ export type QueryResolvers<
   getScope?: Resolver<Maybe<ResolversTypes['Scope']>, ParentType, ContextType, RequireFields<QueryGetScopeArgs, 'id'>>
   listUsers?: Resolver<ResolversTypes['UserConnection'], ParentType, ContextType, QueryListUsersArgs>
   getUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryGetUserArgs, 'id'>>
+  hydrateMe?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>
 }>
 
 export type RoleConnectionResolvers<
