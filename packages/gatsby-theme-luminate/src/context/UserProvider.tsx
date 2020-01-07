@@ -1,128 +1,66 @@
 import React from 'react'
-import {useHydrateMeQuery, useLoginMutation, useLogoutMutation} from '../graphql'
-
-interface ReducerState {
-  loading: boolean
-  error: any
-  data: any
-}
-
-type ReducerActionTypes = keyof typeof types
-
-interface ReducerAction {
-  type: ReducerActionTypes
-  [x: string]: any
-}
+import {
+  useHydrateMeQuery,
+  useLoginMutation,
+  useLogoutMutation,
+  UserFragmentFragment,
+  HydrateMeQueryHookResult,
+  LoginMutationResult,
+  LogoutMutationResult,
+} from '../graphql'
 
 interface IUserContext {
-  user: Pick<ReducerState, 'data' | 'error' | 'loading'>
+  data: UserFragmentFragment | null
+  hydrateMeta: HydrateMeQueryHookResult
+  loginMeta: LoginMutationResult
+  logoutMeta: LogoutMutationResult
   login: ({username, password}: {username: string; password: string}) => void
   logout: () => void
 }
 
 export const UserContext = React.createContext<IUserContext | undefined>(undefined)
 
-const types = {
-  HYDRATE_USER: 'HYDRATE_USER',
-  LOGIN: 'LOGIN',
-  LOGOUT: 'LOGOUT',
-  UPDATE_PASSWORD: 'UPDATE_PASSWORD',
-}
-
-const initialState: ReducerState = {
-  loading: true, // initialize as true to avoid content flash before checking credentials
-  error: null,
-  data: null,
-}
-
-function reducer(state: ReducerState, action: ReducerAction) {
-  switch (action.type) {
-    case 'HYDRATE_USER': {
-      return {
-        ...state,
-        error: action.error,
-        loading: action.loading,
-        data: action.data,
-      }
-    }
-    case 'LOGIN': {
-      return {
-        ...state,
-        error: action.error,
-        loading: action.loading,
-        data: action.data,
-      }
-    }
-    case 'LOGOUT': {
-      return {
-        ...state,
-        error: action.error,
-        loading: action.loading,
-        data: action.data,
-      }
-    }
-    case 'UPDATE_PASSWORD': {
-      return {
-        ...state,
-        error: action.error,
-        loading: action.loading,
-        data: action.data,
-      }
-    }
-
-    default: {
-      throw new Error('Please provide a valid action type')
-    }
-  }
-}
-
 interface Props {
   children: React.ReactNode
 }
 
 const UserProvider = ({children}: Props) => {
-  const [state, dispatch] = React.useReducer(reducer, initialState)
-  const {error: userError, loading: userLoading, data: userData} = state
+  const [data, setData] = React.useState<UserFragmentFragment | null>(null)
 
   // handle initial render (including page refreshes)
-  const {error: hydrateError, loading: hydrateLoading, data: hydrateData} = useHydrateMeQuery()
+  const hydrateMeta = useHydrateMeQuery()
   React.useEffect(() => {
-    dispatch({type: 'HYDRATE_USER', error: hydrateError, loading: hydrateLoading, data: hydrateData?.hydrateMe})
-  }, [hydrateError, hydrateLoading, hydrateData])
+    if (hydrateMeta.data) {
+      setData(hydrateMeta.data.hydrateMe)
+    }
+  }, [hydrateMeta.data])
 
   // handle login
-  const [login, {error: loginError, loading: loginLoading, data: loginData, called: loginCalled}] = useLoginMutation()
+  const [login, loginMeta] = useLoginMutation()
   React.useEffect(() => {
-    if (loginCalled) {
-      dispatch({type: 'LOGIN', error: loginError, loading: loginLoading, data: loginData?.login})
+    if (loginMeta.called && loginMeta.data?.login) {
+      setData(loginMeta.data.login)
     }
-  }, [loginError, loginLoading, loginData, loginCalled])
+  }, [loginMeta.called, loginMeta.data])
 
   // handle logout
-  const [
-    logout,
-    {error: logoutError, loading: logoutLoading, data: logoutData, called: logoutCalled},
-  ] = useLogoutMutation()
+  const [logout, logoutMeta] = useLogoutMutation()
   React.useEffect(() => {
-    if (logoutCalled) {
-      dispatch({type: 'LOGOUT', error: logoutError, loading: logoutLoading, data: logoutData})
+    if (logoutMeta.called && logoutMeta.data?.logout) {
+      setData(null)
     }
-  }, [logoutError, logoutLoading, logoutData, logoutCalled])
+  }, [logoutMeta.called, logoutMeta.data])
 
-  const value = React.useMemo(
-    () => ({
-      user: {
-        error: userError,
-        loading: userLoading,
-        data: userData,
-      },
-      login: ({username, password}: {username: string; password: string}) => {
-        login({variables: {username, password}})
-      },
-      logout,
-    }),
-    [userError, userLoading, userData],
-  )
+  const value: IUserContext = {
+    data,
+    hydrateMeta,
+    loginMeta,
+    logoutMeta,
+    login: ({username, password}: {username: string; password: string}) => {
+      login({variables: {username, password}})
+    },
+    logout,
+  }
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>
 }
