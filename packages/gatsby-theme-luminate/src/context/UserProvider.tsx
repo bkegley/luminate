@@ -62,7 +62,15 @@ const UserProvider = ({children}: Props) => {
     logout,
   }
 
-  return <UserContext.Provider value={value}>{children}</UserContext.Provider>
+  if (hydrateMeta.error) {
+    console.log({error: hydrateMeta.error})
+  }
+
+  return (
+    <UserContext.Provider value={value}>
+      {hydrateMeta.loading || hydrateMeta.error ? null : children}
+    </UserContext.Provider>
+  )
 }
 
 export default UserProvider
