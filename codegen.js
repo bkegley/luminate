@@ -11,6 +11,18 @@ const clientGenerates = {
       federation: true,
     },
   },
+  'packages/gatsby-theme-luminate/src/graphql/index.tsx': {
+    documents: 'packages/gatsby-theme-luminate/src/graphql/**/*.graphql',
+    schema: 'http://localhost:3000/graphql',
+    plugins: ['typescript', 'typescript-operations', 'typescript-react-apollo'],
+    config: {
+      withComponent: false,
+      withHOC: false,
+      withHooks: true,
+      nonOptionalTypename: true,
+      federation: true,
+    },
+  },
 }
 
 const serverGenerates = {
