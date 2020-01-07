@@ -84,19 +84,15 @@ const UserProvider = ({children}: Props) => {
   const [state, dispatch] = React.useReducer(reducer, initialState)
   const {error: userError, loading: userLoading, data: userData} = state
 
-  console.log({userError, userLoading, userData})
-
   // handle initial render (including page refreshes)
   const {error: hydrateError, loading: hydrateLoading, data: hydrateData} = useHydrateMeQuery()
   React.useEffect(() => {
-    console.log({hydrateData, hydrateError, hydrateLoading})
-    dispatch({type: 'HYDRATE_USER', error: hydrateError, loading: hydrateLoading, data: hydrateData})
+    dispatch({type: 'HYDRATE_USER', error: hydrateError, loading: hydrateLoading, data: hydrateData?.hydrateMe})
   }, [hydrateError, hydrateLoading, hydrateData])
 
   // handle login
   const [login, {error: loginError, loading: loginLoading, data: loginData, called: loginCalled}] = useLoginMutation()
   React.useEffect(() => {
-    console.log({loginError, loginLoading, loginData, loginCalled})
     if (loginCalled) {
       dispatch({type: 'LOGIN', error: loginError, loading: loginLoading, data: loginData?.login})
     }
