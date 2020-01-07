@@ -708,11 +708,27 @@ export type LogoutMutationVariables = {}
 
 export type LogoutMutation = {__typename: 'Mutation'} & Pick<Mutation, 'logout'>
 
-export type UserFragmentFragment = {__typename: 'User'} & Pick<User, 'username'>
+export type UserFragmentFragment = {__typename: 'User'} & Pick<User, 'id' | 'username' | 'firstName' | 'lastName'> & {
+    roles: Maybe<Array<Maybe<{__typename: 'Role'} & Pick<Role, 'id' | 'name'>>>>
+    scopes: Maybe<Array<Maybe<{__typename: 'Scope'} & Pick<Scope, 'id' | 'name' | 'resource' | 'operation'>>>>
+  }
 
 export const UserFragmentFragmentDoc = gql`
   fragment UserFragment on User {
+    id
     username
+    firstName
+    lastName
+    roles {
+      id
+      name
+    }
+    scopes {
+      id
+      name
+      resource
+      operation
+    }
   }
 `
 export const HydrateMeDocument = gql`

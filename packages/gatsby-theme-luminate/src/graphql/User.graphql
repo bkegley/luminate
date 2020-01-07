@@ -15,5 +15,18 @@ mutation logout {
 }
 
 fragment UserFragment on User {
+  id
   username
+  firstName
+  lastName
+  roles {
+    id
+    name
+  }
+  scopes {
+    id
+    name
+    resource
+    operation
+  }
 }
