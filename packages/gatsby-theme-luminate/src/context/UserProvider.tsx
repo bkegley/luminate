@@ -26,12 +26,14 @@ interface Props {
 
 const UserProvider = ({children}: Props) => {
   const [data, setData] = React.useState<UserFragmentFragment | null>(null)
+  const [hasHydrated, setHasHydrated] = React.useState(false)
 
   // handle initial render (including page refreshes)
   const hydrateMeta = useHydrateMeQuery()
   React.useEffect(() => {
     if (hydrateMeta.data) {
       setData(hydrateMeta.data.hydrateMe)
+      setHasHydrated(true)
     }
   }, [hydrateMeta.data])
 
@@ -66,11 +68,9 @@ const UserProvider = ({children}: Props) => {
     console.log({error: hydrateMeta.error})
   }
 
-  return (
-    <UserContext.Provider value={value}>
-      {hydrateMeta.loading || hydrateMeta.error ? null : children}
-    </UserContext.Provider>
-  )
+  const renderChildren = hasHydrated && !hydrateMeta.loading && !hydrateMeta.error
+
+  return <UserContext.Provider value={value}>{renderChildren ? children : null}</UserContext.Provider>
 }
 
 export default UserProvider

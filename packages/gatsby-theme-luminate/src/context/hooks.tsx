@@ -20,9 +20,9 @@ export const useLogin = () => {
     throw new Error('useLogin must be wrapped in a UserProvider')
   }
 
-  const {login, loginMeta} = context
+  const {login, loginMeta, data} = context
 
-  return [login, loginMeta] as const
+  return [login, {...loginMeta, data}] as const
 }
 
 export const useLogout = () => {
@@ -32,7 +32,7 @@ export const useLogout = () => {
     throw new Error('useLogin must be wrapped in a UserProvider')
   }
 
-  const {logout, logoutMeta} = context
+  const {logout, logoutMeta, data} = context
 
-  return [logout, logoutMeta] as const
+  return [logout, {...logoutMeta, data}] as const
 }
