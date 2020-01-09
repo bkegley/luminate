@@ -1,15 +1,19 @@
+/** @jsx jsx */
 import React from 'react'
 import {useListUsersQuery} from '../graphql'
 import {UserProvider, useUser, useLogin, useLogout} from '@luminate/gatsby-theme-luminate'
+import {jsx, useThemeUI} from 'theme-ui'
 
 const IndexPage = () => {
+  const theme = useThemeUI()
+  console.log({theme})
   const {error, loading, data} = useListUsersQuery()
   if (error || loading) return null
   return (
     <UserProvider>
       <div>
         <User />
-        <h1>IndexPage</h1>
+        <h1 sx={{color: 'text'}}>IndexPage</h1>
         {data?.listUsers.edges.map(edge => {
           return (
             <div>
