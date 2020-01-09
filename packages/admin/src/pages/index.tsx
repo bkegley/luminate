@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import React from 'react'
 import {useListUsersQuery} from '../graphql'
-import {UserProvider, useUser, useLogin, useLogout} from '@luminate/gatsby-theme-luminate'
+import {UserProvider, useUser, useLogin, useLogout} from '@luminate/gatsby-theme-luminate/src'
 import {jsx, useThemeUI} from 'theme-ui'
 
 const IndexPage = () => {

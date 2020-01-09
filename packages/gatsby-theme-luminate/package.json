@@ -1,12 +1,11 @@
 {
   "name": "@luminate/gatsby-theme-luminate",
   "version": "0.0.1",
-  "main": "src/index.tsx",
+  "main": "index.js",
   "author": "Bryan Kegley <hi@bryankegley.me>",
   "license": "MIT",
   "scripts": {
-    "develop": "tsc --watch",
-    "build": "tsc"
+    "type-check": "tsc"
   },
   "dependencies": {
     "@apollo/react-hooks": "^3.1.3",
