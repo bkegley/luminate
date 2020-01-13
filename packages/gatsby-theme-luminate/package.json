@@ -12,6 +12,7 @@
     "@emotion/core": "^10.0.27",
     "@mdx-js/react": "^1.5.3",
     "@theme-ui/components": "^0.2.50",
+    "apollo-boost": "^0.4.7",
     "cross-fetch": "^3.0.4",
     "gatsby-plugin-theme-ui": "^0.2.53",
     "gatsby-plugin-typescript": "^2.1.23",
