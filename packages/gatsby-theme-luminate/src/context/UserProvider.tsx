@@ -9,11 +9,25 @@ import {
   LogoutMutationResult,
 } from '../graphql'
 
+type ModifiedHookResult<T> = Omit<T, 'data'>
+
+interface ModifiedHydrateMeQueryHookResult extends ModifiedHookResult<HydrateMeQueryHookResult> {
+  data: UserFragmentFragment | null
+}
+
+interface ModifiedLoginMutationResult extends ModifiedHookResult<LoginMutationResult> {
+  data: UserFragmentFragment | null
+}
+
+interface ModifiedLogoutMutationResult extends ModifiedHookResult<LogoutMutationResult> {
+  data: UserFragmentFragment | null
+}
+
 interface IUserContext {
   data: UserFragmentFragment | null
-  hydrateMeta: HydrateMeQueryHookResult
-  loginMeta: LoginMutationResult
-  logoutMeta: LogoutMutationResult
+  hydrateMeta: ModifiedHydrateMeQueryHookResult
+  loginMeta: ModifiedLoginMutationResult
+  logoutMeta: ModifiedLogoutMutationResult
   login: ({username, password}: {username: string; password: string}) => void
   logout: () => void
 }
@@ -55,9 +69,18 @@ const UserProvider = ({children}: Props) => {
 
   const value: IUserContext = {
     data,
-    hydrateMeta,
-    loginMeta,
-    logoutMeta,
+    hydrateMeta: {
+      ...hydrateMeta,
+      data,
+    },
+    loginMeta: {
+      ...loginMeta,
+      data,
+    },
+    logoutMeta: {
+      ...logoutMeta,
+      data,
+    },
     login: ({username, password}: {username: string; password: string}) => {
       login({variables: {username, password}})
     },
