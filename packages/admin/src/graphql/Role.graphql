@@ -1,0 +1,51 @@
+query listRoles($cursor: String) {
+  listRoles(limit: 10, cursor: $cursor) {
+    pageInfo {
+      hasNextPage
+      nextCursor
+      prevCursor
+    }
+    edges {
+      node {
+        ...RoleFragment
+      }
+    }
+  }
+}
+
+query getRole($id: ID!) {
+  getRole(id: $id) {
+    ...RoleFragment
+  }
+}
+
+mutation createRole($input: CreateRoleInput!) {
+  createRole(input: $input) {
+    ...RoleFragment
+  }
+}
+
+mutation updateRole($id: ID!, $input: UpdateRoleInput!) {
+  updateRole(id: $id, input: $input) {
+    ...RoleFragment
+  }
+}
+
+mutation deleteRole($id: ID!) {
+  deleteRole(id: $id) {
+    id
+  }
+}
+
+fragment RoleFragment on Role {
+  id
+  name
+  scopes {
+    id
+    name
+    resource
+    operation
+  }
+  createdAt
+  updatedAt
+}
