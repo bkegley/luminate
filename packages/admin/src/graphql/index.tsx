@@ -737,6 +737,53 @@ export type RoleFragmentFragment = {__typename: 'Role'} & Pick<Role, 'id' | 'nam
     scopes: Maybe<Array<{__typename: 'Scope'} & Pick<Scope, 'id' | 'name' | 'resource' | 'operation'>>>
   }
 
+export type ListScopesQueryVariables = {
+  cursor?: Maybe<Scalars['String']>
+}
+
+export type ListScopesQuery = {__typename: 'Query'} & {
+  listScopes: {__typename: 'ScopeConnection'} & {
+    pageInfo: {__typename: 'PageInfo'} & Pick<PageInfo, 'hasNextPage' | 'nextCursor' | 'prevCursor'>
+    edges: Array<{__typename: 'ScopeEdge'} & {node: Maybe<{__typename: 'Scope'} & ScopeFragmentFragment>}>
+  }
+}
+
+export type GetScopeQueryVariables = {
+  id: Scalars['ID']
+}
+
+export type GetScopeQuery = {__typename: 'Query'} & {getScope: Maybe<{__typename: 'Scope'} & ScopeFragmentFragment>}
+
+export type CreateScopeMutationVariables = {
+  input: CreateScopeInput
+}
+
+export type CreateScopeMutation = {__typename: 'Mutation'} & {
+  createScope: Maybe<{__typename: 'Scope'} & ScopeFragmentFragment>
+}
+
+export type UpdateScopeMutationVariables = {
+  id: Scalars['ID']
+  input: UpdateScopeInput
+}
+
+export type UpdateScopeMutation = {__typename: 'Mutation'} & {
+  updateScope: Maybe<{__typename: 'Scope'} & ScopeFragmentFragment>
+}
+
+export type DeleteScopeMutationVariables = {
+  id: Scalars['ID']
+}
+
+export type DeleteScopeMutation = {__typename: 'Mutation'} & {
+  deleteScope: Maybe<{__typename: 'Scope'} & Pick<Scope, 'id'>>
+}
+
+export type ScopeFragmentFragment = {__typename: 'Scope'} & Pick<
+  Scope,
+  'id' | 'name' | 'resource' | 'operation' | 'createdAt' | 'updatedAt'
+>
+
 export type ListUsersQueryVariables = {
   cursor?: Maybe<Scalars['String']>
 }
@@ -792,6 +839,16 @@ export const RoleFragmentFragmentDoc = gql`
       resource
       operation
     }
+    createdAt
+    updatedAt
+  }
+`
+export const ScopeFragmentFragmentDoc = gql`
+  fragment ScopeFragment on Scope {
+    id
+    name
+    resource
+    operation
     createdAt
     updatedAt
   }
@@ -1010,6 +1067,223 @@ export type DeleteRoleMutationResult = ApolloReactCommon.MutationResult<DeleteRo
 export type DeleteRoleMutationOptions = ApolloReactCommon.BaseMutationOptions<
   DeleteRoleMutation,
   DeleteRoleMutationVariables
+>
+export const ListScopesDocument = gql`
+  query listScopes($cursor: String) {
+    listScopes(limit: 10, cursor: $cursor) {
+      pageInfo {
+        hasNextPage
+        nextCursor
+        prevCursor
+      }
+      edges {
+        node {
+          ...ScopeFragment
+        }
+      }
+    }
+  }
+  ${ScopeFragmentFragmentDoc}
+`
+
+/**
+ * __useListScopesQuery__
+ *
+ * To run a query within a React component, call `useListScopesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListScopesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useListScopesQuery({
+ *   variables: {
+ *      cursor: // value for 'cursor'
+ *   },
+ * });
+ */
+export function useListScopesQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<ListScopesQuery, ListScopesQueryVariables>,
+) {
+  return ApolloReactHooks.useQuery<ListScopesQuery, ListScopesQueryVariables>(ListScopesDocument, baseOptions)
+}
+export function useListScopesLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ListScopesQuery, ListScopesQueryVariables>,
+) {
+  return ApolloReactHooks.useLazyQuery<ListScopesQuery, ListScopesQueryVariables>(ListScopesDocument, baseOptions)
+}
+export type ListScopesQueryHookResult = ReturnType<typeof useListScopesQuery>
+export type ListScopesLazyQueryHookResult = ReturnType<typeof useListScopesLazyQuery>
+export type ListScopesQueryResult = ApolloReactCommon.QueryResult<ListScopesQuery, ListScopesQueryVariables>
+export const GetScopeDocument = gql`
+  query getScope($id: ID!) {
+    getScope(id: $id) {
+      ...ScopeFragment
+    }
+  }
+  ${ScopeFragmentFragmentDoc}
+`
+
+/**
+ * __useGetScopeQuery__
+ *
+ * To run a query within a React component, call `useGetScopeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetScopeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetScopeQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetScopeQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<GetScopeQuery, GetScopeQueryVariables>,
+) {
+  return ApolloReactHooks.useQuery<GetScopeQuery, GetScopeQueryVariables>(GetScopeDocument, baseOptions)
+}
+export function useGetScopeLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetScopeQuery, GetScopeQueryVariables>,
+) {
+  return ApolloReactHooks.useLazyQuery<GetScopeQuery, GetScopeQueryVariables>(GetScopeDocument, baseOptions)
+}
+export type GetScopeQueryHookResult = ReturnType<typeof useGetScopeQuery>
+export type GetScopeLazyQueryHookResult = ReturnType<typeof useGetScopeLazyQuery>
+export type GetScopeQueryResult = ApolloReactCommon.QueryResult<GetScopeQuery, GetScopeQueryVariables>
+export const CreateScopeDocument = gql`
+  mutation createScope($input: CreateScopeInput!) {
+    createScope(input: $input) {
+      ...ScopeFragment
+    }
+  }
+  ${ScopeFragmentFragmentDoc}
+`
+export type CreateScopeMutationFn = ApolloReactCommon.MutationFunction<
+  CreateScopeMutation,
+  CreateScopeMutationVariables
+>
+
+/**
+ * __useCreateScopeMutation__
+ *
+ * To run a mutation, you first call `useCreateScopeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateScopeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createScopeMutation, { data, loading, error }] = useCreateScopeMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateScopeMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<CreateScopeMutation, CreateScopeMutationVariables>,
+) {
+  return ApolloReactHooks.useMutation<CreateScopeMutation, CreateScopeMutationVariables>(
+    CreateScopeDocument,
+    baseOptions,
+  )
+}
+export type CreateScopeMutationHookResult = ReturnType<typeof useCreateScopeMutation>
+export type CreateScopeMutationResult = ApolloReactCommon.MutationResult<CreateScopeMutation>
+export type CreateScopeMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  CreateScopeMutation,
+  CreateScopeMutationVariables
+>
+export const UpdateScopeDocument = gql`
+  mutation updateScope($id: ID!, $input: UpdateScopeInput!) {
+    updateScope(id: $id, input: $input) {
+      ...ScopeFragment
+    }
+  }
+  ${ScopeFragmentFragmentDoc}
+`
+export type UpdateScopeMutationFn = ApolloReactCommon.MutationFunction<
+  UpdateScopeMutation,
+  UpdateScopeMutationVariables
+>
+
+/**
+ * __useUpdateScopeMutation__
+ *
+ * To run a mutation, you first call `useUpdateScopeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateScopeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateScopeMutation, { data, loading, error }] = useUpdateScopeMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateScopeMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateScopeMutation, UpdateScopeMutationVariables>,
+) {
+  return ApolloReactHooks.useMutation<UpdateScopeMutation, UpdateScopeMutationVariables>(
+    UpdateScopeDocument,
+    baseOptions,
+  )
+}
+export type UpdateScopeMutationHookResult = ReturnType<typeof useUpdateScopeMutation>
+export type UpdateScopeMutationResult = ApolloReactCommon.MutationResult<UpdateScopeMutation>
+export type UpdateScopeMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  UpdateScopeMutation,
+  UpdateScopeMutationVariables
+>
+export const DeleteScopeDocument = gql`
+  mutation deleteScope($id: ID!) {
+    deleteScope(id: $id) {
+      id
+    }
+  }
+`
+export type DeleteScopeMutationFn = ApolloReactCommon.MutationFunction<
+  DeleteScopeMutation,
+  DeleteScopeMutationVariables
+>
+
+/**
+ * __useDeleteScopeMutation__
+ *
+ * To run a mutation, you first call `useDeleteScopeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteScopeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteScopeMutation, { data, loading, error }] = useDeleteScopeMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteScopeMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteScopeMutation, DeleteScopeMutationVariables>,
+) {
+  return ApolloReactHooks.useMutation<DeleteScopeMutation, DeleteScopeMutationVariables>(
+    DeleteScopeDocument,
+    baseOptions,
+  )
+}
+export type DeleteScopeMutationHookResult = ReturnType<typeof useDeleteScopeMutation>
+export type DeleteScopeMutationResult = ApolloReactCommon.MutationResult<DeleteScopeMutation>
+export type DeleteScopeMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  DeleteScopeMutation,
+  DeleteScopeMutationVariables
 >
 export const ListUsersDocument = gql`
   query listUsers($cursor: String) {

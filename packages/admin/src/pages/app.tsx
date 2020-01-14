@@ -5,6 +5,7 @@ import {Route, Switch, BrowserRouter} from 'react-router-dom'
 import Layout from '../components/Layout'
 import Home from '../app/Home'
 import Roles from '../app/Roles'
+import Scopes from '../app/Scopes'
 import Users from '../app/Users'
 
 const IndexPage = () => {
@@ -24,6 +25,9 @@ const IndexPage = () => {
           </Route>
           <Route path="/app/roles">
             <Roles />
+          </Route>
+          <Route path="/app/scopes">
+            <Scopes />
           </Route>
           <Route path="/app/users">
             <Users />
