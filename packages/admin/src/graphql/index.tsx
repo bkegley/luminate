@@ -693,25 +693,85 @@ export type VarietyEdge = {
   node?: Maybe<Variety>
 }
 
-export type ListUsersQueryVariables = {}
+export type ListUsersQueryVariables = {
+  cursor?: Maybe<Scalars['String']>
+}
 
 export type ListUsersQuery = {__typename: 'Query'} & {
   listUsers: {__typename: 'UserConnection'} & {
-    edges: Array<{__typename: 'UserEdge'} & {node: Maybe<{__typename: 'User'} & Pick<User, 'id' | 'username'>>}>
+    pageInfo: {__typename: 'PageInfo'} & Pick<PageInfo, 'hasNextPage' | 'nextCursor' | 'prevCursor'>
+    edges: Array<{__typename: 'UserEdge'} & {node: Maybe<{__typename: 'User'} & UserFragmentFragment>}>
   }
 }
 
+export type GetUserQueryVariables = {
+  id: Scalars['ID']
+}
+
+export type GetUserQuery = {__typename: 'Query'} & {getUser: Maybe<{__typename: 'User'} & UserFragmentFragment>}
+
+export type CreateUserMutationVariables = {
+  input: CreateUserInput
+}
+
+export type CreateUserMutation = {__typename: 'Mutation'} & {
+  createUser: Maybe<{__typename: 'User'} & UserFragmentFragment>
+}
+
+export type UpdateUserMutationVariables = {
+  id: Scalars['ID']
+  input: UpdateUserInput
+}
+
+export type UpdateUserMutation = {__typename: 'Mutation'} & {
+  updateUser: Maybe<{__typename: 'User'} & UserFragmentFragment>
+}
+
+export type DeleteUserMutationVariables = {
+  id: Scalars['ID']
+}
+
+export type DeleteUserMutation = {__typename: 'Mutation'} & {deleteUser: Maybe<{__typename: 'User'} & Pick<User, 'id'>>}
+
+export type UserFragmentFragment = {__typename: 'User'} & Pick<User, 'id' | 'username' | 'firstName' | 'lastName'> & {
+    roles: Maybe<Array<Maybe<{__typename: 'Role'} & Pick<Role, 'id' | 'name'>>>>
+    scopes: Maybe<Array<Maybe<{__typename: 'Scope'} & Pick<Scope, 'id' | 'name' | 'resource' | 'operation'>>>>
+  }
+
+export const UserFragmentFragmentDoc = gql`
+  fragment UserFragment on User {
+    id
+    username
+    firstName
+    lastName
+    roles {
+      id
+      name
+    }
+    scopes {
+      id
+      name
+      resource
+      operation
+    }
+  }
+`
 export const ListUsersDocument = gql`
-  query listUsers {
-    listUsers {
+  query listUsers($cursor: String) {
+    listUsers(limit: 10, cursor: $cursor) {
+      pageInfo {
+        hasNextPage
+        nextCursor
+        prevCursor
+      }
       edges {
         node {
-          id
-          username
+          ...UserFragment
         }
       }
     }
   }
+  ${UserFragmentFragmentDoc}
 `
 
 /**
@@ -726,6 +786,7 @@ export const ListUsersDocument = gql`
  * @example
  * const { data, loading, error } = useListUsersQuery({
  *   variables: {
+ *      cursor: // value for 'cursor'
  *   },
  * });
  */
@@ -742,3 +803,153 @@ export function useListUsersLazyQuery(
 export type ListUsersQueryHookResult = ReturnType<typeof useListUsersQuery>
 export type ListUsersLazyQueryHookResult = ReturnType<typeof useListUsersLazyQuery>
 export type ListUsersQueryResult = ApolloReactCommon.QueryResult<ListUsersQuery, ListUsersQueryVariables>
+export const GetUserDocument = gql`
+  query getUser($id: ID!) {
+    getUser(id: $id) {
+      ...UserFragment
+    }
+  }
+  ${UserFragmentFragmentDoc}
+`
+
+/**
+ * __useGetUserQuery__
+ *
+ * To run a query within a React component, call `useGetUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUserQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetUserQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetUserQuery, GetUserQueryVariables>) {
+  return ApolloReactHooks.useQuery<GetUserQuery, GetUserQueryVariables>(GetUserDocument, baseOptions)
+}
+export function useGetUserLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetUserQuery, GetUserQueryVariables>,
+) {
+  return ApolloReactHooks.useLazyQuery<GetUserQuery, GetUserQueryVariables>(GetUserDocument, baseOptions)
+}
+export type GetUserQueryHookResult = ReturnType<typeof useGetUserQuery>
+export type GetUserLazyQueryHookResult = ReturnType<typeof useGetUserLazyQuery>
+export type GetUserQueryResult = ApolloReactCommon.QueryResult<GetUserQuery, GetUserQueryVariables>
+export const CreateUserDocument = gql`
+  mutation createUser($input: CreateUserInput!) {
+    createUser(input: $input) {
+      ...UserFragment
+    }
+  }
+  ${UserFragmentFragmentDoc}
+`
+export type CreateUserMutationFn = ApolloReactCommon.MutationFunction<CreateUserMutation, CreateUserMutationVariables>
+
+/**
+ * __useCreateUserMutation__
+ *
+ * To run a mutation, you first call `useCreateUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createUserMutation, { data, loading, error }] = useCreateUserMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateUserMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<CreateUserMutation, CreateUserMutationVariables>,
+) {
+  return ApolloReactHooks.useMutation<CreateUserMutation, CreateUserMutationVariables>(CreateUserDocument, baseOptions)
+}
+export type CreateUserMutationHookResult = ReturnType<typeof useCreateUserMutation>
+export type CreateUserMutationResult = ApolloReactCommon.MutationResult<CreateUserMutation>
+export type CreateUserMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  CreateUserMutation,
+  CreateUserMutationVariables
+>
+export const UpdateUserDocument = gql`
+  mutation updateUser($id: ID!, $input: UpdateUserInput!) {
+    updateUser(id: $id, input: $input) {
+      ...UserFragment
+    }
+  }
+  ${UserFragmentFragmentDoc}
+`
+export type UpdateUserMutationFn = ApolloReactCommon.MutationFunction<UpdateUserMutation, UpdateUserMutationVariables>
+
+/**
+ * __useUpdateUserMutation__
+ *
+ * To run a mutation, you first call `useUpdateUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateUserMutation, { data, loading, error }] = useUpdateUserMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateUserMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateUserMutation, UpdateUserMutationVariables>,
+) {
+  return ApolloReactHooks.useMutation<UpdateUserMutation, UpdateUserMutationVariables>(UpdateUserDocument, baseOptions)
+}
+export type UpdateUserMutationHookResult = ReturnType<typeof useUpdateUserMutation>
+export type UpdateUserMutationResult = ApolloReactCommon.MutationResult<UpdateUserMutation>
+export type UpdateUserMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  UpdateUserMutation,
+  UpdateUserMutationVariables
+>
+export const DeleteUserDocument = gql`
+  mutation deleteUser($id: ID!) {
+    deleteUser(id: $id) {
+      id
+    }
+  }
+`
+export type DeleteUserMutationFn = ApolloReactCommon.MutationFunction<DeleteUserMutation, DeleteUserMutationVariables>
+
+/**
+ * __useDeleteUserMutation__
+ *
+ * To run a mutation, you first call `useDeleteUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteUserMutation, { data, loading, error }] = useDeleteUserMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteUserMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteUserMutation, DeleteUserMutationVariables>,
+) {
+  return ApolloReactHooks.useMutation<DeleteUserMutation, DeleteUserMutationVariables>(DeleteUserDocument, baseOptions)
+}
+export type DeleteUserMutationHookResult = ReturnType<typeof useDeleteUserMutation>
+export type DeleteUserMutationResult = ApolloReactCommon.MutationResult<DeleteUserMutation>
+export type DeleteUserMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  DeleteUserMutation,
+  DeleteUserMutationVariables
+>

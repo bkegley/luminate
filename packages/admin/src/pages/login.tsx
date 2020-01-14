@@ -9,7 +9,7 @@ const LoginPage = () => {
 
   if (data) {
     if (data.roles?.find(role => role && role.name === 'Admin')) {
-      navigate('/')
+      navigate('/app')
       return null
     }
     return (
