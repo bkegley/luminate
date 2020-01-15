@@ -11,6 +11,14 @@ const clientGenerates = {
       federation: true,
     },
   },
+  'packages/admin/src/graphql/documents.ts': {
+    documents: 'packages/admin/src/graphql/**/*.graphql',
+    schema: 'http://localhost:3000/graphql',
+    plugins: ['typescript-document-nodes'],
+    config: {
+      nameSuffix: 'Gql',
+    },
+  },
   'packages/gatsby-theme-luminate/src/graphql/index.tsx': {
     documents: 'packages/gatsby-theme-luminate/src/graphql/**/*.graphql',
     schema: 'http://localhost:3000/graphql',
@@ -21,6 +29,14 @@ const clientGenerates = {
       withHooks: true,
       nonOptionalTypename: true,
       federation: true,
+    },
+  },
+  'packages/gatsby-theme-luminate/src/graphql/documents.ts': {
+    documents: 'packages/gatsby-theme-luminate/src/graphql/**/*.graphql',
+    schema: 'http://localhost:3000/graphql',
+    plugins: ['typescript-document-nodes'],
+    config: {
+      nameSuffix: 'Gql',
     },
   },
 }
