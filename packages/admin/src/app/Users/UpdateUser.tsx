@@ -1,8 +1,9 @@
 /** @jsx jsx */
-import {jsx} from 'theme-ui'
+import {jsx, useThemeUI} from 'theme-ui'
 import {Formik, Form, Field} from 'formik'
 import {useGetUserQuery, useUpdateUserMutation, useDeleteUserMutation} from '../../graphql'
 import {RouteChildrenProps, useHistory} from 'react-router-dom'
+import {Button, Box, Card, Flex, Field as ThemeField, Heading} from '@luminate/gatsby-theme-luminate/src/components'
 
 interface Params {
   id: string
@@ -28,43 +29,50 @@ const UpdateUser = ({match}: Props) => {
   if (error || loading) return null
 
   return (
-    <div>
-      <Formik
-        initialValues={{
-          firstName: data?.getUser?.firstName,
-          lastName: data?.getUser?.lastName,
-        }}
-        onSubmit={values => {
-          updateUser({
-            variables: {
-              id,
-              input: values,
-            },
-          })
-        }}
-      >
-        {() => {
-          return (
-            <Form>
-              <div>
-                <Field name="firstName" type="text" />
-              </div>
-              <div>
-                <Field name="lastName" type="text" />
-              </div>
-              <div>
-                <button type="submit">Submit</button>
-              </div>
-            </Form>
-          )
-        }}
-      </Formik>
-      <div>
-        <button type="button" onClick={handleDeleteClick}>
-          Delete
-        </button>
-      </div>
-    </div>
+    <Box>
+      <Box sx={{my: 4}}>
+        <Heading as="h1">{data?.getUser?.username}</Heading>
+      </Box>
+      <Card>
+        <Formik
+          initialValues={{
+            firstName: data?.getUser?.firstName,
+            lastName: data?.getUser?.lastName,
+          }}
+          onSubmit={values => {
+            updateUser({
+              variables: {
+                id,
+                input: values,
+              },
+            })
+          }}
+        >
+          {() => {
+            return (
+              <Form>
+                <Box sx={{my: 2}}>
+                  <Field name="firstName" type="text" label="First Name" as={ThemeField} />
+                </Box>
+                <Box sx={{my: 2}}>
+                  <Field name="lastName" type="text" label="Last Name" as={ThemeField} />
+                </Box>
+                <Flex sx={{justifyContent: 'flex-end', my: 2}}>
+                  <Box sx={{order: 1}}>
+                    <Button type="submit">Submit</Button>
+                  </Box>
+                  <Box>
+                    <Button type="button" variant="danger" onClick={handleDeleteClick}>
+                      Delete
+                    </Button>
+                  </Box>
+                </Flex>
+              </Form>
+            )
+          }}
+        </Formik>
+      </Card>
+    </Box>
   )
 }
 

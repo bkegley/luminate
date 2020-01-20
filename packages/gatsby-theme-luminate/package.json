@@ -12,10 +12,13 @@
     "@emotion/core": "^10.0.27",
     "@mdx-js/react": "^1.5.3",
     "@theme-ui/components": "^0.2.50",
+    "@theme-ui/presets": "^0.2.44",
     "apollo-boost": "^0.4.7",
     "cross-fetch": "^3.0.4",
+    "formik": "^2.1.2",
     "gatsby-plugin-theme-ui": "^0.2.53",
     "gatsby-plugin-typescript": "^2.1.23",
+    "lodash.merge": "^4.6.2",
     "theme-ui": "^0.2.52"
   },
   "peerDependencies": {
@@ -24,6 +27,7 @@
     "react-dom": "^16.12.0"
   },
   "devDependencies": {
-    "@types/theme-ui": "^0.2.6"
+    "@types/theme-ui": "^0.2.6",
+    "@types/theme-ui__components": "^0.2.0"
   }
 }
