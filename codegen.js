@@ -72,6 +72,7 @@ const serverGenerates = {
         Farm: '@luminate/mongo#FarmDocument',
         FarmZone: '@luminate/mongo#FarmZoneDocument',
         Region: '@luminate/mongo#RegionDocument',
+        Roast: '@luminate/mongo#RoastDocument',
         Variety: '@luminate/mongo#VarietyDocument',
       },
     },
