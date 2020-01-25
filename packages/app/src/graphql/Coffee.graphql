@@ -1,0 +1,36 @@
+query ListCoffees {
+  listCoffees {
+    edges {
+      node {
+        id
+        name
+      }
+    }
+  }
+}
+
+query GetCoffee($id: ID!) {
+  getCoffee(id: $id) {
+    ...CoffeeFragment
+  }
+}
+
+fragment CoffeeFragment on Coffee {
+  id
+  name
+  country {
+    id
+    name
+  }
+  region {
+    id
+    name
+  }
+  varieties {
+    id
+    name
+  }
+  elevation
+  createdAt
+  updatedAt
+}

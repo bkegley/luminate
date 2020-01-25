@@ -91,6 +91,10 @@ export type CreateRegionInput = {
   country?: Maybe<Scalars['ID']>
 }
 
+export type CreateRoastInput = {
+  name?: Maybe<Scalars['String']>
+}
+
 export type CreateRoleInput = {
   name: Scalars['String']
   scopes?: Maybe<Array<Scalars['ID']>>
@@ -220,6 +224,9 @@ export type Mutation = {
   createRegion?: Maybe<Region>
   updateRegion?: Maybe<Region>
   deleteRegion?: Maybe<Region>
+  createRoast?: Maybe<Roast>
+  updateRoast?: Maybe<Roast>
+  deleteRoast?: Maybe<Roast>
   createVariety?: Maybe<Variety>
   updateVariety?: Maybe<Variety>
   deleteVariety?: Maybe<Variety>
@@ -342,6 +349,19 @@ export type MutationDeleteRegionArgs = {
   id: Scalars['ID']
 }
 
+export type MutationCreateRoastArgs = {
+  input: CreateRoastInput
+}
+
+export type MutationUpdateRoastArgs = {
+  id: Scalars['ID']
+  input: UpdateRoastInput
+}
+
+export type MutationDeleteRoastArgs = {
+  id: Scalars['ID']
+}
+
 export type MutationCreateVarietyArgs = {
   input: CreateVarietyInput
 }
@@ -410,6 +430,8 @@ export type Query = {
   getFarmZone?: Maybe<FarmZone>
   listRegions: RegionConnection
   getRegion?: Maybe<Region>
+  listRoasts: RoastConnection
+  getRoast?: Maybe<Roast>
   listVarieties: VarietyConnection
   getVariety?: Maybe<Variety>
   listCuppings: CuppingConnection
@@ -496,6 +518,16 @@ export type QueryGetRegionArgs = {
   id: Scalars['ID']
 }
 
+export type QueryListRoastsArgs = {
+  cursor?: Maybe<Scalars['String']>
+  limit?: Maybe<Scalars['Int']>
+  query?: Maybe<Array<Maybe<QueryInput>>>
+}
+
+export type QueryGetRoastArgs = {
+  id: Scalars['ID']
+}
+
 export type QueryListVarietiesArgs = {
   cursor?: Maybe<Scalars['String']>
   limit?: Maybe<Scalars['Int']>
@@ -542,6 +574,26 @@ export type RegionEdge = {
   __typename: 'RegionEdge'
   cursor?: Maybe<Scalars['String']>
   node?: Maybe<Region>
+}
+
+export type Roast = {
+  __typename: 'Roast'
+  id: Scalars['ID']
+  name?: Maybe<Scalars['String']>
+  createdAt?: Maybe<Scalars['String']>
+  updatedAt?: Maybe<Scalars['String']>
+}
+
+export type RoastConnection = {
+  __typename: 'RoastConnection'
+  pageInfo: PageInfo
+  edges: Array<RoastEdge>
+}
+
+export type RoastEdge = {
+  __typename: 'RoastEdge'
+  cursor?: Maybe<Scalars['String']>
+  node?: Maybe<Roast>
 }
 
 export type Role = {
@@ -626,6 +678,10 @@ export type UpdatePasswordInput = {
 export type UpdateRegionInput = {
   name?: Maybe<Scalars['String']>
   country?: Maybe<Scalars['ID']>
+}
+
+export type UpdateRoastInput = {
+  name?: Maybe<Scalars['String']>
 }
 
 export type UpdateRoleInput = {

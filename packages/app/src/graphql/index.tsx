@@ -749,88 +749,73 @@ export type VarietyEdge = {
   node?: Maybe<Variety>
 }
 
-export type HydrateMeQueryVariables = {}
+export type ListCoffeesQueryVariables = {}
 
-export type HydrateMeQuery = {__typename: 'Query'} & {hydrateMe: Maybe<{__typename: 'User'} & UserFragmentFragment>}
+export type ListCoffeesQuery = {__typename: 'Query'} & {
+  listCoffees: {__typename: 'CoffeeConnection'} & {
+    edges: Array<{__typename: 'CoffeeEdge'} & {node: Maybe<{__typename: 'Coffee'} & Pick<Coffee, 'id' | 'name'>>}>
+  }
+}
 
 export type LoginMutationVariables = {
   username: Scalars['String']
   password: Scalars['String']
 }
 
-export type LoginMutation = {__typename: 'Mutation'} & {login: Maybe<{__typename: 'User'} & UserFragmentFragment>}
+export type LoginMutation = {__typename: 'Mutation'} & {
+  login: Maybe<{__typename: 'User'} & Pick<User, 'id' | 'username' | 'firstName' | 'lastName'>>
+}
 
-export type LogoutMutationVariables = {}
-
-export type LogoutMutation = {__typename: 'Mutation'} & Pick<Mutation, 'logout'>
-
-export type UserFragmentFragment = {__typename: 'User'} & Pick<User, 'id' | 'username' | 'firstName' | 'lastName'> & {
-    roles: Maybe<Array<Maybe<{__typename: 'Role'} & Pick<Role, 'id' | 'name'>>>>
-    scopes: Maybe<Array<Maybe<{__typename: 'Scope'} & Pick<Scope, 'id' | 'name' | 'resource' | 'operation'>>>>
-  }
-
-export const UserFragmentFragmentDoc = gql`
-  fragment UserFragment on User {
-    id
-    username
-    firstName
-    lastName
-    roles {
-      id
-      name
-    }
-    scopes {
-      id
-      name
-      resource
-      operation
+export const ListCoffeesDocument = gql`
+  query ListCoffees {
+    listCoffees {
+      edges {
+        node {
+          id
+          name
+        }
+      }
     }
   }
-`
-export const HydrateMeDocument = gql`
-  query hydrateMe {
-    hydrateMe {
-      ...UserFragment
-    }
-  }
-  ${UserFragmentFragmentDoc}
 `
 
 /**
- * __useHydrateMeQuery__
+ * __useListCoffeesQuery__
  *
- * To run a query within a React component, call `useHydrateMeQuery` and pass it any options that fit your needs.
- * When your component renders, `useHydrateMeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useListCoffeesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListCoffeesQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useHydrateMeQuery({
+ * const { data, loading, error } = useListCoffeesQuery({
  *   variables: {
  *   },
  * });
  */
-export function useHydrateMeQuery(
-  baseOptions?: ApolloReactHooks.QueryHookOptions<HydrateMeQuery, HydrateMeQueryVariables>,
+export function useListCoffeesQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<ListCoffeesQuery, ListCoffeesQueryVariables>,
 ) {
-  return ApolloReactHooks.useQuery<HydrateMeQuery, HydrateMeQueryVariables>(HydrateMeDocument, baseOptions)
+  return ApolloReactHooks.useQuery<ListCoffeesQuery, ListCoffeesQueryVariables>(ListCoffeesDocument, baseOptions)
 }
-export function useHydrateMeLazyQuery(
-  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<HydrateMeQuery, HydrateMeQueryVariables>,
+export function useListCoffeesLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ListCoffeesQuery, ListCoffeesQueryVariables>,
 ) {
-  return ApolloReactHooks.useLazyQuery<HydrateMeQuery, HydrateMeQueryVariables>(HydrateMeDocument, baseOptions)
+  return ApolloReactHooks.useLazyQuery<ListCoffeesQuery, ListCoffeesQueryVariables>(ListCoffeesDocument, baseOptions)
 }
-export type HydrateMeQueryHookResult = ReturnType<typeof useHydrateMeQuery>
-export type HydrateMeLazyQueryHookResult = ReturnType<typeof useHydrateMeLazyQuery>
-export type HydrateMeQueryResult = ApolloReactCommon.QueryResult<HydrateMeQuery, HydrateMeQueryVariables>
+export type ListCoffeesQueryHookResult = ReturnType<typeof useListCoffeesQuery>
+export type ListCoffeesLazyQueryHookResult = ReturnType<typeof useListCoffeesLazyQuery>
+export type ListCoffeesQueryResult = ApolloReactCommon.QueryResult<ListCoffeesQuery, ListCoffeesQueryVariables>
 export const LoginDocument = gql`
-  mutation login($username: String!, $password: String!) {
+  mutation Login($username: String!, $password: String!) {
     login(username: $username, password: $password) {
-      ...UserFragment
+      id
+      username
+      firstName
+      lastName
     }
   }
-  ${UserFragmentFragmentDoc}
 `
 export type LoginMutationFn = ApolloReactCommon.MutationFunction<LoginMutation, LoginMutationVariables>
 
@@ -860,34 +845,3 @@ export function useLoginMutation(
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>
 export type LoginMutationResult = ApolloReactCommon.MutationResult<LoginMutation>
 export type LoginMutationOptions = ApolloReactCommon.BaseMutationOptions<LoginMutation, LoginMutationVariables>
-export const LogoutDocument = gql`
-  mutation logout {
-    logout
-  }
-`
-export type LogoutMutationFn = ApolloReactCommon.MutationFunction<LogoutMutation, LogoutMutationVariables>
-
-/**
- * __useLogoutMutation__
- *
- * To run a mutation, you first call `useLogoutMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useLogoutMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [logoutMutation, { data, loading, error }] = useLogoutMutation({
- *   variables: {
- *   },
- * });
- */
-export function useLogoutMutation(
-  baseOptions?: ApolloReactHooks.MutationHookOptions<LogoutMutation, LogoutMutationVariables>,
-) {
-  return ApolloReactHooks.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument, baseOptions)
-}
-export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>
-export type LogoutMutationResult = ApolloReactCommon.MutationResult<LogoutMutation>
-export type LogoutMutationOptions = ApolloReactCommon.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>
