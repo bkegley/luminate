@@ -7,9 +7,6 @@ import {Flex, Box, Card, Heading, Button, Field as ThemeField} from '@luminate/g
 const LoginPage = () => {
   const [login, {error, loading, data}] = useLoginMutation()
 
-  const theme = useThemeUI()
-  console.log({theme})
-
   return (
     <Box>
       <Box>
