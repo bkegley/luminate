@@ -757,6 +757,30 @@ export type ListCoffeesQuery = {__typename: 'Query'} & {
   }
 }
 
+export type GetCoffeeQueryVariables = {
+  id: Scalars['ID']
+}
+
+export type GetCoffeeQuery = {__typename: 'Query'} & {getCoffee: Maybe<{__typename: 'Coffee'} & CoffeeFragmentFragment>}
+
+export type UpdateCoffeeMutationVariables = {
+  id: Scalars['ID']
+  input: UpdateCoffeeInput
+}
+
+export type UpdateCoffeeMutation = {__typename: 'Mutation'} & {
+  updateCoffee: Maybe<{__typename: 'Coffee'} & CoffeeFragmentFragment>
+}
+
+export type CoffeeFragmentFragment = {__typename: 'Coffee'} & Pick<
+  Coffee,
+  'id' | 'name' | 'elevation' | 'createdAt' | 'updatedAt'
+> & {
+    country: Maybe<{__typename: 'Country'} & Pick<Country, 'id' | 'name'>>
+    region: Maybe<{__typename: 'Region'} & Pick<Region, 'id' | 'name'>>
+    varieties: Maybe<Array<Maybe<{__typename: 'Variety'} & Pick<Variety, 'id' | 'name'>>>>
+  }
+
 export type LoginMutationVariables = {
   username: Scalars['String']
   password: Scalars['String']
@@ -766,6 +790,27 @@ export type LoginMutation = {__typename: 'Mutation'} & {
   login: Maybe<{__typename: 'User'} & Pick<User, 'id' | 'username' | 'firstName' | 'lastName'>>
 }
 
+export const CoffeeFragmentFragmentDoc = gql`
+  fragment CoffeeFragment on Coffee {
+    id
+    name
+    country {
+      id
+      name
+    }
+    region {
+      id
+      name
+    }
+    varieties {
+      id
+      name
+    }
+    elevation
+    createdAt
+    updatedAt
+  }
+`
 export const ListCoffeesDocument = gql`
   query ListCoffees {
     listCoffees {
@@ -807,6 +852,89 @@ export function useListCoffeesLazyQuery(
 export type ListCoffeesQueryHookResult = ReturnType<typeof useListCoffeesQuery>
 export type ListCoffeesLazyQueryHookResult = ReturnType<typeof useListCoffeesLazyQuery>
 export type ListCoffeesQueryResult = ApolloReactCommon.QueryResult<ListCoffeesQuery, ListCoffeesQueryVariables>
+export const GetCoffeeDocument = gql`
+  query GetCoffee($id: ID!) {
+    getCoffee(id: $id) {
+      ...CoffeeFragment
+    }
+  }
+  ${CoffeeFragmentFragmentDoc}
+`
+
+/**
+ * __useGetCoffeeQuery__
+ *
+ * To run a query within a React component, call `useGetCoffeeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCoffeeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCoffeeQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetCoffeeQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<GetCoffeeQuery, GetCoffeeQueryVariables>,
+) {
+  return ApolloReactHooks.useQuery<GetCoffeeQuery, GetCoffeeQueryVariables>(GetCoffeeDocument, baseOptions)
+}
+export function useGetCoffeeLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetCoffeeQuery, GetCoffeeQueryVariables>,
+) {
+  return ApolloReactHooks.useLazyQuery<GetCoffeeQuery, GetCoffeeQueryVariables>(GetCoffeeDocument, baseOptions)
+}
+export type GetCoffeeQueryHookResult = ReturnType<typeof useGetCoffeeQuery>
+export type GetCoffeeLazyQueryHookResult = ReturnType<typeof useGetCoffeeLazyQuery>
+export type GetCoffeeQueryResult = ApolloReactCommon.QueryResult<GetCoffeeQuery, GetCoffeeQueryVariables>
+export const UpdateCoffeeDocument = gql`
+  mutation UpdateCoffee($id: ID!, $input: UpdateCoffeeInput!) {
+    updateCoffee(id: $id, input: $input) {
+      ...CoffeeFragment
+    }
+  }
+  ${CoffeeFragmentFragmentDoc}
+`
+export type UpdateCoffeeMutationFn = ApolloReactCommon.MutationFunction<
+  UpdateCoffeeMutation,
+  UpdateCoffeeMutationVariables
+>
+
+/**
+ * __useUpdateCoffeeMutation__
+ *
+ * To run a mutation, you first call `useUpdateCoffeeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCoffeeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCoffeeMutation, { data, loading, error }] = useUpdateCoffeeMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateCoffeeMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateCoffeeMutation, UpdateCoffeeMutationVariables>,
+) {
+  return ApolloReactHooks.useMutation<UpdateCoffeeMutation, UpdateCoffeeMutationVariables>(
+    UpdateCoffeeDocument,
+    baseOptions,
+  )
+}
+export type UpdateCoffeeMutationHookResult = ReturnType<typeof useUpdateCoffeeMutation>
+export type UpdateCoffeeMutationResult = ApolloReactCommon.MutationResult<UpdateCoffeeMutation>
+export type UpdateCoffeeMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  UpdateCoffeeMutation,
+  UpdateCoffeeMutationVariables
+>
 export const LoginDocument = gql`
   mutation Login($username: String!, $password: String!) {
     login(username: $username, password: $password) {

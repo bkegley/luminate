@@ -19,7 +19,8 @@
     "gatsby-plugin-typescript": "^2.1.23",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
-    "react-router-dom": "^5.1.2"
+    "react-router-dom": "^5.1.2",
+    "theme-ui": "^0.2.52"
   },
   "devDependencies": {
     "@types/react-router-dom": "^5.1.3"

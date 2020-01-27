@@ -94,10 +94,6 @@ const resolvers: Resolvers = {
       return coffees.load(object.id)
     },
     country: async (parent, args, {loaders, user}) => {
-      await hasScopes(user, ['read: Coffee']).catch((err: Error) => {
-        throw err
-      })
-
       const {countries} = loaders
       if (!parent.country) return null
       return countries.load(parent.country)
