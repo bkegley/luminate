@@ -12,6 +12,7 @@ interface IItem {
 }
 
 export interface ComboboxProps {
+  initialSelectedItem?: IItem
   label: React.ReactNode
   onChange?: (values: Partial<UseComboboxState<IItem>>) => void
   onCreateNew?: (values: Partial<UseComboboxState<IItem>>) => void
@@ -19,7 +20,14 @@ export interface ComboboxProps {
   styles?: IStyles
 }
 
-const Combobox = ({options, label, onChange, onCreateNew, styles = defaultStyles}: ComboboxProps) => {
+const Combobox = ({
+  initialSelectedItem,
+  options,
+  label,
+  onChange,
+  onCreateNew,
+  styles = defaultStyles,
+}: ComboboxProps) => {
   const itemToString = (option: IItem | null) => (option ? option.name : '')
   const createNewOptions: IItem[] = onCreateNew ? [{name: '-- Create New --', value: '__createNew'}] : []
   const initialOptions = createNewOptions.concat(options)
@@ -37,6 +45,7 @@ const Combobox = ({options, label, onChange, onCreateNew, styles = defaultStyles
     highlightedIndex,
     getItemProps,
   } = useCombobox({
+    initialSelectedItem,
     items: inputOptions,
     onInputValueChange: ({inputValue}) => {
       if (inputValue) {
