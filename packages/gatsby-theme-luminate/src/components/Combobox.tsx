@@ -12,6 +12,7 @@ interface IItem {
 }
 
 export interface ComboboxProps {
+  children?: React.ReactNode
   initialSelectedItem?: IItem
   label: React.ReactNode
   onChange?: (values: Partial<UseComboboxState<IItem>>) => void
@@ -21,6 +22,7 @@ export interface ComboboxProps {
 }
 
 const Combobox = ({
+  children,
   initialSelectedItem,
   options,
   label,
@@ -89,6 +91,7 @@ const Combobox = ({
       </Box>
       {isOpen ? (
         <ul sx={styles.menu} {...getMenuProps()}>
+          {children}
           {inputOptions.map((option, index) => {
             return (
               <li
