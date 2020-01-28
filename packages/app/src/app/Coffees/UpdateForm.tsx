@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import {jsx} from 'theme-ui'
-import {Flex, Box, Field as ThemeField, Heading, Button} from '@luminate/gatsby-theme-luminate/src'
-import {useUpdateCoffeeMutation, Coffee} from '../../graphql'
+import {Flex, Box, Field as ThemeField, Heading, Button, Combobox} from '@luminate/gatsby-theme-luminate/src'
+import {useUpdateCoffeeMutation, useListCountriesQuery, Coffee} from '../../graphql'
 import {Formik, Form, Field} from 'formik'
 
 interface Props {
@@ -10,10 +10,18 @@ interface Props {
 
 const CoffeeUpdateForm = ({coffee}: Props) => {
   const [updateCoffee, {data, error, loading}] = useUpdateCoffeeMutation()
+  const {data: countryData, error: countryError, loading: countryLoading} = useListCountriesQuery()
+  const options = countryData?.listCountries.edges.map(({node}) => {
+    return {
+      name: node?.name,
+      value: node?.id,
+    }
+  })
   return (
     <Formik
       initialValues={{
         name: coffee.name || '',
+        country: coffee.country?.id || '',
       }}
       onSubmit={(values, {setSubmitting}) => {
         updateCoffee({variables: {id: coffee.id, input: values}})
@@ -27,7 +35,7 @@ const CoffeeUpdateForm = ({coffee}: Props) => {
           })
       }}
     >
-      {() => {
+      {({setFieldValue}) => {
         return (
           <Form>
             <Flex sx={{flexDirection: 'column'}}>
@@ -36,6 +44,18 @@ const CoffeeUpdateForm = ({coffee}: Props) => {
               </Box>
               <Box>
                 <Field name="name" label="Name" as={ThemeField} />
+              </Box>
+              <Box>
+                {countryData ? (
+                  <Combobox
+                    label="Countries"
+                    // @ts-ignore
+                    options={options}
+                    // @ts-ignore
+                    initialSelectedItem={options?.find(option => option.value === coffee.country?.id)}
+                    onChange={value => setFieldValue('country', value.selectedItem?.value)}
+                  />
+                ) : null}
               </Box>
               <Box>
                 <Button type="submit">Submit</Button>
