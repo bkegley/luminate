@@ -781,6 +781,44 @@ export type CoffeeFragmentFragment = {__typename: 'Coffee'} & Pick<
     varieties: Maybe<Array<Maybe<{__typename: 'Variety'} & Pick<Variety, 'id' | 'name'>>>>
   }
 
+export type ListCountriesQueryVariables = {}
+
+export type ListCountriesQuery = {__typename: 'Query'} & {
+  listCountries: {__typename: 'CountryConnection'} & {
+    edges: Array<{__typename: 'CountryEdge'} & {node: Maybe<{__typename: 'Country'} & Pick<Country, 'id' | 'name'>>}>
+  }
+}
+
+export type GetCountryQueryVariables = {
+  id: Scalars['ID']
+}
+
+export type GetCountryQuery = {__typename: 'Query'} & {
+  getCountry: Maybe<{__typename: 'Country'} & CountryFragmentFragment>
+}
+
+export type CreateCountryMutationVariables = {
+  input: CreateCountryInput
+}
+
+export type CreateCountryMutation = {__typename: 'Mutation'} & {
+  createCountry: Maybe<{__typename: 'Country'} & CountryFragmentFragment>
+}
+
+export type UpdateCountryMutationVariables = {
+  id: Scalars['ID']
+  input: UpdateCountryInput
+}
+
+export type UpdateCountryMutation = {__typename: 'Mutation'} & {
+  updateCountry: Maybe<{__typename: 'Country'} & CountryFragmentFragment>
+}
+
+export type CountryFragmentFragment = {__typename: 'Country'} & Pick<
+  Country,
+  'id' | 'name' | 'createdAt' | 'updatedAt'
+> & {regions: Maybe<Array<Maybe<{__typename: 'Region'} & Pick<Region, 'id' | 'name'>>>>}
+
 export type LoginMutationVariables = {
   username: Scalars['String']
   password: Scalars['String']
@@ -807,6 +845,18 @@ export const CoffeeFragmentFragmentDoc = gql`
       name
     }
     elevation
+    createdAt
+    updatedAt
+  }
+`
+export const CountryFragmentFragmentDoc = gql`
+  fragment CountryFragment on Country {
+    id
+    name
+    regions {
+      id
+      name
+    }
     createdAt
     updatedAt
   }
@@ -934,6 +984,177 @@ export type UpdateCoffeeMutationResult = ApolloReactCommon.MutationResult<Update
 export type UpdateCoffeeMutationOptions = ApolloReactCommon.BaseMutationOptions<
   UpdateCoffeeMutation,
   UpdateCoffeeMutationVariables
+>
+export const ListCountriesDocument = gql`
+  query ListCountries {
+    listCountries {
+      edges {
+        node {
+          id
+          name
+        }
+      }
+    }
+  }
+`
+
+/**
+ * __useListCountriesQuery__
+ *
+ * To run a query within a React component, call `useListCountriesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListCountriesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useListCountriesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useListCountriesQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<ListCountriesQuery, ListCountriesQueryVariables>,
+) {
+  return ApolloReactHooks.useQuery<ListCountriesQuery, ListCountriesQueryVariables>(ListCountriesDocument, baseOptions)
+}
+export function useListCountriesLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ListCountriesQuery, ListCountriesQueryVariables>,
+) {
+  return ApolloReactHooks.useLazyQuery<ListCountriesQuery, ListCountriesQueryVariables>(
+    ListCountriesDocument,
+    baseOptions,
+  )
+}
+export type ListCountriesQueryHookResult = ReturnType<typeof useListCountriesQuery>
+export type ListCountriesLazyQueryHookResult = ReturnType<typeof useListCountriesLazyQuery>
+export type ListCountriesQueryResult = ApolloReactCommon.QueryResult<ListCountriesQuery, ListCountriesQueryVariables>
+export const GetCountryDocument = gql`
+  query GetCountry($id: ID!) {
+    getCountry(id: $id) {
+      ...CountryFragment
+    }
+  }
+  ${CountryFragmentFragmentDoc}
+`
+
+/**
+ * __useGetCountryQuery__
+ *
+ * To run a query within a React component, call `useGetCountryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCountryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCountryQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetCountryQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<GetCountryQuery, GetCountryQueryVariables>,
+) {
+  return ApolloReactHooks.useQuery<GetCountryQuery, GetCountryQueryVariables>(GetCountryDocument, baseOptions)
+}
+export function useGetCountryLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetCountryQuery, GetCountryQueryVariables>,
+) {
+  return ApolloReactHooks.useLazyQuery<GetCountryQuery, GetCountryQueryVariables>(GetCountryDocument, baseOptions)
+}
+export type GetCountryQueryHookResult = ReturnType<typeof useGetCountryQuery>
+export type GetCountryLazyQueryHookResult = ReturnType<typeof useGetCountryLazyQuery>
+export type GetCountryQueryResult = ApolloReactCommon.QueryResult<GetCountryQuery, GetCountryQueryVariables>
+export const CreateCountryDocument = gql`
+  mutation CreateCountry($input: CreateCountryInput!) {
+    createCountry(input: $input) {
+      ...CountryFragment
+    }
+  }
+  ${CountryFragmentFragmentDoc}
+`
+export type CreateCountryMutationFn = ApolloReactCommon.MutationFunction<
+  CreateCountryMutation,
+  CreateCountryMutationVariables
+>
+
+/**
+ * __useCreateCountryMutation__
+ *
+ * To run a mutation, you first call `useCreateCountryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCountryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCountryMutation, { data, loading, error }] = useCreateCountryMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateCountryMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<CreateCountryMutation, CreateCountryMutationVariables>,
+) {
+  return ApolloReactHooks.useMutation<CreateCountryMutation, CreateCountryMutationVariables>(
+    CreateCountryDocument,
+    baseOptions,
+  )
+}
+export type CreateCountryMutationHookResult = ReturnType<typeof useCreateCountryMutation>
+export type CreateCountryMutationResult = ApolloReactCommon.MutationResult<CreateCountryMutation>
+export type CreateCountryMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  CreateCountryMutation,
+  CreateCountryMutationVariables
+>
+export const UpdateCountryDocument = gql`
+  mutation UpdateCountry($id: ID!, $input: UpdateCountryInput!) {
+    updateCountry(id: $id, input: $input) {
+      ...CountryFragment
+    }
+  }
+  ${CountryFragmentFragmentDoc}
+`
+export type UpdateCountryMutationFn = ApolloReactCommon.MutationFunction<
+  UpdateCountryMutation,
+  UpdateCountryMutationVariables
+>
+
+/**
+ * __useUpdateCountryMutation__
+ *
+ * To run a mutation, you first call `useUpdateCountryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCountryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCountryMutation, { data, loading, error }] = useUpdateCountryMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateCountryMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateCountryMutation, UpdateCountryMutationVariables>,
+) {
+  return ApolloReactHooks.useMutation<UpdateCountryMutation, UpdateCountryMutationVariables>(
+    UpdateCountryDocument,
+    baseOptions,
+  )
+}
+export type UpdateCountryMutationHookResult = ReturnType<typeof useUpdateCountryMutation>
+export type UpdateCountryMutationResult = ApolloReactCommon.MutationResult<UpdateCountryMutation>
+export type UpdateCountryMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  UpdateCountryMutation,
+  UpdateCountryMutationVariables
 >
 export const LoginDocument = gql`
   mutation Login($username: String!, $password: String!) {

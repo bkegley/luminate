@@ -1,0 +1,39 @@
+query ListCountries {
+  listCountries {
+    edges {
+      node {
+        id
+        name
+      }
+    }
+  }
+}
+
+query GetCountry($id: ID!) {
+  getCountry(id: $id) {
+    ...CountryFragment
+  }
+}
+
+mutation CreateCountry($input: CreateCountryInput!) {
+  createCountry(input: $input) {
+    ...CountryFragment
+  }
+}
+
+mutation UpdateCountry($id: ID!, $input: UpdateCountryInput!) {
+  updateCountry(id: $id, input: $input) {
+    ...CountryFragment
+  }
+}
+
+fragment CountryFragment on Country {
+  id
+  name
+  regions {
+    id
+    name
+  }
+  createdAt
+  updatedAt
+}

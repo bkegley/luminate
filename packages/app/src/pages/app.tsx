@@ -5,6 +5,7 @@ import {Route, Switch, BrowserRouter} from 'react-router-dom'
 import Layout from '../components/Layout'
 import Home from '../app/Home'
 import Coffees from '../app/Coffees'
+import Countries from '../app/Countries'
 
 const IndexPage = () => {
   const {data} = useUser()
@@ -23,6 +24,9 @@ const IndexPage = () => {
           </Route>
           <Route path="/app/coffees">
             <Coffees />
+          </Route>
+          <Route path="/app/countries">
+            <Countries />
           </Route>
         </Switch>
       </Layout>

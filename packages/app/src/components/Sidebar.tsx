@@ -9,6 +9,7 @@ const Sidebar = () => {
         <h3>Luminate</h3>
       </Link>
       <Link to="/app/coffees">Coffees</Link>
+      <Link to="/app/countries">Countries</Link>
     </div>
   )
 }
