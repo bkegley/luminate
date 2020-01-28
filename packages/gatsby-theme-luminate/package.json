@@ -20,6 +20,7 @@
     "gatsby-plugin-theme-ui": "^0.2.53",
     "gatsby-plugin-typescript": "^2.1.23",
     "lodash.merge": "^4.6.2",
+    "react-spring": "^8.0.27",
     "theme-ui": "^0.2.52"
   },
   "peerDependencies": {
