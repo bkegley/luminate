@@ -4,79 +4,21 @@ import React from 'react'
 import {useSelect} from 'downshift'
 import {Box, Label, Button} from '@theme-ui/components'
 import DownArrow from './DownArrow'
+import defaultStyles, {IStyles} from './styles'
 
 interface IItem {
   name: string
   value: string | number
 }
 
-interface IStyles {
-  root: object
-  button: object
-  label: object
-  menu: object
-  item: object
-  highlighted: object
-  selected: object
-}
-
 export interface SelectProps {
-  options: IItem[]
   label: React.ReactNode
+  options: IItem[]
   styles?: IStyles
 }
 
-export const defaultStyles: IStyles = {
-  root: {
-    position: 'relative',
-  },
-  label: {},
-  button: {
-    variant: 'buttons.text',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    width: '100%',
-    p: 2,
-    color: 'inherit',
-    bg: 'inherit',
-    border: '1px solid black',
-    textTransform: 'inherit',
-    '&:hover': {bg: 'inherit', color: 'inherit'},
-  },
-  menu: {
-    position: 'absolute',
-    zIndex: 1000,
-    width: '100%',
-    margin: 0,
-    padding: 0,
-    maxHeight: 250,
-    overflowY: 'auto',
-    bg: 'white',
-    listStyleType: 'none',
-    top: 5,
-    left: 0,
-    right: 0,
-    boxShadow: 'medium',
-    borderRadius: 'medium',
-  },
-  item: {
-    py: 2,
-    px: 3,
-    borderLeftWidth: '4px',
-    borderLeftStyle: 'solid',
-    borderLeftColor: 'transparent',
-  },
-  highlighted: {
-    color: 'primary',
-  },
-  selected: {
-    borderLeftColor: 'primary',
-  },
-}
-
 const Select = ({options, label, styles = defaultStyles}: SelectProps) => {
-  const itemToString = (option: IItem) => option.name
+  const itemToString = (option: IItem | null) => (option ? option.name : '')
 
   const {
     isOpen,
@@ -93,7 +35,7 @@ const Select = ({options, label, styles = defaultStyles}: SelectProps) => {
       <Label sx={styles.label} {...getLabelProps()}>
         {label}
       </Label>
-      <Button type="button" sx={styles.button} {...getToggleButtonProps()}>
+      <Button type="button" sx={styles.field} {...getToggleButtonProps()}>
         <span>{selectedItem ? itemToString(selectedItem) : itemToString(options[0])}</span>
         <DownArrow />
       </Button>

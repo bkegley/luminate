@@ -1,4 +1,5 @@
 export * from '@theme-ui/components'
 import Select, {SelectProps} from './Select'
+import Combobox, {ComboboxProps} from './Combobox'
 
-export {Select, SelectProps}
+export {Combobox, ComboboxProps, Select, SelectProps}
