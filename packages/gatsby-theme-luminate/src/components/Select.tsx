@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import {jsx} from 'theme-ui'
 import React from 'react'
-import {useSelect} from 'downshift'
+import {useSelect, UseComboboxState} from 'downshift'
 import {Box, Label, Button} from '@theme-ui/components'
 import DownArrow from './DownArrow'
 import defaultStyles, {IStyles} from './styles'
@@ -13,11 +13,12 @@ interface IItem {
 
 export interface SelectProps {
   label: React.ReactNode
+  onChange?: (values: Partial<UseComboboxState<IItem>>) => void
   options: IItem[]
   styles?: IStyles
 }
 
-const Select = ({options, label, styles = defaultStyles}: SelectProps) => {
+const Select = ({onChange, options, label, styles = defaultStyles}: SelectProps) => {
   const itemToString = (option: IItem | null) => (option ? option.name : '')
 
   const {
@@ -28,7 +29,15 @@ const Select = ({options, label, styles = defaultStyles}: SelectProps) => {
     getMenuProps,
     highlightedIndex,
     getItemProps,
-  } = useSelect({items: options, itemToString})
+  } = useSelect({
+    items: options,
+    itemToString,
+    onSelectedItemChange: changes => {
+      if (onChange) {
+        onChange(changes)
+      }
+    },
+  })
 
   return (
     <Box sx={styles.root}>
