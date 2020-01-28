@@ -44,15 +44,20 @@ const theme: Theme = {
   },
   radii: {
     none: 0,
-    small: 2,
-    medium: 4,
-    large: 8,
+    small: 4,
+    medium: 8,
+    large: 12,
+  },
+  shadows: {
+    small: '1px 1px 9px 2px hsla(0, 0%, 0%, 0.07)',
+    medium: '7px 3px 11px 7px hsla(0, 0%, 0%, 0.1)',
+    large: '7px 3px 13px 12px hsla(0, 0%, 0%, 0.15)',
   },
   cards: {
     primary: {
       padding: 3,
       borderRadius: 'medium',
-      boxShadow: 'rgba(65, 69, 88, 0.1) 0px 7px 14px 0px, rgba(0, 0, 0, 0.07) 0px 3px 6px 0px;',
+      boxShadow: 'medium',
     },
     compact: {
       padding: 1,
