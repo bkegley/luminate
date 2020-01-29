@@ -2,7 +2,7 @@
 import React from 'react'
 import {jsx} from 'theme-ui'
 import {useGetCoffeeQuery} from '../../graphql'
-import {Button} from '@luminate/gatsby-theme-luminate/src'
+import {Box, Button, Drawer} from '@luminate/gatsby-theme-luminate/src'
 import {RouteComponentProps} from 'react-router-dom'
 import CoffeeUpdateForm from './UpdateForm'
 
@@ -38,7 +38,17 @@ const CoffeeDetailView = ({match}: Props) => {
       <Button onClick={toggleUpdateForm} variant="secondary">
         Edit
       </Button>
-      {showUpdateCoffee ? <CoffeeUpdateForm coffee={data.getCoffee} /> : null}
+      <Drawer
+        from="right"
+        onClickOutside={toggleUpdateForm}
+        open={showUpdateCoffee}
+        bg="white"
+        width={['90%', '75%', '50%']}
+      >
+        <Box sx={{p: 4}}>
+          <CoffeeUpdateForm coffee={data.getCoffee} />
+        </Box>
+      </Drawer>
     </div>
   )
 }
