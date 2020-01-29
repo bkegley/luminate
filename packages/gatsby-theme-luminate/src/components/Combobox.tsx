@@ -36,6 +36,11 @@ const Combobox = ({
 
   const [inputOptions, setInputOptions] = React.useState(initialOptions)
 
+  // update options on options prop change
+  React.useEffect(() => {
+    setInputOptions(initialOptions)
+  }, [options])
+
   const {
     isOpen,
     getToggleButtonProps,
