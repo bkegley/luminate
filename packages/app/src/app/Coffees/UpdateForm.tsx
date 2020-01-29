@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import {jsx} from 'theme-ui'
 import {Flex, Box, Field as ThemeField, Heading, Button, Combobox} from '@luminate/gatsby-theme-luminate/src'
-import {useUpdateCoffeeMutation, useListCountriesQuery, useListRegionsQuery, Coffee} from '../../graphql'
+import {useUpdateCoffeeMutation, useListCountriesQuery, useListRegionsQuery, Coffee, OperatorEnum} from '../../graphql'
 import {Formik, Form, Field} from 'formik'
 
 interface Props {
@@ -12,7 +12,7 @@ const CoffeeUpdateForm = ({coffee}: Props) => {
   const [updateCoffee, {data, error, loading}] = useUpdateCoffeeMutation()
   const {data: countryData, error: countryError, loading: countryLoading} = useListCountriesQuery()
   const {data: regionData, error: regionError, loading: regionLoading, refetch: regionRefetch} = useListRegionsQuery({
-    variables: {query: [{field: 'country', operator: 'eq', value: coffee.country?.id}]},
+    variables: {query: [{field: 'country', operator: 'eq' as OperatorEnum, value: coffee.country?.id}]},
   })
 
   const countryOptions = countryData?.listCountries.edges.map(({node}) => {
@@ -70,7 +70,9 @@ const CoffeeUpdateForm = ({coffee}: Props) => {
                         if (value.selectedItem.value !== values.country) {
                           setFieldValue('region', '')
                         }
-                        regionRefetch({query: [{field: 'country', operator: 'eq', value: value.selectedItem.value}]})
+                        regionRefetch({
+                          query: [{field: 'country', operator: 'eq' as OperatorEnum, value: value.selectedItem.value}],
+                        })
                       }
                       setFieldValue('country', value.selectedItem?.value)
                     }}
