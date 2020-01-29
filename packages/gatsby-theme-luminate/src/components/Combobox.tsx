@@ -51,6 +51,7 @@ const Combobox = ({
     selectedItem,
     highlightedIndex,
     getItemProps,
+    setInputValue,
   } = useCombobox({
     initialSelectedItem,
     items: inputOptions,
@@ -76,6 +77,10 @@ const Combobox = ({
       }
     },
   })
+
+  React.useEffect(() => {
+    setInputValue(initialSelectedItem?.name.toString() || '')
+  }, [initialSelectedItem])
 
   return (
     <Box sx={styles.root}>
