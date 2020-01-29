@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import {jsx} from 'theme-ui'
 import {Flex, Box, Field as ThemeField, Heading, Button, Combobox} from '@luminate/gatsby-theme-luminate/src'
-import {useUpdateCoffeeMutation, useListCountriesQuery, Coffee} from '../../graphql'
+import {useUpdateCoffeeMutation, useListCountriesQuery, useListRegionsQuery, Coffee} from '../../graphql'
 import {Formik, Form, Field} from 'formik'
 
 interface Props {
@@ -11,7 +11,18 @@ interface Props {
 const CoffeeUpdateForm = ({coffee}: Props) => {
   const [updateCoffee, {data, error, loading}] = useUpdateCoffeeMutation()
   const {data: countryData, error: countryError, loading: countryLoading} = useListCountriesQuery()
-  const options = countryData?.listCountries.edges.map(({node}) => {
+  const {data: regionData, error: regionError, loading: regionLoading, refetch: regionRefetch} = useListRegionsQuery({
+    variables: {query: [{field: 'country', operator: 'eq', value: coffee.country?.id}]},
+  })
+
+  const countryOptions = countryData?.listCountries.edges.map(({node}) => {
+    return {
+      name: node?.name,
+      value: node?.id,
+    }
+  })
+
+  const regionOptions = regionData?.listRegions.edges.map(({node}) => {
     return {
       name: node?.name,
       value: node?.id,
@@ -22,6 +33,7 @@ const CoffeeUpdateForm = ({coffee}: Props) => {
       initialValues={{
         name: coffee.name || '',
         country: coffee.country?.id || '',
+        region: coffee.region?.id || '',
       }}
       onSubmit={(values, {setSubmitting}) => {
         updateCoffee({variables: {id: coffee.id, input: values}})
@@ -35,7 +47,7 @@ const CoffeeUpdateForm = ({coffee}: Props) => {
           })
       }}
     >
-      {({setFieldValue}) => {
+      {({setFieldValue, values}) => {
         return (
           <Form>
             <Flex sx={{flexDirection: 'column'}}>
@@ -48,12 +60,32 @@ const CoffeeUpdateForm = ({coffee}: Props) => {
               <Box>
                 {countryData ? (
                   <Combobox
-                    label="Countries"
+                    label="Country"
                     // @ts-ignore
-                    options={options}
+                    options={countryOptions}
                     // @ts-ignore
-                    initialSelectedItem={options?.find(option => option.value === coffee.country?.id)}
-                    onChange={value => setFieldValue('country', value.selectedItem?.value)}
+                    initialSelectedItem={countryOptions?.find(option => option.value === values.country)}
+                    onChange={value => {
+                      if (value.selectedItem) {
+                        if (value.selectedItem.value !== values.country) {
+                          setFieldValue('region', '')
+                        }
+                        regionRefetch({query: [{field: 'country', operator: 'eq', value: value.selectedItem.value}]})
+                      }
+                      setFieldValue('country', value.selectedItem?.value)
+                    }}
+                  />
+                ) : null}
+              </Box>
+              <Box>
+                {regionData ? (
+                  <Combobox
+                    label="Region"
+                    // @ts-ignore
+                    options={regionOptions}
+                    // @ts-ignore
+                    initialSelectedItem={regionOptions?.find(option => option.value === values.region)}
+                    onChange={value => setFieldValue('region', value.selectedItem?.value)}
                   />
                 ) : null}
               </Box>
