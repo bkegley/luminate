@@ -763,6 +763,14 @@ export type GetCoffeeQueryVariables = {
 
 export type GetCoffeeQuery = {__typename: 'Query'} & {getCoffee: Maybe<{__typename: 'Coffee'} & CoffeeFragmentFragment>}
 
+export type CreateCoffeeMutationVariables = {
+  input: CreateCoffeeInput
+}
+
+export type CreateCoffeeMutation = {__typename: 'Mutation'} & {
+  createCoffee: Maybe<{__typename: 'Coffee'} & CoffeeFragmentFragment>
+}
+
 export type UpdateCoffeeMutationVariables = {
   id: Scalars['ID']
   input: UpdateCoffeeInput
@@ -1057,6 +1065,50 @@ export function useGetCoffeeLazyQuery(
 export type GetCoffeeQueryHookResult = ReturnType<typeof useGetCoffeeQuery>
 export type GetCoffeeLazyQueryHookResult = ReturnType<typeof useGetCoffeeLazyQuery>
 export type GetCoffeeQueryResult = ApolloReactCommon.QueryResult<GetCoffeeQuery, GetCoffeeQueryVariables>
+export const CreateCoffeeDocument = gql`
+  mutation CreateCoffee($input: CreateCoffeeInput!) {
+    createCoffee(input: $input) {
+      ...CoffeeFragment
+    }
+  }
+  ${CoffeeFragmentFragmentDoc}
+`
+export type CreateCoffeeMutationFn = ApolloReactCommon.MutationFunction<
+  CreateCoffeeMutation,
+  CreateCoffeeMutationVariables
+>
+
+/**
+ * __useCreateCoffeeMutation__
+ *
+ * To run a mutation, you first call `useCreateCoffeeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCoffeeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCoffeeMutation, { data, loading, error }] = useCreateCoffeeMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateCoffeeMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<CreateCoffeeMutation, CreateCoffeeMutationVariables>,
+) {
+  return ApolloReactHooks.useMutation<CreateCoffeeMutation, CreateCoffeeMutationVariables>(
+    CreateCoffeeDocument,
+    baseOptions,
+  )
+}
+export type CreateCoffeeMutationHookResult = ReturnType<typeof useCreateCoffeeMutation>
+export type CreateCoffeeMutationResult = ApolloReactCommon.MutationResult<CreateCoffeeMutation>
+export type CreateCoffeeMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  CreateCoffeeMutation,
+  CreateCoffeeMutationVariables
+>
 export const UpdateCoffeeDocument = gql`
   mutation UpdateCoffee($id: ID!, $input: UpdateCoffeeInput!) {
     updateCoffee(id: $id, input: $input) {

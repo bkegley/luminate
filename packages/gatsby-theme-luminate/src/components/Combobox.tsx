@@ -8,7 +8,7 @@ import DownArrow from './DownArrow'
 
 interface IItem {
   name: string
-  value: string | number
+  value: string
 }
 
 export interface ComboboxProps {
