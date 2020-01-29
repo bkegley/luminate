@@ -10,6 +10,8 @@ const Sidebar = () => {
       </Link>
       <Link to="/app/coffees">Coffees</Link>
       <Link to="/app/countries">Countries</Link>
+      <Link to="/app/regions">Regions</Link>
+      <Link to="/app/farms">Farms</Link>
     </div>
   )
 }

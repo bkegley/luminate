@@ -6,6 +6,8 @@ import Layout from '../components/Layout'
 import Home from '../app/Home'
 import Coffees from '../app/Coffees'
 import Countries from '../app/Countries'
+import Farms from '../app/Farms'
+import Regions from '../app/Regions'
 
 const IndexPage = () => {
   const {data} = useUser()
@@ -27,6 +29,12 @@ const IndexPage = () => {
           </Route>
           <Route path="/app/countries">
             <Countries />
+          </Route>
+          <Route path="/app/regions">
+            <Regions />
+          </Route>
+          <Route path="/app/farms">
+            <Farms />
           </Route>
         </Switch>
       </Layout>

@@ -1,0 +1,42 @@
+query ListRegions($cursor: String, $limit: Int, $query: [QueryInput]) {
+  listRegions(cursor: $cursor, limit: $limit, query: $query) {
+    edges {
+      node {
+        id
+        name
+      }
+    }
+  }
+}
+
+query GetRegion($id: ID!) {
+  getRegion(id: $id) {
+    ...RegionFragment
+  }
+}
+
+mutation CreateRegion($input: CreateRegionInput!) {
+  createRegion(input: $input) {
+    ...RegionFragment
+  }
+}
+
+mutation UpdateRegion($id: ID!, $input: UpdateRegionInput!) {
+  updateRegion(id: $id, input: $input) {
+    ...RegionFragment
+  }
+}
+
+fragment RegionFragment on Region {
+  id
+  name
+  country {
+    id
+    name
+  }
+  farms {
+    id
+  }
+  createdAt
+  updatedAt
+}

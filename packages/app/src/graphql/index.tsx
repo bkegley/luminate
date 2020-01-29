@@ -819,6 +819,86 @@ export type CountryFragmentFragment = {__typename: 'Country'} & Pick<
   'id' | 'name' | 'createdAt' | 'updatedAt'
 > & {regions: Maybe<Array<Maybe<{__typename: 'Region'} & Pick<Region, 'id' | 'name'>>>>}
 
+export type ListFarmsQueryVariables = {}
+
+export type ListFarmsQuery = {__typename: 'Query'} & {
+  listFarms: {__typename: 'FarmConnection'} & {
+    edges: Array<{__typename: 'FarmEdge'} & {node: Maybe<{__typename: 'Farm'} & Pick<Farm, 'id' | 'name'>>}>
+  }
+}
+
+export type GetFarmQueryVariables = {
+  id: Scalars['ID']
+}
+
+export type GetFarmQuery = {__typename: 'Query'} & {getFarm: Maybe<{__typename: 'Farm'} & FarmFragmentFragment>}
+
+export type CreateFarmMutationVariables = {
+  input: CreateFarmInput
+}
+
+export type CreateFarmMutation = {__typename: 'Mutation'} & {
+  createFarm: Maybe<{__typename: 'Farm'} & FarmFragmentFragment>
+}
+
+export type UpdateFarmMutationVariables = {
+  id: Scalars['ID']
+  input: UpdateFarmInput
+}
+
+export type UpdateFarmMutation = {__typename: 'Mutation'} & {
+  updateFarm: Maybe<{__typename: 'Farm'} & FarmFragmentFragment>
+}
+
+export type FarmFragmentFragment = {__typename: 'Farm'} & Pick<Farm, 'id' | 'name' | 'createdAt' | 'updatedAt'> & {
+    country: Maybe<{__typename: 'Country'} & Pick<Country, 'id' | 'name'>>
+    region: Maybe<{__typename: 'Region'} & Pick<Region, 'id' | 'name'>>
+    farmZones: Maybe<Array<Maybe<{__typename: 'FarmZone'} & Pick<FarmZone, 'id' | 'name' | 'createdAt' | 'updatedAt'>>>>
+  }
+
+export type ListRegionsQueryVariables = {
+  cursor?: Maybe<Scalars['String']>
+  limit?: Maybe<Scalars['Int']>
+  query?: Maybe<Array<Maybe<QueryInput>>>
+}
+
+export type ListRegionsQuery = {__typename: 'Query'} & {
+  listRegions: {__typename: 'RegionConnection'} & {
+    edges: Array<{__typename: 'RegionEdge'} & {node: Maybe<{__typename: 'Region'} & Pick<Region, 'id' | 'name'>>}>
+  }
+}
+
+export type GetRegionQueryVariables = {
+  id: Scalars['ID']
+}
+
+export type GetRegionQuery = {__typename: 'Query'} & {getRegion: Maybe<{__typename: 'Region'} & RegionFragmentFragment>}
+
+export type CreateRegionMutationVariables = {
+  input: CreateRegionInput
+}
+
+export type CreateRegionMutation = {__typename: 'Mutation'} & {
+  createRegion: Maybe<{__typename: 'Region'} & RegionFragmentFragment>
+}
+
+export type UpdateRegionMutationVariables = {
+  id: Scalars['ID']
+  input: UpdateRegionInput
+}
+
+export type UpdateRegionMutation = {__typename: 'Mutation'} & {
+  updateRegion: Maybe<{__typename: 'Region'} & RegionFragmentFragment>
+}
+
+export type RegionFragmentFragment = {__typename: 'Region'} & Pick<
+  Region,
+  'id' | 'name' | 'createdAt' | 'updatedAt'
+> & {
+    country: Maybe<{__typename: 'Country'} & Pick<Country, 'id' | 'name'>>
+    farms: Maybe<Array<Maybe<{__typename: 'Farm'} & Pick<Farm, 'id'>>>>
+  }
+
 export type LoginMutationVariables = {
   username: Scalars['String']
   password: Scalars['String']
@@ -856,6 +936,43 @@ export const CountryFragmentFragmentDoc = gql`
     regions {
       id
       name
+    }
+    createdAt
+    updatedAt
+  }
+`
+export const FarmFragmentFragmentDoc = gql`
+  fragment FarmFragment on Farm {
+    id
+    name
+    country {
+      id
+      name
+    }
+    region {
+      id
+      name
+    }
+    farmZones {
+      id
+      name
+      createdAt
+      updatedAt
+    }
+    createdAt
+    updatedAt
+  }
+`
+export const RegionFragmentFragmentDoc = gql`
+  fragment RegionFragment on Region {
+    id
+    name
+    country {
+      id
+      name
+    }
+    farms {
+      id
     }
     createdAt
     updatedAt
@@ -1155,6 +1272,331 @@ export type UpdateCountryMutationResult = ApolloReactCommon.MutationResult<Updat
 export type UpdateCountryMutationOptions = ApolloReactCommon.BaseMutationOptions<
   UpdateCountryMutation,
   UpdateCountryMutationVariables
+>
+export const ListFarmsDocument = gql`
+  query ListFarms {
+    listFarms {
+      edges {
+        node {
+          id
+          name
+        }
+      }
+    }
+  }
+`
+
+/**
+ * __useListFarmsQuery__
+ *
+ * To run a query within a React component, call `useListFarmsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListFarmsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useListFarmsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useListFarmsQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<ListFarmsQuery, ListFarmsQueryVariables>,
+) {
+  return ApolloReactHooks.useQuery<ListFarmsQuery, ListFarmsQueryVariables>(ListFarmsDocument, baseOptions)
+}
+export function useListFarmsLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ListFarmsQuery, ListFarmsQueryVariables>,
+) {
+  return ApolloReactHooks.useLazyQuery<ListFarmsQuery, ListFarmsQueryVariables>(ListFarmsDocument, baseOptions)
+}
+export type ListFarmsQueryHookResult = ReturnType<typeof useListFarmsQuery>
+export type ListFarmsLazyQueryHookResult = ReturnType<typeof useListFarmsLazyQuery>
+export type ListFarmsQueryResult = ApolloReactCommon.QueryResult<ListFarmsQuery, ListFarmsQueryVariables>
+export const GetFarmDocument = gql`
+  query GetFarm($id: ID!) {
+    getFarm(id: $id) {
+      ...FarmFragment
+    }
+  }
+  ${FarmFragmentFragmentDoc}
+`
+
+/**
+ * __useGetFarmQuery__
+ *
+ * To run a query within a React component, call `useGetFarmQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetFarmQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetFarmQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetFarmQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetFarmQuery, GetFarmQueryVariables>) {
+  return ApolloReactHooks.useQuery<GetFarmQuery, GetFarmQueryVariables>(GetFarmDocument, baseOptions)
+}
+export function useGetFarmLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetFarmQuery, GetFarmQueryVariables>,
+) {
+  return ApolloReactHooks.useLazyQuery<GetFarmQuery, GetFarmQueryVariables>(GetFarmDocument, baseOptions)
+}
+export type GetFarmQueryHookResult = ReturnType<typeof useGetFarmQuery>
+export type GetFarmLazyQueryHookResult = ReturnType<typeof useGetFarmLazyQuery>
+export type GetFarmQueryResult = ApolloReactCommon.QueryResult<GetFarmQuery, GetFarmQueryVariables>
+export const CreateFarmDocument = gql`
+  mutation CreateFarm($input: CreateFarmInput!) {
+    createFarm(input: $input) {
+      ...FarmFragment
+    }
+  }
+  ${FarmFragmentFragmentDoc}
+`
+export type CreateFarmMutationFn = ApolloReactCommon.MutationFunction<CreateFarmMutation, CreateFarmMutationVariables>
+
+/**
+ * __useCreateFarmMutation__
+ *
+ * To run a mutation, you first call `useCreateFarmMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateFarmMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createFarmMutation, { data, loading, error }] = useCreateFarmMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateFarmMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<CreateFarmMutation, CreateFarmMutationVariables>,
+) {
+  return ApolloReactHooks.useMutation<CreateFarmMutation, CreateFarmMutationVariables>(CreateFarmDocument, baseOptions)
+}
+export type CreateFarmMutationHookResult = ReturnType<typeof useCreateFarmMutation>
+export type CreateFarmMutationResult = ApolloReactCommon.MutationResult<CreateFarmMutation>
+export type CreateFarmMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  CreateFarmMutation,
+  CreateFarmMutationVariables
+>
+export const UpdateFarmDocument = gql`
+  mutation UpdateFarm($id: ID!, $input: UpdateFarmInput!) {
+    updateFarm(id: $id, input: $input) {
+      ...FarmFragment
+    }
+  }
+  ${FarmFragmentFragmentDoc}
+`
+export type UpdateFarmMutationFn = ApolloReactCommon.MutationFunction<UpdateFarmMutation, UpdateFarmMutationVariables>
+
+/**
+ * __useUpdateFarmMutation__
+ *
+ * To run a mutation, you first call `useUpdateFarmMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateFarmMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateFarmMutation, { data, loading, error }] = useUpdateFarmMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateFarmMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateFarmMutation, UpdateFarmMutationVariables>,
+) {
+  return ApolloReactHooks.useMutation<UpdateFarmMutation, UpdateFarmMutationVariables>(UpdateFarmDocument, baseOptions)
+}
+export type UpdateFarmMutationHookResult = ReturnType<typeof useUpdateFarmMutation>
+export type UpdateFarmMutationResult = ApolloReactCommon.MutationResult<UpdateFarmMutation>
+export type UpdateFarmMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  UpdateFarmMutation,
+  UpdateFarmMutationVariables
+>
+export const ListRegionsDocument = gql`
+  query ListRegions($cursor: String, $limit: Int, $query: [QueryInput]) {
+    listRegions(cursor: $cursor, limit: $limit, query: $query) {
+      edges {
+        node {
+          id
+          name
+        }
+      }
+    }
+  }
+`
+
+/**
+ * __useListRegionsQuery__
+ *
+ * To run a query within a React component, call `useListRegionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListRegionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useListRegionsQuery({
+ *   variables: {
+ *      cursor: // value for 'cursor'
+ *      limit: // value for 'limit'
+ *      query: // value for 'query'
+ *   },
+ * });
+ */
+export function useListRegionsQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<ListRegionsQuery, ListRegionsQueryVariables>,
+) {
+  return ApolloReactHooks.useQuery<ListRegionsQuery, ListRegionsQueryVariables>(ListRegionsDocument, baseOptions)
+}
+export function useListRegionsLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ListRegionsQuery, ListRegionsQueryVariables>,
+) {
+  return ApolloReactHooks.useLazyQuery<ListRegionsQuery, ListRegionsQueryVariables>(ListRegionsDocument, baseOptions)
+}
+export type ListRegionsQueryHookResult = ReturnType<typeof useListRegionsQuery>
+export type ListRegionsLazyQueryHookResult = ReturnType<typeof useListRegionsLazyQuery>
+export type ListRegionsQueryResult = ApolloReactCommon.QueryResult<ListRegionsQuery, ListRegionsQueryVariables>
+export const GetRegionDocument = gql`
+  query GetRegion($id: ID!) {
+    getRegion(id: $id) {
+      ...RegionFragment
+    }
+  }
+  ${RegionFragmentFragmentDoc}
+`
+
+/**
+ * __useGetRegionQuery__
+ *
+ * To run a query within a React component, call `useGetRegionQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetRegionQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetRegionQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetRegionQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<GetRegionQuery, GetRegionQueryVariables>,
+) {
+  return ApolloReactHooks.useQuery<GetRegionQuery, GetRegionQueryVariables>(GetRegionDocument, baseOptions)
+}
+export function useGetRegionLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetRegionQuery, GetRegionQueryVariables>,
+) {
+  return ApolloReactHooks.useLazyQuery<GetRegionQuery, GetRegionQueryVariables>(GetRegionDocument, baseOptions)
+}
+export type GetRegionQueryHookResult = ReturnType<typeof useGetRegionQuery>
+export type GetRegionLazyQueryHookResult = ReturnType<typeof useGetRegionLazyQuery>
+export type GetRegionQueryResult = ApolloReactCommon.QueryResult<GetRegionQuery, GetRegionQueryVariables>
+export const CreateRegionDocument = gql`
+  mutation CreateRegion($input: CreateRegionInput!) {
+    createRegion(input: $input) {
+      ...RegionFragment
+    }
+  }
+  ${RegionFragmentFragmentDoc}
+`
+export type CreateRegionMutationFn = ApolloReactCommon.MutationFunction<
+  CreateRegionMutation,
+  CreateRegionMutationVariables
+>
+
+/**
+ * __useCreateRegionMutation__
+ *
+ * To run a mutation, you first call `useCreateRegionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateRegionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createRegionMutation, { data, loading, error }] = useCreateRegionMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateRegionMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<CreateRegionMutation, CreateRegionMutationVariables>,
+) {
+  return ApolloReactHooks.useMutation<CreateRegionMutation, CreateRegionMutationVariables>(
+    CreateRegionDocument,
+    baseOptions,
+  )
+}
+export type CreateRegionMutationHookResult = ReturnType<typeof useCreateRegionMutation>
+export type CreateRegionMutationResult = ApolloReactCommon.MutationResult<CreateRegionMutation>
+export type CreateRegionMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  CreateRegionMutation,
+  CreateRegionMutationVariables
+>
+export const UpdateRegionDocument = gql`
+  mutation UpdateRegion($id: ID!, $input: UpdateRegionInput!) {
+    updateRegion(id: $id, input: $input) {
+      ...RegionFragment
+    }
+  }
+  ${RegionFragmentFragmentDoc}
+`
+export type UpdateRegionMutationFn = ApolloReactCommon.MutationFunction<
+  UpdateRegionMutation,
+  UpdateRegionMutationVariables
+>
+
+/**
+ * __useUpdateRegionMutation__
+ *
+ * To run a mutation, you first call `useUpdateRegionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateRegionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateRegionMutation, { data, loading, error }] = useUpdateRegionMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateRegionMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateRegionMutation, UpdateRegionMutationVariables>,
+) {
+  return ApolloReactHooks.useMutation<UpdateRegionMutation, UpdateRegionMutationVariables>(
+    UpdateRegionDocument,
+    baseOptions,
+  )
+}
+export type UpdateRegionMutationHookResult = ReturnType<typeof useUpdateRegionMutation>
+export type UpdateRegionMutationResult = ApolloReactCommon.MutationResult<UpdateRegionMutation>
+export type UpdateRegionMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  UpdateRegionMutation,
+  UpdateRegionMutationVariables
 >
 export const LoginDocument = gql`
   mutation Login($username: String!, $password: String!) {
