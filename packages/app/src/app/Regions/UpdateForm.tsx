@@ -51,7 +51,7 @@ const RegionUpdateForm = ({
     },
   })
   const [deleteRegion, {data: deleteData, error: deleteError, loading: deleteLoading}] = useDeleteRegionMutation({
-    variables: {id: 'a' + region.id.slice(1)},
+    variables: {id: region.id},
     refetchQueries: [{query: ListRegionsDocument}],
     onCompleted: data => {
       if (onDeleteSuccess) {
