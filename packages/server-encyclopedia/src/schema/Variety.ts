@@ -1,4 +1,4 @@
-import {gql} from 'apollo-server-express'
+import {gql, ApolloError} from 'apollo-server-express'
 import {createConnectionResults, LoaderFn} from '@luminate/graphql-utils'
 import {Resolvers} from '../types'
 import {VarietyDocument} from '@luminate/mongo'
@@ -70,6 +70,9 @@ const resolvers: Resolvers = {
     deleteVariety: async (parent, {id}, {models}) => {
       const {Variety} = models
       const variety = await Variety.findByIdAndDelete(id)
+      if (!variety) {
+        throw new ApolloError('Document not found')
+      }
       return variety
     },
   },

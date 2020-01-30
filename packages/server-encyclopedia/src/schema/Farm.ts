@@ -1,4 +1,4 @@
-import {gql} from 'apollo-server-express'
+import {gql, ApolloError} from 'apollo-server-express'
 import {createConnectionResults, LoaderFn} from '@luminate/graphql-utils'
 import {Resolvers} from '../types'
 import {FarmDocument, FarmZoneDocument} from '@luminate/mongo'
@@ -74,6 +74,9 @@ const resolvers: Resolvers = {
     deleteFarm: async (parent, {id}, {models}) => {
       const {Farm} = models
       const farm = await Farm.findByIdAndDelete(id)
+      if (!farm) {
+        throw new ApolloError('Document not found')
+      }
       return farm
     },
   },

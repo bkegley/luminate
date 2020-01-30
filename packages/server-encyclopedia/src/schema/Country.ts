@@ -1,4 +1,4 @@
-import {gql} from 'apollo-server-express'
+import {gql, ApolloError} from 'apollo-server-express'
 import {createConnectionResults, LoaderFn} from '@luminate/graphql-utils'
 import {Resolvers, Country} from '../types'
 import {CountryDocument, RegionDocument} from '@luminate/mongo'
@@ -68,6 +68,9 @@ const resolvers: Resolvers = {
     deleteCountry: async (parent, {id}, {models}) => {
       const {Country} = models
       const country = await Country.findByIdAndDelete(id)
+      if (!country) {
+        throw new ApolloError('Document not found')
+      }
       return country
     },
   },

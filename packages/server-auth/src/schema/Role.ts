@@ -1,4 +1,4 @@
-import {gql} from 'apollo-server-express'
+import {gql, ApolloError} from 'apollo-server-express'
 import {createConnectionResults, LoaderFn} from '@luminate/graphql-utils'
 import {Resolvers} from '../types'
 import {RoleDocument} from '@luminate/mongo'
@@ -70,6 +70,9 @@ const resolvers: Resolvers = {
     deleteRole: async (parent, {id}, {models}) => {
       const {Role} = models
       const role = await Role.findByIdAndDelete(id)
+      if (!role) {
+        throw new ApolloError('Document not found')
+      }
       return role
     },
   },

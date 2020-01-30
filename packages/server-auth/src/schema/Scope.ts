@@ -1,4 +1,4 @@
-import {gql} from 'apollo-server-express'
+import {gql, ApolloError} from 'apollo-server-express'
 import {createConnectionResults, LoaderFn} from '@luminate/graphql-utils'
 import {Resolvers} from '../types'
 import {ScopeDocument} from '@luminate/mongo'
@@ -77,6 +77,9 @@ const resolvers: Resolvers = {
     deleteScope: async (parent, {id}, {models}) => {
       const {Scope} = models
       const scope = await Scope.findByIdAndDelete(id)
+      if (!scope) {
+        throw new ApolloError('Document not found')
+      }
       return scope
     },
   },

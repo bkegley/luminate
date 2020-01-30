@@ -1,4 +1,4 @@
-import {gql, AuthenticationError} from 'apollo-server-express'
+import {gql, AuthenticationError, ApolloError} from 'apollo-server-express'
 import {createConnectionResults, LoaderFn, hasScopes} from '@luminate/graphql-utils'
 import {Resolvers} from '../types'
 import {CoffeeDocument, VarietyDocument} from '@luminate/mongo'
@@ -85,6 +85,9 @@ const resolvers: Resolvers = {
     deleteCoffee: async (parent, {id}, {models}) => {
       const {Coffee} = models
       const coffee = await Coffee.findByIdAndDelete(id)
+      if (!coffee) {
+        throw new ApolloError('Document not found')
+      }
       return coffee
     },
   },

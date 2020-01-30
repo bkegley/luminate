@@ -1,4 +1,4 @@
-import {gql} from 'apollo-server-express'
+import {gql, ApolloError} from 'apollo-server-express'
 import {createConnectionResults, LoaderFn, createToken} from '@luminate/graphql-utils'
 import bcrypt from 'bcrypt'
 import {Resolvers} from '../types'
@@ -92,6 +92,9 @@ const resolvers: Resolvers = {
     deleteUser: async (parent, {id}, {models}) => {
       const {User} = models
       const user = await User.findByIdAndDelete(id)
+      if (!user) {
+        throw new ApolloError('Document not found')
+      }
       return user
     },
     updatePassword: async (parent, {id, input}, {models}) => {

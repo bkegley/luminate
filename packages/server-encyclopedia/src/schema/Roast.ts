@@ -1,4 +1,4 @@
-import {gql} from 'apollo-server-express'
+import {gql, ApolloError} from 'apollo-server-express'
 import {createConnectionResults, LoaderFn} from '@luminate/graphql-utils'
 import {Resolvers} from '../types'
 import {RoastDocument} from '@luminate/mongo'
@@ -67,6 +67,9 @@ const resolvers: Resolvers = {
     deleteRoast: async (parent, {id}, {models}) => {
       const {Roast} = models
       const roast = await Roast.findByIdAndDelete(id)
+      if (!roast) {
+        throw new ApolloError('Document not found')
+      }
       return roast
     },
   },

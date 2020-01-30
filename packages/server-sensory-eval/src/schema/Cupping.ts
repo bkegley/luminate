@@ -1,4 +1,4 @@
-import {gql} from 'apollo-server-express'
+import {gql, ApolloError} from 'apollo-server-express'
 import {createConnectionResults, LoaderFn} from '@luminate/graphql-utils'
 import {Resolvers} from '../types'
 import {CuppingDocument} from '@luminate/mongo'
@@ -83,6 +83,9 @@ const resolvers: Resolvers = {
     deleteCupping: async (parent, {id}, {models}) => {
       const {Cupping} = models
       const cupping = await Cupping.findByIdAndDelete(id)
+      if (!cupping) {
+        throw new ApolloError('Document not found')
+      }
       return cupping
     },
   },
