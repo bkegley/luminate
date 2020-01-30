@@ -2,6 +2,10 @@ import gql from 'graphql-tag'
 import * as ApolloReactCommon from '@apollo/react-common'
 import * as ApolloReactHooks from '@apollo/react-hooks'
 export type Maybe<T> = T | null
+type ThenArg<T> = T extends PromiseLike<infer U> ? U : T
+export type MutationSuccessResponse<T extends (...args: any[]) => any[]> = ThenArg<
+  ReturnType<ThenArg<ReturnType<T>>[0]>
+>
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string

@@ -1,15 +1,26 @@
+const baseClientConfig = {
+  withComponent: false,
+  withHOC: false,
+  withHooks: true,
+  nonOptionalTypename: true,
+  federation: true,
+}
+
+const clientMutationSuccessAdd = {
+  add: {
+    content: [
+      `type ThenArg<T> = T extends PromiseLike<infer U> ? U : T`,
+      `export type MutationSuccessResponse<T extends (...args: any[]) => any[]> = ThenArg<ReturnType<ThenArg<ReturnType<T>>[0]>>`,
+    ],
+  },
+}
+
 const clientGenerates = {
   'packages/admin/src/graphql/index.tsx': {
     documents: 'packages/admin/src/graphql/**/*.graphql',
     schema: 'http://localhost:3000/graphql',
-    plugins: ['typescript', 'typescript-operations', 'typescript-react-apollo'],
-    config: {
-      withComponent: false,
-      withHOC: false,
-      withHooks: true,
-      nonOptionalTypename: true,
-      federation: true,
-    },
+    plugins: ['typescript', 'typescript-operations', 'typescript-react-apollo', clientMutationSuccessAdd],
+    config: baseClientConfig,
   },
   'packages/admin/src/graphql/documents.ts': {
     documents: 'packages/admin/src/graphql/**/*.graphql',
@@ -22,26 +33,14 @@ const clientGenerates = {
   'packages/app/src/graphql/index.tsx': {
     documents: 'packages/app/src/graphql/**/*.graphql',
     schema: 'http://localhost:3000/graphql',
-    plugins: ['typescript', 'typescript-operations', 'typescript-react-apollo'],
-    config: {
-      withComponent: false,
-      withHOC: false,
-      withHooks: true,
-      nonOptionalTypename: true,
-      federation: true,
-    },
+    plugins: ['typescript', 'typescript-operations', 'typescript-react-apollo', clientMutationSuccessAdd],
+    config: baseClientConfig,
   },
   'packages/gatsby-theme-luminate/src/graphql/index.tsx': {
     documents: 'packages/gatsby-theme-luminate/src/graphql/**/*.graphql',
     schema: 'http://localhost:3000/graphql',
-    plugins: ['typescript', 'typescript-operations', 'typescript-react-apollo'],
-    config: {
-      withComponent: false,
-      withHOC: false,
-      withHooks: true,
-      nonOptionalTypename: true,
-      federation: true,
-    },
+    plugins: ['typescript', 'typescript-operations', 'typescript-react-apollo', clientMutationSuccessAdd],
+    config: baseClientConfig,
   },
   'packages/gatsby-theme-luminate/src/graphql/documents.ts': {
     documents: 'packages/gatsby-theme-luminate/src/graphql/**/*.graphql',

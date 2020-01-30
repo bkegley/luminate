@@ -2,6 +2,10 @@ import gql from 'graphql-tag'
 import * as ApolloReactCommon from '@apollo/react-common'
 import * as ApolloReactHooks from '@apollo/react-hooks'
 export type Maybe<T> = T | null
+type ThenArg<T> = T extends PromiseLike<infer U> ? U : T
+export type MutationSuccessResponse<T extends (...args: any[]) => any[]> = ThenArg<
+  ReturnType<ThenArg<ReturnType<T>>[0]>
+>
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string
@@ -780,6 +784,14 @@ export type UpdateCoffeeMutation = {__typename: 'Mutation'} & {
   updateCoffee: Maybe<{__typename: 'Coffee'} & CoffeeFragmentFragment>
 }
 
+export type DeleteCoffeeMutationVariables = {
+  id: Scalars['ID']
+}
+
+export type DeleteCoffeeMutation = {__typename: 'Mutation'} & {
+  deleteCoffee: Maybe<{__typename: 'Coffee'} & Pick<Coffee, 'id'>>
+}
+
 export type CoffeeFragmentFragment = {__typename: 'Coffee'} & Pick<
   Coffee,
   'id' | 'name' | 'elevation' | 'createdAt' | 'updatedAt'
@@ -822,6 +834,14 @@ export type UpdateCountryMutation = {__typename: 'Mutation'} & {
   updateCountry: Maybe<{__typename: 'Country'} & CountryFragmentFragment>
 }
 
+export type DeleteCountryMutationVariables = {
+  id: Scalars['ID']
+}
+
+export type DeleteCountryMutation = {__typename: 'Mutation'} & {
+  deleteCountry: Maybe<{__typename: 'Country'} & Pick<Country, 'id'>>
+}
+
 export type CountryFragmentFragment = {__typename: 'Country'} & Pick<
   Country,
   'id' | 'name' | 'createdAt' | 'updatedAt'
@@ -856,6 +876,14 @@ export type UpdateFarmMutationVariables = {
 
 export type UpdateFarmMutation = {__typename: 'Mutation'} & {
   updateFarm: Maybe<{__typename: 'Farm'} & FarmFragmentFragment>
+}
+
+export type DeleteFarmMutationVariables = {
+  id: Scalars['ID']
+}
+
+export type DeleteFarmMutation = {__typename: 'Mutation'} & {
+  deleteRegion: Maybe<{__typename: 'Region'} & Pick<Region, 'id'>>
 }
 
 export type FarmFragmentFragment = {__typename: 'Farm'} & Pick<Farm, 'id' | 'name' | 'createdAt' | 'updatedAt'> & {
@@ -897,6 +925,14 @@ export type UpdateRegionMutationVariables = {
 
 export type UpdateRegionMutation = {__typename: 'Mutation'} & {
   updateRegion: Maybe<{__typename: 'Region'} & RegionFragmentFragment>
+}
+
+export type DeleteRegionMutationVariables = {
+  id: Scalars['ID']
+}
+
+export type DeleteRegionMutation = {__typename: 'Mutation'} & {
+  deleteRegion: Maybe<{__typename: 'Region'} & Pick<Region, 'id'>>
 }
 
 export type RegionFragmentFragment = {__typename: 'Region'} & Pick<
@@ -1154,6 +1190,49 @@ export type UpdateCoffeeMutationOptions = ApolloReactCommon.BaseMutationOptions<
   UpdateCoffeeMutation,
   UpdateCoffeeMutationVariables
 >
+export const DeleteCoffeeDocument = gql`
+  mutation DeleteCoffee($id: ID!) {
+    deleteCoffee(id: $id) {
+      id
+    }
+  }
+`
+export type DeleteCoffeeMutationFn = ApolloReactCommon.MutationFunction<
+  DeleteCoffeeMutation,
+  DeleteCoffeeMutationVariables
+>
+
+/**
+ * __useDeleteCoffeeMutation__
+ *
+ * To run a mutation, you first call `useDeleteCoffeeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteCoffeeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteCoffeeMutation, { data, loading, error }] = useDeleteCoffeeMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteCoffeeMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteCoffeeMutation, DeleteCoffeeMutationVariables>,
+) {
+  return ApolloReactHooks.useMutation<DeleteCoffeeMutation, DeleteCoffeeMutationVariables>(
+    DeleteCoffeeDocument,
+    baseOptions,
+  )
+}
+export type DeleteCoffeeMutationHookResult = ReturnType<typeof useDeleteCoffeeMutation>
+export type DeleteCoffeeMutationResult = ApolloReactCommon.MutationResult<DeleteCoffeeMutation>
+export type DeleteCoffeeMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  DeleteCoffeeMutation,
+  DeleteCoffeeMutationVariables
+>
 export const ListCountriesDocument = gql`
   query ListCountries {
     listCountries {
@@ -1325,6 +1404,49 @@ export type UpdateCountryMutationOptions = ApolloReactCommon.BaseMutationOptions
   UpdateCountryMutation,
   UpdateCountryMutationVariables
 >
+export const DeleteCountryDocument = gql`
+  mutation DeleteCountry($id: ID!) {
+    deleteCountry(id: $id) {
+      id
+    }
+  }
+`
+export type DeleteCountryMutationFn = ApolloReactCommon.MutationFunction<
+  DeleteCountryMutation,
+  DeleteCountryMutationVariables
+>
+
+/**
+ * __useDeleteCountryMutation__
+ *
+ * To run a mutation, you first call `useDeleteCountryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteCountryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteCountryMutation, { data, loading, error }] = useDeleteCountryMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteCountryMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteCountryMutation, DeleteCountryMutationVariables>,
+) {
+  return ApolloReactHooks.useMutation<DeleteCountryMutation, DeleteCountryMutationVariables>(
+    DeleteCountryDocument,
+    baseOptions,
+  )
+}
+export type DeleteCountryMutationHookResult = ReturnType<typeof useDeleteCountryMutation>
+export type DeleteCountryMutationResult = ApolloReactCommon.MutationResult<DeleteCountryMutation>
+export type DeleteCountryMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  DeleteCountryMutation,
+  DeleteCountryMutationVariables
+>
 export const ListFarmsDocument = gql`
   query ListFarms {
     listFarms {
@@ -1478,6 +1600,43 @@ export type UpdateFarmMutationResult = ApolloReactCommon.MutationResult<UpdateFa
 export type UpdateFarmMutationOptions = ApolloReactCommon.BaseMutationOptions<
   UpdateFarmMutation,
   UpdateFarmMutationVariables
+>
+export const DeleteFarmDocument = gql`
+  mutation DeleteFarm($id: ID!) {
+    deleteRegion(id: $id) {
+      id
+    }
+  }
+`
+export type DeleteFarmMutationFn = ApolloReactCommon.MutationFunction<DeleteFarmMutation, DeleteFarmMutationVariables>
+
+/**
+ * __useDeleteFarmMutation__
+ *
+ * To run a mutation, you first call `useDeleteFarmMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteFarmMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteFarmMutation, { data, loading, error }] = useDeleteFarmMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteFarmMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteFarmMutation, DeleteFarmMutationVariables>,
+) {
+  return ApolloReactHooks.useMutation<DeleteFarmMutation, DeleteFarmMutationVariables>(DeleteFarmDocument, baseOptions)
+}
+export type DeleteFarmMutationHookResult = ReturnType<typeof useDeleteFarmMutation>
+export type DeleteFarmMutationResult = ApolloReactCommon.MutationResult<DeleteFarmMutation>
+export type DeleteFarmMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  DeleteFarmMutation,
+  DeleteFarmMutationVariables
 >
 export const ListRegionsDocument = gql`
   query ListRegions($cursor: String, $limit: Int, $query: [QueryInput]) {
@@ -1649,6 +1808,49 @@ export type UpdateRegionMutationResult = ApolloReactCommon.MutationResult<Update
 export type UpdateRegionMutationOptions = ApolloReactCommon.BaseMutationOptions<
   UpdateRegionMutation,
   UpdateRegionMutationVariables
+>
+export const DeleteRegionDocument = gql`
+  mutation DeleteRegion($id: ID!) {
+    deleteRegion(id: $id) {
+      id
+    }
+  }
+`
+export type DeleteRegionMutationFn = ApolloReactCommon.MutationFunction<
+  DeleteRegionMutation,
+  DeleteRegionMutationVariables
+>
+
+/**
+ * __useDeleteRegionMutation__
+ *
+ * To run a mutation, you first call `useDeleteRegionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteRegionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteRegionMutation, { data, loading, error }] = useDeleteRegionMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteRegionMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteRegionMutation, DeleteRegionMutationVariables>,
+) {
+  return ApolloReactHooks.useMutation<DeleteRegionMutation, DeleteRegionMutationVariables>(
+    DeleteRegionDocument,
+    baseOptions,
+  )
+}
+export type DeleteRegionMutationHookResult = ReturnType<typeof useDeleteRegionMutation>
+export type DeleteRegionMutationResult = ApolloReactCommon.MutationResult<DeleteRegionMutation>
+export type DeleteRegionMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  DeleteRegionMutation,
+  DeleteRegionMutationVariables
 >
 export const LoginDocument = gql`
   mutation Login($username: String!, $password: String!) {
