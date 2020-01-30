@@ -19,22 +19,19 @@ const CountryCreateForm = ({fields, onCreateSuccess, onCreateError}: CountryCrea
   const {url} = useRouteMatch()
   const [createCountry, {data, error, loading}] = useCreateCountryMutation({
     refetchQueries: [{query: ListCountriesDocument}],
-  })
-
-  // handle create response
-  React.useEffect(() => {
-    if (data) {
+    onCompleted: data => {
       if (onCreateSuccess) {
         onCreateSuccess(data)
       } else {
         history.push(`${url}/${data.createCountry?.id}`)
       }
-    }
-
-    if (error && onCreateError) {
-      onCreateError(error)
-    }
-  }, [data, onCreateSuccess, error, onCreateError])
+    },
+    onError: err => {
+      if (onCreateError) {
+        onCreateError(err)
+      }
+    },
+  })
 
   return (
     <Formik

@@ -27,27 +27,22 @@ const FarmCreateForm = ({fields, onCreateSuccess, onCreateError}: FarmCreateForm
   const {url} = useRouteMatch()
   const [createFarm, {data, error, loading}] = useCreateFarmMutation({
     refetchQueries: [{query: ListFarmsDocument}],
-  })
-
-  console.log({data, error, loading})
-
-  const {data: countryData, error: countryError, loading: countryLoading} = useListCountriesQuery()
-  const {data: regionData, error: regionError, loading: regionLoading, refetch: regionRefetch} = useListRegionsQuery()
-
-  // handle create response
-  React.useEffect(() => {
-    if (data) {
+    onCompleted: data => {
       if (onCreateSuccess) {
         onCreateSuccess(data)
       } else {
         history.push(`${url}/${data.createFarm?.id}`)
       }
-    }
+    },
+    onError: err => {
+      if (onCreateError) {
+        onCreateError(err)
+      }
+    },
+  })
 
-    if (error && onCreateError) {
-      onCreateError(error)
-    }
-  }, [data, onCreateSuccess, error, onCreateError])
+  const {data: countryData, error: countryError, loading: countryLoading} = useListCountriesQuery()
+  const {data: regionData, error: regionError, loading: regionLoading, refetch: regionRefetch} = useListRegionsQuery()
 
   const countryOptions = countryData?.listCountries.edges.map(({node}) => {
     return {

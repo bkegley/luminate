@@ -38,37 +38,34 @@ const RegionUpdateForm = ({
 }: CountryUpdateFormProps) => {
   const history = useHistory()
   const {path} = useRouteMatch()
-  const [updateRegion, {data: updateData, error: updateError, loading: updateLoading}] = useUpdateRegionMutation()
-  const [deleteRegion, {data: deleteData, error: deleteError, loading: deleteLoading}] = useDeleteRegionMutation({
-    variables: {id: region.id},
-    refetchQueries: [{query: ListRegionsDocument}],
+  const [updateRegion, {data: updateData, error: updateError, loading: updateLoading}] = useUpdateRegionMutation({
+    onCompleted: data => {
+      if (onUpdateSuccess) {
+        onUpdateSuccess(data)
+      }
+    },
+    onError: err => {
+      if (onUpdateError) {
+        onUpdateError(err)
+      }
+    },
   })
-
-  // handle update response
-  React.useEffect(() => {
-    if (updateData && onUpdateSuccess) {
-      onUpdateSuccess(updateData)
-    }
-
-    if (updateError && onUpdateError) {
-      onUpdateError(updateError)
-    }
-  }, [updateData, onUpdateSuccess, updateError, onUpdateError])
-
-  // handle delete response
-  React.useEffect(() => {
-    if (deleteData) {
+  const [deleteRegion, {data: deleteData, error: deleteError, loading: deleteLoading}] = useDeleteRegionMutation({
+    variables: {id: 'a' + region.id.slice(1)},
+    refetchQueries: [{query: ListRegionsDocument}],
+    onCompleted: data => {
       if (onDeleteSuccess) {
-        onDeleteSuccess(deleteData)
+        onDeleteSuccess(data)
       } else {
         history.push(path.slice(0, path.indexOf('/:id')))
       }
-    }
-
-    if (deleteError && onDeleteError) {
-      onDeleteError(deleteError)
-    }
-  }, [deleteData, onDeleteSuccess, deleteError, onDeleteError])
+    },
+    onError: err => {
+      if (onDeleteError) {
+        onDeleteError(err)
+      }
+    },
+  })
 
   const {data: countryData, error: countryError, loading: countryLoading} = useListCountriesQuery()
   const options = countryData?.listCountries.edges.map(({node}) => {

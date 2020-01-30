@@ -40,37 +40,35 @@ const CoffeeUpdateForm = ({
 }: CoffeeUpdateFormProps) => {
   const history = useHistory()
   const {path} = useRouteMatch()
-  const [updateCoffee, {data: updateData, error: updateError, loading: updateLoading}] = useUpdateCoffeeMutation()
+  const [updateCoffee, {data: updateData, error: updateError, loading: updateLoading}] = useUpdateCoffeeMutation({
+    onCompleted: data => {
+      if (onUpdateSuccess) {
+        onUpdateSuccess(data)
+      }
+    },
+    onError: err => {
+      if (onUpdateError) {
+        onUpdateError(err)
+      }
+    },
+  })
   const [deleteCoffee, {data: deleteData, error: deleteError, loading: deleteLoading}] = useDeleteCoffeeMutation({
     variables: {id: coffee.id},
     refetchQueries: [{query: ListCoffeesDocument}],
-  })
-
-  // handle update response
-  React.useEffect(() => {
-    if (updateData && onUpdateSuccess) {
-      onUpdateSuccess(updateData)
-    }
-
-    if (updateError && onUpdateError) {
-      onUpdateError(updateError)
-    }
-  }, [updateData, onUpdateSuccess, updateError, onUpdateError])
-
-  // handle delete response
-  React.useEffect(() => {
-    if (deleteData) {
+    awaitRefetchQueries: true,
+    onCompleted: data => {
       if (onDeleteSuccess) {
-        onDeleteSuccess(deleteData)
+        onDeleteSuccess(data)
       } else {
         history.push(path.slice(0, path.indexOf('/:id')))
       }
-    }
-
-    if (deleteError && onDeleteError) {
-      onDeleteError(deleteError)
-    }
-  }, [deleteData, onDeleteSuccess, deleteError, onDeleteError])
+    },
+    onError: err => {
+      if (onDeleteError) {
+        onDeleteError(err)
+      }
+    },
+  })
 
   const {data: countryData, error: countryError, loading: countryLoading} = useListCountriesQuery()
   const {data: regionData, error: regionError, loading: regionLoading, refetch: regionRefetch} = useListRegionsQuery({

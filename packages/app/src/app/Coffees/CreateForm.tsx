@@ -27,22 +27,19 @@ const CoffeeCreateForm = ({fields, onCreateSuccess, onCreateError}: CoffeeCreate
   const {url} = useRouteMatch()
   const [createCoffee, {data, error, loading}] = useCreateCoffeeMutation({
     refetchQueries: [{query: ListCoffeesDocument}],
-  })
-
-  // handle create response
-  React.useEffect(() => {
-    if (data) {
+    onCompleted: data => {
       if (onCreateSuccess) {
         onCreateSuccess(data)
       } else {
         history.push(`${url}/${data.createCoffee?.id}`)
       }
-    }
-
-    if (error && onCreateError) {
-      onCreateError(error)
-    }
-  }, [data, onCreateSuccess, error, onCreateError])
+    },
+    onError: err => {
+      if (onCreateError) {
+        onCreateError(err)
+      }
+    },
+  })
 
   const {data: countryData, error: countryError, loading: countryLoading} = useListCountriesQuery()
   const {data: regionData, error: regionError, loading: regionLoading, refetch: regionRefetch} = useListRegionsQuery()

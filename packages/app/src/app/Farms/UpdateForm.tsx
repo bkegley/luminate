@@ -40,39 +40,35 @@ const FarmUpdateForm = ({
 }: FarmUpdateFormProps) => {
   const history = useHistory()
   const {path} = useRouteMatch()
-  const [updateFarm, {data: updateData, error: updateError, loading: updateLoading}] = useUpdateFarmMutation()
+  const [updateFarm, {data: updateData, error: updateError, loading: updateLoading}] = useUpdateFarmMutation({
+    onCompleted: data => {
+      if (onUpdateSuccess) {
+        onUpdateSuccess(data)
+      }
+    },
+    onError: err => {
+      if (onUpdateError) {
+        onUpdateError(err)
+      }
+    },
+  })
   const [deleteFarm, {data: deleteData, error: deleteError, loading: deleteLoading}] = useDeleteFarmMutation({
     variables: {id: farm.id},
     refetchQueries: [{query: ListFarmsDocument}],
-  })
-
-  console.log({deleteData, deleteError, deleteLoading})
-
-  // handle update response
-  React.useEffect(() => {
-    if (updateData && onUpdateSuccess) {
-      onUpdateSuccess(updateData)
-    }
-
-    if (updateError && onUpdateError) {
-      onUpdateError(updateError)
-    }
-  }, [updateData, onUpdateSuccess, updateError, onUpdateError])
-
-  // handle delete response
-  React.useEffect(() => {
-    if (deleteData) {
+    awaitRefetchQueries: true,
+    onCompleted: data => {
       if (onDeleteSuccess) {
-        onDeleteSuccess(deleteData)
+        onDeleteSuccess(data)
       } else {
         history.push(path.slice(0, path.indexOf('/:id')))
       }
-    }
-
-    if (deleteError && onDeleteError) {
-      onDeleteError(deleteError)
-    }
-  }, [deleteData, onDeleteSuccess, deleteError, onDeleteError])
+    },
+    onError: err => {
+      if (onDeleteError) {
+        onDeleteError(err)
+      }
+    },
+  })
 
   const {data: countryData, error: countryError, loading: countryLoading} = useListCountriesQuery()
   const {data: regionData, error: regionError, loading: regionLoading, refetch: regionRefetch} = useListRegionsQuery({

@@ -25,24 +25,21 @@ const RegionCreateForm = ({fields, onCreateSuccess, onCreateError}: RegionCreate
   const {url} = useRouteMatch()
   const [createRegion, {data, error, loading}] = useCreateRegionMutation({
     refetchQueries: [{query: ListRegionsDocument}],
-  })
-
-  const {data: countryData, error: countryError, loading: countryLoading} = useListCountriesQuery()
-
-  // handle create response
-  React.useEffect(() => {
-    if (data) {
+    onCompleted: data => {
       if (onCreateSuccess) {
         onCreateSuccess(data)
       } else {
         history.push(`${url}/${data.createRegion?.id}`)
       }
-    }
+    },
+    onError: err => {
+      if (onCreateError) {
+        onCreateError(err)
+      }
+    },
+  })
 
-    if (error && onCreateError) {
-      onCreateError(error)
-    }
-  }, [data, onCreateSuccess, error, onCreateError])
+  const {data: countryData, error: countryError, loading: countryLoading} = useListCountriesQuery()
 
   const countryOptions = countryData?.listCountries.edges.map(({node}) => {
     return {
