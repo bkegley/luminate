@@ -22,14 +22,6 @@ const clientGenerates = {
     plugins: ['typescript', 'typescript-operations', 'typescript-react-apollo', clientMutationSuccessAdd],
     config: baseClientConfig,
   },
-  'packages/admin/src/graphql/documents.ts': {
-    documents: 'packages/admin/src/graphql/**/*.graphql',
-    schema: 'http://localhost:3000/graphql',
-    plugins: ['typescript-document-nodes'],
-    config: {
-      nameSuffix: 'Gql',
-    },
-  },
   'packages/app/src/graphql/index.tsx': {
     documents: 'packages/app/src/graphql/**/*.graphql',
     schema: 'http://localhost:3000/graphql',
@@ -41,14 +33,6 @@ const clientGenerates = {
     schema: 'http://localhost:3000/graphql',
     plugins: ['typescript', 'typescript-operations', 'typescript-react-apollo', clientMutationSuccessAdd],
     config: baseClientConfig,
-  },
-  'packages/gatsby-theme-luminate/src/graphql/documents.ts': {
-    documents: 'packages/gatsby-theme-luminate/src/graphql/**/*.graphql',
-    schema: 'http://localhost:3000/graphql',
-    plugins: ['typescript-document-nodes'],
-    config: {
-      nameSuffix: 'Gql',
-    },
   },
 }
 
