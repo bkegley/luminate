@@ -2,7 +2,7 @@
 import React from 'react'
 import {jsx} from 'theme-ui'
 import {useGetCountryQuery} from '../../graphql'
-import {Button} from '@luminate/gatsby-theme-luminate/src'
+import {Button, Drawer, Box} from '@luminate/gatsby-theme-luminate/src'
 import {RouteComponentProps} from 'react-router-dom'
 import CountryUpdateForm from './UpdateForm'
 
@@ -39,7 +39,17 @@ const CountryDetailView = ({match}: Props) => {
       <Button onClick={toggleUpdateForm} variant="secondary">
         Edit
       </Button>
-      {showUpdateCountry ? <CountryUpdateForm country={data.getCountry} /> : null}
+      <Drawer
+        from="right"
+        onClickOutside={toggleUpdateForm}
+        open={showUpdateCountry}
+        bg="white"
+        width={['90%', '75%', '50%']}
+      >
+        <Box sx={{p: 4}}>
+          <CountryUpdateForm country={data.getCountry} />
+        </Box>
+      </Drawer>
     </div>
   )
 }

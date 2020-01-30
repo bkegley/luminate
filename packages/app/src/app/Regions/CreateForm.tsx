@@ -1,13 +1,48 @@
 /** @jsx jsx */
 import {jsx} from 'theme-ui'
+import React from 'react'
 import {Formik, Form, Field} from 'formik'
 import {Flex, Box, Heading, Combobox, Button, Field as ThemeField} from '@luminate/gatsby-theme-luminate/src'
-import {useCreateRegionMutation, useListCountriesQuery} from '../../graphql'
+import {
+  useCreateRegionMutation,
+  useListCountriesQuery,
+  CreateRegionInput,
+  CreateRegionMutation,
+  ListRegionsDocument,
+} from '../../graphql'
+import {useHistory, useRouteMatch} from 'react-router-dom'
 
-const RegionCreateForm = () => {
-  const [createRegion, {data, error, loading}] = useCreateRegionMutation()
+interface RegionCreateFormProps {
+  fields?: Array<keyof CreateRegionInput>
+  /* Add functionality when entity successfully creates - default is to redirect to detail view*/
+  onCreateSuccess?: (data: CreateRegionMutation) => void
+  /* Add functionality when entity fails to create */
+  onCreateError?: (err: any) => void
+}
+
+const RegionCreateForm = ({fields, onCreateSuccess, onCreateError}: RegionCreateFormProps) => {
+  const history = useHistory()
+  const {url} = useRouteMatch()
+  const [createRegion, {data, error, loading}] = useCreateRegionMutation({
+    refetchQueries: [{query: ListRegionsDocument}],
+  })
 
   const {data: countryData, error: countryError, loading: countryLoading} = useListCountriesQuery()
+
+  // handle create response
+  React.useEffect(() => {
+    if (data) {
+      if (onCreateSuccess) {
+        onCreateSuccess(data)
+      } else {
+        history.push(`${url}/${data.createRegion?.id}`)
+      }
+    }
+
+    if (error && onCreateError) {
+      onCreateError(error)
+    }
+  }, [data, onCreateSuccess, error, onCreateError])
 
   const countryOptions = countryData?.listCountries.edges.map(({node}) => {
     return {
@@ -48,23 +83,27 @@ const RegionCreateForm = () => {
               <Box>
                 <Heading>Create a Region</Heading>
               </Box>
-              <Box>
-                <Field name="name" label="Name" as={ThemeField} />
-              </Box>
-              <Box>
-                {countryData ? (
-                  <Combobox
-                    label="Country"
-                    // @ts-ignore
-                    options={countryOptions}
-                    // @ts-ignore
-                    initialSelectedItem={countryOptions?.find(option => option.value === values.country)}
-                    onChange={value => {
-                      setFieldValue('country', value.selectedItem?.value)
-                    }}
-                  />
-                ) : null}
-              </Box>
+              {!fields || fields.includes('name') ? (
+                <Box>
+                  <Field name="name" label="Name" as={ThemeField} />
+                </Box>
+              ) : null}
+              {!fields || fields.includes('country') ? (
+                <Box>
+                  {countryData ? (
+                    <Combobox
+                      label="Country"
+                      // @ts-ignore
+                      options={countryOptions}
+                      // @ts-ignore
+                      initialSelectedItem={countryOptions?.find(option => option.value === values.country)}
+                      onChange={value => {
+                        setFieldValue('country', value.selectedItem?.value)
+                      }}
+                    />
+                  ) : null}
+                </Box>
+              ) : null}
               <Box>
                 <Button type="submit">Submit</Button>
               </Box>

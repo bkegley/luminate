@@ -27,6 +27,12 @@ mutation UpdateRegion($id: ID!, $input: UpdateRegionInput!) {
   }
 }
 
+mutation DeleteRegion($id: ID!) {
+  deleteRegion(id: $id) {
+    id
+  }
+}
+
 fragment RegionFragment on Region {
   id
   name

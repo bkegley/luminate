@@ -27,6 +27,12 @@ mutation UpdateCoffee($id: ID!, $input: UpdateCoffeeInput!) {
   }
 }
 
+mutation DeleteCoffee($id: ID!) {
+  deleteCoffee(id: $id) {
+    id
+  }
+}
+
 fragment CoffeeFragment on Coffee {
   id
   name

@@ -1,11 +1,48 @@
 /** @jsx jsx */
 import {jsx} from 'theme-ui'
+import React from 'react'
 import {Formik, Form, Field} from 'formik'
 import {Flex, Box, Heading, Combobox, Button, Field as ThemeField} from '@luminate/gatsby-theme-luminate/src'
-import {useCreateCoffeeMutation, useListCountriesQuery, useListRegionsQuery, OperatorEnum} from '../../graphql'
+import {
+  useCreateCoffeeMutation,
+  useListCountriesQuery,
+  useListRegionsQuery,
+  OperatorEnum,
+  CreateCoffeeMutation,
+  ListCoffeesDocument,
+  CreateCoffeeInput,
+} from '../../graphql'
+import {useHistory, useRouteMatch} from 'react-router-dom'
 
-const CoffeeCreateForm = () => {
-  const [createCoffee, {data, error, loading}] = useCreateCoffeeMutation()
+interface CoffeeCreateFormProps {
+  fields?: Array<keyof CreateCoffeeInput>
+  /* Add functionality when entity successfully creates - default is to redirect to detail view*/
+  onCreateSuccess?: (data: CreateCoffeeMutation) => void
+  /* Add functionality when entity fails to create */
+  onCreateError?: (err: any) => void
+}
+
+const CoffeeCreateForm = ({fields, onCreateSuccess, onCreateError}: CoffeeCreateFormProps) => {
+  const history = useHistory()
+  const {url} = useRouteMatch()
+  const [createCoffee, {data, error, loading}] = useCreateCoffeeMutation({
+    refetchQueries: [{query: ListCoffeesDocument}],
+  })
+
+  // handle create response
+  React.useEffect(() => {
+    if (data) {
+      if (onCreateSuccess) {
+        onCreateSuccess(data)
+      } else {
+        history.push(`${url}/${data.createCoffee?.id}`)
+      }
+    }
+
+    if (error && onCreateError) {
+      onCreateError(error)
+    }
+  }, [data, onCreateSuccess, error, onCreateError])
 
   const {data: countryData, error: countryError, loading: countryLoading} = useListCountriesQuery()
   const {data: regionData, error: regionError, loading: regionLoading, refetch: regionRefetch} = useListRegionsQuery()
@@ -31,8 +68,8 @@ const CoffeeCreateForm = () => {
         country: '',
         region: '',
       }}
-      onSubmit={(values, {setSubmitting}) => {
-        createCoffee({
+      onSubmit={async (values, {setSubmitting}) => {
+        await createCoffee({
           variables: {
             input: {
               ...values,
@@ -41,14 +78,7 @@ const CoffeeCreateForm = () => {
             },
           },
         })
-          .then(res => {
-            console.log({res})
-            setSubmitting(false)
-          })
-          .catch(err => {
-            console.log({err})
-            setSubmitting(false)
-          })
+        setSubmitting(false)
       }}
     >
       {({setFieldValue, values}) => {
@@ -58,43 +88,51 @@ const CoffeeCreateForm = () => {
               <Box>
                 <Heading>Create a Coffee</Heading>
               </Box>
-              <Box>
-                <Field name="name" label="Name" as={ThemeField} />
-              </Box>
-              <Box>
-                {countryData ? (
-                  <Combobox
-                    label="Country"
-                    // @ts-ignore
-                    options={countryOptions}
-                    // @ts-ignore
-                    initialSelectedItem={countryOptions?.find(option => option.value === values.country)}
-                    onChange={value => {
-                      if (value.selectedItem) {
-                        if (value.selectedItem.value !== values.country) {
-                          setFieldValue('region', '')
+              {!fields || fields.includes('name') ? (
+                <Box>
+                  <Field name="name" label="Name" as={ThemeField} />
+                </Box>
+              ) : null}
+              {!fields || fields.includes('country') ? (
+                <Box>
+                  {countryData ? (
+                    <Combobox
+                      label="Country"
+                      // @ts-ignore
+                      options={countryOptions}
+                      // @ts-ignore
+                      initialSelectedItem={countryOptions?.find(option => option.value === values.country)}
+                      onChange={value => {
+                        if (value.selectedItem) {
+                          if (value.selectedItem.value !== values.country) {
+                            setFieldValue('region', '')
+                          }
+                          regionRefetch({
+                            query: [
+                              {field: 'country', operator: 'eq' as OperatorEnum, value: value.selectedItem.value},
+                            ],
+                          })
                         }
-                        regionRefetch({
-                          query: [{field: 'country', operator: 'eq' as OperatorEnum, value: value.selectedItem.value}],
-                        })
-                      }
-                      setFieldValue('country', value.selectedItem?.value)
-                    }}
-                  />
-                ) : null}
-              </Box>
-              <Box>
-                {regionData ? (
-                  <Combobox
-                    label="Region"
-                    // @ts-ignore
-                    options={regionOptions}
-                    // @ts-ignore
-                    initialSelectedItem={regionOptions?.find(option => option.value === values.region)}
-                    onChange={value => setFieldValue('region', value.selectedItem?.value)}
-                  />
-                ) : null}
-              </Box>
+                        setFieldValue('country', value.selectedItem?.value)
+                      }}
+                    />
+                  ) : null}
+                </Box>
+              ) : null}
+              {!fields || fields.includes('region') ? (
+                <Box>
+                  {regionData ? (
+                    <Combobox
+                      label="Region"
+                      // @ts-ignore
+                      options={regionOptions}
+                      // @ts-ignore
+                      initialSelectedItem={regionOptions?.find(option => option.value === values.region)}
+                      onChange={value => setFieldValue('region', value.selectedItem?.value)}
+                    />
+                  ) : null}
+                </Box>
+              ) : null}
               <Box>
                 <Button type="submit">Submit</Button>
               </Box>

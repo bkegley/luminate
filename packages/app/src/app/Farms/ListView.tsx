@@ -13,6 +13,7 @@ const ListFarmsView = ({match}: Props) => {
   const toggleShowCreateForm = () => setShowCreateForm(old => !old)
   const {url} = match
   const {data, error, loading} = useListFarmsQuery()
+  console.log({data, error, loading})
 
   if (loading) {
     return <div>Loading...</div>

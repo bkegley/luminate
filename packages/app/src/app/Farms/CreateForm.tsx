@@ -1,14 +1,53 @@
 /** @jsx jsx */
 import {jsx} from 'theme-ui'
+import React from 'react'
 import {Formik, Form, Field} from 'formik'
 import {Flex, Box, Heading, Combobox, Button, Field as ThemeField} from '@luminate/gatsby-theme-luminate/src'
-import {useCreateFarmMutation, useListCountriesQuery, useListRegionsQuery, OperatorEnum} from '../../graphql'
+import {
+  useCreateFarmMutation,
+  useListCountriesQuery,
+  useListRegionsQuery,
+  OperatorEnum,
+  CreateFarmInput,
+  CreateFarmMutation,
+  ListFarmsDocument,
+} from '../../graphql'
+import {useHistory, useRouteMatch} from 'react-router-dom'
 
-const FarmCreateForm = () => {
-  const [createFarm, {data, error, loading}] = useCreateFarmMutation()
+interface FarmCreateFormProps {
+  fields?: Array<keyof CreateFarmInput>
+  /* Add functionality when entity successfully creates - default is to redirect to detail view*/
+  onCreateSuccess?: (data: CreateFarmMutation) => void
+  /* Add functionality when entity fails to create */
+  onCreateError?: (err: any) => void
+}
+
+const FarmCreateForm = ({fields, onCreateSuccess, onCreateError}: FarmCreateFormProps) => {
+  const history = useHistory()
+  const {url} = useRouteMatch()
+  const [createFarm, {data, error, loading}] = useCreateFarmMutation({
+    refetchQueries: [{query: ListFarmsDocument}],
+  })
+
+  console.log({data, error, loading})
 
   const {data: countryData, error: countryError, loading: countryLoading} = useListCountriesQuery()
   const {data: regionData, error: regionError, loading: regionLoading, refetch: regionRefetch} = useListRegionsQuery()
+
+  // handle create response
+  React.useEffect(() => {
+    if (data) {
+      if (onCreateSuccess) {
+        onCreateSuccess(data)
+      } else {
+        history.push(`${url}/${data.createFarm?.id}`)
+      }
+    }
+
+    if (error && onCreateError) {
+      onCreateError(error)
+    }
+  }, [data, onCreateSuccess, error, onCreateError])
 
   const countryOptions = countryData?.listCountries.edges.map(({node}) => {
     return {
@@ -31,8 +70,8 @@ const FarmCreateForm = () => {
         country: '',
         region: '',
       }}
-      onSubmit={(values, {setSubmitting}) => {
-        createFarm({
+      onSubmit={async (values, {setSubmitting}) => {
+        await createFarm({
           variables: {
             input: {
               ...values,
@@ -41,14 +80,7 @@ const FarmCreateForm = () => {
             },
           },
         })
-          .then(res => {
-            console.log({res})
-            setSubmitting(false)
-          })
-          .catch(err => {
-            console.log({err})
-            setSubmitting(false)
-          })
+        setSubmitting(false)
       }}
     >
       {({setFieldValue, values}) => {

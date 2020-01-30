@@ -1,15 +1,79 @@
 /** @jsx jsx */
 import {jsx} from 'theme-ui'
+import React from 'react'
 import {Flex, Box, Field as ThemeField, Heading, Button, Combobox} from '@luminate/gatsby-theme-luminate/src'
-import {useUpdateFarmMutation, useListCountriesQuery, useListRegionsQuery, Farm, OperatorEnum} from '../../graphql'
+import {
+  useUpdateFarmMutation,
+  useListCountriesQuery,
+  useListRegionsQuery,
+  Farm,
+  OperatorEnum,
+  UpdateFarmInput,
+  UpdateFarmMutation,
+  DeleteFarmMutation,
+  useDeleteFarmMutation,
+  ListFarmsDocument,
+} from '../../graphql'
 import {Formik, Form, Field} from 'formik'
+import {useHistory, useRouteMatch} from 'react-router-dom'
 
-interface Props {
+interface FarmUpdateFormProps {
   farm: Farm
+  fields?: Array<keyof UpdateFarmInput>
+  /* Add functionality when entity successfully updates */
+  onUpdateSuccess?: (data: UpdateFarmMutation) => void
+  /* Add functionality when entity fails to update */
+  onUpdateError?: (err: any) => void
+  /* Add functionality when entity is successfully deleted - default is to redirect to list view */
+  onDeleteSuccess?: (data: DeleteFarmMutation) => void
+  /* Add functionality when entity fails to */
+  onDeleteError?: (err: any) => void
 }
 
-const FarmUpdateForm = ({farm}: Props) => {
-  const [updateFarm, {data, error, loading}] = useUpdateFarmMutation()
+const FarmUpdateForm = ({
+  farm,
+  fields,
+  onUpdateSuccess,
+  onUpdateError,
+  onDeleteSuccess,
+  onDeleteError,
+}: FarmUpdateFormProps) => {
+  const history = useHistory()
+  const {path} = useRouteMatch()
+  const [updateFarm, {data: updateData, error: updateError, loading: updateLoading}] = useUpdateFarmMutation()
+  const [deleteFarm, {data: deleteData, error: deleteError, loading: deleteLoading}] = useDeleteFarmMutation({
+    variables: {id: farm.id},
+    refetchQueries: [{query: ListFarmsDocument}],
+  })
+
+  console.log({deleteData, deleteError, deleteLoading})
+
+  // handle update response
+  React.useEffect(() => {
+    if (updateData && onUpdateSuccess) {
+      onUpdateSuccess(updateData)
+    }
+
+    if (updateError && onUpdateError) {
+      onUpdateError(updateError)
+    }
+  }, [updateData, onUpdateSuccess, updateError, onUpdateError])
+
+  // handle delete response
+  React.useEffect(() => {
+    if (deleteData) {
+      if (onDeleteSuccess) {
+        onDeleteSuccess(deleteData)
+      } else {
+        history.push(path.slice(0, path.indexOf('/:id')))
+      }
+    }
+
+    if (deleteError && onDeleteError) {
+      onDeleteError(deleteError)
+    }
+  }, [deleteData, onDeleteSuccess, deleteError, onDeleteError])
+
   const {data: countryData, error: countryError, loading: countryLoading} = useListCountriesQuery()
   const {data: regionData, error: regionError, loading: regionLoading, refetch: regionRefetch} = useListRegionsQuery({
     variables: {query: [{field: 'country', operator: 'eq' as OperatorEnum, value: farm.country?.id}]},
@@ -64,46 +128,61 @@ const FarmUpdateForm = ({farm}: Props) => {
               <Box>
                 <Heading>{farm.id}</Heading>
               </Box>
-              <Box>
-                <Field name="name" label="Name" as={ThemeField} />
-              </Box>
-              <Box>
-                {countryData ? (
-                  <Combobox
-                    label="Country"
-                    // @ts-ignore
-                    options={countryOptions}
-                    // @ts-ignore
-                    initialSelectedItem={countryOptions?.find(option => option.value === values.country)}
-                    onChange={value => {
-                      if (value.selectedItem) {
-                        if (value.selectedItem.value !== values.country) {
-                          setFieldValue('region', '')
+              {!fields || fields.includes('name') ? (
+                <Box>
+                  <Field name="name" label="Name" as={ThemeField} />
+                </Box>
+              ) : null}
+              {!fields || fields.includes('country') ? (
+                <Box>
+                  {countryData ? (
+                    <Combobox
+                      label="Country"
+                      // @ts-ignore
+                      options={countryOptions}
+                      // @ts-ignore
+                      initialSelectedItem={countryOptions?.find(option => option.value === values.country)}
+                      onChange={value => {
+                        if (value.selectedItem) {
+                          if (value.selectedItem.value !== values.country) {
+                            setFieldValue('region', '')
+                          }
+                          regionRefetch({
+                            query: [
+                              {field: 'country', operator: 'eq' as OperatorEnum, value: value.selectedItem.value},
+                            ],
+                          })
                         }
-                        regionRefetch({
-                          query: [{field: 'country', operator: 'eq' as OperatorEnum, value: value.selectedItem.value}],
-                        })
-                      }
-                      setFieldValue('country', value.selectedItem?.value)
-                    }}
-                  />
-                ) : null}
-              </Box>
-              <Box>
-                {regionData ? (
-                  <Combobox
-                    label="Region"
-                    // @ts-ignore
-                    options={regionOptions}
-                    // @ts-ignore
-                    initialSelectedItem={regionOptions?.find(option => option.value === values.region)}
-                    onChange={value => setFieldValue('region', value.selectedItem?.value)}
-                  />
-                ) : null}
-              </Box>
-              <Box>
-                <Button type="submit">Submit</Button>
-              </Box>
+                        setFieldValue('country', value.selectedItem?.value)
+                      }}
+                    />
+                  ) : null}
+                </Box>
+              ) : null}
+              {!fields || fields.includes('region') ? (
+                <Box>
+                  {regionData ? (
+                    <Combobox
+                      label="Region"
+                      // @ts-ignore
+                      options={regionOptions}
+                      // @ts-ignore
+                      initialSelectedItem={regionOptions?.find(option => option.value === values.region)}
+                      onChange={value => setFieldValue('region', value.selectedItem?.value)}
+                    />
+                  ) : null}
+                </Box>
+              ) : null}
+              <Flex sx={{justifyContent: 'flex-end'}}>
+                <Box sx={{order: 1}}>
+                  <Button type="submit">Submit</Button>
+                </Box>
+                <Box sx={{mr: 2}}>
+                  <Button type="button" variant="buttons.text" onClick={() => deleteFarm()}>
+                    Delete
+                  </Button>
+                </Box>
+              </Flex>
             </Flex>
           </Form>
         )

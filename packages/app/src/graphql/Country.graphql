@@ -27,6 +27,12 @@ mutation UpdateCountry($id: ID!, $input: UpdateCountryInput!) {
   }
 }
 
+mutation DeleteCountry($id: ID!) {
+  deleteCountry(id: $id) {
+    id
+  }
+}
+
 fragment CountryFragment on Country {
   id
   name

@@ -27,6 +27,12 @@ mutation UpdateFarm($id: ID!, $input: UpdateFarmInput!) {
   }
 }
 
+mutation DeleteFarm($id: ID!) {
+  deleteFarm(id: $id) {
+    id
+  }
+}
+
 fragment FarmFragment on Farm {
   id
   name

@@ -1,31 +1,53 @@
 /** @jsx jsx */
 import {jsx} from 'theme-ui'
+import React from 'react'
 import {Formik, Form, Field} from 'formik'
 import {Flex, Box, Heading, Button, Field as ThemeField} from '@luminate/gatsby-theme-luminate/src'
-import {useCreateCountryMutation} from '../../graphql'
+import {useCreateCountryMutation, CreateCountryInput, CreateCountryMutation, ListCountriesDocument} from '../../graphql'
+import {useHistory, useRouteMatch} from 'react-router-dom'
 
-const CountryCreateForm = () => {
-  const [createCountry, {data, error, loading}] = useCreateCountryMutation()
+interface CountryCreateFormProps {
+  fields?: Array<keyof CreateCountryInput>
+  /* Add functionality when entity successfully creates - default is to redirect to detail view*/
+  onCreateSuccess?: (data: CreateCountryMutation) => void
+  /* Add functionality when entity fails to create */
+  onCreateError?: (err: any) => void
+}
+
+const CountryCreateForm = ({fields, onCreateSuccess, onCreateError}: CountryCreateFormProps) => {
+  const history = useHistory()
+  const {url} = useRouteMatch()
+  const [createCountry, {data, error, loading}] = useCreateCountryMutation({
+    refetchQueries: [{query: ListCountriesDocument}],
+  })
+
+  // handle create response
+  React.useEffect(() => {
+    if (data) {
+      if (onCreateSuccess) {
+        onCreateSuccess(data)
+      } else {
+        history.push(`${url}/${data.createCountry?.id}`)
+      }
+    }
+
+    if (error && onCreateError) {
+      onCreateError(error)
+    }
+  }, [data, onCreateSuccess, error, onCreateError])
 
   return (
     <Formik
       initialValues={{
         name: '',
       }}
-      onSubmit={(values, {setSubmitting}) => {
-        createCountry({
+      onSubmit={async (values, {setSubmitting}) => {
+        await createCountry({
           variables: {
             input: values,
           },
         })
-          .then(res => {
-            console.log({res})
-            setSubmitting(false)
-          })
-          .catch(err => {
-            console.log({err})
-            setSubmitting(false)
-          })
+        setSubmitting(false)
       }}
     >
       {() => {
@@ -35,9 +57,11 @@ const CountryCreateForm = () => {
               <Box>
                 <Heading>Create a Country</Heading>
               </Box>
-              <Box>
-                <Field name="name" label="Name" as={ThemeField} />
-              </Box>
+              {!fields || fields.includes('name') ? (
+                <Box>
+                  <Field name="name" label="Name" as={ThemeField} />
+                </Box>
+              ) : null}
               <Box>
                 <Button type="submit">Submit</Button>
               </Box>

@@ -882,9 +882,7 @@ export type DeleteFarmMutationVariables = {
   id: Scalars['ID']
 }
 
-export type DeleteFarmMutation = {__typename: 'Mutation'} & {
-  deleteRegion: Maybe<{__typename: 'Region'} & Pick<Region, 'id'>>
-}
+export type DeleteFarmMutation = {__typename: 'Mutation'} & {deleteFarm: Maybe<{__typename: 'Farm'} & Pick<Farm, 'id'>>}
 
 export type FarmFragmentFragment = {__typename: 'Farm'} & Pick<Farm, 'id' | 'name' | 'createdAt' | 'updatedAt'> & {
     country: Maybe<{__typename: 'Country'} & Pick<Country, 'id' | 'name'>>
@@ -1603,7 +1601,7 @@ export type UpdateFarmMutationOptions = ApolloReactCommon.BaseMutationOptions<
 >
 export const DeleteFarmDocument = gql`
   mutation DeleteFarm($id: ID!) {
-    deleteRegion(id: $id) {
+    deleteFarm(id: $id) {
       id
     }
   }
