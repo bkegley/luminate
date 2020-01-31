@@ -40,15 +40,14 @@ const startServer = async () => {
   const server = new ApolloServer({
     schema: buildFederatedSchema(schemas),
     context: ({req, res}): Context => {
+      const user = parseUserFromRequest(req)
       const loaders = Object.keys(loadersObject).reduce((acc, loaderName) => {
         return {
           ...acc,
           //@ts-ignore
-          [loaderName]: new DataLoader(ids => loadersObject[loaderName](ids, models)),
+          [loaderName]: new DataLoader(ids => loadersObject[loaderName](ids, models, user)),
         }
       }, Object.assign(Object.keys(loadersObject)))
-
-      const user = parseUserFromRequest(req)
 
       return {
         req,
