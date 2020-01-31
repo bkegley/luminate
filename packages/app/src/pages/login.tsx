@@ -1,47 +1,48 @@
-/** @jsx jsx */
-import {jsx, useThemeUI} from 'theme-ui'
-import {useLoginMutation} from '../graphql'
+import React from 'react'
+import {navigate} from 'gatsby'
+import {useLogin, useLogout} from '@luminate/gatsby-theme-luminate/src'
 import {Formik, Form, Field} from 'formik'
-import {Flex, Box, Card, Heading, Button, Field as ThemeField} from '@luminate/gatsby-theme-luminate/src/components'
 
 const LoginPage = () => {
-  const [login, {error, loading, data}] = useLoginMutation()
+  const [login, {data, loading, error}] = useLogin()
+  const [logout, {loading: logoutLoading, error: logoutError}] = useLogout()
+
+  if (data) {
+    navigate('/app')
+    return null
+  }
 
   return (
-    <Box>
-      <Box>
-        <Heading as="h1">Login</Heading>
-      </Box>
-      <Card>
-        <Formik
-          initialValues={{
-            username: '',
-            password: '',
-          }}
-          onSubmit={values => {
-            console.log(values)
-          }}
-        >
-          {() => {
-            return (
-              <Form>
-                <Box sx={{color: ['aaron.least', 'aaron.favorite']}}>
-                  <Field name="username" type="text" label="Username" as={ThemeField} />
-                </Box>
-                <Box>
-                  <Field name="password" type="password" label="Password" as={ThemeField} />
-                </Box>
-                <Flex>
-                  <Box>
-                    <Button type="submit">Login</Button>
-                  </Box>
-                </Flex>
-              </Form>
-            )
-          }}
-        </Formik>
-      </Card>
-    </Box>
+    <div>
+      <Formik
+        initialValues={{
+          username: '',
+          password: '',
+        }}
+        onSubmit={values => {
+          login(values)
+        }}
+      >
+        {() => {
+          return (
+            <Form>
+              <div>
+                <label htmlFor="username">Username</label>
+                <Field name="username" id="username" type="text" />
+              </div>
+              <div>
+                <label htmlFor="password">Password</label>
+                <Field name="password" id="password" type="password" />
+              </div>
+              <div>
+                <button type="submit">Submit</button>
+              </div>
+            </Form>
+          )
+        }}
+      </Formik>
+    </div>
   )
 }
+
 export default LoginPage
