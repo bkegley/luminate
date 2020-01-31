@@ -11,6 +11,7 @@ const typeDefs = gql`
     username: String
     firstName: String
     lastName: String
+    accounts: [Account]
     roles: [Role]
     scopes: [Scope]
   }
@@ -141,6 +142,11 @@ const resolvers: Resolvers = {
     },
   },
   User: {
+    accounts: async (parent, args, {loaders}) => {
+      const {accounts} = loaders
+      if (!parent.accounts) return null
+      return Promise.all(parent.accounts.map(id => accounts.load(id)))
+    },
     roles: async (parent, args, {loaders}) => {
       const {roles} = loaders
       if (!parent.roles) return null

@@ -3,6 +3,7 @@ import {DocumentWithTimestamps} from '@luminate/graphql-utils'
 
 export interface CoffeeDocument extends DocumentWithTimestamps {
   name: string
+  visibleTo: Array<mongoose.Types.ObjectId>
   country?: mongoose.Types.ObjectId
   region?: mongoose.Types.ObjectId
   farm?: mongoose.Types.ObjectId
@@ -13,6 +14,11 @@ export interface CoffeeDocument extends DocumentWithTimestamps {
 
 const Coffee = new mongoose.Schema(
   {
+    visibleTo: [
+      {
+        type: mongoose.Types.ObjectId,
+      },
+    ],
     name: {
       type: String,
       required: true,

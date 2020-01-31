@@ -18,6 +18,7 @@ export interface UserDocument extends PersonDocument {
   username: string
   password: string
   authTokens?: Array<IAuthToken>
+  accounts?: Array<mongoose.Types.ObjectId>
   roles?: string[]
   lastLoggedIn?: Date
 }
@@ -116,6 +117,12 @@ const UserSchema = extendSchema(
         expiresAt: {
           type: Date,
         },
+      },
+    ],
+    accounts: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'account',
       },
     ],
     roles: [
