@@ -1,4 +1,5 @@
-import {gql, AuthenticationError, ApolloError} from 'apollo-server-express'
+import mongoose from 'mongoose'
+import {gql, ApolloError} from 'apollo-server-express'
 import {createConnectionResults, LoaderFn, hasScopes} from '@luminate/graphql-utils'
 import {Resolvers} from '../types'
 import {CoffeeDocument, VarietyDocument} from '@luminate/mongo'
@@ -54,6 +55,7 @@ const typeDefs = gql`
     createCoffee(input: CreateCoffeeInput!): Coffee
     updateCoffee(id: ID!, input: UpdateCoffeeInput!): Coffee
     deleteCoffee(id: ID!): Coffee
+    shareCoffeeWithAccount(coffeeId: ID!, accountId: ID!): Boolean
   }
 `
 
@@ -63,7 +65,23 @@ const resolvers: Resolvers = {
       // const isAuthorized = hasScopes(user, ['read: Coffee'])
       // if (!isAuthorized) throw new Error('Not authorized!')
       const {Coffee} = models
-      const results = await createConnectionResults({args, model: Coffee})
+      const results = await createConnectionResults({
+        args: {
+          ...args,
+          $or: [
+            {visibleTo: null},
+            {visibleTo: {$size: 0}},
+            {
+              visibleTo: {
+                $elemMatch: {
+                  $in: user ? (user.accounts || []).concat((user.id as unknown) as mongoose.Types.ObjectId) : [],
+                },
+              },
+            },
+          ],
+        },
+        model: Coffee,
+      })
       return results
     },
     getCoffee: async (parent, {id}, {loaders}, info) => {
@@ -89,6 +107,11 @@ const resolvers: Resolvers = {
         throw new ApolloError('Document not found')
       }
       return coffee
+    },
+    shareCoffeeWithAccount: async (parent, {coffeeId, accountId}, {models}) => {
+      const {Coffee} = models
+      const coffee = await Coffee.findByIdAndUpdate(coffeeId, {$push: {visibleTo: accountId}}, {new: true})
+      return !!coffee
     },
   },
   Coffee: {
@@ -120,12 +143,25 @@ export interface CoffeeLoaders {
 }
 
 export const loaders: CoffeeLoaders = {
-  coffees: async (ids, models) => {
+  coffees: async (ids, models, user) => {
     const {Coffee} = models
-    const coffees = await Coffee.find({_id: ids})
+    const coffees = await Coffee.find({
+      _id: ids,
+      $or: [
+        {visibleTo: null},
+        {visibleTo: {$size: 0}},
+        {
+          visibleTo: {
+            $elemMatch: {
+              $in: user ? (user.accounts || []).concat((user.id as unknown) as mongoose.Types.ObjectId) : [],
+            },
+          },
+        },
+      ],
+    })
     return ids.map(id => {
       const coffee = coffees.find(coffee => coffee._id.toString() === id.toString())
-      if (!coffee) throw new Error('Document not found')
+      if (!coffee) throw new ApolloError('Document not found')
       return coffee
     })
   },

@@ -99,12 +99,6 @@ export type CreateRegionInput = {
 
 export type CreateRoastInput = {
   name?: Maybe<Scalars['String']>
-  country?: Maybe<Scalars['ID']>
-  region?: Maybe<Scalars['ID']>
-  farm?: Maybe<Scalars['ID']>
-  farmZone?: Maybe<Scalars['ID']>
-  varieties?: Maybe<Array<Maybe<Scalars['ID']>>>
-  elevation?: Maybe<Scalars['String']>
 }
 
 export type CreateVarietyInput = {
@@ -162,6 +156,7 @@ export type Mutation = {
   createCoffee?: Maybe<Coffee>
   updateCoffee?: Maybe<Coffee>
   deleteCoffee?: Maybe<Coffee>
+  shareCoffeeWithAccount?: Maybe<Scalars['Boolean']>
   createCountry?: Maybe<Country>
   updateCountry?: Maybe<Country>
   deleteCountry?: Maybe<Country>
@@ -193,6 +188,11 @@ export type MutationUpdateCoffeeArgs = {
 
 export type MutationDeleteCoffeeArgs = {
   id: Scalars['ID']
+}
+
+export type MutationShareCoffeeWithAccountArgs = {
+  coffeeId: Scalars['ID']
+  accountId: Scalars['ID']
 }
 
 export type MutationCreateCountryArgs = {
@@ -411,10 +411,6 @@ export type Roast = {
   __typename?: 'Roast'
   id: Scalars['ID']
   name?: Maybe<Scalars['String']>
-  country?: Maybe<Country>
-  region?: Maybe<Region>
-  varieties?: Maybe<Array<Maybe<Variety>>>
-  elevation?: Maybe<Scalars['String']>
   createdAt?: Maybe<Scalars['String']>
   updatedAt?: Maybe<Scalars['String']>
 }
@@ -463,12 +459,6 @@ export type UpdateRegionInput = {
 
 export type UpdateRoastInput = {
   name?: Maybe<Scalars['String']>
-  country?: Maybe<Scalars['ID']>
-  region?: Maybe<Scalars['ID']>
-  farm?: Maybe<Scalars['ID']>
-  farmZone?: Maybe<Scalars['ID']>
-  varieties?: Maybe<Array<Maybe<Scalars['ID']>>>
-  elevation?: Maybe<Scalars['String']>
 }
 
 export type UpdateVarietyInput = {
@@ -915,10 +905,6 @@ export type RoastResolvers<
   >
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
-  country?: Resolver<Maybe<ResolversTypes['Country']>, ParentType, ContextType>
-  region?: Resolver<Maybe<ResolversTypes['Region']>, ParentType, ContextType>
-  varieties?: Resolver<Maybe<Array<Maybe<ResolversTypes['Variety']>>>, ParentType, ContextType>
-  elevation?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   createdAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   updatedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
 }>
@@ -960,6 +946,12 @@ export type MutationResolvers<
     ParentType,
     ContextType,
     RequireFields<MutationDeleteCoffeeArgs, 'id'>
+  >
+  shareCoffeeWithAccount?: Resolver<
+    Maybe<ResolversTypes['Boolean']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationShareCoffeeWithAccountArgs, 'coffeeId' | 'accountId'>
   >
   createCountry?: Resolver<
     Maybe<ResolversTypes['Country']>,
