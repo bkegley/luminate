@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
 import {DocumentWithTimestamps} from '@luminate/graphql-utils'
+import {PublicAndPrivateEntity, WithAuthenticatedMethods} from '../LoadClasses'
 
 export interface CoffeeDocument extends DocumentWithTimestamps {
   name: string
@@ -52,4 +53,6 @@ const Coffee = new mongoose.Schema(
   {timestamps: true},
 )
 
-export default mongoose.model<CoffeeDocument>('coffee', Coffee)
+Coffee.loadClass(PublicAndPrivateEntity)
+
+export default mongoose.model<CoffeeDocument, WithAuthenticatedMethods<CoffeeDocument>>('coffee', Coffee)
