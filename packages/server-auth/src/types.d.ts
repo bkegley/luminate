@@ -18,6 +18,7 @@ export type Account = {
   __typename?: 'Account'
   id: Scalars['ID']
   name: Scalars['String']
+  users?: Maybe<Array<User>>
 }
 
 export type AccountConnection = {
@@ -392,21 +393,23 @@ export type ResolversTypes = ResolversObject<{
   Int: ResolverTypeWrapper<Scalars['Int']>
   QueryInput: QueryInput
   OperatorEnum: OperatorEnum
-  AccountConnection: ResolverTypeWrapper<AccountConnection>
+  AccountConnection: ResolverTypeWrapper<
+    Omit<AccountConnection, 'edges'> & {edges: Array<ResolversTypes['AccountEdge']>}
+  >
   PageInfo: ResolverTypeWrapper<PageInfo>
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>
-  AccountEdge: ResolverTypeWrapper<AccountEdge>
-  Account: ResolverTypeWrapper<Account>
+  AccountEdge: ResolverTypeWrapper<Omit<AccountEdge, 'node'> & {node?: Maybe<ResolversTypes['Account']>}>
+  Account: ResolverTypeWrapper<Omit<Account, 'users'> & {users?: Maybe<Array<ResolversTypes['User']>>}>
   ID: ResolverTypeWrapper<Scalars['ID']>
-  RoleConnection: ResolverTypeWrapper<Omit<RoleConnection, 'edges'> & {edges: Array<ResolversTypes['RoleEdge']>}>
-  RoleEdge: ResolverTypeWrapper<Omit<RoleEdge, 'node'> & {node?: Maybe<ResolversTypes['Role']>}>
+  User: ResolverTypeWrapper<UserDocument>
   Role: ResolverTypeWrapper<RoleDocument>
   Scope: ResolverTypeWrapper<ScopeDocument>
+  RoleConnection: ResolverTypeWrapper<Omit<RoleConnection, 'edges'> & {edges: Array<ResolversTypes['RoleEdge']>}>
+  RoleEdge: ResolverTypeWrapper<Omit<RoleEdge, 'node'> & {node?: Maybe<ResolversTypes['Role']>}>
   ScopeConnection: ResolverTypeWrapper<Omit<ScopeConnection, 'edges'> & {edges: Array<ResolversTypes['ScopeEdge']>}>
   ScopeEdge: ResolverTypeWrapper<Omit<ScopeEdge, 'node'> & {node?: Maybe<ResolversTypes['Scope']>}>
   UserConnection: ResolverTypeWrapper<Omit<UserConnection, 'edges'> & {edges: Array<ResolversTypes['UserEdge']>}>
   UserEdge: ResolverTypeWrapper<Omit<UserEdge, 'node'> & {node?: Maybe<ResolversTypes['User']>}>
-  User: ResolverTypeWrapper<UserDocument>
   Mutation: ResolverTypeWrapper<{}>
   CreateAccountInput: CreateAccountInput
   UpdateAccountInput: UpdateAccountInput
@@ -427,21 +430,21 @@ export type ResolversParentTypes = ResolversObject<{
   Int: Scalars['Int']
   QueryInput: QueryInput
   OperatorEnum: OperatorEnum
-  AccountConnection: AccountConnection
+  AccountConnection: Omit<AccountConnection, 'edges'> & {edges: Array<ResolversParentTypes['AccountEdge']>}
   PageInfo: PageInfo
   Boolean: Scalars['Boolean']
-  AccountEdge: AccountEdge
-  Account: Account
+  AccountEdge: Omit<AccountEdge, 'node'> & {node?: Maybe<ResolversParentTypes['Account']>}
+  Account: Omit<Account, 'users'> & {users?: Maybe<Array<ResolversParentTypes['User']>>}
   ID: Scalars['ID']
-  RoleConnection: Omit<RoleConnection, 'edges'> & {edges: Array<ResolversParentTypes['RoleEdge']>}
-  RoleEdge: Omit<RoleEdge, 'node'> & {node?: Maybe<ResolversParentTypes['Role']>}
+  User: UserDocument
   Role: RoleDocument
   Scope: ScopeDocument
+  RoleConnection: Omit<RoleConnection, 'edges'> & {edges: Array<ResolversParentTypes['RoleEdge']>}
+  RoleEdge: Omit<RoleEdge, 'node'> & {node?: Maybe<ResolversParentTypes['Role']>}
   ScopeConnection: Omit<ScopeConnection, 'edges'> & {edges: Array<ResolversParentTypes['ScopeEdge']>}
   ScopeEdge: Omit<ScopeEdge, 'node'> & {node?: Maybe<ResolversParentTypes['Scope']>}
   UserConnection: Omit<UserConnection, 'edges'> & {edges: Array<ResolversParentTypes['UserEdge']>}
   UserEdge: Omit<UserEdge, 'node'> & {node?: Maybe<ResolversParentTypes['User']>}
-  User: UserDocument
   Mutation: {}
   CreateAccountInput: CreateAccountInput
   UpdateAccountInput: UpdateAccountInput
@@ -506,22 +509,20 @@ export type AccountResolvers<
 > = ResolversObject<{
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  users?: Resolver<Maybe<Array<ResolversTypes['User']>>, ParentType, ContextType>
 }>
 
-export type RoleConnectionResolvers<
+export type UserResolvers<
   ContextType = Context,
-  ParentType extends ResolversParentTypes['RoleConnection'] = ResolversParentTypes['RoleConnection']
+  ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']
 > = ResolversObject<{
-  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>
-  edges?: Resolver<Array<ResolversTypes['RoleEdge']>, ParentType, ContextType>
-}>
-
-export type RoleEdgeResolvers<
-  ContextType = Context,
-  ParentType extends ResolversParentTypes['RoleEdge'] = ResolversParentTypes['RoleEdge']
-> = ResolversObject<{
-  cursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
-  node?: Resolver<Maybe<ResolversTypes['Role']>, ParentType, ContextType>
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
+  username?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  firstName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  lastName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  accounts?: Resolver<Maybe<Array<Maybe<ResolversTypes['Account']>>>, ParentType, ContextType>
+  roles?: Resolver<Maybe<Array<Maybe<ResolversTypes['Role']>>>, ParentType, ContextType>
+  scopes?: Resolver<Maybe<Array<Maybe<ResolversTypes['Scope']>>>, ParentType, ContextType>
 }>
 
 export type RoleResolvers<
@@ -546,6 +547,22 @@ export type ScopeResolvers<
   category?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+}>
+
+export type RoleConnectionResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['RoleConnection'] = ResolversParentTypes['RoleConnection']
+> = ResolversObject<{
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>
+  edges?: Resolver<Array<ResolversTypes['RoleEdge']>, ParentType, ContextType>
+}>
+
+export type RoleEdgeResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['RoleEdge'] = ResolversParentTypes['RoleEdge']
+> = ResolversObject<{
+  cursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  node?: Resolver<Maybe<ResolversTypes['Role']>, ParentType, ContextType>
 }>
 
 export type ScopeConnectionResolvers<
@@ -578,19 +595,6 @@ export type UserEdgeResolvers<
 > = ResolversObject<{
   cursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   node?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>
-}>
-
-export type UserResolvers<
-  ContextType = Context,
-  ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']
-> = ResolversObject<{
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
-  username?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
-  firstName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
-  lastName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
-  accounts?: Resolver<Maybe<Array<Maybe<ResolversTypes['Account']>>>, ParentType, ContextType>
-  roles?: Resolver<Maybe<Array<Maybe<ResolversTypes['Role']>>>, ParentType, ContextType>
-  scopes?: Resolver<Maybe<Array<Maybe<ResolversTypes['Scope']>>>, ParentType, ContextType>
 }>
 
 export type MutationResolvers<
@@ -696,15 +700,15 @@ export type Resolvers<ContextType = Context> = ResolversObject<{
   PageInfo?: PageInfoResolvers<ContextType>
   AccountEdge?: AccountEdgeResolvers<ContextType>
   Account?: AccountResolvers<ContextType>
-  RoleConnection?: RoleConnectionResolvers<ContextType>
-  RoleEdge?: RoleEdgeResolvers<ContextType>
+  User?: UserResolvers<ContextType>
   Role?: RoleResolvers<ContextType>
   Scope?: ScopeResolvers<ContextType>
+  RoleConnection?: RoleConnectionResolvers<ContextType>
+  RoleEdge?: RoleEdgeResolvers<ContextType>
   ScopeConnection?: ScopeConnectionResolvers<ContextType>
   ScopeEdge?: ScopeEdgeResolvers<ContextType>
   UserConnection?: UserConnectionResolvers<ContextType>
   UserEdge?: UserEdgeResolvers<ContextType>
-  User?: UserResolvers<ContextType>
   Mutation?: MutationResolvers<ContextType>
 }>
 

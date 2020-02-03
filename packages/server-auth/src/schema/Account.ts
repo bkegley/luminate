@@ -7,6 +7,7 @@ const typeDefs = gql`
   type Account {
     id: ID!
     name: String!
+    users: [User!]
   }
 
   type AccountConnection {
@@ -75,6 +76,13 @@ const resolvers: Resolvers = {
       const {User} = models
       const user = await User.findByIdAndUpdate(userId, {$push: {accounts: accountId}}, {new: true})
       return !!user
+    },
+  },
+  Account: {
+    users: async (parent, args, {models}) => {
+      const {User} = models
+      const users = await User.find({accounts: parent.id})
+      return users
     },
   },
 }
