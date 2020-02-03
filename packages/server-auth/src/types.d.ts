@@ -71,6 +71,7 @@ export type Mutation = {
   updateUser?: Maybe<User>
   deleteUser?: Maybe<User>
   updatePassword?: Maybe<Scalars['Boolean']>
+  updateUserRoles?: Maybe<User>
   login?: Maybe<User>
   logout?: Maybe<Scalars['Boolean']>
 }
@@ -135,6 +136,11 @@ export type MutationDeleteUserArgs = {
 export type MutationUpdatePasswordArgs = {
   id: Scalars['ID']
   input: UpdatePasswordInput
+}
+
+export type MutationUpdateUserRolesArgs = {
+  userId: Scalars['ID']
+  roles: Array<Scalars['ID']>
 }
 
 export type MutationLoginArgs = {
@@ -684,6 +690,12 @@ export type MutationResolvers<
     ParentType,
     ContextType,
     RequireFields<MutationUpdatePasswordArgs, 'id' | 'input'>
+  >
+  updateUserRoles?: Resolver<
+    Maybe<ResolversTypes['User']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationUpdateUserRolesArgs, 'userId' | 'roles'>
   >
   login?: Resolver<
     Maybe<ResolversTypes['User']>,

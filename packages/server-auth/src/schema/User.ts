@@ -57,6 +57,7 @@ const typeDefs = gql`
     updateUser(id: ID!, input: UpdateUserInput!): User
     deleteUser(id: ID!): User
     updatePassword(id: ID!, input: UpdatePasswordInput!): Boolean
+    updateUserRoles(userId: ID!, roles: [ID!]!): User
     login(username: String!, password: String!): User
     logout: Boolean
   }
@@ -115,6 +116,16 @@ const resolvers: Resolvers = {
 
       return false
     },
+    updateUserRoles: async (parent, {userId, roles}, {models, user}) => {
+      const {User} = models
+
+      const updatedUser = await User.findOneAndUpdate(
+        {_id: userId, 'roles.account': user?.account},
+        {$set: {'roles.$.roles': roles}},
+        {new: true},
+      )
+      return updatedUser
+    },
     login: async (parent, {username, password}, {models, res}) => {
       const {User} = models
       const user = await User.findOne({username})
@@ -125,7 +136,9 @@ const resolvers: Resolvers = {
 
       if (!passwordMatches) return null
 
-      const token = createToken(user.id, tokenJSON.token)
+      const accountId = user.defaultAccount ? user.defaultAccount : user.accounts ? user.accounts[0] : undefined
+
+      const token = createToken({userId: user.id, accountId}, tokenJSON.token)
 
       res.cookie('id', token, {
         httpOnly: true,
@@ -147,25 +160,36 @@ const resolvers: Resolvers = {
       if (!parent.accounts) return null
       return Promise.all(parent.accounts.map(id => accounts.load(id)))
     },
-    roles: async (parent, args, {loaders}) => {
+    roles: async (parent, args, {loaders, user}) => {
       const {roles} = loaders
       if (!parent.roles) return null
-      return Promise.all(parent.roles.map(id => roles.load(id)))
+
+      const accountRoles = parent.roles
+        ?.filter(role => role.account.toString() === user?.account?.toString())
+        .map(role => role.roles)
+        .flat()
+
+      return Promise.all(accountRoles.map(role => roles.load(role)))
     },
-    scopes: async (parent, args, {loaders, models}) => {
+    scopes: async (parent, args, {loaders, models, user}) => {
       const {Role} = models
-      const roles = await Role.find({_id: parent.roles})
+      return null
+      // const accountRoles = parent.roles
+      //   ?.filter(role => role.account.toString() === user?.account?.toString())
+      //   .map(role => role.roles)
+      //   .flat()
+      // const roles = await Role.find({_id: accountRoles})
 
-      if (!roles) return null
+      // if (!roles) return null
 
-      const {scopes} = loaders
-      const allScopeIds = roles.reduce((acc, role) => {
-        return acc.concat(
-          role.scopes?.filter(id => !acc.find(existingId => existingId.toString() === id.toString())) || [],
-        )
-      }, [] as string[])
+      // const {scopes} = loaders
+      // const allScopeIds = roles.reduce((acc, role) => {
+      //   return acc.concat(
+      //     role.scopes?.filter(id => !acc.find(existingId => existingId.toString() === id.toString())) || [],
+      //   )
+      // }, [] as string[])
 
-      return Promise.all(allScopeIds.map(id => scopes.load(id)))
+      // return Promise.all(allScopeIds.map(id => scopes.load(id)))
     },
   },
 }

@@ -19,11 +19,18 @@ export interface UserDocument extends PersonDocument {
   password: string
   authTokens?: Array<IAuthToken>
   accounts?: Array<mongoose.Types.ObjectId>
-  roles?: string[]
+  defaultAccount?: mongoose.Types.ObjectId
+  roles?: UserRole[]
   lastLoggedIn?: Date
 }
 
-export interface UserWithScopesDocument extends UserDocument {
+interface UserRole {
+  account: mongoose.Types.ObjectId | string
+  roles: Array<mongoose.Types.ObjectId | string>
+}
+
+export interface AuthenticatedUserDocument extends UserDocument {
+  account?: mongoose.Types.ObjectId | string
   scopes?: ScopeDocument[]
 }
 
@@ -125,10 +132,22 @@ const UserSchema = extendSchema(
         ref: 'account',
       },
     ],
+    defaultAccount: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'account',
+    },
     roles: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'role',
+        account: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'account',
+        },
+        roles: [
+          {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'role',
+          },
+        ],
       },
     ],
     lastLoggedIn: {
