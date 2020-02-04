@@ -6,7 +6,7 @@ export type LoaderFn<T> = (
   ids: string[],
   models: typeof dbModels,
   user: UserDocument | null,
-) => ReturnType<BatchLoadFn<string, T>>
+) => ReturnType<BatchLoadFn<string, T | null | undefined>>
 
 type ExtractGraphQLType<L> = L extends LoaderFn<infer T> ? T : never
 
