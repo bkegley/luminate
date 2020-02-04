@@ -44,9 +44,9 @@ const typeDefs = gql`
 
 const resolvers: Resolvers = {
   Query: {
-    listCountries: async (parent, args, {models}) => {
+    listCountries: async (parent, args, {models, user}) => {
       const {Country} = models
-      const results = await createConnectionResults({args, model: Country})
+      const results = await createConnectionResults({user, args, model: Country})
       return results
     },
     getCountry: async (parent, {id}, {models, loaders}, info) => {
@@ -55,19 +55,19 @@ const resolvers: Resolvers = {
     },
   },
   Mutation: {
-    createCountry: async (parent, {input}, {models}) => {
+    createCountry: async (parent, {input}, {models, user}) => {
       const {Country} = models
-      const country = await new Country(input).save()
+      const country = await Country.createByUser(user, input)
       return country
     },
-    updateCountry: async (parent, {id, input}, {models}) => {
+    updateCountry: async (parent, {id, input}, {models, user}) => {
       const {Country} = models
-      const country = await Country.findByIdAndUpdate(id, input, {new: true})
+      const country = await Country.findByIdAndUpdateByUser(user, id, input, {new: true})
       return country
     },
-    deleteCountry: async (parent, {id}, {models}) => {
+    deleteCountry: async (parent, {id}, {models, user}) => {
       const {Country} = models
-      const country = await Country.findByIdAndDelete(id)
+      const country = await Country.findByIdAndDeleteByUser(user, id, {})
       if (!country) {
         throw new ApolloError('Document not found')
       }
@@ -88,18 +88,18 @@ export interface CountryLoaders {
 }
 
 export const loaders: CountryLoaders = {
-  countries: async (ids, models) => {
+  countries: async (ids, models, user) => {
     const {Country} = models
-    const countries = await Country.find({_id: ids})
+    const countries = await Country.findByUser(user, {_id: ids})
     return ids.map(id => {
       const country = countries.find(country => country._id.toString() === id.toString())
       if (!country) throw new Error('Document not found')
       return country
     })
   },
-  regionsOfCountry: async (ids, models) => {
+  regionsOfCountry: async (ids, models, user) => {
     const {Region} = models
-    const regions = await Region.find({country: ids})
+    const regions = await Region.findByUser(user, {country: ids})
     return ids.map(id => {
       return regions.filter(region => region.country && region.country.toString() === id)
     })

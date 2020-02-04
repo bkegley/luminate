@@ -1,12 +1,17 @@
 import mongoose from 'mongoose'
 import {DocumentWithTimestamps} from '@luminate/graphql-utils'
+import extendSchema from '../extendSchema'
+import {BaseAuthenticatedSchema, AuthenticatedEntity, WithAuthenticatedMethods} from '../baseSchemas'
 
 export interface FarmZoneDocument extends DocumentWithTimestamps {
   name: string
   farm?: mongoose.Types.ObjectId
 }
 
-const FarmZone = new mongoose.Schema(
+export interface FarmZoneModel extends WithAuthenticatedMethods<FarmZoneDocument> {}
+
+const FarmZone = extendSchema(
+  BaseAuthenticatedSchema,
   {
     name: {
       type: String,
@@ -20,4 +25,6 @@ const FarmZone = new mongoose.Schema(
   {timestamps: true},
 )
 
-export default mongoose.model<FarmZoneDocument>('farmZone', FarmZone)
+FarmZone.loadClass(AuthenticatedEntity)
+
+export default mongoose.model<FarmZoneDocument, FarmZoneModel>('farmZone', FarmZone)

@@ -43,9 +43,9 @@ const typeDefs = gql`
 
 const resolvers: Resolvers = {
   Query: {
-    listRoasts: async (parent, args, {models}) => {
+    listRoasts: async (parent, args, {models, user}) => {
       const {Roast} = models
-      const results = await createConnectionResults({args, model: Roast})
+      const results = await createConnectionResults({user, args, model: Roast})
       return results
     },
     getRoast: async (parent, {id}, {loaders}, info) => {
@@ -54,19 +54,19 @@ const resolvers: Resolvers = {
     },
   },
   Mutation: {
-    createRoast: async (parent, {input}, {models}) => {
+    createRoast: async (parent, {input}, {models, user}) => {
       const {Roast} = models
-      const roast = await new Roast(input).save()
+      const roast = await Roast.createByUser(user, input)
       return roast
     },
-    updateRoast: async (parent, {id, input}, {models}) => {
+    updateRoast: async (parent, {id, input}, {models, user}) => {
       const {Roast} = models
-      const roast = await Roast.findByIdAndUpdate(id, input, {new: true})
+      const roast = await Roast.findByIdAndUpdateByUser(user, id, input, {new: true})
       return roast
     },
-    deleteRoast: async (parent, {id}, {models}) => {
+    deleteRoast: async (parent, {id}, {models, user}) => {
       const {Roast} = models
-      const roast = await Roast.findByIdAndDelete(id)
+      const roast = await Roast.findByIdAndDeleteByUser(user, id, {})
       if (!roast) {
         throw new ApolloError('Document not found')
       }
@@ -86,9 +86,9 @@ export interface RoastLoaders {
 }
 
 export const loaders: RoastLoaders = {
-  roasts: async (ids, models) => {
+  roasts: async (ids, models, user) => {
     const {Roast} = models
-    const roasts = await Roast.find({_id: ids})
+    const roasts = await Roast.findByUser(user, {_id: ids})
     return ids.map(id => {
       const roast = roasts.find(roast => roast._id.toString() === id.toString())
       if (!roast) throw new Error('Document not found')

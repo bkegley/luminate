@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 import {parseArgs, TQueryInput} from './parseArgs'
 import {createCursorHash} from './cursor'
+import {AuthenticatedUserDocument, WithAuthenticatedMethods} from '@luminate/mongo'
 
 interface ArgsInput {
   cursor?: string | null | undefined
@@ -17,7 +18,8 @@ export interface DocumentWithTimestamps extends mongoose.Document {
 
 interface CreateConnectionResultsArgs<T extends DocumentWithTimestamps> {
   args: ArgsInput
-  model: mongoose.Model<T>
+  model: WithAuthenticatedMethods<T>
+  user: AuthenticatedUserDocument | null
 }
 
 type ExtractModelType<T> = T extends mongoose.Model<infer M> ? M : never
@@ -25,12 +27,14 @@ type ExtractModelType<T> = T extends mongoose.Model<infer M> ? M : never
 export async function createConnectionResults<T extends DocumentWithTimestamps>({
   args,
   model,
+  user,
 }: CreateConnectionResultsArgs<T>) {
   const {cursor, limit, query, ...remainingArgs} = args
   const cursorWithDefault = cursor || createCursorHash(new Date())
   const limitWithDefault = limit || 100
 
-  const documentsPlusOne: Array<ExtractModelType<typeof model>> = await model.find(
+  const documentsPlusOne: Array<ExtractModelType<typeof model>> = await model.findByUser(
+    user,
     {...remainingArgs, ...parseArgs({cursor: cursorWithDefault, query})},
     null,
     {

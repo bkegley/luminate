@@ -1,6 +1,14 @@
 import mongoose from 'mongoose'
 import {AuthenticatedUserDocument} from './index'
 
+export const BasePublicSchema = new mongoose.Schema({
+  permissionType: {
+    type: String,
+    enum: ['public'],
+    default: 'public',
+  },
+})
+
 export const BaseAuthenticatedSchema = new mongoose.Schema({
   createdByUser: {
     type: mongoose.Schema.Types.ObjectId,
@@ -79,6 +87,27 @@ export class AuthenticatedEntity extends mongoose.Model {
     return this.findOne({_id: id, ...buildReadConditionsForUser(user)})
   }
 
+  static findOneAndUpdateByUser(
+    user: AuthenticatedUserDocument | null,
+    ...args: Parameters<typeof mongoose.Model.findOneAndUpdate> | undefined[]
+  ) {
+    const [conditions = {}, input = {}, options = {}] = args
+    const {$or, ...remainingConditions} = conditions
+
+    const authConditions = buildWriteConditionsForUser(user)
+
+    const additionalConditions = $or ? {$and: [{$or: $or}, authConditions]} : authConditions
+
+    return this.findOneAndUpdate(
+      {
+        ...remainingConditions,
+        ...additionalConditions,
+      },
+      input,
+      options,
+    )
+  }
+
   static createByUser(user: AuthenticatedUserDocument | null, ...args: Parameters<typeof mongoose.Model.create>) {
     const [doc] = args
     return this.create({
@@ -153,7 +182,12 @@ export interface WithAuthenticatedMethods<T extends mongoose.Document> extends m
 
   findByIdByUser: (
     user: AuthenticatedUserDocument | null,
-    ...args: Parameters<typeof mongoose.Model.findById> | undefined[]
+    ...args: Partial<Parameters<typeof mongoose.Model.findById>> | undefined[]
+  ) => mongoose.DocumentQuery<T, T, {}>
+
+  findOneAndUpdateByUser: (
+    user: AuthenticatedUserDocument | null,
+    ...args: Partial<Parameters<typeof mongoose.Model.findOneAndUpdate>> | undefined[]
   ) => mongoose.DocumentQuery<T, T, {}>
 
   createByUser: (

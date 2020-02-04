@@ -1,11 +1,16 @@
 import mongoose from 'mongoose'
 import {DocumentWithTimestamps} from '@luminate/graphql-utils'
+import extendSchema from '../extendSchema'
+import {BaseAuthenticatedSchema, AuthenticatedEntity, WithAuthenticatedMethods} from '../baseSchemas'
 
 export interface RoastDocument extends DocumentWithTimestamps {
   name: string
 }
 
-const Roast = new mongoose.Schema(
+export interface RoastModel extends WithAuthenticatedMethods<RoastDocument> {}
+
+const Roast = extendSchema(
+  BaseAuthenticatedSchema,
   {
     name: {
       type: String,
@@ -15,4 +20,6 @@ const Roast = new mongoose.Schema(
   {timestamps: true},
 )
 
-export default mongoose.model<RoastDocument>('roast', Roast)
+Roast.loadClass(AuthenticatedEntity)
+
+export default mongoose.model<RoastDocument, RoastModel>('roast', Roast)

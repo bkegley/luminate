@@ -1,13 +1,17 @@
 import mongoose from 'mongoose'
 import {DocumentWithTimestamps} from '@luminate/graphql-utils'
-import {ScopeDocument} from './Scope'
+import extendSchema from '../extendSchema'
+import {BaseAuthenticatedSchema, AuthenticatedEntity, WithAuthenticatedMethods} from '../baseSchemas'
 
 export interface RoleDocument extends DocumentWithTimestamps {
   name: string
   scopes?: string[]
 }
 
-const RoleSchema = new mongoose.Schema(
+export interface RoleModel extends WithAuthenticatedMethods<RoleDocument> {}
+
+const Role = extendSchema(
+  BaseAuthenticatedSchema,
   {
     name: {
       type: String,
@@ -23,4 +27,6 @@ const RoleSchema = new mongoose.Schema(
   {timestamps: true},
 )
 
-export default mongoose.model<RoleDocument>('role', RoleSchema)
+Role.loadClass(AuthenticatedEntity)
+
+export default mongoose.model<RoleDocument, RoleModel>('role', Role)

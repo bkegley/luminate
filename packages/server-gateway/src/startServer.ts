@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 3000
 export interface Context {
   req: express.Request
   res: express.Response
-  user: AuthenticatedUserDocument
+  user: AuthenticatedUserDocument | null
 }
 
 class AuthenticatedDataSource extends RemoteGraphQLDataSource {

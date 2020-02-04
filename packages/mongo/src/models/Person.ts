@@ -5,6 +5,7 @@ import bcrypt from 'bcrypt'
 const saltRounds = 10
 import {DocumentWithTimestamps} from '@luminate/graphql-utils'
 import {ScopeDocument} from './Scope'
+import {BaseAuthenticatedSchema, AuthenticatedEntity, WithAuthenticatedMethods} from '../baseSchemas'
 
 export interface PersonDocument extends DocumentWithTimestamps {
   firstName?: string
@@ -13,6 +14,8 @@ export interface PersonDocument extends DocumentWithTimestamps {
   phone?: Array<IPhone>
   type: ['user' | 'contact' | 'person']
 }
+
+export interface PersonModel extends WithAuthenticatedMethods<PersonDocument> {}
 
 export interface UserDocument extends PersonDocument {
   username: string
@@ -23,6 +26,8 @@ export interface UserDocument extends PersonDocument {
   roles?: UserRole[]
   lastLoggedIn?: Date
 }
+
+export interface UserModel extends WithAuthenticatedMethods<UserDocument> {}
 
 interface UserRole {
   account: mongoose.Types.ObjectId | string
@@ -54,7 +59,8 @@ interface IAuthToken {
   expiresAt: Date
 }
 
-const PersonSchema = new mongoose.Schema(
+const PersonSchema = extendSchema(
+  BaseAuthenticatedSchema,
   {
     firstName: {
       type: String,
@@ -165,5 +171,8 @@ UserSchema.pre<UserDocument>('save', async function(next) {
   next()
 })
 
-export const Person = mongoose.model<PersonDocument>('person', PersonSchema, 'people')
-export const User = mongoose.model<UserDocument>('user', UserSchema, 'people')
+PersonSchema.loadClass(AuthenticatedEntity)
+UserSchema.loadClass(AuthenticatedEntity)
+
+export const Person = mongoose.model<PersonDocument, PersonModel>('person', PersonSchema, 'people')
+export const User = mongoose.model<UserDocument, UserModel>('user', UserSchema, 'people')

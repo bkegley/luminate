@@ -59,9 +59,9 @@ const typeDefs = gql`
 
 const resolvers: Resolvers = {
   Query: {
-    listCuppings: async (parent, args, {models}) => {
+    listCuppings: async (parent, args, {models, user}) => {
       const {Cupping} = models
-      const results = await createConnectionResults({args, model: Cupping})
+      const results = await createConnectionResults({user, args, model: Cupping})
       return results
     },
     getCupping: async (parent, {id}, {loaders}, info) => {
@@ -70,19 +70,19 @@ const resolvers: Resolvers = {
     },
   },
   Mutation: {
-    createCupping: async (parent, {input}, {models}) => {
+    createCupping: async (parent, {input}, {models, user}) => {
       const {Cupping} = models
-      const cupping = await new Cupping(input).save()
+      const cupping = await Cupping.createByUser(user, input)
       return cupping
     },
-    updateCupping: async (parent, {id, input}, {models}) => {
+    updateCupping: async (parent, {id, input}, {models, user}) => {
       const {Cupping} = models
-      const cupping = await Cupping.findByIdAndUpdate(id, input, {new: true})
+      const cupping = await Cupping.findByIdAndUpdateByUser(user, id, input, {new: true})
       return cupping
     },
-    deleteCupping: async (parent, {id}, {models}) => {
+    deleteCupping: async (parent, {id}, {models, user}) => {
       const {Cupping} = models
-      const cupping = await Cupping.findByIdAndDelete(id)
+      const cupping = await Cupping.findByIdAndDeleteByUser(user, id, {})
       if (!cupping) {
         throw new ApolloError('Document not found')
       }
@@ -101,9 +101,9 @@ export interface CuppingLoaders {
 }
 
 export const loaders: CuppingLoaders = {
-  cuppings: async (ids, models) => {
+  cuppings: async (ids, models, user) => {
     const {Cupping} = models
-    const cuppings = await Cupping.find({_id: ids})
+    const cuppings = await Cupping.findByUser(user, {_id: ids})
     return ids.map(id => {
       const cupping = cuppings.find(cupping => cupping._id.toString() === id.toString())
       if (!cupping) throw new Error('Document not found')

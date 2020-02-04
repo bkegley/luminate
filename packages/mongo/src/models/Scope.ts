@@ -1,5 +1,7 @@
 import mongoose from 'mongoose'
 import {DocumentWithTimestamps} from '@luminate/graphql-utils'
+import extendSchema from '../extendSchema'
+import {BasePublicSchema, AuthenticatedEntity, WithAuthenticatedMethods} from '../baseSchemas'
 
 export interface ScopeDocument extends DocumentWithTimestamps {
   name: string
@@ -8,7 +10,10 @@ export interface ScopeDocument extends DocumentWithTimestamps {
   category?: string
 }
 
-export const ScopeSchema = new mongoose.Schema(
+export interface ScopeModel extends WithAuthenticatedMethods<ScopeDocument> {}
+
+export const ScopeSchema = extendSchema(
+  BasePublicSchema,
   {
     name: {
       type: String,
@@ -38,4 +43,6 @@ ScopeSchema.pre<ScopeDocument>('save', async function(next) {
   next()
 })
 
-export default mongoose.model<ScopeDocument>('scope', ScopeSchema)
+ScopeSchema.loadClass(AuthenticatedEntity)
+
+export default mongoose.model<ScopeDocument, ScopeModel>('scope', ScopeSchema)

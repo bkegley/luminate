@@ -43,9 +43,9 @@ const typeDefs = gql`
 
 const resolvers: Resolvers = {
   Query: {
-    listAccounts: async (parent, args, {models}) => {
+    listAccounts: async (parent, args, {models, user}) => {
       const {Account} = models
-      const results = await createConnectionResults({args, model: Account})
+      const results = await createConnectionResults({user, args, model: Account})
       return results
     },
     getAccount: async (parent, {id}, {loaders}, info) => {
@@ -54,34 +54,34 @@ const resolvers: Resolvers = {
     },
   },
   Mutation: {
-    createAccount: async (parent, {input}, {models}) => {
+    createAccount: async (parent, {input}, {models, user}) => {
       const {Account} = models
-      const account = await new Account({...input, type: ['account']}).save()
+      const account = await Account.createByUser(user, {...input, type: ['account']})
       return account
     },
-    updateAccount: async (parent, {id, input}, {models}) => {
+    updateAccount: async (parent, {id, input}, {models, user}) => {
       const {Account} = models
-      const account = await Account.findByIdAndUpdate(id, input, {new: true})
+      const account = await Account.findByIdAndUpdateByUser(user, id, input, {new: true})
       return account
     },
-    deleteAccount: async (parent, {id}, {models}) => {
+    deleteAccount: async (parent, {id}, {models, user}) => {
       const {Account} = models
-      const account = await Account.findByIdAndDelete(id)
+      const account = await Account.findByIdAndDeleteByUser(user, id, {})
       if (!account) {
         throw new ApolloError('Document not found')
       }
       return account
     },
-    addUserToAccount: async (parent, {accountId, userId}, {models}) => {
+    addUserToAccount: async (parent, {accountId, userId}, {models, user}) => {
       const {User} = models
-      const user = await User.findByIdAndUpdate(userId, {$push: {accounts: accountId}}, {new: true})
-      return !!user
+      const updatedUser = await User.findByIdAndUpdateByUser(user, userId, {$push: {accounts: accountId}}, {new: true})
+      return !!updatedUser
     },
   },
   Account: {
-    users: async (parent, args, {models}) => {
+    users: async (parent, args, {models, user}) => {
       const {User} = models
-      const users = await User.find({accounts: parent.id})
+      const users = await User.findByUser(user, {accounts: parent.id})
       return users
     },
   },
@@ -92,12 +92,12 @@ export interface AccountLoaders {
 }
 
 export const loaders: AccountLoaders = {
-  accounts: async (ids, models) => {
+  accounts: async (ids, models, user) => {
     const {Account} = models
-    const accounts = await Account.find({_id: ids})
+    const accounts = await Account.findByUser(user, {_id: ids})
     return ids.map(id => {
       const account = accounts.find(account => account._id.toString() === id.toString())
-      if (!account) throw new Error('Document not found')
+      if (!account) return null
       return account
     })
   },

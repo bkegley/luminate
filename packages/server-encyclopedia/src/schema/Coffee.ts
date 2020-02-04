@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 import {gql, ApolloError, ForbiddenError} from 'apollo-server-express'
-import {createConnectionResults, createPublicConnectionResults, LoaderFn, hasScopes} from '@luminate/graphql-utils'
+import {createConnectionResults, LoaderFn, hasScopes} from '@luminate/graphql-utils'
 import {Resolvers} from '../types'
 import {CoffeeDocument, VarietyDocument} from '@luminate/mongo'
 
@@ -70,11 +70,7 @@ const resolvers: Resolvers = {
       // const isAuthorized = hasScopes(user, ['read: Coffee'])
       // if (!isAuthorized) throw new Error('Not authorized!')
       const {Coffee} = models
-      const results = await createPublicConnectionResults({
-        user,
-        args,
-        model: Coffee,
-      })
+      const results = await createConnectionResults({user, args, model: Coffee})
       return results
     },
     getCoffee: async (parent, {id}, {loaders}, info) => {
@@ -141,18 +137,16 @@ export interface CoffeeLoaders {
 export const loaders: CoffeeLoaders = {
   coffees: async (ids, models, user) => {
     const {Coffee} = models
-    const coffees = await Coffee.findByUser(user, {
-      _id: ids,
-    })
+    const coffees = await Coffee.findByUser(user, {_id: ids})
     return ids.map(id => {
       const coffee = coffees.find(coffee => coffee._id.toString() === id.toString())
       if (!coffee) throw new ApolloError('Document not found')
       return coffee
     })
   },
-  varietiesOfCoffee: async (ids, models) => {
+  varietiesOfCoffee: async (ids, models, user) => {
     const {Variety} = models
-    const varieties = await Variety.find({_id: ids})
+    const varieties = await Variety.findByUser(user, {_id: ids})
     return ids.map(id => {
       const variety = varieties.find(variety => variety._id.toString() === id.toString())
       if (!variety) throw new Error('Document not found')

@@ -1,5 +1,7 @@
 import mongoose from 'mongoose'
 import {DocumentWithTimestamps} from '@luminate/graphql-utils'
+import extendSchema from '../extendSchema'
+import {BaseAuthenticatedSchema, AuthenticatedEntity, WithAuthenticatedMethods} from '../baseSchemas'
 
 export interface CuppingDocument extends DocumentWithTimestamps {
   description: string
@@ -11,7 +13,10 @@ export interface CoffeeCuppingDocument {
   coffee: string
 }
 
-const Cupping = new mongoose.Schema(
+export interface CuppingModel extends WithAuthenticatedMethods<CuppingDocument> {}
+
+const Cupping = extendSchema(
+  BaseAuthenticatedSchema,
   {
     description: {
       type: String,
@@ -33,4 +38,6 @@ const Cupping = new mongoose.Schema(
   {timestamps: true},
 )
 
-export default mongoose.model<CuppingDocument>('cupping', Cupping)
+Cupping.loadClass(AuthenticatedEntity)
+
+export default mongoose.model<CuppingDocument, CuppingModel>('cupping', Cupping)
