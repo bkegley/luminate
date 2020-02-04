@@ -1,5 +1,5 @@
 import Account, {AccountDocument} from './Account'
-import Coffee, {CoffeeDocument} from './Coffee'
+import Coffee, {CoffeeDocument, CoffeeModel} from './Coffee'
 import Country, {CountryDocument} from './Country'
 import Cupping, {CuppingDocument, CoffeeCuppingDocument} from './Cupping'
 import Farm, {FarmDocument} from './Farm'
@@ -30,6 +30,7 @@ export const models = {
 export {
   AccountDocument,
   CoffeeDocument,
+  CoffeeModel,
   CountryDocument,
   CuppingDocument,
   CoffeeCuppingDocument,

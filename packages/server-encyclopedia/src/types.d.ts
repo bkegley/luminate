@@ -156,7 +156,7 @@ export type Mutation = {
   createCoffee?: Maybe<Coffee>
   updateCoffee?: Maybe<Coffee>
   deleteCoffee?: Maybe<Coffee>
-  shareCoffeeWithAccount?: Maybe<Scalars['Boolean']>
+  updateCoffeePermissionsForAccount?: Maybe<Scalars['Boolean']>
   createCountry?: Maybe<Country>
   updateCountry?: Maybe<Country>
   deleteCountry?: Maybe<Country>
@@ -190,9 +190,10 @@ export type MutationDeleteCoffeeArgs = {
   id: Scalars['ID']
 }
 
-export type MutationShareCoffeeWithAccountArgs = {
+export type MutationUpdateCoffeePermissionsForAccountArgs = {
   coffeeId: Scalars['ID']
   accountId: Scalars['ID']
+  permissionTypes: Array<PermissionTypeEnum>
 }
 
 export type MutationCreateCountryArgs = {
@@ -289,6 +290,11 @@ export type PageInfo = {
   hasNextPage?: Maybe<Scalars['Boolean']>
   prevCursor?: Maybe<Scalars['String']>
   nextCursor?: Maybe<Scalars['String']>
+}
+
+export enum PermissionTypeEnum {
+  Read = 'read',
+  Write = 'write',
 }
 
 export type Query = {
@@ -602,6 +608,7 @@ export type ResolversTypes = ResolversObject<{
   Mutation: ResolverTypeWrapper<{}>
   CreateCoffeeInput: CreateCoffeeInput
   UpdateCoffeeInput: UpdateCoffeeInput
+  PermissionTypeEnum: PermissionTypeEnum
   CreateCountryInput: CreateCountryInput
   UpdateCountryInput: UpdateCountryInput
   CreateFarmInput: CreateFarmInput
@@ -650,6 +657,7 @@ export type ResolversParentTypes = ResolversObject<{
   Mutation: {}
   CreateCoffeeInput: CreateCoffeeInput
   UpdateCoffeeInput: UpdateCoffeeInput
+  PermissionTypeEnum: PermissionTypeEnum
   CreateCountryInput: CreateCountryInput
   UpdateCountryInput: UpdateCountryInput
   CreateFarmInput: CreateFarmInput
@@ -947,11 +955,11 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationDeleteCoffeeArgs, 'id'>
   >
-  shareCoffeeWithAccount?: Resolver<
+  updateCoffeePermissionsForAccount?: Resolver<
     Maybe<ResolversTypes['Boolean']>,
     ParentType,
     ContextType,
-    RequireFields<MutationShareCoffeeWithAccountArgs, 'coffeeId' | 'accountId'>
+    RequireFields<MutationUpdateCoffeePermissionsForAccountArgs, 'coffeeId' | 'accountId' | 'permissionTypes'>
   >
   createCountry?: Resolver<
     Maybe<ResolversTypes['Country']>,

@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 import {DocumentWithTimestamps} from '@luminate/graphql-utils'
-import {PublicAndPrivateEntity, WithAuthenticatedMethods} from '../LoadClasses'
+import extendSchema from '../extendSchema'
+import {BaseAuthenticatedSchema, AuthenticatedEntity, WithAuthenticatedMethods} from '../baseSchemas'
 
 export interface CoffeeDocument extends DocumentWithTimestamps {
   name: string
@@ -13,13 +14,11 @@ export interface CoffeeDocument extends DocumentWithTimestamps {
   elevation: string
 }
 
-const Coffee = new mongoose.Schema(
+export interface CoffeeModel extends WithAuthenticatedMethods<CoffeeDocument> {}
+
+const Coffee = extendSchema(
+  BaseAuthenticatedSchema,
   {
-    visibleTo: [
-      {
-        type: mongoose.Types.ObjectId,
-      },
-    ],
     name: {
       type: String,
       required: true,
@@ -53,6 +52,6 @@ const Coffee = new mongoose.Schema(
   {timestamps: true},
 )
 
-Coffee.loadClass(PublicAndPrivateEntity)
+Coffee.loadClass(AuthenticatedEntity)
 
-export default mongoose.model<CoffeeDocument, WithAuthenticatedMethods<CoffeeDocument>>('coffee', Coffee)
+export default mongoose.model<CoffeeDocument, CoffeeModel>('coffee', Coffee)

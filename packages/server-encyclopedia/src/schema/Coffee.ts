@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
-import {gql, ApolloError} from 'apollo-server-express'
-import {createConnectionResults, LoaderFn, hasScopes} from '@luminate/graphql-utils'
+import {gql, ApolloError, ForbiddenError} from 'apollo-server-express'
+import {createConnectionResults, createPublicConnectionResults, LoaderFn, hasScopes} from '@luminate/graphql-utils'
 import {Resolvers} from '../types'
 import {CoffeeDocument, VarietyDocument} from '@luminate/mongo'
 
@@ -51,11 +51,16 @@ const typeDefs = gql`
     getCoffee(id: ID!): Coffee
   }
 
+  enum PermissionTypeEnum {
+    read
+    write
+  }
+
   extend type Mutation {
     createCoffee(input: CreateCoffeeInput!): Coffee
     updateCoffee(id: ID!, input: UpdateCoffeeInput!): Coffee
     deleteCoffee(id: ID!): Coffee
-    shareCoffeeWithAccount(coffeeId: ID!, accountId: ID!): Boolean
+    updateCoffeePermissionsForAccount(coffeeId: ID!, accountId: ID!, permissionTypes: [PermissionTypeEnum!]!): Boolean
   }
 `
 
@@ -65,21 +70,9 @@ const resolvers: Resolvers = {
       // const isAuthorized = hasScopes(user, ['read: Coffee'])
       // if (!isAuthorized) throw new Error('Not authorized!')
       const {Coffee} = models
-      const results = await createConnectionResults({
-        args: {
-          ...args,
-          $or: [
-            {visibleTo: null},
-            {visibleTo: {$size: 0}},
-            {
-              visibleTo: {
-                $elemMatch: {
-                  $in: user ? (user.accounts || []).concat((user.id as unknown) as mongoose.Types.ObjectId) : [],
-                },
-              },
-            },
-          ],
-        },
+      const results = await createPublicConnectionResults({
+        user,
+        args,
         model: Coffee,
       })
       return results
@@ -90,27 +83,30 @@ const resolvers: Resolvers = {
     },
   },
   Mutation: {
-    createCoffee: async (parent, {input}, {models}) => {
+    createCoffee: async (parent, {input}, {models, user}) => {
       const {Coffee} = models
-      const coffee = await new Coffee(input).save()
+      const coffee = await Coffee.createByUser(user, input)
       return coffee
     },
-    updateCoffee: async (parent, {id, input}, {models}) => {
+    updateCoffee: async (parent, {id, input}, {models, user}) => {
       const {Coffee} = models
-      const coffee = await Coffee.findByIdAndUpdate(id, input, {new: true})
+      const coffee = await Coffee.findByIdAndUpdateByUser(user, id, input, {new: true})
+      if (!coffee) {
+        throw new ForbiddenError('Not authorized!')
+      }
       return coffee
     },
-    deleteCoffee: async (parent, {id}, {models}) => {
+    deleteCoffee: async (parent, {id}, {models, user}) => {
       const {Coffee} = models
-      const coffee = await Coffee.findByIdAndDelete(id)
+      const coffee = await Coffee.findByIdAndDeleteByUser(user, id, {})
       if (!coffee) {
         throw new ApolloError('Document not found')
       }
       return coffee
     },
-    shareCoffeeWithAccount: async (parent, {coffeeId, accountId}, {models}) => {
+    updateCoffeePermissionsForAccount: async (parent, {coffeeId, accountId, permissionTypes}, {models, user}) => {
       const {Coffee} = models
-      const coffee = await Coffee.findByIdAndUpdate(coffeeId, {$push: {visibleTo: accountId}}, {new: true})
+      const coffee = await Coffee.updateEntityPermissionsForAccountByUser(user, coffeeId, accountId, permissionTypes)
       return !!coffee
     },
   },
