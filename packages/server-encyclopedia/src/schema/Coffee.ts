@@ -141,19 +141,8 @@ export interface CoffeeLoaders {
 export const loaders: CoffeeLoaders = {
   coffees: async (ids, models, user) => {
     const {Coffee} = models
-    const coffees = await Coffee.find({
+    const coffees = await Coffee.findByUser(user, {
       _id: ids,
-      $or: [
-        {visibleTo: null},
-        {visibleTo: {$size: 0}},
-        {
-          visibleTo: {
-            $elemMatch: {
-              $in: user ? (user.accounts || []).concat((user.id as unknown) as mongoose.Types.ObjectId) : [],
-            },
-          },
-        },
-      ],
     })
     return ids.map(id => {
       const coffee = coffees.find(coffee => coffee._id.toString() === id.toString())
