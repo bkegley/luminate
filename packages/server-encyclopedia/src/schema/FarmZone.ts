@@ -118,7 +118,7 @@ export const loaders: FarmZoneLoaders = {
     const farmZones = await FarmZone.findByUser(user, {_id: ids})
     return ids.map(id => {
       const farmZone = farmZones.find(farmZone => farmZone._id.toString() === id.toString())
-      if (!farmZone) throw new Error('Document not found')
+      if (!farmZone) return null
       return farmZone
     })
   },

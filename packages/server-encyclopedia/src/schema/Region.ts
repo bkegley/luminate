@@ -102,7 +102,7 @@ export const loaders: RegionLoaders = {
     const regions = await Region.findByUser(user, {_id: ids})
     return ids.map(id => {
       const region = regions.find((region: any) => region._id.toString() === id.toString())
-      if (!region) throw new Error('Document not found')
+      if (!region) return null
       return region
     })
   },

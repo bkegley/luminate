@@ -95,7 +95,7 @@ export const loaders: ScopeLoaders = {
     const scopes = await Scope.findByUser(user, {_id: ids})
     return ids.map(id => {
       const scope = scopes.find(scope => scope._id.toString() === id.toString())
-      if (!scope) throw new Error('Document not found')
+      if (!scope) return null
       return scope
     })
   },

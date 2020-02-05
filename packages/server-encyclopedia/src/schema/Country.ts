@@ -93,7 +93,7 @@ export const loaders: CountryLoaders = {
     const countries = await Country.findByUser(user, {_id: ids})
     return ids.map(id => {
       const country = countries.find(country => country._id.toString() === id.toString())
-      if (!country) throw new Error('Document not found')
+      if (!country) return null
       return country
     })
   },

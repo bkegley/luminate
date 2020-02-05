@@ -95,7 +95,7 @@ export const loaders: VarietyLoaders = {
     const varieties = await Variety.findByUser(user, {_id: ids})
     return ids.map(id => {
       const variety = varieties.find((variety: any) => variety._id.toString() === id.toString())
-      if (!variety) throw new Error('Document not found')
+      if (!variety) return null
       return variety
     })
   },

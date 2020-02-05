@@ -80,7 +80,7 @@ const resolvers: Resolvers = {
     scopes: async (parent, args, {loaders}) => {
       const {scopes} = loaders
       if (!parent.scopes) return null
-      return Promise.all(parent.scopes.map(id => scopes.load(id)))
+      return (await Promise.all(parent.scopes.map(id => scopes.load(id)))).filter(Boolean)
     },
   },
 }
@@ -95,7 +95,7 @@ export const loaders: RoleLoaders = {
     const roles = await Role.findByUser(user, {_id: ids})
     return ids.map(id => {
       const role = roles.find(role => role._id.toString() === id.toString())
-      if (!role) throw new Error('Document not found')
+      if (!role) return null
       return role
     })
   },

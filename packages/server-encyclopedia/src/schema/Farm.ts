@@ -109,7 +109,7 @@ export const loaders: FarmLoaders = {
     const farms = await Farm.findByUser(user, {_id: ids})
     return ids.map(id => {
       const farm = farms.find((farm: any) => farm._id.toString() === id.toString())
-      if (!farm) throw new Error('Document not found')
+      if (!farm) return null
       return farm
     })
   },

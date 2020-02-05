@@ -171,7 +171,7 @@ const resolvers: Resolvers = {
         .map(role => role.roles)
         .flat()
 
-      return Promise.all(accountRoles.map(role => roles.load(role)))
+      return (await Promise.all(accountRoles.map(role => roles.load(role)))).filter(Boolean)
     },
     scopes: async (parent, args, {loaders, models, user}) => {
       const {Role} = models
@@ -206,7 +206,7 @@ export const loaders: UserLoaders = {
     const users = await User.findByUser(user, {_id: ids})
     return ids.map(id => {
       const user = users.find(user => user._id.toString() === id.toString())
-      if (!user) throw new Error('Document not found')
+      if (!user) return null
       return user
     })
   },

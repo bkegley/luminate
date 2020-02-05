@@ -122,16 +122,15 @@ const resolvers: Resolvers = {
       return regions.load(parent.region)
     },
     varieties: async (parent, args, {models, loaders}) => {
-      const {varietiesOfCoffee} = loaders
+      const {varieties} = loaders
       if (!parent.varieties) return null
-      return Promise.all(parent.varieties.map(id => varietiesOfCoffee.load(id)))
+      return (await Promise.all(parent.varieties.map(id => varieties.load(id)))).filter(Boolean)
     },
   },
 }
 
 export interface CoffeeLoaders {
   coffees: LoaderFn<CoffeeDocument>
-  varietiesOfCoffee: LoaderFn<VarietyDocument>
 }
 
 export const loaders: CoffeeLoaders = {
@@ -140,17 +139,8 @@ export const loaders: CoffeeLoaders = {
     const coffees = await Coffee.findByUser(user, {_id: ids})
     return ids.map(id => {
       const coffee = coffees.find(coffee => coffee._id.toString() === id.toString())
-      if (!coffee) throw new ApolloError('Document not found')
+      if (!coffee) return null
       return coffee
-    })
-  },
-  varietiesOfCoffee: async (ids, models, user) => {
-    const {Variety} = models
-    const varieties = await Variety.findByUser(user, {_id: ids})
-    return ids.map(id => {
-      const variety = varieties.find(variety => variety._id.toString() === id.toString())
-      if (!variety) throw new Error('Document not found')
-      return variety
     })
   },
 }

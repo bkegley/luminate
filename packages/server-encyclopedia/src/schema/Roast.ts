@@ -91,7 +91,7 @@ export const loaders: RoastLoaders = {
     const roasts = await Roast.findByUser(user, {_id: ids})
     return ids.map(id => {
       const roast = roasts.find(roast => roast._id.toString() === id.toString())
-      if (!roast) throw new Error('Document not found')
+      if (!roast) return null
       return roast
     })
   },

@@ -106,7 +106,7 @@ export const loaders: CuppingLoaders = {
     const cuppings = await Cupping.findByUser(user, {_id: ids})
     return ids.map(id => {
       const cupping = cuppings.find(cupping => cupping._id.toString() === id.toString())
-      if (!cupping) throw new Error('Document not found')
+      if (!cupping) return null
       return cupping
     })
   },
