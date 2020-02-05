@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 import {AuthenticationError, ForbiddenError} from 'apollo-server-express'
 import jwt from 'jsonwebtoken'
 import express from 'express'
-import {UserDocument, AuthenticatedUserDocument, RoleDocument} from '@luminate/mongo'
+import {AuthenticatedUserDocument, RoleDocument} from '@luminate/mongo'
 
 const createToken = (
   {userId, accountId}: {userId: string | mongoose.Types.ObjectId; accountId?: mongoose.Types.ObjectId},
@@ -31,7 +31,7 @@ const parseToken = (token: string, secret: string) => {
   return data as Token
 }
 
-const parseUserFromRequest = (request: express.Request): UserDocument | null => {
+const parseUserFromRequest = (request: express.Request): AuthenticatedUserDocument | null => {
   const authHeader = (request.headers['x-auth-user'] as string) || null
   const user = authHeader ? JSON.parse(Buffer.from(authHeader, 'base64').toString('utf-8')) : null
   return user

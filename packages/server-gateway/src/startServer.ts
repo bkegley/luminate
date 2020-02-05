@@ -1,6 +1,13 @@
 import {ApolloServer, CorsOptions} from 'apollo-server-express'
 import {ApolloGateway, RemoteGraphQLDataSource} from '@apollo/gateway'
-import {createMongoConnection, models, RoleDocument, ScopeDocument, AuthenticatedUserDocument} from '@luminate/mongo'
+import {
+  createMongoConnection,
+  models,
+  RoleDocument,
+  ScopeDocument,
+  AuthenticatedUserDocument,
+  AccountDocument,
+} from '@luminate/mongo'
 import {parseToken} from '@luminate/graphql-utils'
 import tokenJSON from './token.json'
 import cookieParser from 'cookie-parser'
@@ -72,21 +79,25 @@ const startServer = async () => {
     context: async ({req, res}) => {
       let token: ReturnType<typeof parseToken> | undefined
       let user: AuthenticatedUserDocument | null | undefined
-      let account: ReturnType<typeof parseToken>['accountId']
+      let account: AuthenticatedUserDocument['account']
       let roles: RoleDocument[] | undefined
-      let scopes: ScopeDocument[] | undefined
+      let scopes: AuthenticatedUserDocument['scopes']
 
       if (req.cookies.id) {
         try {
           token = parseToken(req.cookies.id, tokenJSON.token)
           if (token) {
-            user = await models.User.findById(token.userId).populate({
-              path: 'roles.roles',
-              populate: {path: 'scopes'},
-            })
+            user = (await models.User.findById(token.userId)
+              .populate({path: 'account'})
+              .populate({path: 'accounts'})
+              .populate({
+                path: 'roles.roles',
+                populate: {path: 'scopes'},
+              })) as AuthenticatedUserDocument | null | undefined
 
             if (user) {
-              account = token.accountId
+              const accounts = (user.accounts as unknown) as AccountDocument[] | undefined
+              account = accounts?.find(account => account._id.toString() === token?.accountId)
               roles = user?.roles
                 ?.filter(role => account && role.account.toString() === account.toString())
                 .map(role => (role.roles as unknown) as RoleDocument)

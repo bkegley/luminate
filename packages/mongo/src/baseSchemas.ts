@@ -47,14 +47,14 @@ const buildReadConditionsForUser = (user: AuthenticatedUserDocument | null) => {
           {
             readAccess: {
               $elemMatch: {
-                $in: user ? [user.account] : [],
+                $in: [user?.account?._id].filter(Boolean),
               },
             },
           },
           {
             adminAccess: {
               $elemMatch: {
-                $in: user ? [user.account] : [],
+                $in: [user?.account?._id].filter(Boolean),
               },
             },
           },
@@ -70,14 +70,14 @@ const buildWriteConditionsForUser = (user: AuthenticatedUserDocument | null) => 
       {
         writeAccess: {
           $elemMatch: {
-            $in: user ? [user.account] : [],
+            $in: [user?.account?._id].filter(Boolean),
           },
         },
       },
       {
         adminAccess: {
           $elemMatch: {
-            $in: user ? [user.account] : [],
+            $in: [user?.account?._id].filter(Boolean),
           },
         },
       },
@@ -89,7 +89,7 @@ const buildAdminConditionsForUser = (user: AuthenticatedUserDocument | null) => 
   return {
     adminAccess: {
       $elemMatch: {
-        $in: user ? [user.account] : [],
+        $in: [user?.account?._id].filter(Boolean),
       },
     },
   }
@@ -148,10 +148,10 @@ export class AuthenticatedEntity extends mongoose.Model {
     return this.create({
       ...doc,
       createdByUser: user?._id,
-      createdByAccount: user?.account,
-      readAccess: [user?.account],
-      writeAccess: [user?.account],
-      adminAccess: [user?.account],
+      createdByAccount: user?.account?._id,
+      readAccess: [user?.account?._id].filter(Boolean),
+      writeAccess: [user?.account?._id].filter(Boolean),
+      adminAccess: [user?.account?._id].filter(Boolean),
     })
   }
 
