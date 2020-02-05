@@ -22,6 +22,8 @@ const typeDefs = gql`
 
   input CreateAccountInput {
     name: String!
+    username: String!
+    password: String!
   }
 
   input UpdateAccountInput {
@@ -54,9 +56,18 @@ const resolvers: Resolvers = {
     },
   },
   Mutation: {
-    createAccount: async (parent, {input}, {models, user}) => {
-      const {Account} = models
-      const account = await Account.createByUser(user, {...input, type: ['account']})
+    createAccount: async (parent, {input}, {models}) => {
+      const {Account, User} = models
+      const {name, username, password} = input
+      const account = await Account.create({name, type: ['account']})
+      const user = await User.create({
+        username,
+        password,
+        accounts: [account._id],
+        readAccess: [account._id],
+        writeAccess: [account._id],
+        adminAccess: [account._id],
+      })
       return account
     },
     updateAccount: async (parent, {id, input}, {models, user}) => {

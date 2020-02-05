@@ -175,6 +175,7 @@ export type Mutation = {
   createVariety?: Maybe<Variety>
   updateVariety?: Maybe<Variety>
   deleteVariety?: Maybe<Variety>
+  makeVarietyPublic?: Maybe<Scalars['Boolean']>
 }
 
 export type MutationCreateCoffeeArgs = {
@@ -271,6 +272,10 @@ export type MutationUpdateVarietyArgs = {
 }
 
 export type MutationDeleteVarietyArgs = {
+  id: Scalars['ID']
+}
+
+export type MutationMakeVarietyPublicArgs = {
   id: Scalars['ID']
 }
 
@@ -1068,6 +1073,12 @@ export type MutationResolvers<
     ParentType,
     ContextType,
     RequireFields<MutationDeleteVarietyArgs, 'id'>
+  >
+  makeVarietyPublic?: Resolver<
+    Maybe<ResolversTypes['Boolean']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationMakeVarietyPublicArgs, 'id'>
   >
 }>
 

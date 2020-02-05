@@ -35,6 +35,8 @@ export type AccountEdge = {
 
 export type CreateAccountInput = {
   name: Scalars['String']
+  username: Scalars['String']
+  password: Scalars['String']
 }
 
 export type CreateRoleInput = {
