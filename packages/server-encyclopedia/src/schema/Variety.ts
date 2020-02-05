@@ -40,6 +40,7 @@ const typeDefs = gql`
     createVariety(input: CreateVarietyInput!): Variety
     updateVariety(id: ID!, input: UpdateVarietyInput!): Variety
     deleteVariety(id: ID!): Variety
+    makeVarietyPublic(id: ID!): Boolean
   }
 `
 
@@ -74,6 +75,11 @@ const resolvers: Resolvers = {
         throw new ApolloError('Document not found')
       }
       return variety
+    },
+    makeVarietyPublic: async (parent, {id}, {models, user}) => {
+      const {Variety} = models
+      const variety = await Variety.makeEntityPublicByUser(user, id)
+      return !!variety
     },
   },
   Variety: {

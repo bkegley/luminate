@@ -12,11 +12,9 @@ export const BasePublicSchema = new mongoose.Schema({
 export const BaseAuthenticatedSchema = new mongoose.Schema({
   createdByUser: {
     type: mongoose.Schema.Types.ObjectId,
-    required: true,
   },
   createdByAccount: {
     type: mongoose.Schema.Types.ObjectId,
-    required: true,
   },
   readAccess: [
     {
@@ -24,6 +22,11 @@ export const BaseAuthenticatedSchema = new mongoose.Schema({
     },
   ],
   writeAccess: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+    },
+  ],
+  adminAccess: [
     {
       type: mongoose.Schema.Types.ObjectId,
     },
@@ -40,7 +43,39 @@ const buildReadConditionsForUser = (user: AuthenticatedUserDocument | null) => {
     $or: [
       {permissionType: 'public'},
       {
-        readAccess: {
+        $or: [
+          {
+            readAccess: {
+              $elemMatch: {
+                $in: user ? [user.account] : [],
+              },
+            },
+          },
+          {
+            adminAccess: {
+              $elemMatch: {
+                $in: user ? [user.account] : [],
+              },
+            },
+          },
+        ],
+      },
+    ],
+  }
+}
+
+const buildWriteConditionsForUser = (user: AuthenticatedUserDocument | null) => {
+  return {
+    $or: [
+      {
+        writeAccess: {
+          $elemMatch: {
+            $in: user ? [user.account] : [],
+          },
+        },
+      },
+      {
+        adminAccess: {
           $elemMatch: {
             $in: user ? [user.account] : [],
           },
@@ -50,9 +85,9 @@ const buildReadConditionsForUser = (user: AuthenticatedUserDocument | null) => {
   }
 }
 
-const buildWriteConditionsForUser = (user: AuthenticatedUserDocument | null) => {
+const buildAdminConditionsForUser = (user: AuthenticatedUserDocument | null) => {
   return {
-    writeAccess: {
+    adminAccess: {
       $elemMatch: {
         $in: user ? [user.account] : [],
       },
@@ -116,6 +151,7 @@ export class AuthenticatedEntity extends mongoose.Model {
       createdByAccount: user?.account,
       readAccess: [user?.account],
       writeAccess: [user?.account],
+      adminAccess: [user?.account],
     })
   }
 
@@ -128,7 +164,7 @@ export class AuthenticatedEntity extends mongoose.Model {
   }
 
   /**
-   * Removes read/write access from user's account (i.e. "deletes" the entity)
+   * Removes read/write/admin access from user's account (i.e. "deletes" the entity)
    * @param user the authenticated user
    * @param args db.collection.findByIdAndDelete
    */
@@ -139,7 +175,13 @@ export class AuthenticatedEntity extends mongoose.Model {
     const [id, options] = args
     return this.findOneAndUpdate(
       {_id: id, ...buildWriteConditionsForUser(user)},
-      {$pull: {readAccess: user?.account, writeAccess: user?.account}},
+      {
+        $pull: {
+          readAccess: user?.account,
+          writeAccess: user?.account,
+          adminAccess: user?.account,
+        },
+      },
       options,
     )
   }
@@ -170,6 +212,22 @@ export class AuthenticatedEntity extends mongoose.Model {
         $pull: pull,
       },
       {new: true},
+    )
+  }
+
+  static makeEntityPublicByUser(user: AuthenticatedUserDocument | null, entityId: mongoose.Types.ObjectId | string) {
+    return this.findOneAndUpdate(
+      {
+        _id: entityId,
+        ...buildAdminConditionsForUser(user),
+      },
+      {
+        $set: {
+          permissionType: 'public',
+          readAccess: [],
+          writeAccess: [],
+        },
+      },
     )
   }
 }
@@ -210,5 +268,10 @@ export interface WithAuthenticatedMethods<T extends mongoose.Document> extends m
     entityId: mongoose.Types.ObjectId | string,
     accountId: mongoose.Types.ObjectId | string,
     permissions: Array<'read' | 'write'>,
+  ) => mongoose.DocumentQuery<T, T, {}>
+
+  makeEntityPublicByUser: (
+    user: AuthenticatedUserDocument | null,
+    entityId: mongoose.Types.ObjectId | string,
   ) => mongoose.DocumentQuery<T, T, {}>
 }
