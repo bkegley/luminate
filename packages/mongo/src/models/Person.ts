@@ -20,7 +20,6 @@ export interface PersonModel extends WithAuthenticatedMethods<PersonDocument> {}
 export interface UserDocument extends PersonDocument {
   username: string
   password: string
-  authTokens?: Array<IAuthToken>
   accounts?: Array<mongoose.Types.ObjectId>
   defaultAccount?: mongoose.Types.ObjectId
   roles?: UserRole[]
@@ -52,11 +51,6 @@ interface IEmail extends ContactInfo {
 
 interface IPhone extends ContactInfo {
   contactType: ContactType
-}
-
-interface IAuthToken {
-  token: string
-  expiresAt: Date
 }
 
 const PersonSchema = extendSchema(
@@ -122,16 +116,6 @@ const UserSchema = extendSchema(
       type: String,
       required: true,
     },
-    authTokens: [
-      {
-        token: {
-          type: String,
-        },
-        expiresAt: {
-          type: Date,
-        },
-      },
-    ],
     accounts: [
       {
         type: mongoose.Schema.Types.ObjectId,
