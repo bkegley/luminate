@@ -1,18 +1,21 @@
-import React from 'react'
-import {useListCoffeesQuery} from '../graphql'
+/** @jsx jsx */
+import {jsx} from 'theme-ui'
+import {Link} from 'gatsby'
+import Layout from '../components/RootLayout'
+import {useUser} from '@luminate/gatsby-theme-luminate/src'
 
 const IndexPage = () => {
-  const {error, loading, data} = useListCoffeesQuery()
-  if (error || loading) {
-    return null
-  }
   return (
-    <div>
-      <h1>Index Page</h1>
-      {data?.listCoffees.edges.map(coffee => {
-        return coffee.node?.name
-      })}
-    </div>
+    <Layout>
+      <div>
+        <h3>Login?</h3>
+        <Link to="/login">Go to login</Link>
+      </div>
+      <div>
+        <h3>Register?</h3>
+        <Link to="/register">Go to register</Link>
+      </div>
+    </Layout>
   )
 }
 

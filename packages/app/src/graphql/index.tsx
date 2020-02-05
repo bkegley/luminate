@@ -16,6 +16,25 @@ export type Scalars = {
   _FieldSet: any
 }
 
+export type Account = {
+  __typename: 'Account'
+  id: Scalars['ID']
+  name: Scalars['String']
+  users?: Maybe<Array<User>>
+}
+
+export type AccountConnection = {
+  __typename: 'AccountConnection'
+  pageInfo: PageInfo
+  edges: Array<AccountEdge>
+}
+
+export type AccountEdge = {
+  __typename: 'AccountEdge'
+  cursor?: Maybe<Scalars['String']>
+  node?: Maybe<Account>
+}
+
 export type Coffee = {
   __typename: 'Coffee'
   id: Scalars['ID']
@@ -59,6 +78,12 @@ export type CountryEdge = {
   __typename: 'CountryEdge'
   cursor?: Maybe<Scalars['String']>
   node?: Maybe<Country>
+}
+
+export type CreateAccountInput = {
+  name: Scalars['String']
+  username: Scalars['String']
+  password: Scalars['String']
 }
 
 export type CreateCoffeeInput = {
@@ -201,6 +226,10 @@ export type FarmZoneEdge = {
 
 export type Mutation = {
   __typename: 'Mutation'
+  createAccount?: Maybe<Account>
+  updateAccount?: Maybe<Account>
+  deleteAccount?: Maybe<Account>
+  addUserToAccount?: Maybe<Scalars['Boolean']>
   createRole?: Maybe<Role>
   updateRole?: Maybe<Role>
   deleteRole?: Maybe<Role>
@@ -211,11 +240,13 @@ export type Mutation = {
   updateUser?: Maybe<User>
   deleteUser?: Maybe<User>
   updatePassword?: Maybe<Scalars['Boolean']>
+  updateUserRoles?: Maybe<User>
   login?: Maybe<User>
   logout?: Maybe<Scalars['Boolean']>
   createCoffee?: Maybe<Coffee>
   updateCoffee?: Maybe<Coffee>
   deleteCoffee?: Maybe<Coffee>
+  updateCoffeePermissionsForAccount?: Maybe<Scalars['Boolean']>
   createCountry?: Maybe<Country>
   updateCountry?: Maybe<Country>
   deleteCountry?: Maybe<Country>
@@ -234,9 +265,28 @@ export type Mutation = {
   createVariety?: Maybe<Variety>
   updateVariety?: Maybe<Variety>
   deleteVariety?: Maybe<Variety>
+  makeVarietyPublic?: Maybe<Scalars['Boolean']>
   createCupping?: Maybe<Cupping>
   updateCupping?: Maybe<Cupping>
   deleteCupping?: Maybe<Cupping>
+}
+
+export type MutationCreateAccountArgs = {
+  input: CreateAccountInput
+}
+
+export type MutationUpdateAccountArgs = {
+  id: Scalars['ID']
+  input: UpdateAccountInput
+}
+
+export type MutationDeleteAccountArgs = {
+  id: Scalars['ID']
+}
+
+export type MutationAddUserToAccountArgs = {
+  accountId: Scalars['ID']
+  userId: Scalars['ID']
 }
 
 export type MutationCreateRoleArgs = {
@@ -283,6 +333,11 @@ export type MutationUpdatePasswordArgs = {
   input: UpdatePasswordInput
 }
 
+export type MutationUpdateUserRolesArgs = {
+  userId: Scalars['ID']
+  roles: Array<Scalars['ID']>
+}
+
 export type MutationLoginArgs = {
   username: Scalars['String']
   password: Scalars['String']
@@ -299,6 +354,12 @@ export type MutationUpdateCoffeeArgs = {
 
 export type MutationDeleteCoffeeArgs = {
   id: Scalars['ID']
+}
+
+export type MutationUpdateCoffeePermissionsForAccountArgs = {
+  coffeeId: Scalars['ID']
+  accountId: Scalars['ID']
+  permissionTypes: Array<PermissionTypeEnum>
 }
 
 export type MutationCreateCountryArgs = {
@@ -379,6 +440,10 @@ export type MutationDeleteVarietyArgs = {
   id: Scalars['ID']
 }
 
+export type MutationMakeVarietyPublicArgs = {
+  id: Scalars['ID']
+}
+
 export type MutationCreateCuppingArgs = {
   input: CreateCuppingInput
 }
@@ -415,8 +480,15 @@ export type PageInfo = {
   nextCursor?: Maybe<Scalars['String']>
 }
 
+export enum PermissionTypeEnum {
+  Read = 'read',
+  Write = 'write',
+}
+
 export type Query = {
   __typename: 'Query'
+  listAccounts: AccountConnection
+  getAccount?: Maybe<Account>
   listRoles: RoleConnection
   getRole?: Maybe<Role>
   listScopes: ScopeConnection
@@ -440,6 +512,16 @@ export type Query = {
   getVariety?: Maybe<Variety>
   listCuppings: CuppingConnection
   getCupping?: Maybe<Cupping>
+}
+
+export type QueryListAccountsArgs = {
+  cursor?: Maybe<Scalars['String']>
+  limit?: Maybe<Scalars['Int']>
+  query?: Maybe<Array<Maybe<QueryInput>>>
+}
+
+export type QueryGetAccountArgs = {
+  id: Scalars['ID']
 }
 
 export type QueryListRolesArgs = {
@@ -644,6 +726,10 @@ export type ScopeEdge = {
   node?: Maybe<Scope>
 }
 
+export type UpdateAccountInput = {
+  name?: Maybe<Scalars['String']>
+}
+
 export type UpdateCoffeeInput = {
   name?: Maybe<Scalars['String']>
   country?: Maybe<Scalars['ID']>
@@ -715,6 +801,7 @@ export type User = {
   username?: Maybe<Scalars['String']>
   firstName?: Maybe<Scalars['String']>
   lastName?: Maybe<Scalars['String']>
+  accounts?: Maybe<Array<Maybe<Account>>>
   roles?: Maybe<Array<Maybe<Role>>>
   scopes?: Maybe<Array<Maybe<Scope>>>
 }
@@ -751,6 +838,14 @@ export type VarietyEdge = {
   __typename: 'VarietyEdge'
   cursor?: Maybe<Scalars['String']>
   node?: Maybe<Variety>
+}
+
+export type CreateAccountMutationVariables = {
+  input: CreateAccountInput
+}
+
+export type CreateAccountMutation = {__typename: 'Mutation'} & {
+  createAccount: Maybe<{__typename: 'Account'} & Pick<Account, 'id' | 'name'>>
 }
 
 export type ListCoffeesQueryVariables = {}
@@ -1020,6 +1115,50 @@ export const RegionFragmentFragmentDoc = gql`
     updatedAt
   }
 `
+export const CreateAccountDocument = gql`
+  mutation CreateAccount($input: CreateAccountInput!) {
+    createAccount(input: $input) {
+      id
+      name
+    }
+  }
+`
+export type CreateAccountMutationFn = ApolloReactCommon.MutationFunction<
+  CreateAccountMutation,
+  CreateAccountMutationVariables
+>
+
+/**
+ * __useCreateAccountMutation__
+ *
+ * To run a mutation, you first call `useCreateAccountMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateAccountMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createAccountMutation, { data, loading, error }] = useCreateAccountMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateAccountMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<CreateAccountMutation, CreateAccountMutationVariables>,
+) {
+  return ApolloReactHooks.useMutation<CreateAccountMutation, CreateAccountMutationVariables>(
+    CreateAccountDocument,
+    baseOptions,
+  )
+}
+export type CreateAccountMutationHookResult = ReturnType<typeof useCreateAccountMutation>
+export type CreateAccountMutationResult = ApolloReactCommon.MutationResult<CreateAccountMutation>
+export type CreateAccountMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  CreateAccountMutation,
+  CreateAccountMutationVariables
+>
 export const ListCoffeesDocument = gql`
   query ListCoffees {
     listCoffees {

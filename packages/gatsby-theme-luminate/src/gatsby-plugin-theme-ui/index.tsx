@@ -12,6 +12,9 @@ const theme: Theme = {
   colors: {
     background: '#ffffff',
     text: '#000000',
+    primary: 'green',
+    secondary: 'orange',
+    appBackground: '#f4f6f8',
   },
   borders: {
     primary: {
@@ -54,13 +57,13 @@ const theme: Theme = {
     large: '7px 3px 13px 12px hsla(0, 0%, 0%, 0.15)',
   },
   cards: {
+    blank: {},
     primary: {
-      padding: 3,
+      bg: 'background',
       borderRadius: 'medium',
       boxShadow: 'medium',
     },
     compact: {
-      padding: 1,
       borderRadius: 'small',
       border: '1px solid',
       borderColor: 'muted',
@@ -69,6 +72,12 @@ const theme: Theme = {
   forms: {
     checkbox: {
       borderColor: 'red',
+    },
+  },
+  styles: {
+    root: {
+      m: 0,
+      p: 0,
     },
   },
 }

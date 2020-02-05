@@ -1,14 +1,14 @@
 /** @jsx jsx */
 import {jsx} from 'theme-ui'
+import RegisterForm from '../components/RegisterForm'
 import Layout from '../components/RootLayout'
-import LoginForm from '../components/LoginForm'
 
-const LoginPage = () => {
+const RegisterPage = () => {
   return (
     <Layout>
-      <LoginForm />
+      <RegisterForm />
     </Layout>
   )
 }
 
-export default LoginPage
+export default RegisterPage

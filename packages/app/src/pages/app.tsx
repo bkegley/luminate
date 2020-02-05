@@ -2,14 +2,14 @@ import React from 'react'
 import {useUser} from '@luminate/gatsby-theme-luminate/src'
 import {navigate} from 'gatsby'
 import {Route, Switch, BrowserRouter} from 'react-router-dom'
-import Layout from '../components/Layout'
+import AppLayout from '../components/AppLayout'
 import Home from '../app/Home'
 import Coffees from '../app/Coffees'
 import Countries from '../app/Countries'
 import Farms from '../app/Farms'
 import Regions from '../app/Regions'
 
-const IndexPage = () => {
+const AppPage = () => {
   const {data} = useUser()
 
   if (!data) {
@@ -19,7 +19,7 @@ const IndexPage = () => {
 
   return (
     <BrowserRouter>
-      <Layout>
+      <AppLayout>
         <Switch>
           <Route exact path="/app">
             <Home />
@@ -37,9 +37,9 @@ const IndexPage = () => {
             <Farms />
           </Route>
         </Switch>
-      </Layout>
+      </AppLayout>
     </BrowserRouter>
   )
 }
 
-export default IndexPage
+export default AppPage
