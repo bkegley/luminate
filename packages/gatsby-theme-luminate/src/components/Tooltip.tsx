@@ -6,7 +6,7 @@ import {useTooltipState, Tooltip as ReakitTooltip, TooltipReference} from 'reaki
 export interface TooltipProps {
   children: React.ReactElement
   text: string
-  variant: string[] | string
+  variant?: string[] | string
 }
 
 const Tooltip = ({children, text, variant}: TooltipProps) => {
