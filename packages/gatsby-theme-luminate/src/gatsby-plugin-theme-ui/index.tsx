@@ -77,6 +77,9 @@ const theme: Theme = {
       bg: 'orange',
       borderColor: 'red',
     },
+    input: {
+      borderColor: 'greys.2',
+    },
     label: {
       fontFamily: 'body',
       mb: 2,

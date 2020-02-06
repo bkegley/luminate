@@ -9,6 +9,23 @@ query ListCoffees {
   }
 }
 
+query ListCoffeesTable {
+  listCoffees {
+    edges {
+      node {
+        id
+        name
+        country {
+          id
+          name
+        }
+        createdAt
+        updatedAt
+      }
+    }
+  }
+}
+
 query GetCoffee($id: ID!) {
   getCoffee(id: $id) {
     ...CoffeeFragment

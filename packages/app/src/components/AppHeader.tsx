@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import {jsx, Flex, Box, Input, Avatar} from 'theme-ui'
+import {jsx, Flex, Box, Input, Avatar, Heading} from 'theme-ui'
 import {UserFragmentFragment} from '@luminate/gatsby-theme-luminate/src'
 
 interface HeaderProps {
@@ -9,39 +9,48 @@ interface HeaderProps {
 
 const Header = ({}: HeaderProps) => {
   return (
-    <Flex
+    <Box
       sx={{
         position: 'fixed',
         bg: 'appBackground',
         width: '100%',
-        alignItems: 'center',
-        maxWidth: 'contentWidth',
-        mx: 'auto',
-        px: [4, 4, 6],
+        zIndex: 10,
       }}
     >
-      <Box sx={{flexGrow: 1, flexBasis: 'sidebar'}}>
-        <h3>Luminate</h3>
-      </Box>
-
       <Flex
         sx={{
-          flexGrow: 99999,
-          flexBasis: 0,
-          minWidth: 320,
           alignItems: 'center',
-          px: 3,
-          boxShadow: '0 .5rem .5rem -.5rem rgba(0,0,0,.2)',
+          maxWidth: 'contentWidth',
+          mx: 'auto',
+          px: [4, 4, 6],
         }}
       >
-        <Box sx={{flex: 5}}>
-          <Input sx={{bg: 'white'}} />
+        <Box sx={{flexGrow: 1, flexBasis: 'sidebar'}}>
+          <Heading as="h3" sx={{color: 'primary'}}>
+            Luminate
+          </Heading>
         </Box>
-        <Box sx={{flex: 1, textAlign: 'end'}}>
-          <Avatar sx={{bg: 'black'}} />
-        </Box>
+
+        <Flex
+          sx={{
+            flexGrow: 99999,
+            flexBasis: 0,
+            minWidth: 320,
+            alignItems: 'center',
+            px: 4,
+            boxShadow: '0 .5rem .5rem -.5rem rgba(0,0,0,.2)',
+            py: 2,
+          }}
+        >
+          <Box sx={{flex: 5}}>
+            <Input sx={{bg: 'white', maxWidth: 400, mx: 'auto'}} />
+          </Box>
+          <Box sx={{flex: 1, textAlign: 'end'}}>
+            <Avatar src="https://picsum.photos/48/48" />
+          </Box>
+        </Flex>
       </Flex>
-    </Flex>
+    </Box>
   )
 }
 

@@ -856,6 +856,22 @@ export type ListCoffeesQuery = {__typename: 'Query'} & {
   }
 }
 
+export type ListCoffeesTableQueryVariables = {}
+
+export type ListCoffeesTableQuery = {__typename: 'Query'} & {
+  listCoffees: {__typename: 'CoffeeConnection'} & {
+    edges: Array<
+      {__typename: 'CoffeeEdge'} & {
+        node: Maybe<
+          {__typename: 'Coffee'} & Pick<Coffee, 'id' | 'name' | 'createdAt' | 'updatedAt'> & {
+              country: Maybe<{__typename: 'Country'} & Pick<Country, 'id' | 'name'>>
+            }
+        >
+      }
+    >
+  }
+}
+
 export type GetCoffeeQueryVariables = {
   id: Scalars['ID']
 }
@@ -1200,6 +1216,62 @@ export function useListCoffeesLazyQuery(
 export type ListCoffeesQueryHookResult = ReturnType<typeof useListCoffeesQuery>
 export type ListCoffeesLazyQueryHookResult = ReturnType<typeof useListCoffeesLazyQuery>
 export type ListCoffeesQueryResult = ApolloReactCommon.QueryResult<ListCoffeesQuery, ListCoffeesQueryVariables>
+export const ListCoffeesTableDocument = gql`
+  query ListCoffeesTable {
+    listCoffees {
+      edges {
+        node {
+          id
+          name
+          country {
+            id
+            name
+          }
+          createdAt
+          updatedAt
+        }
+      }
+    }
+  }
+`
+
+/**
+ * __useListCoffeesTableQuery__
+ *
+ * To run a query within a React component, call `useListCoffeesTableQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListCoffeesTableQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useListCoffeesTableQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useListCoffeesTableQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<ListCoffeesTableQuery, ListCoffeesTableQueryVariables>,
+) {
+  return ApolloReactHooks.useQuery<ListCoffeesTableQuery, ListCoffeesTableQueryVariables>(
+    ListCoffeesTableDocument,
+    baseOptions,
+  )
+}
+export function useListCoffeesTableLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ListCoffeesTableQuery, ListCoffeesTableQueryVariables>,
+) {
+  return ApolloReactHooks.useLazyQuery<ListCoffeesTableQuery, ListCoffeesTableQueryVariables>(
+    ListCoffeesTableDocument,
+    baseOptions,
+  )
+}
+export type ListCoffeesTableQueryHookResult = ReturnType<typeof useListCoffeesTableQuery>
+export type ListCoffeesTableLazyQueryHookResult = ReturnType<typeof useListCoffeesTableLazyQuery>
+export type ListCoffeesTableQueryResult = ApolloReactCommon.QueryResult<
+  ListCoffeesTableQuery,
+  ListCoffeesTableQueryVariables
+>
 export const GetCoffeeDocument = gql`
   query GetCoffee($id: ID!) {
     getCoffee(id: $id) {
