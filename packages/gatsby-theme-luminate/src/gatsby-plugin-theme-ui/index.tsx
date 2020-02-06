@@ -14,11 +14,23 @@ const theme: Theme = {
   buttons,
   fonts: {
     body: 'Lato',
-    heading: 'Lato',
+    heading: 'Roboto',
+  },
+  fontWeights: {
+    body: 400,
+    heading: 400,
+    bold: 700,
   },
   borders: {
     primary: {
-      border: '1px solid primary',
+      borderWidth: '1px',
+      borderStyle: 'solid',
+      borderColor: 'primary',
+    },
+    secondary: {
+      borderWidth: '1px',
+      borderStyle: 'solid',
+      borderColor: 'black',
     },
     danger: {
       border: '1px solid red',
@@ -52,13 +64,17 @@ const theme: Theme = {
   },
   forms: {
     checkbox: {
+      bg: 'orange',
       borderColor: 'red',
     },
-  },
-  styles: {
-    root: {
-      m: 0,
-      p: 0,
+    label: {
+      fontFamily: 'body',
+      mb: 2,
+    },
+    uppercase: {
+      fontFamily: 'body',
+      textTransform: 'uppercase',
+      mb: 2,
     },
   },
   tooltip: {

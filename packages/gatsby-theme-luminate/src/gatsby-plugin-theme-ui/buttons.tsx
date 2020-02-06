@@ -4,6 +4,7 @@ import {Theme} from 'theme-ui'
 const buttonDefaults: CSSType.StandardProperties = {
   textTransform: 'uppercase',
   textAlign: 'center',
+  fontFamily: 'body',
 }
 
 const buttons: Theme['buttons'] = {
@@ -19,7 +20,15 @@ const buttons: Theme['buttons'] = {
   secondary: {
     ...buttonDefaults,
     color: 'secondary',
-    bg: 'greens[3]',
+    bg: 'greens.1',
+  },
+  outline: {
+    ...buttonDefaults,
+    bg: 'inherit',
+    color: 'secondary',
+    borderWidth: '2px',
+    borderStyle: 'solid',
+    borderColor: 'secondary',
   },
   text: {
     ...buttonDefaults,
@@ -29,9 +38,8 @@ const buttons: Theme['buttons'] = {
   },
   danger: {
     ...buttonDefaults,
-    color: 'red',
-    bg: 'background',
-    border: 'borders.danger',
+    color: 'reds.7',
+    bg: 'reds.1',
   },
 }
 

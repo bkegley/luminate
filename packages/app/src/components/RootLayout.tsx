@@ -35,7 +35,7 @@ export const Header = ({user, logout}: HeaderProps) => {
           ) : (
             <Modal
               disclosure={
-                <Button type="button" variant="text" sx={{color: 'primary'}}>
+                <Button type="button" variant="outline">
                   Login
                 </Button>
               }

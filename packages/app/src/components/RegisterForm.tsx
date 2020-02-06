@@ -43,7 +43,9 @@ const RegisterForm = ({isModal}: RegisterFormProps) => {
         </Card>
         <Flex sx={{justifyContent: 'flex-end', mt: 4, px: 3}}>
           <Box>
-            <Button type="submit">Submit</Button>
+            <Button type="submit" variant="primary">
+              Submit
+            </Button>
           </Box>
         </Flex>
       </Form>

@@ -23,7 +23,8 @@
     "react-spring": "^8.0.27",
     "reakit": "^1.0.0-beta.15",
     "theme-ui": "^0.2.52",
-    "typeface-lato": "^0.0.75"
+    "typeface-lato": "^0.0.75",
+    "typeface-roboto": "^0.0.75"
   },
   "peerDependencies": {
     "gatsby": "^2.18.18",
