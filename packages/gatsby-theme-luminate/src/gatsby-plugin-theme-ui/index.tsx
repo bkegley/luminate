@@ -1,20 +1,20 @@
 import {Theme} from 'theme-ui'
 import {base} from '@theme-ui/presets'
 import merge from 'lodash.merge'
-import * as CSSType from 'csstype'
+import colors from './colors'
+import buttons from './buttons'
 
-const buttonDefaults: CSSType.StandardProperties = {
-  textTransform: 'uppercase',
-  textAlign: 'center',
+const cardDefaults = {
+  overflow: 'hidden',
+  bg: 'background',
 }
 
 const theme: Theme = {
-  colors: {
-    background: '#ffffff',
-    text: '#000000',
-    primary: 'green',
-    secondary: 'orange',
-    appBackground: '#f4f6f8',
+  colors,
+  buttons,
+  fonts: {
+    body: 'Lato',
+    heading: 'Lato',
   },
   borders: {
     primary: {
@@ -24,27 +24,7 @@ const theme: Theme = {
       border: '1px solid red',
     },
   },
-  buttons: {
-    primary: {
-      ...buttonDefaults,
-      color: 'background',
-      bg: 'primary',
-      '&:hover': {
-        bg: 'text',
-      },
-    },
-    secondary: {
-      ...buttonDefaults,
-      color: 'background',
-      bg: 'secondary',
-    },
-    danger: {
-      ...buttonDefaults,
-      color: 'red',
-      bg: 'background',
-      border: 'borders.danger',
-    },
-  },
+
   radii: {
     none: 0,
     small: 4,
@@ -59,11 +39,12 @@ const theme: Theme = {
   cards: {
     blank: {},
     primary: {
-      bg: 'background',
+      ...cardDefaults,
       borderRadius: 'medium',
       boxShadow: 'medium',
     },
     compact: {
+      ...cardDefaults,
       borderRadius: 'small',
       border: '1px solid',
       borderColor: 'muted',
@@ -78,6 +59,31 @@ const theme: Theme = {
     root: {
       m: 0,
       p: 0,
+    },
+  },
+  tooltip: {
+    primary: {
+      color: 'green',
+    },
+    secondary: {
+      color: 'orange',
+    },
+  },
+  modal: {
+    small: {
+      top: '50%',
+      height: '20vh',
+      mt: '-10vh',
+    },
+    medium: {
+      top: '50%',
+      height: '40vh',
+      mt: '-20vh',
+    },
+    large: {
+      top: '50%',
+      height: '60vh',
+      mt: '-30vh',
     },
   },
 }
