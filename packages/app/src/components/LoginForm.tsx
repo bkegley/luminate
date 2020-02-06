@@ -1,11 +1,11 @@
-import React from 'react'
+/** @jsx jsx */
+import {jsx} from 'theme-ui'
 import {navigate} from 'gatsby'
-import {useLogin, useLogout, Input} from '@luminate/gatsby-theme-luminate/src'
+import {useLogin, Flex, Box, Button, Field as ThemeField, Input, Label} from '@luminate/gatsby-theme-luminate/src'
 import {Formik, Form, Field} from 'formik'
 
 const LoginForm = () => {
   const [login, {data, loading, error}] = useLogin()
-  const [logout, {loading: logoutLoading, error: logoutError}] = useLogout()
 
   if (data) {
     navigate('/app')
@@ -13,35 +13,37 @@ const LoginForm = () => {
   }
 
   return (
-    <div>
-      <Formik
-        initialValues={{
-          username: '',
-          password: '',
-        }}
-        onSubmit={values => {
-          login(values)
-        }}
-      >
-        {() => {
-          return (
-            <Form>
-              <div>
-                <label htmlFor="username">Username</label>
-                <Field name="username" id="username" type="text" />
-              </div>
-              <div>
-                <label htmlFor="password">Password</label>
-                <Field name="password" id="password" type="password" />
-              </div>
-              <div>
-                <button type="submit">Submit</button>
-              </div>
-            </Form>
-          )
-        }}
-      </Formik>
-    </div>
+    <Formik
+      initialValues={{
+        username: '',
+        password: '',
+      }}
+      onSubmit={values => {
+        login(values)
+      }}
+    >
+      {() => {
+        return (
+          <Form>
+            <Flex sx={{flexDirection: 'column'}}>
+              <Box sx={{my: 2}}>
+                <Label htmlFor="loginUsername">Username</Label>
+                <Field name="username" id="loginUsername" type="text" as={Input} />
+              </Box>
+              <Box sx={{my: 2}}>
+                <Label htmlFor="loginPassword">Password</Label>
+                <Field name="password" id="loginPassword" type="password" as={Input} />
+              </Box>
+              <Box sx={{mt: 3}}>
+                <Button type="submit" sx={{width: '100%'}}>
+                  Login
+                </Button>
+              </Box>
+            </Flex>
+          </Form>
+        )
+      }}
+    </Formik>
   )
 }
 

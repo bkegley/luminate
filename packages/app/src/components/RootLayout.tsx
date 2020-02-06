@@ -8,8 +8,9 @@ import {
   Header as ThemeHeader,
   Main,
 } from 'theme-ui'
-import {useUser, Box, Flex, Heading, Button, UserFragmentFragment} from '@luminate/gatsby-theme-luminate/src'
+import {useUser, Box, Flex, Heading, Button, UserFragmentFragment, Modal} from '@luminate/gatsby-theme-luminate/src'
 import {Link} from 'gatsby'
+import LoginForm from './LoginForm'
 
 interface HeaderProps {
   user: UserFragmentFragment | null
@@ -28,11 +29,31 @@ export const Header = ({user, logout}: HeaderProps) => {
         <Box sx={{mx: 2}}>{user ? <Link to="/app">Go to App</Link> : <Link to="/register">Register</Link>}</Box>
         <Box sx={{ml: 2}}>
           {user ? (
-            <Button variant="buttons.text" type="button" onClick={logout}>
+            <Button type="button" onClick={logout} variant="text">
               Logout
             </Button>
           ) : (
-            <Link to="/login">Login</Link>
+            <Modal
+              disclosure={
+                <Button type="button" variant="text" sx={{color: 'primary'}}>
+                  Login
+                </Button>
+              }
+              aria-label="Login"
+            >
+              {dialog => {
+                return (
+                  <Box
+                    sx={{
+                      width: ['90vw', '75vw', '50vw'],
+                      maxWidth: '600px',
+                    }}
+                  >
+                    <LoginForm />
+                  </Box>
+                )
+              }}
+            </Modal>
           )}
         </Box>
       </Flex>
