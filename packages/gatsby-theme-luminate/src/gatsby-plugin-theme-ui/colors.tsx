@@ -79,14 +79,17 @@ const yellows = [
   'hsl(43, 86%, 17%)',
 ]
 
+const hslToHsla = (hsl: string, a: string) => `hsla(${hsl.replace('hsl(', '').replace(')', '')}, ${a})`
+
 const colors: Theme['colors'] = {
-  background: greys[0],
+  background: 'white',
   text: greys[9],
   primary: greens[5],
   secondary: greys[8],
   accent: blues[5],
   muted: greys[3],
-  appBackground: greys[1],
+  // appBackground: greys[1],
+  appBackground: hslToHsla(greys[1], '.96'),
   greens,
   blues,
   purples,
