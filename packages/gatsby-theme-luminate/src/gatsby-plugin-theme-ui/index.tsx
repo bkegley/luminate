@@ -45,7 +45,7 @@ const theme: Theme = {
   },
   shadows: {
     small: '1px 1px 9px 2px hsla(0, 0%, 0%, 0.07)',
-    medium: '7px 3px 11px 7px hsla(0, 0%, 0%, 0.1)',
+    medium: '0 7px 14px 0 rgba(65,69,88,.1), 0 3px 6px 0 rgba(0,0,0,.07)',
     large: '7px 3px 13px 12px hsla(0, 0%, 0%, 0.15)',
   },
   sizes: {

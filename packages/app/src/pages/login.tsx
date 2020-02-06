@@ -1,12 +1,13 @@
 /** @jsx jsx */
 import {jsx, Flex, Box, Card, Heading, Text} from 'theme-ui'
-import Layout from '../components/RootLayout'
+import {Layout} from '@luminate/gatsby-theme-luminate/src'
+import Header from '../components/RootHeader'
 import LoginForm from '../components/LoginForm'
 import {Link} from 'gatsby'
 
 const LoginPage = () => {
   return (
-    <Layout>
+    <Layout header={<Header />}>
       <Card sx={{maxWidth: 900, mx: 'auto', mt: 5}}>
         <Flex sx={{flexDirection: ['column', 'column', 'row']}}>
           <Flex

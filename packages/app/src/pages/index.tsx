@@ -1,11 +1,12 @@
 /** @jsx jsx */
 import {jsx} from 'theme-ui'
 import {Link} from 'gatsby'
-import Layout from '../components/RootLayout'
+import {Layout} from '@luminate/gatsby-theme-luminate/src'
+import Header from '../components/RootHeader'
 
 const IndexPage = () => {
   return (
-    <Layout>
+    <Layout header={<Header />}>
       <div>
         <h3>Register?</h3>
         <Link to="/register">Go to register</Link>
