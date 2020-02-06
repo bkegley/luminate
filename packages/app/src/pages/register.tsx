@@ -1,8 +1,7 @@
 /** @jsx jsx */
-import {jsx} from 'theme-ui'
+import {jsx, Box, Heading} from 'theme-ui'
 import RegisterForm from '../components/RegisterForm'
 import Layout from '../components/RootLayout'
-import {Box, Heading} from '@luminate/gatsby-theme-luminate/src'
 
 const RegisterPage = () => {
   return (

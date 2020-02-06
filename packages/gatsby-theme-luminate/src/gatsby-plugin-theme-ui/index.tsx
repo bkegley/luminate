@@ -48,6 +48,16 @@ const theme: Theme = {
     medium: '7px 3px 11px 7px hsla(0, 0%, 0%, 0.1)',
     large: '7px 3px 13px 12px hsla(0, 0%, 0%, 0.15)',
   },
+  sizes: {
+    contentWidth: 1440,
+    sidebar: 256,
+  },
+  styles: {
+    root: {
+      m: 0,
+      p: 0,
+    },
+  },
   cards: {
     blank: {},
     primary: {

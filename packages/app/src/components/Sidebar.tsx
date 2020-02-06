@@ -9,7 +9,7 @@ const Sidebar = () => {
     client?.clearStore().then(() => logout())
   }
   return (
-    <div sx={{display: 'flex', flexDirection: 'column', position: 'fixed'}}>
+    <div sx={{display: 'flex', flexDirection: 'column'}}>
       <Link to="/app">
         <h3>Luminate</h3>
       </Link>

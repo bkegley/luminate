@@ -1,8 +1,8 @@
 /** @jsx jsx */
 import React from 'react'
-import {jsx} from 'theme-ui'
+import {jsx, Box, Button} from 'theme-ui'
 import {useGetRegionQuery} from '../../graphql'
-import {Box, Button, Drawer} from '@luminate/gatsby-theme-luminate/src'
+import {Drawer} from '@luminate/gatsby-theme-luminate/src'
 import {RouteComponentProps} from 'react-router-dom'
 import RegionUpdateForm from './UpdateForm'
 

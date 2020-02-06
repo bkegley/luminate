@@ -1,8 +1,7 @@
 /** @jsx jsx */
-import {jsx} from 'theme-ui'
+import {jsx, Flex, Box, Heading, Button, Field as ThemeField} from 'theme-ui'
 import React from 'react'
 import {Formik, Form, Field} from 'formik'
-import {Flex, Box, Heading, Button, Field as ThemeField} from '@luminate/gatsby-theme-luminate/src'
 import {useCreateCountryMutation, CreateCountryInput, CreateCountryMutation, ListCountriesDocument} from '../../graphql'
 import {useHistory, useRouteMatch} from 'react-router-dom'
 

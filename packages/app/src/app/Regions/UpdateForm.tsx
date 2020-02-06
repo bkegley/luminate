@@ -1,7 +1,7 @@
 /** @jsx jsx */
-import {jsx} from 'theme-ui'
+import {jsx, Flex, Box, Field as ThemeField, Heading, Button} from 'theme-ui'
 import React from 'react'
-import {Flex, Box, Field as ThemeField, Heading, Button, Combobox} from '@luminate/gatsby-theme-luminate/src'
+import {Combobox} from '@luminate/gatsby-theme-luminate/src'
 import {
   useUpdateRegionMutation,
   useListCountriesQuery,

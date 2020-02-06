@@ -1,7 +1,7 @@
 /** @jsx jsx */
-import {jsx} from 'theme-ui'
+import {jsx, Flex, Box, Button, Label, Input} from 'theme-ui'
 import {navigate} from 'gatsby'
-import {useLogin, Flex, Box, Button, Field as ThemeField, Input, Label} from '@luminate/gatsby-theme-luminate/src'
+import {useLogin} from '@luminate/gatsby-theme-luminate/src'
 import {Formik, Form, Field} from 'formik'
 
 const LoginForm = () => {

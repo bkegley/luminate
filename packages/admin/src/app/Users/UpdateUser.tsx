@@ -1,9 +1,8 @@
 /** @jsx jsx */
-import {jsx, useThemeUI} from 'theme-ui'
+import {jsx, Flex, Box, Button, Card, Heading, Field as ThemeField} from 'theme-ui'
 import {Formik, Form, Field} from 'formik'
 import {useGetUserQuery, useUpdateUserMutation, useDeleteUserMutation} from '../../graphql'
 import {RouteChildrenProps, useHistory} from 'react-router-dom'
-import {Button, Box, Card, Flex, Field as ThemeField, Heading} from '@luminate/gatsby-theme-luminate/src/components'
 
 interface Params {
   id: string

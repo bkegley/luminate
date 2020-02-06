@@ -1,14 +1,6 @@
 /** @jsx jsx */
-import {
-  jsx,
-  Styled,
-  Layout as ThemeLayout,
-  Container,
-  Footer as ThemeFooter,
-  Header as ThemeHeader,
-  Main,
-} from 'theme-ui'
-import {useUser, Box, Flex, Heading, Button, UserFragmentFragment, Modal} from '@luminate/gatsby-theme-luminate/src'
+import {jsx, Flex, Box, Heading, Button} from 'theme-ui'
+import {useUser, UserFragmentFragment, Modal} from '@luminate/gatsby-theme-luminate/src'
 import {Link} from 'gatsby'
 import LoginForm from './LoginForm'
 
@@ -71,17 +63,24 @@ const Layout = ({children}: LayoutProps) => {
     logoutMeta.client?.resetStore().then(logout)
   }
   return (
-    <Styled.root>
-      <ThemeLayout sx={{bg: 'appBackground'}}>
-        <ThemeHeader>
-          <Header user={data} logout={handleLogoutClick} />
-        </ThemeHeader>
-        <Container sx={{display: 'flex', maxWidth: 1440}}>
-          <Main>{children}</Main>
-        </Container>
-        <ThemeFooter></ThemeFooter>
-      </ThemeLayout>
-    </Styled.root>
+    <Flex sx={{display: 'flex', flexDirection: 'column', minHeight: '100vh', bg: 'appBackground'}}>
+      <header sx={{width: '100%'}}>
+        <Header user={data} logout={handleLogoutClick} />
+      </header>
+      <main sx={{width: '100%', flex: '1 1 auto'}}>
+        <Box sx={{maxWidth: 1440, mx: 'auto', px: 3}}>{children}</Box>
+      </main>
+      <footer sx={{width: '100%'}}>Footer content</footer>
+    </Flex>
+    // <ThemeLayout sx={{bg: 'appBackground'}}>
+    //   <ThemeHeader>
+    //     <Header user={data} logout={handleLogoutClick} />
+    //   </ThemeHeader>
+    //   <Container sx={{display: 'flex', maxWidth: 1440}}>
+    //     <Main>{children}</Main>
+    //   </Container>
+    //   <ThemeFooter></ThemeFooter>
+    // </ThemeLayout>
   )
 }
 

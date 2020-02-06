@@ -1,14 +1,6 @@
 /** @jsx jsx */
 
-import {
-  jsx,
-  Styled,
-  Layout as ThemeLayout,
-  Container,
-  Footer as ThemeFooter,
-  Header as ThemeHeader,
-  Main,
-} from 'theme-ui'
+import {jsx, Flex, Box} from 'theme-ui'
 import Sidebar from './Sidebar'
 
 import Header from './Header'
@@ -21,20 +13,20 @@ interface Props {
 const Layout = ({children}: Props) => {
   const {data, logout} = useUser()
   return (
-    <Styled.root>
-      <ThemeLayout sx={{bg: 'appBackground'}}>
-        <ThemeHeader sx={{position: 'fixed', bg: 'green', width: '100%', top: 0}}>
-          <Header user={data} logout={logout} />
-        </ThemeHeader>
-        <Container sx={{display: 'flex', maxWidth: 1440, pt: 5}}>
-          <aside sx={{flexBasis: 99, flexGrow: 0, minWidth: 300}}>
+    <Flex sx={{display: 'flex', flexDirection: 'column', minHeight: '100vh', bg: 'appBackground'}}>
+      <header sx={{position: 'fixed', bg: 'green', width: '100%', top: 0}}>
+        <Header user={data} logout={logout} />
+      </header>
+      <Box sx={{maxWidth: 'contentWidth', mx: 'auto', px: [4, 4, 6], width: '100%'}}>
+        <Box sx={{pt: 6, display: 'flex', flexWrap: 'wrap', maxWidth: 1440, mx: 'auto'}}>
+          <aside sx={{flexGrow: 1, flexBasis: 'sidebar'}}>
             <Sidebar />
           </aside>
-          <Main>{children}</Main>
-        </Container>
-        <ThemeFooter></ThemeFooter>
-      </ThemeLayout>
-    </Styled.root>
+          <main sx={{flexGrow: 99999, flexBasis: 0, minWidth: 320}}>{children}</main>
+        </Box>
+      </Box>
+      <footer sx={{width: '100%'}}>Footer content</footer>
+    </Flex>
   )
 }
 

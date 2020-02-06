@@ -1,7 +1,6 @@
 /** @jsx jsx */
-import {jsx, SxStyleProp} from 'theme-ui'
+import {jsx, Flex, Box, Close, SxStyleProp} from 'theme-ui'
 import React from 'react'
-import {Flex, Box, Close} from '@luminate/gatsby-theme-luminate/src'
 import {animated, useTransition} from 'react-spring'
 
 type From = 'top' | 'right' | 'bottom' | 'left'

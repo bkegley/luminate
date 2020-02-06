@@ -1,7 +1,7 @@
-import React from 'react'
+/** @jsx jsx */
+import {jsx, Flex, Box, Field as ThemeField, Button, Card} from 'theme-ui'
 import {useCreateAccountMutation} from '../graphql'
 import {Formik, Form, Field} from 'formik'
-import {Flex, Box, Field as ThemeField, Button, Card} from '@luminate/gatsby-theme-luminate/src'
 import {navigate} from 'gatsby'
 
 interface RegisterFormProps {

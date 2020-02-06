@@ -1,4 +1,3 @@
-export * from '@theme-ui/components'
 import Combobox, {ComboboxProps} from './Combobox'
 import Modal, {ModalProps} from './Modal'
 import Select, {SelectProps} from './Select'

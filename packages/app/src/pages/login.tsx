@@ -1,8 +1,7 @@
 /** @jsx jsx */
-import {jsx} from 'theme-ui'
+import {jsx, Flex, Box, Card, Heading, Text} from 'theme-ui'
 import Layout from '../components/RootLayout'
 import LoginForm from '../components/LoginForm'
-import {Flex, Box, Card, Heading, Text} from '@luminate/gatsby-theme-luminate/src'
 import {Link} from 'gatsby'
 
 const LoginPage = () => {
