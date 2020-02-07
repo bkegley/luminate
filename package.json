@@ -17,7 +17,9 @@
     "generate:server": "graphql-codegen  --server && yarn format",
     "generate:client": "graphql-codegen --client  && yarn format",
     "develop:services": "lerna run develop --parallel --scope={@luminate/server-auth,@luminate/server-encyclopedia,@luminate/server-sensory-eval}",
-    "develop:gateway": "lerna run develop --parallel --scope=@luminate/server-gateway"
+    "develop:gateway": "lerna run develop --parallel --scope=@luminate/server-gateway",
+    "build:server": "lerna run build --scope={@luminate/mongo,@luminate/graphql-utils}",
+    "start": "yarn develop:services"
   },
   "devDependencies": {
     "@graphql-codegen/add": "^1.12.1",
