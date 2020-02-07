@@ -21,7 +21,7 @@ export interface Context {
 const startServer = async () => {
   await createMongoConnection()
   // configure cors
-  const whitelist = [`http://localhost:${PORT}`, 'http://localhost:8000', 'https://a7605dbd.ngrok.io']
+  const whitelist = [`http://localhost:${PORT}`, 'http://localhost:8000', 'http://a7605dbd.ngrok.io']
 
   const corsOptions: CorsOptions = {
     origin: (origin, callback) => {
