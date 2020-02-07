@@ -15,7 +15,6 @@ export type LoaderContext<L> = {
 }
 
 export {createConnectionResults, DocumentWithTimestamps} from './createConnectionResults'
-export {createPublicConnectionResults} from './createPublicConnectionResults'
 export {createCursorHash, parseCursorHash} from './cursor'
 export {parseArgs, queryInputMap} from './parseArgs'
 export {createToken, hasRole, hasScopes, parseToken, parseUserFromRequest} from './auth'
