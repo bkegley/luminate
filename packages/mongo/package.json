@@ -2,6 +2,7 @@
   "name": "@luminate/mongo",
   "version": "0.0.1",
   "main": "dist/index.js",
+  "types": "src/index.js",
   "author": "Bryan Kegley <hi@bryankegley.me>",
   "license": "MIT",
   "scripts": {

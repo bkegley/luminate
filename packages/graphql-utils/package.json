@@ -2,7 +2,7 @@
   "name": "@luminate/graphql-utils",
   "version": "0.0.1",
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "types": "src/index.ts",
   "author": "Bryan Kegley <hi@bryankegley.me>",
   "license": "MIT",
   "scripts": {
