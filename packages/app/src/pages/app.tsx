@@ -22,7 +22,7 @@ const AppPage = () => {
   return (
     <BrowserRouter>
       <Layout header={<Header user={data} logout={logout} />} sidebar={<Sidebar />}>
-        <Box sx={{pt: 6, px: 4}}>
+        <Box sx={{pt: 6, px: 4, mb: 6}}>
           <Switch>
             <Route exact path="/app">
               <Home />
