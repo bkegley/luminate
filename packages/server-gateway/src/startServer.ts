@@ -46,7 +46,7 @@ class AuthenticatedDataSource extends RemoteGraphQLDataSource {
 }
 
 const startServer = async () => {
-  await createMongoConnection()
+  await createMongoConnection(process.env.MONGO_URL)
   // configure cors
   const whitelist = [`http://localhost:${PORT}`, 'http://localhost:8000']
 
