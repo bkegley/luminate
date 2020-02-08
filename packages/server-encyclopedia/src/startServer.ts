@@ -71,6 +71,7 @@ const startServer = async () => {
     //     },
   })
 
+  app.get('/', (req, res) => res.send('Hey!!!'))
   // server.applyMiddleware({app, cors: corsOptions})
   server.applyMiddleware({app, cors: true})
 
