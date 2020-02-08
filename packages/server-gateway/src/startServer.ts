@@ -138,6 +138,8 @@ const startServer = async () => {
 
   server.applyMiddleware({app, cors: corsOptions})
 
+  app.get('/', (req, res) => res.send('this is the gateway!!'))
+
   app.listen({port: PORT}, () => console.log(`🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`))
 }
 
