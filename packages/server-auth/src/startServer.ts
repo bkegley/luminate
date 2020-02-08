@@ -9,7 +9,7 @@ import DataLoader from 'dataloader'
 import {LoaderContext, parseUserFromRequest} from '@luminate/graphql-utils'
 import token from './token.json'
 
-const PORT = process.env.PORT || 3003
+const PORT = 3003
 
 export interface Context {
   req: express.Request
@@ -20,7 +20,7 @@ export interface Context {
 }
 
 const startServer = async () => {
-  await createMongoConnection()
+  await createMongoConnection(process.env.MONGO_URL)
   // configure cors
   const whitelist = [`http://localhost:${PORT}`, 'http://localhost:8000']
 
@@ -57,17 +57,23 @@ const startServer = async () => {
         user,
       }
     },
-    playground:
-      process.env.NODE_ENV === 'production'
-        ? false
-        : {
-            settings: {
-              'request.credentials': 'include',
-            },
-          },
+    playground: {
+      settings: {
+        'request.credentials': 'include',
+      },
+    },
+    // process.env.NODE_ENV === 'production'
+    //   ? false
+    //   : {
+    //       settings: {
+    //         'request.credentials': 'include',
+    //       },
+    //     },
   })
 
-  server.applyMiddleware({app, cors: corsOptions})
+  // server.applyMiddleware({app, cors: corsOptions})
+  server.applyMiddleware({app, cors: true})
+  app.get('/', (req, res) => res.send('Hello World!'))
 
   app.listen({port: PORT}, () => console.log(`🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`))
 }
