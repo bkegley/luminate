@@ -8,7 +8,7 @@ import {createMongoConnection, models, AuthenticatedUserDocument} from '@luminat
 import DataLoader from 'dataloader'
 import {LoaderContext, parseUserFromRequest} from '@luminate/graphql-utils'
 
-const PORT = 3001
+const PORT = 5000
 
 export interface Context {
   req: express.Request
@@ -68,6 +68,11 @@ const startServer = async () => {
     //         'request.credentials': 'include',
     //       },
     //     },
+  })
+
+  app.use('*', (req, res, next) => {
+    console.log({req})
+    next()
   })
 
   // server.applyMiddleware({app, cors: corsOptions})
