@@ -4,7 +4,7 @@ module.exports = {
       resolve: '@luminate/gatsby-theme-luminate',
       options: {
         authWrapper: true,
-        uri: 'http://localhost:3000/graphql',
+        uri: 'http://api.luminate.coffee/graphql',
       },
     },
     {

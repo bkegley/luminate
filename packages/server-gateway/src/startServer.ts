@@ -9,14 +9,14 @@ import {
   AccountDocument,
 } from '@luminate/mongo'
 import {parseToken} from '@luminate/graphql-utils'
-import tokenJSON from './token.json'
 import cookieParser from 'cookie-parser'
 import express from 'express'
 const app = express()
 
 app.use(cookieParser())
 
-const PORT = process.env.PORT || 3000
+const PORT = 3000
+const USER_AUTH_TOKEN = process.env.USER_AUTH_TOKEN || 'localsecrettoken'
 
 export interface Context {
   req: express.Request
@@ -62,11 +62,22 @@ const startServer = async () => {
     credentials: true,
   }
 
+  const buildHostname = (env: string) => {
+    switch (env.toLowerCase()) {
+      case 'production':
+        return 'http://api.luminate.coffee'
+      case 'staging':
+        return 'http://staging.api.luminate.coffee'
+      default:
+        return 'http://localhost'
+    }
+  }
+
   const gateway = new ApolloGateway({
     serviceList: [
-      {name: 'auth', url: 'http://localhost:3003/graphql'},
-      {name: 'encyclopedia', url: 'http://localhost:3001/graphql'},
-      {name: 'sensory-eval', url: 'http://localhost:3002/graphql'},
+      {name: 'auth', url: `${buildHostname(process.env.NODE_ENV)}:3003/graphql`},
+      {name: 'encyclopedia', url: `${buildHostname(process.env.NODE_ENV)}:3001/graphql`},
+      {name: 'sensory-eval', url: `${buildHostname(process.env.NODE_ENV)}:3002/graphql`},
     ],
     buildService: ({url}) => {
       return new AuthenticatedDataSource({url})
@@ -85,7 +96,7 @@ const startServer = async () => {
 
       if (req.cookies.id) {
         try {
-          token = parseToken(req.cookies.id, tokenJSON.token)
+          token = parseToken(req.cookies.id, USER_AUTH_TOKEN)
           if (token) {
             user = (await models.User.findById(token.userId)
               .populate({path: 'account'})
@@ -138,7 +149,7 @@ const startServer = async () => {
 
   server.applyMiddleware({app, cors: corsOptions})
 
-  app.get('/', (req, res) => res.send('this is the gateway!!'))
+  app.get('/', (req, res) => res.send(`gateway using node env -  ${process.env.NODE_ENV}`))
 
   app.listen({port: PORT}, () => console.log(`🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`))
 }
