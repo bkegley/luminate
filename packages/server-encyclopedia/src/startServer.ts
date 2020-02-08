@@ -56,6 +56,7 @@ const startServer = async () => {
         user,
       }
     },
+    introspection: true,
     playground: {
       settings: {
         'request.credentials': 'include',
