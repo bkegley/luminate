@@ -21,7 +21,7 @@ export interface Context {
 const startServer = async () => {
   await createMongoConnection()
   // configure cors
-  const whitelist = [`http://localhost:${PORT}`, 'http://localhost:8000', 'http://a7605dbd.ngrok.io']
+  const whitelist = [`http://localhost:${PORT}`, 'http://localhost:8000']
 
   const corsOptions: CorsOptions = {
     origin: (origin, callback) => {
@@ -70,7 +70,8 @@ const startServer = async () => {
     //     },
   })
 
-  server.applyMiddleware({app, cors: corsOptions})
+  // server.applyMiddleware({app, cors: corsOptions})
+  server.applyMiddleware({app, cors: true})
 
   app.listen({port: PORT}, () => console.log(`🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`))
 }
