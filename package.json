@@ -19,7 +19,6 @@
     "develop:services": "lerna run develop --parallel --scope={@luminate/server-auth,@luminate/server-encyclopedia,@luminate/server-sensory-eval}",
     "develop:gateway": "lerna run develop --parallel --scope=@luminate/server-gateway",
     "build:utils": "lerna run build --scope={@luminate/mongo,@luminate/graphql-utils}",
-    "start": "yarn start:gateway",
     "start:services": "lerna run start --scope={@luminate/server-auth,@luminate/server-encyclopedia,@luminate/server-sensory-eval}",
     "start:gateway": "yarn workspace @luminate/server-gateway run start"
   },
