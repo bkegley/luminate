@@ -17,6 +17,7 @@ app.use(cookieParser())
 
 const PORT = 3000
 const USER_AUTH_TOKEN = process.env.USER_AUTH_TOKEN || 'localsecrettoken'
+const NODE_ENV = process.env.NODE_ENV || 'development'
 
 export interface Context {
   req: express.Request
@@ -75,9 +76,9 @@ const startServer = async () => {
 
   const gateway = new ApolloGateway({
     serviceList: [
-      {name: 'auth', url: `${buildHostname(process.env.NODE_ENV)}:3003/graphql`},
-      {name: 'encyclopedia', url: `${buildHostname(process.env.NODE_ENV)}:3001/graphql`},
-      {name: 'sensory-eval', url: `${buildHostname(process.env.NODE_ENV)}:3002/graphql`},
+      {name: 'auth', url: `${buildHostname(NODE_ENV)}:3003/graphql`},
+      {name: 'encyclopedia', url: `${buildHostname(NODE_ENV)}:3001/graphql`},
+      {name: 'sensory-eval', url: `${buildHostname(NODE_ENV)}:3002/graphql`},
     ],
     buildService: ({url}) => {
       return new AuthenticatedDataSource({url})
