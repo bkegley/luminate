@@ -28,6 +28,7 @@ export interface Context {
 class AuthenticatedDataSource extends RemoteGraphQLDataSource {
   // add x-auth-user header to all service requests
   willSendRequest({request, context}: {request: any; context: any}) {
+    console.log(JSON.stringify(request))
     const userString = JSON.stringify(context.user)
     if (userString) {
       request.http.headers.set('x-auth-user', Buffer.from(userString).toString('base64'))
