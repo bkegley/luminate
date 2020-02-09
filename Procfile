@@ -1,1 +1,1 @@
-web: yarn start:gateway
+web: $START_CMD
