@@ -47,6 +47,21 @@ class AuthenticatedDataSource extends RemoteGraphQLDataSource {
 
 const startServer = async () => {
   await createMongoConnection(process.env.MONGO_URL)
+  //configure cors
+  const whitelist = [`http://localhost:${PORT}`, 'http://localhost:8000', 'https://luminate.coffee']
+
+  const corsOptions: CorsOptions = {
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true)
+      // allow cors from deployment branches in netlify
+      const originSplitForStaging = origin.split('--')
+      const parsedOrigin = originSplitForStaging.length > 1 ? `https://${originSplitForStaging[1]}` : origin
+      if (whitelist.includes(parsedOrigin)) return callback(null, true)
+
+      callback(new Error('Request rejected by CORS'))
+    },
+    credentials: true,
+  }
 
   const buildHostname = (env: string) => {
     switch (env.toLowerCase()) {
@@ -138,7 +153,7 @@ const startServer = async () => {
     //     },
   })
 
-  server.applyMiddleware({app, cors: true})
+  server.applyMiddleware({app, cors: corsOptions})
 
   app.listen({port: PORT}, () => console.log(`🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`))
 }
