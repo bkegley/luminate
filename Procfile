@@ -1,1 +1,0 @@
-web: $DOKKU_START_CMD
