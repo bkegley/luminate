@@ -2,8 +2,9 @@ import {gql, ApolloError} from 'apollo-server-express'
 import {createConnectionResults, LoaderFn, createToken} from '@luminate/graphql-utils'
 import bcrypt from 'bcrypt'
 import {Resolvers} from '../types'
-import tokenJSON from '../token.json'
 import {UserDocument} from '@luminate/mongo'
+
+const USER_AUTH_TOKEN = process.env.USER_AUTH_TOKEN || 'localsecrettoken'
 
 const typeDefs = gql`
   type User {
@@ -140,7 +141,7 @@ const resolvers: Resolvers = {
 
       const accountId = user.defaultAccount ? user.defaultAccount : user.accounts ? user.accounts[0] : undefined
 
-      const token = createToken({userId: user.id, accountId}, tokenJSON.token)
+      const token = createToken({userId: user.id, accountId}, USER_AUTH_TOKEN)
 
       res.cookie('id', token, {
         httpOnly: true,

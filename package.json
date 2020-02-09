@@ -17,7 +17,10 @@
     "generate:server": "graphql-codegen  --server && yarn format",
     "generate:client": "graphql-codegen --client  && yarn format",
     "develop:services": "lerna run develop --parallel --scope={@luminate/server-auth,@luminate/server-encyclopedia,@luminate/server-sensory-eval}",
-    "develop:gateway": "lerna run develop --parallel --scope=@luminate/server-gateway"
+    "develop:gateway": "lerna run develop --parallel --scope=@luminate/server-gateway",
+    "build:utils": "lerna run build --scope={@luminate/mongo,@luminate/graphql-utils}",
+    "start:services": "lerna run start --scope={@luminate/server-auth,@luminate/server-encyclopedia,@luminate/server-sensory-eval}",
+    "start:gateway": "yarn workspace @luminate/server-gateway run start"
   },
   "devDependencies": {
     "@graphql-codegen/add": "^1.12.1",
@@ -26,6 +29,7 @@
     "@graphql-codegen/typescript-operations": "^1.10.0",
     "@graphql-codegen/typescript-react-apollo": "^1.10.0",
     "@graphql-codegen/typescript-resolvers": "^1.9.1",
+    "dotenv": "^8.2.0",
     "elint": "^1.11.1",
     "eslint-config-prettier": "^6.7.0",
     "husky": "^3.1.0",

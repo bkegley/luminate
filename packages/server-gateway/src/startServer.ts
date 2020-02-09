@@ -9,14 +9,15 @@ import {
   AccountDocument,
 } from '@luminate/mongo'
 import {parseToken} from '@luminate/graphql-utils'
-import tokenJSON from './token.json'
 import cookieParser from 'cookie-parser'
 import express from 'express'
 const app = express()
 
 app.use(cookieParser())
 
-const PORT = process.env.PORT || 3000
+const PORT = 3000
+const USER_AUTH_TOKEN = process.env.USER_AUTH_TOKEN || 'localsecrettoken'
+const NODE_ENV = process.env.NODE_ENV || 'development'
 
 export interface Context {
   req: express.Request
@@ -45,9 +46,15 @@ class AuthenticatedDataSource extends RemoteGraphQLDataSource {
 }
 
 const startServer = async () => {
-  await createMongoConnection()
-  // configure cors
-  const whitelist = [`http://localhost:${PORT}`, 'http://localhost:8000']
+  await createMongoConnection(process.env.MONGO_URL)
+  //configure cors
+  const whitelist = [
+    `http://localhost:${PORT}`,
+    'http://localhost:8000',
+    'https://luminate.coffee',
+    'http://api.luminate.coffee',
+    'http://staging.luminate.coffee',
+  ]
 
   const corsOptions: CorsOptions = {
     origin: (origin, callback) => {
@@ -62,11 +69,22 @@ const startServer = async () => {
     credentials: true,
   }
 
+  const buildHostname = (env: string) => {
+    switch (env.toLowerCase()) {
+      case 'production':
+        return 'http://api.luminate.coffee'
+      case 'staging':
+        return 'http://staging.api.luminate.coffee'
+      default:
+        return 'http://localhost'
+    }
+  }
+
   const gateway = new ApolloGateway({
     serviceList: [
-      {name: 'auth', url: 'http://localhost:3003/graphql'},
-      {name: 'encyclopedia', url: 'http://localhost:3001/graphql'},
-      {name: 'sensory-eval', url: 'http://localhost:3002/graphql'},
+      {name: 'auth', url: `${buildHostname(NODE_ENV)}:3003/graphql`},
+      {name: 'encyclopedia', url: `${buildHostname(NODE_ENV)}:3001/graphql`},
+      {name: 'sensory-eval', url: `${buildHostname(NODE_ENV)}:3002/graphql`},
     ],
     buildService: ({url}) => {
       return new AuthenticatedDataSource({url})
@@ -85,7 +103,7 @@ const startServer = async () => {
 
       if (req.cookies.id) {
         try {
-          token = parseToken(req.cookies.id, tokenJSON.token)
+          token = parseToken(req.cookies.id, USER_AUTH_TOKEN)
           if (token) {
             user = (await models.User.findById(token.userId)
               .populate({path: 'account'})
@@ -126,14 +144,19 @@ const startServer = async () => {
         },
       }
     },
-    playground:
-      process.env.NODE_ENV === 'production'
-        ? false
-        : {
-            settings: {
-              'request.credentials': 'include',
-            },
-          },
+    introspection: true,
+    playground: {
+      settings: {
+        'request.credentials': 'include',
+      },
+    },
+    // process.env.NODE_ENV === 'production'
+    //   ? false
+    //   : {
+    //       settings: {
+    //         'request.credentials': 'include',
+    //       },
+    //     },
   })
 
   server.applyMiddleware({app, cors: corsOptions})
