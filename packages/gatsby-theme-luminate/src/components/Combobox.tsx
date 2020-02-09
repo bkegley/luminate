@@ -3,7 +3,7 @@ import {jsx} from 'theme-ui'
 import React from 'react'
 import {useCombobox, UseComboboxState} from 'downshift'
 import defaultStyles, {IStyles} from './styles'
-import {Box, Button, Label, Input} from '@theme-ui/components'
+import {Box, Button, Label, Input} from 'theme-ui'
 import DownArrow from './DownArrow'
 
 interface IItem {
