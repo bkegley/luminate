@@ -48,7 +48,12 @@ class AuthenticatedDataSource extends RemoteGraphQLDataSource {
 const startServer = async () => {
   await createMongoConnection(process.env.MONGO_URL)
   //configure cors
-  const whitelist = [`http://localhost:${PORT}`, 'http://localhost:8000', 'https://luminate.coffee']
+  const whitelist = [
+    `http://localhost:${PORT}`,
+    'http://localhost:8000',
+    'https://luminate.coffee',
+    'http://api.luminate.coffee',
+  ]
 
   const corsOptions: CorsOptions = {
     origin: (origin, callback) => {
