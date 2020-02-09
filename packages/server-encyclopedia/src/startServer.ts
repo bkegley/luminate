@@ -42,18 +42,14 @@ const startServer = async () => {
       }
     },
     introspection: true,
-    playground: {
-      settings: {
-        'request.credentials': 'include',
-      },
-    },
-    // process.env.NODE_ENV === 'production'
-    //   ? false
-    //   : {
-    //       settings: {
-    //         'request.credentials': 'include',
-    //       },
-    //     },
+    playground:
+      process.env.NODE_ENV === 'production'
+        ? false
+        : {
+            settings: {
+              'request.credentials': 'include',
+            },
+          },
   })
 
   server.applyMiddleware({app, cors: true})

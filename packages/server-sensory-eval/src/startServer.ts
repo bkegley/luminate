@@ -42,6 +42,7 @@ const startServer = async () => {
         user,
       }
     },
+    introspection: true,
     playground:
       process.env.NODE_ENV === 'production'
         ? false
