@@ -1,10 +1,11 @@
 import mongoose from 'mongoose'
 import extendSchema from '../extendSchema'
-import Role from './Role'
 import bcrypt from 'bcrypt'
 const saltRounds = 10
 import {DocumentWithTimestamps} from '@luminate/graphql-utils'
 import {ScopeDocument} from './Scope'
+import {BaseAuthenticatedSchema, AuthenticatedEntity, WithAuthenticatedMethods} from '../baseSchemas'
+import {AccountDocument} from './Account'
 
 export interface PersonDocument extends DocumentWithTimestamps {
   firstName?: string
@@ -14,15 +15,29 @@ export interface PersonDocument extends DocumentWithTimestamps {
   type: ['user' | 'contact' | 'person']
 }
 
-export interface UserDocument extends PersonDocument {
+export interface PersonModel extends WithAuthenticatedMethods<PersonDocument> {}
+
+interface BaseUserDocument extends PersonDocument {
   username: string
   password: string
-  authTokens?: Array<IAuthToken>
-  roles?: string[]
+  defaultAccount?: mongoose.Types.ObjectId
+  roles?: UserRole[]
   lastLoggedIn?: Date
 }
+export interface UserDocument extends BaseUserDocument {
+  accounts?: Array<mongoose.Types.ObjectId>
+}
 
-export interface UserWithScopesDocument extends UserDocument {
+export interface UserModel extends WithAuthenticatedMethods<UserDocument> {}
+
+interface UserRole {
+  account: mongoose.Types.ObjectId | string
+  roles: Array<mongoose.Types.ObjectId | string>
+}
+
+export interface AuthenticatedUserDocument extends BaseUserDocument {
+  account?: AccountDocument | undefined
+  accounts?: AccountDocument[] | undefined
   scopes?: ScopeDocument[]
 }
 
@@ -41,12 +56,8 @@ interface IPhone extends ContactInfo {
   contactType: ContactType
 }
 
-interface IAuthToken {
-  token: string
-  expiresAt: Date
-}
-
-const PersonSchema = new mongoose.Schema(
+const PersonSchema = extendSchema(
+  BaseAuthenticatedSchema,
   {
     firstName: {
       type: String,
@@ -108,20 +119,28 @@ const UserSchema = extendSchema(
       type: String,
       required: true,
     },
-    authTokens: [
-      {
-        token: {
-          type: String,
-        },
-        expiresAt: {
-          type: Date,
-        },
-      },
-    ],
-    roles: [
+    accounts: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'role',
+        ref: 'account',
+      },
+    ],
+    defaultAccount: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'account',
+    },
+    roles: [
+      {
+        account: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'account',
+        },
+        roles: [
+          {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'role',
+          },
+        ],
       },
     ],
     lastLoggedIn: {
@@ -139,5 +158,8 @@ UserSchema.pre<UserDocument>('save', async function(next) {
   next()
 })
 
-export const Person = mongoose.model<PersonDocument>('person', PersonSchema, 'people')
-export const User = mongoose.model<UserDocument>('user', UserSchema, 'people')
+PersonSchema.loadClass(AuthenticatedEntity)
+UserSchema.loadClass(AuthenticatedEntity)
+
+export const Person = mongoose.model<PersonDocument, PersonModel>('person', PersonSchema, 'people')
+export const User = mongoose.model<UserDocument, UserModel>('user', UserSchema, 'people')

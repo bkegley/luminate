@@ -1,12 +1,17 @@
 import mongoose from 'mongoose'
 import {DocumentWithTimestamps} from '@luminate/graphql-utils'
+import extendSchema from '../extendSchema'
+import {BaseAuthenticatedSchema, AuthenticatedEntity, WithAuthenticatedMethods} from '../baseSchemas'
 
 export interface VarietyDocument extends DocumentWithTimestamps {
   name: string
   background?: string
 }
 
-const Variety = new mongoose.Schema(
+export interface VarietyModel extends WithAuthenticatedMethods<VarietyDocument> {}
+
+const Variety = extendSchema(
+  BaseAuthenticatedSchema,
   {
     name: {
       type: String,
@@ -21,4 +26,6 @@ const Variety = new mongoose.Schema(
   },
 )
 
-export default mongoose.model<VarietyDocument>('variety', Variety, 'varieties')
+Variety.loadClass(AuthenticatedEntity)
+
+export default mongoose.model<VarietyDocument, VarietyModel>('variety', Variety, 'varieties')

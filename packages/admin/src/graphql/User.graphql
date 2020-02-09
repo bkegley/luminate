@@ -1,10 +1,55 @@
-query listUsers {
-  listUsers {
+query listUsers($cursor: String) {
+  listUsers(limit: 10, cursor: $cursor) {
+    pageInfo {
+      hasNextPage
+      nextCursor
+      prevCursor
+    }
     edges {
       node {
-        id
-        username
+        ...UserFragment
       }
     }
+  }
+}
+
+query getUser($id: ID!) {
+  getUser(id: $id) {
+    ...UserFragment
+  }
+}
+
+mutation createUser($input: CreateUserInput!) {
+  createUser(input: $input) {
+    ...UserFragment
+  }
+}
+
+mutation updateUser($id: ID!, $input: UpdateUserInput!) {
+  updateUser(id: $id, input: $input) {
+    ...UserFragment
+  }
+}
+
+mutation deleteUser($id: ID!) {
+  deleteUser(id: $id) {
+    id
+  }
+}
+
+fragment UserFragment on User {
+  id
+  username
+  firstName
+  lastName
+  roles {
+    id
+    name
+  }
+  scopes {
+    id
+    name
+    resource
+    operation
   }
 }

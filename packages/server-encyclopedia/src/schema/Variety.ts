@@ -1,4 +1,4 @@
-import {gql} from 'apollo-server-express'
+import {gql, ApolloError} from 'apollo-server-express'
 import {createConnectionResults, LoaderFn} from '@luminate/graphql-utils'
 import {Resolvers} from '../types'
 import {VarietyDocument} from '@luminate/mongo'
@@ -40,15 +40,16 @@ const typeDefs = gql`
     createVariety(input: CreateVarietyInput!): Variety
     updateVariety(id: ID!, input: UpdateVarietyInput!): Variety
     deleteVariety(id: ID!): Variety
+    makeVarietyPublic(id: ID!): Boolean
   }
 `
 
 const resolvers: Resolvers = {
   Query: {
-    listVarieties: async (parent, args, {models}) => {
+    listVarieties: async (parent, args, {models, user}) => {
       const {Variety} = models
 
-      const results = await createConnectionResults({args, model: Variety})
+      const results = await createConnectionResults({user, args, model: Variety})
       return results
     },
     getVariety: async (parent, {id}, {loaders}, info) => {
@@ -57,26 +58,34 @@ const resolvers: Resolvers = {
     },
   },
   Mutation: {
-    createVariety: async (parent, {input}, {models}) => {
+    createVariety: async (parent, {input}, {models, user}) => {
       const {Variety} = models
-      const variety = await new Variety(input).save()
+      const variety = await Variety.createByUser(user, input)
       return variety
     },
-    updateVariety: async (parent, {id, input}, {models}) => {
+    updateVariety: async (parent, {id, input}, {models, user}) => {
       const {Variety} = models
-      const variety = await Variety.findByIdAndUpdate(id, input, {new: true})
+      const variety = await Variety.findByIdAndUpdateByUser(user, id, input, {new: true})
       return variety
     },
-    deleteVariety: async (parent, {id}, {models}) => {
+    deleteVariety: async (parent, {id}, {models, user}) => {
       const {Variety} = models
-      const variety = await Variety.findByIdAndDelete(id)
+      const variety = await Variety.findByIdAndDeleteByUser(user, id, {})
+      if (!variety) {
+        throw new ApolloError('Document not found')
+      }
       return variety
+    },
+    makeVarietyPublic: async (parent, {id}, {models, user}) => {
+      const {Variety} = models
+      const variety = await Variety.makeEntityPublicByUser(user, id)
+      return !!variety
     },
   },
   Variety: {
-    coffees: async (parent, args, {models}) => {
+    coffees: async (parent, args, {models, user}) => {
       const {Coffee} = models
-      const coffees = await Coffee.find({varieties: parent.id})
+      const coffees = await Coffee.findByUser(user, {varieties: parent.id})
       return coffees
     },
   },
@@ -87,12 +96,12 @@ export interface VarietyLoaders {
 }
 
 export const loaders: VarietyLoaders = {
-  varieties: async (ids, models) => {
+  varieties: async (ids, models, user) => {
     const {Variety} = models
-    const varieties = await Variety.find({_id: ids})
+    const varieties = await Variety.findByUser(user, {_id: ids})
     return ids.map(id => {
       const variety = varieties.find((variety: any) => variety._id.toString() === id.toString())
-      if (!variety) throw new Error('Document not found')
+      if (!variety) return null
       return variety
     })
   },

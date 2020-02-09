@@ -1,4 +1,4 @@
-import {gql} from 'apollo-server-express'
+import {gql, ApolloError} from 'apollo-server-express'
 import {createConnectionResults, LoaderFn} from '@luminate/graphql-utils'
 import {Resolvers} from '../types'
 import {RoleDocument} from '@luminate/mongo'
@@ -46,9 +46,9 @@ const typeDefs = gql`
 
 const resolvers: Resolvers = {
   Query: {
-    listRoles: async (parent, args, {models}) => {
+    listRoles: async (parent, args, {models, user}) => {
       const {Role} = models
-      const results = await createConnectionResults({args, model: Role})
+      const results = await createConnectionResults({user, args, model: Role})
       return results
     },
     getRole: async (parent, {id}, {loaders}, info) => {
@@ -57,19 +57,22 @@ const resolvers: Resolvers = {
     },
   },
   Mutation: {
-    createRole: async (parent, {input}, {models}) => {
+    createRole: async (parent, {input}, {models, user}) => {
       const {Role} = models
-      const role = await new Role({...input, type: ['role']}).save()
+      const role = await Role.createByUser(user, {...input, type: ['role']})
       return role
     },
-    updateRole: async (parent, {id, input}, {models}) => {
+    updateRole: async (parent, {id, input}, {models, user}) => {
       const {Role} = models
-      const role = await Role.findByIdAndUpdate(id, input, {new: true})
+      const role = await Role.findByIdAndUpdateByUser(user, id, input, {new: true})
       return role
     },
-    deleteRole: async (parent, {id}, {models}) => {
+    deleteRole: async (parent, {id}, {models, user}) => {
       const {Role} = models
-      const role = await Role.findByIdAndDelete(id)
+      const role = await Role.findByIdAndDeleteByUser(user, id, {})
+      if (!role) {
+        throw new ApolloError('Document not found')
+      }
       return role
     },
   },
@@ -77,7 +80,7 @@ const resolvers: Resolvers = {
     scopes: async (parent, args, {loaders}) => {
       const {scopes} = loaders
       if (!parent.scopes) return null
-      return Promise.all(parent.scopes.map(id => scopes.load(id)))
+      return (await Promise.all(parent.scopes.map(id => scopes.load(id)))).filter(Boolean)
     },
   },
 }
@@ -87,12 +90,12 @@ export interface RoleLoaders {
 }
 
 export const loaders: RoleLoaders = {
-  roles: async (ids, models) => {
+  roles: async (ids, models, user) => {
     const {Role} = models
-    const roles = await Role.find({_id: ids})
+    const roles = await Role.findByUser(user, {_id: ids})
     return ids.map(id => {
       const role = roles.find(role => role._id.toString() === id.toString())
-      if (!role) throw new Error('Document not found')
+      if (!role) return null
       return role
     })
   },

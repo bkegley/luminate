@@ -1,0 +1,47 @@
+query listScopes($cursor: String) {
+  listScopes(limit: 10, cursor: $cursor) {
+    pageInfo {
+      hasNextPage
+      nextCursor
+      prevCursor
+    }
+    edges {
+      node {
+        ...ScopeFragment
+      }
+    }
+  }
+}
+
+query getScope($id: ID!) {
+  getScope(id: $id) {
+    ...ScopeFragment
+  }
+}
+
+mutation createScope($input: CreateScopeInput!) {
+  createScope(input: $input) {
+    ...ScopeFragment
+  }
+}
+
+mutation updateScope($id: ID!, $input: UpdateScopeInput!) {
+  updateScope(id: $id, input: $input) {
+    ...ScopeFragment
+  }
+}
+
+mutation deleteScope($id: ID!) {
+  deleteScope(id: $id) {
+    id
+  }
+}
+
+fragment ScopeFragment on Scope {
+  id
+  name
+  resource
+  operation
+  createdAt
+  updatedAt
+}

@@ -1,6 +1,13 @@
 import {ApolloServer, CorsOptions} from 'apollo-server-express'
 import {ApolloGateway, RemoteGraphQLDataSource} from '@apollo/gateway'
-import {createMongoConnection, models, RoleDocument, ScopeDocument, UserWithScopesDocument} from '@luminate/mongo'
+import {
+  createMongoConnection,
+  models,
+  RoleDocument,
+  ScopeDocument,
+  AuthenticatedUserDocument,
+  AccountDocument,
+} from '@luminate/mongo'
 import {parseToken} from '@luminate/graphql-utils'
 import tokenJSON from './token.json'
 import cookieParser from 'cookie-parser'
@@ -14,7 +21,7 @@ const PORT = process.env.PORT || 3000
 export interface Context {
   req: express.Request
   res: express.Response
-  user: UserWithScopesDocument
+  user: AuthenticatedUserDocument | null
 }
 
 class AuthenticatedDataSource extends RemoteGraphQLDataSource {
@@ -70,22 +77,33 @@ const startServer = async () => {
     gateway,
     subscriptions: false,
     context: async ({req, res}) => {
-      let token
-      let user: UserWithScopesDocument | null | undefined
+      let token: ReturnType<typeof parseToken> | undefined
+      let user: AuthenticatedUserDocument | null | undefined
+      let account: AuthenticatedUserDocument['account']
+      let roles: RoleDocument[] | undefined
+      let scopes: AuthenticatedUserDocument['scopes']
 
       if (req.cookies.id) {
         try {
           token = parseToken(req.cookies.id, tokenJSON.token)
           if (token) {
-            user = await models.User.findById(token.userId).populate({
-              path: 'roles',
-              populate: {path: 'scopes'},
-            })
-
-            const roles = (user?.roles as unknown) as RoleDocument[]
+            user = (await models.User.findById(token.userId)
+              .populate({path: 'account'})
+              .populate({path: 'accounts'})
+              .populate({
+                path: 'roles.roles',
+                populate: {path: 'scopes'},
+              })) as AuthenticatedUserDocument | null | undefined
 
             if (user) {
-              user.scopes = roles.reduce((acc, role) => {
+              const accounts = (user.accounts as unknown) as AccountDocument[] | undefined
+              account = accounts?.find(account => account._id.toString() === token?.accountId)
+              roles = user?.roles
+                ?.filter(role => account && role.account.toString() === account.toString())
+                .map(role => (role.roles as unknown) as RoleDocument)
+                .flat()
+
+              scopes = roles?.reduce((acc, role) => {
                 const scopes = (role.scopes as unknown) as ScopeDocument[]
                 const newScopes = scopes.filter(
                   scope => !acc.find(existingScope => existingScope._id.toString() === scope._id.toString()),
@@ -100,7 +118,12 @@ const startServer = async () => {
       return {
         req,
         res,
-        user,
+        user: {
+          ...user?.toObject(),
+          account,
+          roles,
+          scopes,
+        },
       }
     },
     playground:

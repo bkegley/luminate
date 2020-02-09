@@ -1,4 +1,4 @@
-import {gql} from 'apollo-server-express'
+import {gql, ApolloError} from 'apollo-server-express'
 import {createConnectionResults, LoaderFn} from '@luminate/graphql-utils'
 import {Resolvers} from '../types'
 import {FarmDocument, FarmZoneDocument} from '@luminate/mongo'
@@ -50,9 +50,9 @@ const typeDefs = gql`
 
 const resolvers: Resolvers = {
   Query: {
-    listFarms: async (parent, args, {models}) => {
+    listFarms: async (parent, args, {models, user}) => {
       const {Farm} = models
-      const results = await createConnectionResults({args, model: Farm})
+      const results = await createConnectionResults({user, args, model: Farm})
       return results
     },
     getFarm: async (parent, {id}, {loaders}, info) => {
@@ -61,19 +61,22 @@ const resolvers: Resolvers = {
     },
   },
   Mutation: {
-    createFarm: async (parent, {input}, {models}) => {
+    createFarm: async (parent, {input}, {models, user}) => {
       const {Farm} = models
-      const farm = await new Farm(input).save()
+      const farm = await Farm.createByUser(user, input)
       return farm
     },
-    updateFarm: async (parent, {id, input}, {models}) => {
+    updateFarm: async (parent, {id, input}, {models, user}) => {
       const {Farm} = models
-      const farm = await Farm.findByIdAndUpdate(id, input, {new: true})
+      const farm = await Farm.findByIdAndUpdateByUser(user, id, input, {new: true})
       return farm
     },
-    deleteFarm: async (parent, {id}, {models}) => {
+    deleteFarm: async (parent, {id}, {models, user}) => {
       const {Farm} = models
-      const farm = await Farm.findByIdAndDelete(id)
+      const farm = await Farm.findByIdAndDeleteByUser(user, id, {})
+      if (!farm) {
+        throw new ApolloError('Document not found')
+      }
       return farm
     },
   },
@@ -101,18 +104,18 @@ export interface FarmLoaders {
 }
 
 export const loaders: FarmLoaders = {
-  farms: async (ids, models) => {
+  farms: async (ids, models, user) => {
     const {Farm} = models
-    const farms = await Farm.find({_id: ids})
+    const farms = await Farm.findByUser(user, {_id: ids})
     return ids.map(id => {
       const farm = farms.find((farm: any) => farm._id.toString() === id.toString())
-      if (!farm) throw new Error('Document not found')
+      if (!farm) return null
       return farm
     })
   },
-  farmZonesOfFarm: async (ids, models) => {
+  farmZonesOfFarm: async (ids, models, user) => {
     const {FarmZone} = models
-    const farmZones = await FarmZone.find({farm: ids})
+    const farmZones = await FarmZone.findByUser(user, {farm: ids})
     return ids.map(id => {
       return farmZones.filter((farmZone: any) => farmZone.farm && farmZone.farm.toString() === id)
     })

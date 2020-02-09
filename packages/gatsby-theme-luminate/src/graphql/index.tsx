@@ -2,6 +2,10 @@ import gql from 'graphql-tag'
 import * as ApolloReactCommon from '@apollo/react-common'
 import * as ApolloReactHooks from '@apollo/react-hooks'
 export type Maybe<T> = T | null
+type ThenArg<T> = T extends PromiseLike<infer U> ? U : T
+export type MutationSuccessResponse<T extends (...args: any[]) => any[]> = ThenArg<
+  ReturnType<ThenArg<ReturnType<T>>[0]>
+>
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string
@@ -10,6 +14,25 @@ export type Scalars = {
   Int: number
   Float: number
   _FieldSet: any
+}
+
+export type Account = {
+  __typename: 'Account'
+  id: Scalars['ID']
+  name: Scalars['String']
+  users?: Maybe<Array<User>>
+}
+
+export type AccountConnection = {
+  __typename: 'AccountConnection'
+  pageInfo: PageInfo
+  edges: Array<AccountEdge>
+}
+
+export type AccountEdge = {
+  __typename: 'AccountEdge'
+  cursor?: Maybe<Scalars['String']>
+  node?: Maybe<Account>
 }
 
 export type Coffee = {
@@ -57,6 +80,12 @@ export type CountryEdge = {
   node?: Maybe<Country>
 }
 
+export type CreateAccountInput = {
+  name: Scalars['String']
+  username: Scalars['String']
+  password: Scalars['String']
+}
+
 export type CreateCoffeeInput = {
   name?: Maybe<Scalars['String']>
   country?: Maybe<Scalars['ID']>
@@ -89,6 +118,10 @@ export type CreateFarmZoneInput = {
 export type CreateRegionInput = {
   name?: Maybe<Scalars['String']>
   country?: Maybe<Scalars['ID']>
+}
+
+export type CreateRoastInput = {
+  name?: Maybe<Scalars['String']>
 }
 
 export type CreateRoleInput = {
@@ -193,6 +226,10 @@ export type FarmZoneEdge = {
 
 export type Mutation = {
   __typename: 'Mutation'
+  createAccount?: Maybe<Account>
+  updateAccount?: Maybe<Account>
+  deleteAccount?: Maybe<Account>
+  addUserToAccount?: Maybe<Scalars['Boolean']>
   createRole?: Maybe<Role>
   updateRole?: Maybe<Role>
   deleteRole?: Maybe<Role>
@@ -203,11 +240,13 @@ export type Mutation = {
   updateUser?: Maybe<User>
   deleteUser?: Maybe<User>
   updatePassword?: Maybe<Scalars['Boolean']>
+  updateUserRoles?: Maybe<User>
   login?: Maybe<User>
   logout?: Maybe<Scalars['Boolean']>
   createCoffee?: Maybe<Coffee>
   updateCoffee?: Maybe<Coffee>
   deleteCoffee?: Maybe<Coffee>
+  updateCoffeePermissionsForAccount?: Maybe<Scalars['Boolean']>
   createCountry?: Maybe<Country>
   updateCountry?: Maybe<Country>
   deleteCountry?: Maybe<Country>
@@ -220,12 +259,34 @@ export type Mutation = {
   createRegion?: Maybe<Region>
   updateRegion?: Maybe<Region>
   deleteRegion?: Maybe<Region>
+  createRoast?: Maybe<Roast>
+  updateRoast?: Maybe<Roast>
+  deleteRoast?: Maybe<Roast>
   createVariety?: Maybe<Variety>
   updateVariety?: Maybe<Variety>
   deleteVariety?: Maybe<Variety>
+  makeVarietyPublic?: Maybe<Scalars['Boolean']>
   createCupping?: Maybe<Cupping>
   updateCupping?: Maybe<Cupping>
   deleteCupping?: Maybe<Cupping>
+}
+
+export type MutationCreateAccountArgs = {
+  input: CreateAccountInput
+}
+
+export type MutationUpdateAccountArgs = {
+  id: Scalars['ID']
+  input: UpdateAccountInput
+}
+
+export type MutationDeleteAccountArgs = {
+  id: Scalars['ID']
+}
+
+export type MutationAddUserToAccountArgs = {
+  accountId: Scalars['ID']
+  userId: Scalars['ID']
 }
 
 export type MutationCreateRoleArgs = {
@@ -272,6 +333,11 @@ export type MutationUpdatePasswordArgs = {
   input: UpdatePasswordInput
 }
 
+export type MutationUpdateUserRolesArgs = {
+  userId: Scalars['ID']
+  roles: Array<Scalars['ID']>
+}
+
 export type MutationLoginArgs = {
   username: Scalars['String']
   password: Scalars['String']
@@ -288,6 +354,12 @@ export type MutationUpdateCoffeeArgs = {
 
 export type MutationDeleteCoffeeArgs = {
   id: Scalars['ID']
+}
+
+export type MutationUpdateCoffeePermissionsForAccountArgs = {
+  coffeeId: Scalars['ID']
+  accountId: Scalars['ID']
+  permissionTypes: Array<PermissionTypeEnum>
 }
 
 export type MutationCreateCountryArgs = {
@@ -342,6 +414,19 @@ export type MutationDeleteRegionArgs = {
   id: Scalars['ID']
 }
 
+export type MutationCreateRoastArgs = {
+  input: CreateRoastInput
+}
+
+export type MutationUpdateRoastArgs = {
+  id: Scalars['ID']
+  input: UpdateRoastInput
+}
+
+export type MutationDeleteRoastArgs = {
+  id: Scalars['ID']
+}
+
 export type MutationCreateVarietyArgs = {
   input: CreateVarietyInput
 }
@@ -352,6 +437,10 @@ export type MutationUpdateVarietyArgs = {
 }
 
 export type MutationDeleteVarietyArgs = {
+  id: Scalars['ID']
+}
+
+export type MutationMakeVarietyPublicArgs = {
   id: Scalars['ID']
 }
 
@@ -391,8 +480,15 @@ export type PageInfo = {
   nextCursor?: Maybe<Scalars['String']>
 }
 
+export enum PermissionTypeEnum {
+  Read = 'read',
+  Write = 'write',
+}
+
 export type Query = {
   __typename: 'Query'
+  listAccounts: AccountConnection
+  getAccount?: Maybe<Account>
   listRoles: RoleConnection
   getRole?: Maybe<Role>
   listScopes: ScopeConnection
@@ -410,10 +506,22 @@ export type Query = {
   getFarmZone?: Maybe<FarmZone>
   listRegions: RegionConnection
   getRegion?: Maybe<Region>
+  listRoasts: RoastConnection
+  getRoast?: Maybe<Roast>
   listVarieties: VarietyConnection
   getVariety?: Maybe<Variety>
   listCuppings: CuppingConnection
   getCupping?: Maybe<Cupping>
+}
+
+export type QueryListAccountsArgs = {
+  cursor?: Maybe<Scalars['String']>
+  limit?: Maybe<Scalars['Int']>
+  query?: Maybe<Array<Maybe<QueryInput>>>
+}
+
+export type QueryGetAccountArgs = {
+  id: Scalars['ID']
 }
 
 export type QueryListRolesArgs = {
@@ -496,6 +604,16 @@ export type QueryGetRegionArgs = {
   id: Scalars['ID']
 }
 
+export type QueryListRoastsArgs = {
+  cursor?: Maybe<Scalars['String']>
+  limit?: Maybe<Scalars['Int']>
+  query?: Maybe<Array<Maybe<QueryInput>>>
+}
+
+export type QueryGetRoastArgs = {
+  id: Scalars['ID']
+}
+
 export type QueryListVarietiesArgs = {
   cursor?: Maybe<Scalars['String']>
   limit?: Maybe<Scalars['Int']>
@@ -544,6 +662,26 @@ export type RegionEdge = {
   node?: Maybe<Region>
 }
 
+export type Roast = {
+  __typename: 'Roast'
+  id: Scalars['ID']
+  name?: Maybe<Scalars['String']>
+  createdAt?: Maybe<Scalars['String']>
+  updatedAt?: Maybe<Scalars['String']>
+}
+
+export type RoastConnection = {
+  __typename: 'RoastConnection'
+  pageInfo: PageInfo
+  edges: Array<RoastEdge>
+}
+
+export type RoastEdge = {
+  __typename: 'RoastEdge'
+  cursor?: Maybe<Scalars['String']>
+  node?: Maybe<Roast>
+}
+
 export type Role = {
   __typename: 'Role'
   id: Scalars['ID']
@@ -588,6 +726,10 @@ export type ScopeEdge = {
   node?: Maybe<Scope>
 }
 
+export type UpdateAccountInput = {
+  name?: Maybe<Scalars['String']>
+}
+
 export type UpdateCoffeeInput = {
   name?: Maybe<Scalars['String']>
   country?: Maybe<Scalars['ID']>
@@ -628,6 +770,10 @@ export type UpdateRegionInput = {
   country?: Maybe<Scalars['ID']>
 }
 
+export type UpdateRoastInput = {
+  name?: Maybe<Scalars['String']>
+}
+
 export type UpdateRoleInput = {
   name?: Maybe<Scalars['String']>
   scopes?: Maybe<Array<Scalars['ID']>>
@@ -655,6 +801,7 @@ export type User = {
   username?: Maybe<Scalars['String']>
   firstName?: Maybe<Scalars['String']>
   lastName?: Maybe<Scalars['String']>
+  accounts?: Maybe<Array<Maybe<Account>>>
   roles?: Maybe<Array<Maybe<Role>>>
   scopes?: Maybe<Array<Maybe<Scope>>>
 }

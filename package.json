@@ -20,6 +20,7 @@
     "develop:gateway": "lerna run develop --parallel --scope=@luminate/server-gateway"
   },
   "devDependencies": {
+    "@graphql-codegen/add": "^1.12.1",
     "@graphql-codegen/cli": "^1.9.1",
     "@graphql-codegen/typescript": "^1.9.1",
     "@graphql-codegen/typescript-operations": "^1.10.0",

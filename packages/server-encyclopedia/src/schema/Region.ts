@@ -1,4 +1,4 @@
-import {gql} from 'apollo-server-express'
+import {gql, ApolloError} from 'apollo-server-express'
 import {createConnectionResults, LoaderFn} from '@luminate/graphql-utils'
 import {Resolvers} from '../types'
 import {RegionDocument, FarmDocument} from '@luminate/mongo'
@@ -47,10 +47,10 @@ const typeDefs = gql`
 
 const resolvers: Resolvers = {
   Query: {
-    listRegions: async (parent, args, {models}) => {
+    listRegions: async (parent, args, {models, user}) => {
       const {Region} = models
 
-      const results = await createConnectionResults({args, model: Region})
+      const results = await createConnectionResults({user, args, model: Region})
       return results
     },
     getRegion: async (parent, {id}, {loaders}, info) => {
@@ -59,19 +59,22 @@ const resolvers: Resolvers = {
     },
   },
   Mutation: {
-    createRegion: async (parent, {input}, {models}) => {
+    createRegion: async (parent, {input}, {models, user}) => {
       const {Region} = models
-      const region = await new Region(input).save()
+      const region = await Region.createByUser(user, input)
       return region
     },
-    updateRegion: async (parent, {id, input}, {models}) => {
+    updateRegion: async (parent, {id, input}, {models, user}) => {
       const {Region} = models
-      const region = await Region.findByIdAndUpdate(id, input, {new: true})
+      const region = await Region.findByIdAndUpdateByUser(user, id, input, {new: true})
       return region
     },
-    deleteRegion: async (parent, {id}, {models}) => {
+    deleteRegion: async (parent, {id}, {models, user}) => {
       const {Region} = models
-      const region = await Region.findByIdAndDelete(id)
+      const region = await Region.findByIdAndDeleteByUser(user, id, {})
+      if (!region) {
+        throw new ApolloError('Document not found')
+      }
       return region
     },
   },
@@ -94,18 +97,18 @@ export interface RegionLoaders {
 }
 
 export const loaders: RegionLoaders = {
-  regions: async (ids, models) => {
+  regions: async (ids, models, user) => {
     const {Region} = models
-    const regions = await Region.find({_id: ids})
+    const regions = await Region.findByUser(user, {_id: ids})
     return ids.map(id => {
       const region = regions.find((region: any) => region._id.toString() === id.toString())
-      if (!region) throw new Error('Document not found')
+      if (!region) return null
       return region
     })
   },
-  farmsOfRegion: async (ids, models) => {
+  farmsOfRegion: async (ids, models, user) => {
     const {Farm} = models
-    const farms = await Farm.find({region: ids})
+    const farms = await Farm.findByUser(user, {region: ids})
     return ids.map(id => {
       return farms.filter((farm: any) => farm.region.toString() === id.toString())
     })

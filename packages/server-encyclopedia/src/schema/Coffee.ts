@@ -1,4 +1,5 @@
-import {gql, AuthenticationError} from 'apollo-server-express'
+import mongoose from 'mongoose'
+import {gql, ApolloError, ForbiddenError} from 'apollo-server-express'
 import {createConnectionResults, LoaderFn, hasScopes} from '@luminate/graphql-utils'
 import {Resolvers} from '../types'
 import {CoffeeDocument, VarietyDocument} from '@luminate/mongo'
@@ -50,10 +51,16 @@ const typeDefs = gql`
     getCoffee(id: ID!): Coffee
   }
 
+  enum PermissionTypeEnum {
+    read
+    write
+  }
+
   extend type Mutation {
     createCoffee(input: CreateCoffeeInput!): Coffee
     updateCoffee(id: ID!, input: UpdateCoffeeInput!): Coffee
     deleteCoffee(id: ID!): Coffee
+    updateCoffeePermissionsForAccount(coffeeId: ID!, accountId: ID!, permissionTypes: [PermissionTypeEnum!]!): Boolean
   }
 `
 
@@ -63,7 +70,7 @@ const resolvers: Resolvers = {
       // const isAuthorized = hasScopes(user, ['read: Coffee'])
       // if (!isAuthorized) throw new Error('Not authorized!')
       const {Coffee} = models
-      const results = await createConnectionResults({args, model: Coffee})
+      const results = await createConnectionResults({user, args, model: Coffee})
       return results
     },
     getCoffee: async (parent, {id}, {loaders}, info) => {
@@ -72,20 +79,31 @@ const resolvers: Resolvers = {
     },
   },
   Mutation: {
-    createCoffee: async (parent, {input}, {models}) => {
+    createCoffee: async (parent, {input}, {models, user}) => {
       const {Coffee} = models
-      const coffee = await new Coffee(input).save()
+      const coffee = await Coffee.createByUser(user, input)
       return coffee
     },
-    updateCoffee: async (parent, {id, input}, {models}) => {
+    updateCoffee: async (parent, {id, input}, {models, user}) => {
       const {Coffee} = models
-      const coffee = await Coffee.findByIdAndUpdate(id, input, {new: true})
+      const coffee = await Coffee.findByIdAndUpdateByUser(user, id, input, {new: true})
+      if (!coffee) {
+        throw new ForbiddenError('Not authorized!')
+      }
       return coffee
     },
-    deleteCoffee: async (parent, {id}, {models}) => {
+    deleteCoffee: async (parent, {id}, {models, user}) => {
       const {Coffee} = models
-      const coffee = await Coffee.findByIdAndDelete(id)
+      const coffee = await Coffee.findByIdAndDeleteByUser(user, id, {})
+      if (!coffee) {
+        throw new ApolloError('Document not found')
+      }
       return coffee
+    },
+    updateCoffeePermissionsForAccount: async (parent, {coffeeId, accountId, permissionTypes}, {models, user}) => {
+      const {Coffee} = models
+      const coffee = await Coffee.updateEntityPermissionsForAccountByUser(user, coffeeId, accountId, permissionTypes)
+      return !!coffee
     },
   },
   Coffee: {
@@ -94,10 +112,6 @@ const resolvers: Resolvers = {
       return coffees.load(object.id)
     },
     country: async (parent, args, {loaders, user}) => {
-      await hasScopes(user, ['read: Coffee']).catch((err: Error) => {
-        throw err
-      })
-
       const {countries} = loaders
       if (!parent.country) return null
       return countries.load(parent.country)
@@ -108,35 +122,25 @@ const resolvers: Resolvers = {
       return regions.load(parent.region)
     },
     varieties: async (parent, args, {models, loaders}) => {
-      const {varietiesOfCoffee} = loaders
+      const {varieties} = loaders
       if (!parent.varieties) return null
-      return Promise.all(parent.varieties.map(id => varietiesOfCoffee.load(id)))
+      return (await Promise.all(parent.varieties.map(id => varieties.load(id)))).filter(Boolean)
     },
   },
 }
 
 export interface CoffeeLoaders {
   coffees: LoaderFn<CoffeeDocument>
-  varietiesOfCoffee: LoaderFn<VarietyDocument>
 }
 
 export const loaders: CoffeeLoaders = {
-  coffees: async (ids, models) => {
+  coffees: async (ids, models, user) => {
     const {Coffee} = models
-    const coffees = await Coffee.find({_id: ids})
+    const coffees = await Coffee.findByUser(user, {_id: ids})
     return ids.map(id => {
       const coffee = coffees.find(coffee => coffee._id.toString() === id.toString())
-      if (!coffee) throw new Error('Document not found')
+      if (!coffee) return null
       return coffee
-    })
-  },
-  varietiesOfCoffee: async (ids, models) => {
-    const {Variety} = models
-    const varieties = await Variety.find({_id: ids})
-    return ids.map(id => {
-      const variety = varieties.find(variety => variety._id.toString() === id.toString())
-      if (!variety) throw new Error('Document not found')
-      return variety
     })
   },
 }

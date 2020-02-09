@@ -1,0 +1,71 @@
+query ListCoffees {
+  listCoffees {
+    edges {
+      node {
+        id
+        name
+      }
+    }
+  }
+}
+
+query ListCoffeesTable {
+  listCoffees {
+    edges {
+      node {
+        id
+        name
+        country {
+          id
+          name
+        }
+        createdAt
+        updatedAt
+      }
+    }
+  }
+}
+
+query GetCoffee($id: ID!) {
+  getCoffee(id: $id) {
+    ...CoffeeFragment
+  }
+}
+
+mutation CreateCoffee($input: CreateCoffeeInput!) {
+  createCoffee(input: $input) {
+    ...CoffeeFragment
+  }
+}
+
+mutation UpdateCoffee($id: ID!, $input: UpdateCoffeeInput!) {
+  updateCoffee(id: $id, input: $input) {
+    ...CoffeeFragment
+  }
+}
+
+mutation DeleteCoffee($id: ID!) {
+  deleteCoffee(id: $id) {
+    id
+  }
+}
+
+fragment CoffeeFragment on Coffee {
+  id
+  name
+  country {
+    id
+    name
+  }
+  region {
+    id
+    name
+  }
+  varieties {
+    id
+    name
+  }
+  elevation
+  createdAt
+  updatedAt
+}

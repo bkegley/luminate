@@ -1,8 +1,12 @@
 import {BatchLoadFn, default as Dataloader} from 'dataloader'
 import mongoose from 'mongoose'
-import {models as dbModels} from '@luminate/mongo'
+import {models as dbModels, AuthenticatedUserDocument} from '@luminate/mongo'
 
-export type LoaderFn<T> = (ids: string[], models: typeof dbModels) => ReturnType<BatchLoadFn<string, T>>
+export type LoaderFn<T> = (
+  ids: string[],
+  models: typeof dbModels,
+  user: AuthenticatedUserDocument | null,
+) => ReturnType<BatchLoadFn<string, T | null | undefined>>
 
 type ExtractGraphQLType<L> = L extends LoaderFn<infer T> ? T : never
 
@@ -11,6 +15,7 @@ export type LoaderContext<L> = {
 }
 
 export {createConnectionResults, DocumentWithTimestamps} from './createConnectionResults'
+export {createPublicConnectionResults} from './createPublicConnectionResults'
 export {createCursorHash, parseCursorHash} from './cursor'
 export {parseArgs, queryInputMap} from './parseArgs'
 export {createToken, hasRole, hasScopes, parseToken, parseUserFromRequest} from './auth'

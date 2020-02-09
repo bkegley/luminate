@@ -1,0 +1,55 @@
+query ListFarms {
+  listFarms {
+    edges {
+      node {
+        id
+        name
+      }
+    }
+  }
+}
+
+query GetFarm($id: ID!) {
+  getFarm(id: $id) {
+    ...FarmFragment
+  }
+}
+
+mutation CreateFarm($input: CreateFarmInput!) {
+  createFarm(input: $input) {
+    ...FarmFragment
+  }
+}
+
+mutation UpdateFarm($id: ID!, $input: UpdateFarmInput!) {
+  updateFarm(id: $id, input: $input) {
+    ...FarmFragment
+  }
+}
+
+mutation DeleteFarm($id: ID!) {
+  deleteFarm(id: $id) {
+    id
+  }
+}
+
+fragment FarmFragment on Farm {
+  id
+  name
+  country {
+    id
+    name
+  }
+  region {
+    id
+    name
+  }
+  farmZones {
+    id
+    name
+    createdAt
+    updatedAt
+  }
+  createdAt
+  updatedAt
+}

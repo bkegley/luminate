@@ -1,12 +1,17 @@
+import mongoose from 'mongoose'
 import {AuthenticationError, ForbiddenError} from 'apollo-server-express'
 import jwt from 'jsonwebtoken'
 import express from 'express'
-import {UserDocument, UserWithScopesDocument, RoleDocument} from '@luminate/mongo'
+import {AuthenticatedUserDocument, RoleDocument} from '@luminate/mongo'
 
-const createToken = (userId: string, secret: string) => {
+const createToken = (
+  {userId, accountId}: {userId: string | mongoose.Types.ObjectId; accountId?: mongoose.Types.ObjectId},
+  secret: string,
+) => {
   const token = jwt.sign(
     {
       userId,
+      accountId,
     },
     secret,
     {expiresIn: '1d'},
@@ -15,7 +20,8 @@ const createToken = (userId: string, secret: string) => {
 }
 
 interface Token {
-  userId: string
+  userId: string | mongoose.Types.ObjectId
+  accountId?: mongoose.Types.ObjectId
   iat: string
   exp: string
 }
@@ -25,13 +31,13 @@ const parseToken = (token: string, secret: string) => {
   return data as Token
 }
 
-const parseUserFromRequest = (request: express.Request): UserDocument | null => {
+const parseUserFromRequest = (request: express.Request): AuthenticatedUserDocument | null => {
   const authHeader = (request.headers['x-auth-user'] as string) || null
   const user = authHeader ? JSON.parse(Buffer.from(authHeader, 'base64').toString('utf-8')) : null
   return user
 }
 
-const hasRole = (user: UserWithScopesDocument | null, roleName: string) => {
+const hasRole = (user: AuthenticatedUserDocument | null, roleName: string) => {
   return new Promise((resolve, reject) => {
     if (!user) {
       reject(new AuthenticationError('Please authenticate'))
@@ -47,7 +53,7 @@ const hasRole = (user: UserWithScopesDocument | null, roleName: string) => {
   })
 }
 
-const hasScopes = (user: UserWithScopesDocument | null, requiredScopes: string[]) => {
+const hasScopes = (user: AuthenticatedUserDocument | null, requiredScopes: string[]) => {
   return new Promise((resolve, reject) => {
     if (!user) {
       reject(new AuthenticationError('Please authenticate'))

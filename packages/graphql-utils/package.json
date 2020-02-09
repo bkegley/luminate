@@ -17,6 +17,7 @@
     "apollo-server-express": "^2.9.13",
     "dataloader": "^2.0.0",
     "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.8.1",
     "uuid": "^3.3.3"
   },
   "devDependencies": {
