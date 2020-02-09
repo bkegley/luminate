@@ -81,6 +81,8 @@ const startServer = async () => {
   ]
 
   console.log(JSON.stringify(serviceList))
+  const ip = await fetch('ifconfig.me').then(res => res)
+  console.log({ip})
 
   const gateway = new ApolloGateway({
     serviceList: [
