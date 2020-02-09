@@ -12,6 +12,7 @@ import {parseToken} from '@luminate/graphql-utils'
 import cookieParser from 'cookie-parser'
 import express from 'express'
 const app = express()
+import fetch from 'cross-fetch'
 
 app.use(cookieParser())
 
