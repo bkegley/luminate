@@ -14,7 +14,7 @@ const theme: Theme = {
   buttons,
   fonts: {
     body: 'Lato',
-    heading: 'Roboto',
+    heading: 'Inter',
   },
   fontWeights: {
     body: 400,
