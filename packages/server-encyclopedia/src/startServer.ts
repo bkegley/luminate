@@ -20,21 +20,6 @@ export interface Context {
 
 const startServer = async () => {
   await createMongoConnection(process.env.MONGO_URL)
-  // configure cors
-  const whitelist = [`http://localhost:${PORT}`, 'http://localhost:8000']
-
-  const corsOptions: CorsOptions = {
-    origin: (origin, callback) => {
-      if (!origin) return callback(null, true)
-      // allow cors from deployment branches in netlify
-      const originSplitForStaging = origin.split('--')
-      const parsedOrigin = originSplitForStaging.length > 1 ? `https://${originSplitForStaging[1]}` : origin
-      if (whitelist.includes(parsedOrigin)) return callback(null, true)
-
-      callback(new Error('Request rejected by CORS'))
-    },
-    credentials: true,
-  }
 
   const server = new ApolloServer({
     schema: buildFederatedSchema(schemas),
@@ -71,8 +56,6 @@ const startServer = async () => {
     //     },
   })
 
-  app.get('/', (req, res) => res.send('Hello from server-encyclopedia'))
-  // server.applyMiddleware({app, cors: corsOptions})
   server.applyMiddleware({app, cors: true})
 
   app.listen({port: PORT}, () => console.log(`🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`))
