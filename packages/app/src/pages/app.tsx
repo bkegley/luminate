@@ -15,7 +15,9 @@ const AppPage = () => {
   const {data, logout} = useUser()
 
   if (!data) {
-    navigate('/login')
+    if (typeof window !== 'undefined') {
+      navigate('/login')
+    }
     return null
   }
 

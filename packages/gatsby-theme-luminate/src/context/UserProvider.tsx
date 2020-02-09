@@ -32,7 +32,19 @@ interface IUserContext {
   logout: () => void
 }
 
-export const UserContext = React.createContext<IUserContext | undefined>(undefined)
+// add initial context for gatsby builds
+const initialContext = {
+  data: null,
+  hydrateMeta: {},
+  loginMeta: {},
+  logoutMeta: {},
+  login: () => {},
+  logout: () => {},
+}
+
+export const UserContext = React.createContext<IUserContext | undefined>(
+  typeof window !== 'undefined' ? undefined : ((initialContext as unknown) as IUserContext),
+)
 
 interface Props {
   children: React.ReactNode
