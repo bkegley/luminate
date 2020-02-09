@@ -12,7 +12,6 @@ import {parseToken} from '@luminate/graphql-utils'
 import cookieParser from 'cookie-parser'
 import express from 'express'
 const app = express()
-import fetch from 'cross-fetch'
 
 app.use(cookieParser())
 
@@ -74,19 +73,6 @@ const startServer = async () => {
         return 'http://localhost'
     }
   }
-
-  const serviceList = [
-    {name: 'auth', url: `${buildHostname(NODE_ENV)}:3003/graphql`},
-    {name: 'encyclopedia', url: `${buildHostname(NODE_ENV)}:3001/graphql`},
-    {name: 'sensory-eval', url: `${buildHostname(NODE_ENV)}:3002/graphql`},
-  ]
-
-  console.log(JSON.stringify(serviceList))
-  const ip = fetch('ifconfig.me').then(res => {
-    console.log({res})
-    return res
-  })
-  console.log({ip})
 
   const gateway = new ApolloGateway({
     serviceList: [
