@@ -24,7 +24,6 @@ const startServer = async () => {
   const server = new ApolloServer({
     schema: buildFederatedSchema(schemas),
     context: ({req, res}) => {
-      console.log(JSON.stringify(req))
       const user = parseUserFromRequest(req)
       const loaders: Loaders = Object.keys(loadersObject).reduce((acc, loaderName) => {
         return {
