@@ -74,6 +74,14 @@ const startServer = async () => {
     }
   }
 
+  const serviceList = [
+    {name: 'auth', url: `${buildHostname(NODE_ENV)}:3003/graphql`},
+    {name: 'encyclopedia', url: `${buildHostname(NODE_ENV)}:3001/graphql`},
+    {name: 'sensory-eval', url: `${buildHostname(NODE_ENV)}:3002/graphql`},
+  ]
+
+  console.log(JSON.stringify(serviceList))
+
   const gateway = new ApolloGateway({
     serviceList: [
       {name: 'auth', url: `${buildHostname(NODE_ENV)}:3003/graphql`},
