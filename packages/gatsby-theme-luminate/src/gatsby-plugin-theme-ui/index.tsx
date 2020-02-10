@@ -5,7 +5,6 @@ import colors from './colors'
 import buttons from './buttons'
 
 const cardDefaults = {
-  overflow: 'hidden',
   bg: 'background',
 }
 
@@ -56,6 +55,32 @@ const theme: Theme = {
     root: {
       m: 0,
       p: 0,
+    },
+  },
+  text: {
+    dataLabel: {
+      fontSize: 0,
+      textTransform: 'uppercase',
+      letterSpacing: '0.05rem',
+    },
+  },
+  links: {
+    text: {
+      color: 'primary',
+      '&:hover': {
+        textDecoration: 'underline',
+      },
+    },
+    nav: {
+      color: 'greys.5',
+      textDecoration: 'none',
+      textTransform: 'uppercase',
+      '&.active': {
+        color: 'primary',
+      },
+      '&:hover': {
+        color: 'secondary',
+      },
     },
   },
   cards: {

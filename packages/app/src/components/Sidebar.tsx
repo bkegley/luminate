@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import {jsx, Flex, Box, Button} from 'theme-ui'
 import {Link} from 'react-router-dom'
-import {useLogout} from '@luminate/gatsby-theme-luminate/src'
+import {useLogout, StyledLink} from '@luminate/gatsby-theme-luminate/src'
 import {Book} from 'react-feather'
 
 const Sidebar = () => {
@@ -19,13 +19,19 @@ const Sidebar = () => {
         pt: 6,
       }}
     >
-      <Link to="/app/coffees">
-        <Book sx={{color: 'primary', height: '1rem'}} />
+      <StyledLink to="/app/coffees" variant="links.nav">
+        <Book sx={{height: '1rem'}} />
         Coffees
-      </Link>
-      <Link to="/app/countries">Countries</Link>
-      <Link to="/app/regions">Regions</Link>
-      <Link to="/app/farms">Farms</Link>
+      </StyledLink>
+      <StyledLink to="/app/countries" variant="links.nav">
+        Countries
+      </StyledLink>
+      <StyledLink to="/app/regions" variant="links.nav">
+        Regions
+      </StyledLink>
+      <StyledLink to="/app/farms" variant="links.nav">
+        Farms
+      </StyledLink>
       <Box>
         <Button type="button" variant="text" onClick={handleLogoutClick}>
           Logout
