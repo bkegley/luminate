@@ -6,8 +6,6 @@ import {Combobox} from '@luminate/gatsby-theme-luminate/src'
 import {
   useCreateRegionMutation,
   useListCountriesQuery,
-  useListRegionsQuery,
-  OperatorEnum,
   CreateRegionMutation,
   ListRegionsDocument,
   CreateRegionInput,
@@ -80,7 +78,7 @@ const RegionCreateForm = ({
         setSubmitting(false)
       }}
     >
-      {({dirty, setFieldValue}) => {
+      {({dirty, setFieldValue, values}) => {
         return (
           <Form>
             <Card variant={isModal ? 'blank' : 'primary'} sx={{p: 3}}>
@@ -107,6 +105,11 @@ const RegionCreateForm = ({
               ) : null}
             </Card>
             <Flex sx={{justifyContent: 'flex-end', mt: 4, px: 3}}>
+              <Box sx={{order: 1}}>
+                <Button type="submit" variant="primary">
+                  Submit
+                </Button>
+              </Box>
               {onCancel ? (
                 <Box sx={{mr: 3}}>
                   <Button type="button" variant="text" onClick={() => onCancel(dirty)}>
@@ -114,11 +117,6 @@ const RegionCreateForm = ({
                   </Button>
                 </Box>
               ) : null}
-              <Box>
-                <Button type="submit" variant="primary">
-                  Submit
-                </Button>
-              </Box>
             </Flex>
           </Form>
         )
