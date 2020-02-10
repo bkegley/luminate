@@ -70,6 +70,11 @@ const CountryCreateForm = ({
               ) : null}
             </Card>
             <Flex sx={{justifyContent: 'flex-end', mt: 4, px: 3}}>
+              <Box sx={{order: 1}}>
+                <Button type="submit" variant="primary">
+                  Submit
+                </Button>
+              </Box>
               {onCancel ? (
                 <Box sx={{mr: 3}}>
                   <Button type="button" variant="text" onClick={() => onCancel(dirty)}>
@@ -77,11 +82,6 @@ const CountryCreateForm = ({
                   </Button>
                 </Box>
               ) : null}
-              <Box>
-                <Button type="submit" variant="primary">
-                  Submit
-                </Button>
-              </Box>
             </Flex>
           </Form>
         )
