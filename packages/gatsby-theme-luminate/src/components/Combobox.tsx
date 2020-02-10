@@ -3,7 +3,7 @@ import {jsx} from 'theme-ui'
 import React from 'react'
 import {useCombobox, UseComboboxState} from 'downshift'
 import defaultStyles, {IStyles} from './styles'
-import {Box, Button, Label, Input} from 'theme-ui'
+import {Box, Button, Label, Input, Spinner} from 'theme-ui'
 import DownArrow from './DownArrow'
 
 interface IItem {
@@ -17,7 +17,8 @@ export interface ComboboxProps {
   label: React.ReactNode
   onChange?: (values: Partial<UseComboboxState<IItem>>) => void
   onCreateNew?: (values: Partial<UseComboboxState<IItem>>) => void
-  options: IItem[]
+  options?: IItem[]
+  loading?: boolean
   styles?: IStyles
 }
 
@@ -28,11 +29,12 @@ const Combobox = ({
   label,
   onChange,
   onCreateNew,
+  loading,
   styles = defaultStyles,
 }: ComboboxProps) => {
   const itemToString = (option: IItem | null) => (option ? option.name : '')
   const createNewOptions: IItem[] = onCreateNew ? [{name: '-- Create New --', value: '__createNew'}] : []
-  const initialOptions = createNewOptions.concat(options)
+  const initialOptions = options ? createNewOptions.concat(options) : createNewOptions
 
   const [inputOptions, setInputOptions] = React.useState(initialOptions)
 
@@ -102,22 +104,28 @@ const Combobox = ({
       {isOpen ? (
         <ul sx={styles.menu} {...getMenuProps()}>
           {children}
-          {inputOptions.map((option, index) => {
-            return (
-              <li
-                key={`${option.value}-${index}`}
-                sx={Object.assign(
-                  {},
-                  styles.item,
-                  highlightedIndex === index ? styles.highlighted : null,
-                  selectedItem?.value === option.value ? styles.selected : null,
-                )}
-                {...getItemProps({item: option, index})}
-              >
-                {option.name}
-              </li>
-            )
-          })}
+          {loading ? (
+            <Box sx={{textAlign: 'center', py: 4}}>
+              <Spinner strokeWidth={2} />
+            </Box>
+          ) : (
+            inputOptions.map((option, index) => {
+              return (
+                <li
+                  key={`${option.value}-${index}`}
+                  sx={Object.assign(
+                    {},
+                    styles.item,
+                    highlightedIndex === index ? styles.highlighted : null,
+                    selectedItem?.value === option.value ? styles.selected : null,
+                  )}
+                  {...getItemProps({item: option, index})}
+                >
+                  {option.name}
+                </li>
+              )
+            })
+          )}
         </ul>
       ) : null}
     </Box>
