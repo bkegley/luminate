@@ -1105,6 +1105,64 @@ export type LoginMutation = {__typename: 'Mutation'} & {
   login: Maybe<{__typename: 'User'} & Pick<User, 'id' | 'username' | 'firstName' | 'lastName'>>
 }
 
+export type ListVarietiesQueryVariables = {}
+
+export type ListVarietiesQuery = {__typename: 'Query'} & {
+  listVarieties: {__typename: 'VarietyConnection'} & {
+    edges: Array<{__typename: 'VarietyEdge'} & {node: Maybe<{__typename: 'Variety'} & Pick<Variety, 'id' | 'name'>>}>
+  }
+}
+
+export type ListVarietiesTableQueryVariables = {}
+
+export type ListVarietiesTableQuery = {__typename: 'Query'} & {
+  listVarieties: {__typename: 'VarietyConnection'} & {
+    edges: Array<
+      {__typename: 'VarietyEdge'} & {
+        node: Maybe<{__typename: 'Variety'} & Pick<Variety, 'id' | 'name' | 'createdAt' | 'updatedAt'>>
+      }
+    >
+  }
+}
+
+export type GetVarietyQueryVariables = {
+  id: Scalars['ID']
+}
+
+export type GetVarietyQuery = {__typename: 'Query'} & {
+  getVariety: Maybe<{__typename: 'Variety'} & VarietyFragmentFragment>
+}
+
+export type CreateVarietyMutationVariables = {
+  input: CreateVarietyInput
+}
+
+export type CreateVarietyMutation = {__typename: 'Mutation'} & {
+  createVariety: Maybe<{__typename: 'Variety'} & VarietyFragmentFragment>
+}
+
+export type UpdateVarietyMutationVariables = {
+  id: Scalars['ID']
+  input: UpdateVarietyInput
+}
+
+export type UpdateVarietyMutation = {__typename: 'Mutation'} & {
+  updateVariety: Maybe<{__typename: 'Variety'} & VarietyFragmentFragment>
+}
+
+export type DeleteVarietyMutationVariables = {
+  id: Scalars['ID']
+}
+
+export type DeleteVarietyMutation = {__typename: 'Mutation'} & {
+  deleteVariety: Maybe<{__typename: 'Variety'} & Pick<Variety, 'id'>>
+}
+
+export type VarietyFragmentFragment = {__typename: 'Variety'} & Pick<
+  Variety,
+  'id' | 'name' | 'background' | 'createdAt' | 'updatedAt'
+> & {coffees: Maybe<Array<Maybe<{__typename: 'Coffee'} & Pick<Coffee, 'id' | 'name'>>>>}
+
 export const CoffeeFragmentFragmentDoc = gql`
   fragment CoffeeFragment on Coffee {
     id
@@ -1170,6 +1228,19 @@ export const RegionFragmentFragmentDoc = gql`
     }
     farms {
       id
+    }
+    createdAt
+    updatedAt
+  }
+`
+export const VarietyFragmentFragmentDoc = gql`
+  fragment VarietyFragment on Variety {
+    id
+    name
+    background
+    coffees {
+      id
+      name
     }
     createdAt
     updatedAt
@@ -2304,3 +2375,269 @@ export function useLoginMutation(
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>
 export type LoginMutationResult = ApolloReactCommon.MutationResult<LoginMutation>
 export type LoginMutationOptions = ApolloReactCommon.BaseMutationOptions<LoginMutation, LoginMutationVariables>
+export const ListVarietiesDocument = gql`
+  query ListVarieties {
+    listVarieties {
+      edges {
+        node {
+          id
+          name
+        }
+      }
+    }
+  }
+`
+
+/**
+ * __useListVarietiesQuery__
+ *
+ * To run a query within a React component, call `useListVarietiesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListVarietiesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useListVarietiesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useListVarietiesQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<ListVarietiesQuery, ListVarietiesQueryVariables>,
+) {
+  return ApolloReactHooks.useQuery<ListVarietiesQuery, ListVarietiesQueryVariables>(ListVarietiesDocument, baseOptions)
+}
+export function useListVarietiesLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ListVarietiesQuery, ListVarietiesQueryVariables>,
+) {
+  return ApolloReactHooks.useLazyQuery<ListVarietiesQuery, ListVarietiesQueryVariables>(
+    ListVarietiesDocument,
+    baseOptions,
+  )
+}
+export type ListVarietiesQueryHookResult = ReturnType<typeof useListVarietiesQuery>
+export type ListVarietiesLazyQueryHookResult = ReturnType<typeof useListVarietiesLazyQuery>
+export type ListVarietiesQueryResult = ApolloReactCommon.QueryResult<ListVarietiesQuery, ListVarietiesQueryVariables>
+export const ListVarietiesTableDocument = gql`
+  query ListVarietiesTable {
+    listVarieties {
+      edges {
+        node {
+          id
+          name
+          createdAt
+          updatedAt
+        }
+      }
+    }
+  }
+`
+
+/**
+ * __useListVarietiesTableQuery__
+ *
+ * To run a query within a React component, call `useListVarietiesTableQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListVarietiesTableQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useListVarietiesTableQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useListVarietiesTableQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<ListVarietiesTableQuery, ListVarietiesTableQueryVariables>,
+) {
+  return ApolloReactHooks.useQuery<ListVarietiesTableQuery, ListVarietiesTableQueryVariables>(
+    ListVarietiesTableDocument,
+    baseOptions,
+  )
+}
+export function useListVarietiesTableLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ListVarietiesTableQuery, ListVarietiesTableQueryVariables>,
+) {
+  return ApolloReactHooks.useLazyQuery<ListVarietiesTableQuery, ListVarietiesTableQueryVariables>(
+    ListVarietiesTableDocument,
+    baseOptions,
+  )
+}
+export type ListVarietiesTableQueryHookResult = ReturnType<typeof useListVarietiesTableQuery>
+export type ListVarietiesTableLazyQueryHookResult = ReturnType<typeof useListVarietiesTableLazyQuery>
+export type ListVarietiesTableQueryResult = ApolloReactCommon.QueryResult<
+  ListVarietiesTableQuery,
+  ListVarietiesTableQueryVariables
+>
+export const GetVarietyDocument = gql`
+  query GetVariety($id: ID!) {
+    getVariety(id: $id) {
+      ...VarietyFragment
+    }
+  }
+  ${VarietyFragmentFragmentDoc}
+`
+
+/**
+ * __useGetVarietyQuery__
+ *
+ * To run a query within a React component, call `useGetVarietyQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetVarietyQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetVarietyQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetVarietyQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<GetVarietyQuery, GetVarietyQueryVariables>,
+) {
+  return ApolloReactHooks.useQuery<GetVarietyQuery, GetVarietyQueryVariables>(GetVarietyDocument, baseOptions)
+}
+export function useGetVarietyLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetVarietyQuery, GetVarietyQueryVariables>,
+) {
+  return ApolloReactHooks.useLazyQuery<GetVarietyQuery, GetVarietyQueryVariables>(GetVarietyDocument, baseOptions)
+}
+export type GetVarietyQueryHookResult = ReturnType<typeof useGetVarietyQuery>
+export type GetVarietyLazyQueryHookResult = ReturnType<typeof useGetVarietyLazyQuery>
+export type GetVarietyQueryResult = ApolloReactCommon.QueryResult<GetVarietyQuery, GetVarietyQueryVariables>
+export const CreateVarietyDocument = gql`
+  mutation CreateVariety($input: CreateVarietyInput!) {
+    createVariety(input: $input) {
+      ...VarietyFragment
+    }
+  }
+  ${VarietyFragmentFragmentDoc}
+`
+export type CreateVarietyMutationFn = ApolloReactCommon.MutationFunction<
+  CreateVarietyMutation,
+  CreateVarietyMutationVariables
+>
+
+/**
+ * __useCreateVarietyMutation__
+ *
+ * To run a mutation, you first call `useCreateVarietyMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateVarietyMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createVarietyMutation, { data, loading, error }] = useCreateVarietyMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateVarietyMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<CreateVarietyMutation, CreateVarietyMutationVariables>,
+) {
+  return ApolloReactHooks.useMutation<CreateVarietyMutation, CreateVarietyMutationVariables>(
+    CreateVarietyDocument,
+    baseOptions,
+  )
+}
+export type CreateVarietyMutationHookResult = ReturnType<typeof useCreateVarietyMutation>
+export type CreateVarietyMutationResult = ApolloReactCommon.MutationResult<CreateVarietyMutation>
+export type CreateVarietyMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  CreateVarietyMutation,
+  CreateVarietyMutationVariables
+>
+export const UpdateVarietyDocument = gql`
+  mutation UpdateVariety($id: ID!, $input: UpdateVarietyInput!) {
+    updateVariety(id: $id, input: $input) {
+      ...VarietyFragment
+    }
+  }
+  ${VarietyFragmentFragmentDoc}
+`
+export type UpdateVarietyMutationFn = ApolloReactCommon.MutationFunction<
+  UpdateVarietyMutation,
+  UpdateVarietyMutationVariables
+>
+
+/**
+ * __useUpdateVarietyMutation__
+ *
+ * To run a mutation, you first call `useUpdateVarietyMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateVarietyMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateVarietyMutation, { data, loading, error }] = useUpdateVarietyMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateVarietyMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateVarietyMutation, UpdateVarietyMutationVariables>,
+) {
+  return ApolloReactHooks.useMutation<UpdateVarietyMutation, UpdateVarietyMutationVariables>(
+    UpdateVarietyDocument,
+    baseOptions,
+  )
+}
+export type UpdateVarietyMutationHookResult = ReturnType<typeof useUpdateVarietyMutation>
+export type UpdateVarietyMutationResult = ApolloReactCommon.MutationResult<UpdateVarietyMutation>
+export type UpdateVarietyMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  UpdateVarietyMutation,
+  UpdateVarietyMutationVariables
+>
+export const DeleteVarietyDocument = gql`
+  mutation DeleteVariety($id: ID!) {
+    deleteVariety(id: $id) {
+      id
+    }
+  }
+`
+export type DeleteVarietyMutationFn = ApolloReactCommon.MutationFunction<
+  DeleteVarietyMutation,
+  DeleteVarietyMutationVariables
+>
+
+/**
+ * __useDeleteVarietyMutation__
+ *
+ * To run a mutation, you first call `useDeleteVarietyMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteVarietyMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteVarietyMutation, { data, loading, error }] = useDeleteVarietyMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteVarietyMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteVarietyMutation, DeleteVarietyMutationVariables>,
+) {
+  return ApolloReactHooks.useMutation<DeleteVarietyMutation, DeleteVarietyMutationVariables>(
+    DeleteVarietyDocument,
+    baseOptions,
+  )
+}
+export type DeleteVarietyMutationHookResult = ReturnType<typeof useDeleteVarietyMutation>
+export type DeleteVarietyMutationResult = ApolloReactCommon.MutationResult<DeleteVarietyMutation>
+export type DeleteVarietyMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  DeleteVarietyMutation,
+  DeleteVarietyMutationVariables
+>

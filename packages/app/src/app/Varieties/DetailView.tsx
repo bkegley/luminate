@@ -1,10 +1,10 @@
 /** @jsx jsx */
 import React from 'react'
 import {jsx, Flex, Box, Card, Button, Heading, Text, Image} from 'theme-ui'
-import {useGetCountryQuery} from '../../graphql'
+import {useGetVarietyQuery} from '../../graphql'
 import {Drawer, StyledLink} from '@luminate/gatsby-theme-luminate/src'
 import {RouteComponentProps} from 'react-router-dom'
-import CountryUpdateForm from './UpdateForm'
+import VarietyUpdateForm from './UpdateForm'
 
 interface Params {
   id: string
@@ -12,13 +12,13 @@ interface Params {
 
 interface Props extends RouteComponentProps<Params> {}
 
-const CountryDetailView = ({match}: Props) => {
-  const [showUpdateCountry, setShowUpdateCountry] = React.useState(false)
-  const toggleUpdateForm = () => setShowUpdateCountry(old => !old)
+const VarietyDetailView = ({match}: Props) => {
+  const [showUpdateVariety, setShowUpdateVariety] = React.useState(false)
+  const toggleUpdateForm = () => setShowUpdateVariety(old => !old)
   const {
     params: {id},
   } = match
-  const {data, error, loading} = useGetCountryQuery({variables: {id}})
+  const {data, error, loading} = useGetVarietyQuery({variables: {id}})
 
   if (error) {
     return <div>Error!</div>
@@ -28,17 +28,15 @@ const CountryDetailView = ({match}: Props) => {
     return <div>Loading...</div>
   }
 
-  if (!data || !data.getCountry) {
+  if (!data || !data.getVariety) {
     return null
   }
-
-  console.log({data})
 
   return (
     <Box>
       <Flex sx={{justifyContent: 'space-between', mb: 4}}>
         <Box>
-          <Heading as="h1">{data.getCountry?.name}</Heading>
+          <Heading as="h1">{data.getVariety?.name}</Heading>
         </Box>
         <Box>
           <Button onClick={toggleUpdateForm} variant="text">
@@ -49,26 +47,23 @@ const CountryDetailView = ({match}: Props) => {
       <Flex sx={{mb: 4}}>
         <Flex sx={{flexDirection: 'column', flex: 2, mr: 4}}>
           <Card>
-            <Image
-              src="https://picsum.photos/800/400"
-              sx={{borderTopRightRadius: 'medium', borderTopLeftRadius: 'medium'}}
-            />
+            <Image src="https://picsum.photos/800/400" />
             <Box sx={{p: 4}}>
               <Text variant="dataLabel">Information Section</Text>
-              <Text>This is some information about the country</Text>
+              <Text>This is some information about the variety</Text>
             </Box>
           </Card>
         </Flex>
         <Flex sx={{flexDirection: 'column', flex: 1}}>
           <Card sx={{p: 4, mb: 3, bg: 'greys.0'}}>
             <Box>
-              <Text variant="dataLabel">Regions</Text>
-              {data.getCountry.regions
-                ? data.getCountry.regions.map(region => {
+              <Text variant="dataLabel">Coffees</Text>
+              {data.getVariety?.coffees
+                ? data.getVariety?.coffees.map(coffee => {
                     return (
                       <Box>
-                        <StyledLink to={`/app/regions/${region?.id}`} variant="links.text">
-                          {region?.name}
+                        <StyledLink to={`/app/regions/${coffee?.id}`} variant="links.text">
+                          {coffee?.name}
                         </StyledLink>
                       </Box>
                     )
@@ -118,16 +113,16 @@ const CountryDetailView = ({match}: Props) => {
       <Drawer
         from="right"
         onClickOutside={toggleUpdateForm}
-        open={showUpdateCountry}
+        open={showUpdateVariety}
         bg="white"
         width={['90%', '75%', '50%']}
       >
         <Box sx={{p: 4}}>
-          <CountryUpdateForm country={data.getCountry} isModal />
+          <VarietyUpdateForm variety={data.getVariety} isModal />
         </Box>
       </Drawer>
     </Box>
   )
 }
 
-export default CountryDetailView
+export default VarietyDetailView

@@ -1,0 +1,59 @@
+query ListVarieties {
+  listVarieties {
+    edges {
+      node {
+        id
+        name
+      }
+    }
+  }
+}
+
+query ListVarietiesTable {
+  listVarieties {
+    edges {
+      node {
+        id
+        name
+        createdAt
+        updatedAt
+      }
+    }
+  }
+}
+
+query GetVariety($id: ID!) {
+  getVariety(id: $id) {
+    ...VarietyFragment
+  }
+}
+
+mutation CreateVariety($input: CreateVarietyInput!) {
+  createVariety(input: $input) {
+    ...VarietyFragment
+  }
+}
+
+mutation UpdateVariety($id: ID!, $input: UpdateVarietyInput!) {
+  updateVariety(id: $id, input: $input) {
+    ...VarietyFragment
+  }
+}
+
+mutation DeleteVariety($id: ID!) {
+  deleteVariety(id: $id) {
+    id
+  }
+}
+
+fragment VarietyFragment on Variety {
+  id
+  name
+  background
+  coffees {
+    id
+    name
+  }
+  createdAt
+  updatedAt
+}
