@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import {jsx, Flex, Box, Heading, Button, Field as ThemeField} from 'theme-ui'
+import {jsx, Flex, Box, Card, Heading, Button, Field as ThemeField} from 'theme-ui'
 import React from 'react'
 import {Formik, Form, Field} from 'formik'
 import {Combobox} from '@luminate/gatsby-theme-luminate/src'
@@ -12,26 +12,37 @@ import {
   ListCoffeesDocument,
   CreateCoffeeInput,
 } from '../../graphql'
-import {useHistory, useRouteMatch} from 'react-router-dom'
+import {useHistory} from 'react-router-dom'
 
 interface CoffeeCreateFormProps {
+  title?: React.ReactNode
+  isModal?: boolean
   fields?: Array<keyof CreateCoffeeInput>
+  initialValues?: Partial<CreateCoffeeInput>
   /* Add functionality when entity successfully creates - default is to redirect to detail view*/
   onCreateSuccess?: (data: CreateCoffeeMutation) => void
   /* Add functionality when entity fails to create */
   onCreateError?: (err: any) => void
+  onCancel?: (dirty: boolean) => void
 }
 
-const CoffeeCreateForm = ({fields, onCreateSuccess, onCreateError}: CoffeeCreateFormProps) => {
+const CoffeeCreateForm = ({
+  title,
+  isModal,
+  fields,
+  initialValues,
+  onCreateSuccess,
+  onCreateError,
+  onCancel,
+}: CoffeeCreateFormProps) => {
   const history = useHistory()
-  const {url} = useRouteMatch()
   const [createCoffee, {data, error, loading}] = useCreateCoffeeMutation({
     refetchQueries: [{query: ListCoffeesDocument}],
     onCompleted: data => {
       if (onCreateSuccess) {
         onCreateSuccess(data)
       } else {
-        history.push(`${url}/${data.createCoffee?.id}`)
+        history.push(`/app/coffees/${data.createCoffee?.id}`)
       }
     },
     onError: err => {
@@ -64,6 +75,7 @@ const CoffeeCreateForm = ({fields, onCreateSuccess, onCreateError}: CoffeeCreate
         name: '',
         country: '',
         region: '',
+        ...initialValues,
       }}
       onSubmit={async (values, {setSubmitting}) => {
         await createCoffee({
@@ -78,60 +90,65 @@ const CoffeeCreateForm = ({fields, onCreateSuccess, onCreateError}: CoffeeCreate
         setSubmitting(false)
       }}
     >
-      {({setFieldValue, values}) => {
+      {({dirty, setFieldValue, values}) => {
         return (
           <Form>
-            <Flex sx={{flexDirection: 'column'}}>
-              <Box>
-                <Heading>Create a Coffee</Heading>
-              </Box>
+            <Card variant={isModal ? 'blank' : 'primary'} sx={{p: 3}}>
+              {title ? <Heading>{title}</Heading> : null}
               {!fields || fields.includes('name') ? (
-                <Box>
+                <Box sx={{mb: 3}}>
                   <Field name="name" label="Name" as={ThemeField} />
                 </Box>
               ) : null}
               {!fields || fields.includes('country') ? (
-                <Box>
-                  {countryData ? (
-                    <Combobox
-                      label="Country"
-                      // @ts-ignore
-                      options={countryOptions}
-                      // @ts-ignore
-                      initialSelectedItem={countryOptions?.find(option => option.value === values.country)}
-                      onChange={value => {
-                        if (value.selectedItem) {
-                          if (value.selectedItem.value !== values.country) {
-                            setFieldValue('region', '')
-                          }
-                          regionRefetch({
-                            query: [
-                              {field: 'country', operator: 'eq' as OperatorEnum, value: value.selectedItem.value},
-                            ],
-                          })
+                <Box sx={{mb: 3}}>
+                  <Combobox
+                    label="Country"
+                    // @ts-ignore
+                    options={countryOptions}
+                    // @ts-ignore
+                    initialSelectedItem={countryOptions?.find(option => option.value === values.country)}
+                    loading={countryLoading}
+                    onChange={value => {
+                      if (value.selectedItem) {
+                        if (value.selectedItem.value !== values.country) {
+                          setFieldValue('region', '')
                         }
-                        setFieldValue('country', value.selectedItem?.value)
-                      }}
-                    />
-                  ) : null}
+                        regionRefetch({
+                          query: [{field: 'country', operator: 'eq' as OperatorEnum, value: value.selectedItem.value}],
+                        })
+                      }
+                      setFieldValue('country', value.selectedItem?.value)
+                    }}
+                  />
                 </Box>
               ) : null}
               {!fields || fields.includes('region') ? (
-                <Box>
-                  {regionData ? (
-                    <Combobox
-                      label="Region"
-                      // @ts-ignore
-                      options={regionOptions}
-                      // @ts-ignore
-                      initialSelectedItem={regionOptions?.find(option => option.value === values.region)}
-                      onChange={value => setFieldValue('region', value.selectedItem?.value)}
-                    />
-                  ) : null}
+                <Box sx={{mb: 3}}>
+                  <Combobox
+                    label="Region"
+                    // @ts-ignore
+                    options={regionOptions}
+                    // @ts-ignore
+                    initialSelectedItem={regionOptions?.find(option => option.value === values.region)}
+                    loading={regionLoading}
+                    onChange={value => setFieldValue('region', value.selectedItem?.value)}
+                  />
+                </Box>
+              ) : null}
+            </Card>
+            <Flex sx={{justifyContent: 'flex-end', mt: 4, px: 3}}>
+              {onCancel ? (
+                <Box sx={{mr: 3}}>
+                  <Button type="button" variant="text" onClick={() => onCancel(dirty)}>
+                    Cancel
+                  </Button>
                 </Box>
               ) : null}
               <Box>
-                <Button type="submit">Submit</Button>
+                <Button type="submit" variant="primary">
+                  Submit
+                </Button>
               </Box>
             </Flex>
           </Form>
