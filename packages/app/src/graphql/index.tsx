@@ -978,6 +978,22 @@ export type ListFarmsQuery = {__typename: 'Query'} & {
   }
 }
 
+export type ListFarmsTableQueryVariables = {}
+
+export type ListFarmsTableQuery = {__typename: 'Query'} & {
+  listFarms: {__typename: 'FarmConnection'} & {
+    edges: Array<
+      {__typename: 'FarmEdge'} & {
+        node: Maybe<
+          {__typename: 'Farm'} & Pick<Farm, 'id' | 'name' | 'createdAt' | 'updatedAt'> & {
+              country: Maybe<{__typename: 'Country'} & Pick<Country, 'id' | 'name'>>
+            }
+        >
+      }
+    >
+  }
+}
+
 export type GetFarmQueryVariables = {
   id: Scalars['ID']
 }
@@ -1022,6 +1038,22 @@ export type ListRegionsQueryVariables = {
 export type ListRegionsQuery = {__typename: 'Query'} & {
   listRegions: {__typename: 'RegionConnection'} & {
     edges: Array<{__typename: 'RegionEdge'} & {node: Maybe<{__typename: 'Region'} & Pick<Region, 'id' | 'name'>>}>
+  }
+}
+
+export type ListRegionsTableQueryVariables = {}
+
+export type ListRegionsTableQuery = {__typename: 'Query'} & {
+  listRegions: {__typename: 'RegionConnection'} & {
+    edges: Array<
+      {__typename: 'RegionEdge'} & {
+        node: Maybe<
+          {__typename: 'Region'} & Pick<Region, 'id' | 'name' | 'createdAt' | 'updatedAt'> & {
+              country: Maybe<{__typename: 'Country'} & Pick<Country, 'id' | 'name'>>
+            }
+        >
+      }
+    >
   }
 }
 
@@ -1761,6 +1793,59 @@ export function useListFarmsLazyQuery(
 export type ListFarmsQueryHookResult = ReturnType<typeof useListFarmsQuery>
 export type ListFarmsLazyQueryHookResult = ReturnType<typeof useListFarmsLazyQuery>
 export type ListFarmsQueryResult = ApolloReactCommon.QueryResult<ListFarmsQuery, ListFarmsQueryVariables>
+export const ListFarmsTableDocument = gql`
+  query ListFarmsTable {
+    listFarms {
+      edges {
+        node {
+          id
+          name
+          country {
+            id
+            name
+          }
+          createdAt
+          updatedAt
+        }
+      }
+    }
+  }
+`
+
+/**
+ * __useListFarmsTableQuery__
+ *
+ * To run a query within a React component, call `useListFarmsTableQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListFarmsTableQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useListFarmsTableQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useListFarmsTableQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<ListFarmsTableQuery, ListFarmsTableQueryVariables>,
+) {
+  return ApolloReactHooks.useQuery<ListFarmsTableQuery, ListFarmsTableQueryVariables>(
+    ListFarmsTableDocument,
+    baseOptions,
+  )
+}
+export function useListFarmsTableLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ListFarmsTableQuery, ListFarmsTableQueryVariables>,
+) {
+  return ApolloReactHooks.useLazyQuery<ListFarmsTableQuery, ListFarmsTableQueryVariables>(
+    ListFarmsTableDocument,
+    baseOptions,
+  )
+}
+export type ListFarmsTableQueryHookResult = ReturnType<typeof useListFarmsTableQuery>
+export type ListFarmsTableLazyQueryHookResult = ReturnType<typeof useListFarmsTableLazyQuery>
+export type ListFarmsTableQueryResult = ApolloReactCommon.QueryResult<ListFarmsTableQuery, ListFarmsTableQueryVariables>
 export const GetFarmDocument = gql`
   query GetFarm($id: ID!) {
     getFarm(id: $id) {
@@ -1955,6 +2040,62 @@ export function useListRegionsLazyQuery(
 export type ListRegionsQueryHookResult = ReturnType<typeof useListRegionsQuery>
 export type ListRegionsLazyQueryHookResult = ReturnType<typeof useListRegionsLazyQuery>
 export type ListRegionsQueryResult = ApolloReactCommon.QueryResult<ListRegionsQuery, ListRegionsQueryVariables>
+export const ListRegionsTableDocument = gql`
+  query ListRegionsTable {
+    listRegions {
+      edges {
+        node {
+          id
+          name
+          country {
+            id
+            name
+          }
+          createdAt
+          updatedAt
+        }
+      }
+    }
+  }
+`
+
+/**
+ * __useListRegionsTableQuery__
+ *
+ * To run a query within a React component, call `useListRegionsTableQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListRegionsTableQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useListRegionsTableQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useListRegionsTableQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<ListRegionsTableQuery, ListRegionsTableQueryVariables>,
+) {
+  return ApolloReactHooks.useQuery<ListRegionsTableQuery, ListRegionsTableQueryVariables>(
+    ListRegionsTableDocument,
+    baseOptions,
+  )
+}
+export function useListRegionsTableLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ListRegionsTableQuery, ListRegionsTableQueryVariables>,
+) {
+  return ApolloReactHooks.useLazyQuery<ListRegionsTableQuery, ListRegionsTableQueryVariables>(
+    ListRegionsTableDocument,
+    baseOptions,
+  )
+}
+export type ListRegionsTableQueryHookResult = ReturnType<typeof useListRegionsTableQuery>
+export type ListRegionsTableLazyQueryHookResult = ReturnType<typeof useListRegionsTableLazyQuery>
+export type ListRegionsTableQueryResult = ApolloReactCommon.QueryResult<
+  ListRegionsTableQuery,
+  ListRegionsTableQueryVariables
+>
 export const GetRegionDocument = gql`
   query GetRegion($id: ID!) {
     getRegion(id: $id) {

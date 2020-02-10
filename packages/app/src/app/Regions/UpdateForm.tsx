@@ -1,22 +1,26 @@
 /** @jsx jsx */
-import {jsx, Flex, Box, Field as ThemeField, Heading, Button} from 'theme-ui'
+import {jsx, Flex, Box, Card, Field as ThemeField, Heading, Button} from 'theme-ui'
 import React from 'react'
 import {Combobox} from '@luminate/gatsby-theme-luminate/src'
 import {
   useUpdateRegionMutation,
-  useListCountriesQuery,
-  Region,
-  UpdateRegionInput,
-  UpdateRegionMutation,
-  DeleteRegionMutation,
   useDeleteRegionMutation,
   ListRegionsDocument,
+  useListCountriesQuery,
+  useListRegionsQuery,
+  Region,
+  OperatorEnum,
+  UpdateRegionMutation,
+  DeleteRegionMutation,
+  UpdateRegionInput,
 } from '../../graphql'
 import {Formik, Form, Field} from 'formik'
 import {useHistory, useRouteMatch} from 'react-router-dom'
 
-interface CountryUpdateFormProps {
+interface RegionUpdateFormProps {
   region: Region
+  title?: React.ReactNode
+  isModal?: boolean
   fields?: Array<keyof UpdateRegionInput>
   /* Add functionality when entity successfully updates */
   onUpdateSuccess?: (data: UpdateRegionMutation) => void
@@ -30,12 +34,14 @@ interface CountryUpdateFormProps {
 
 const RegionUpdateForm = ({
   region,
+  title,
+  isModal,
   fields,
   onUpdateSuccess,
   onUpdateError,
   onDeleteSuccess,
   onDeleteError,
-}: CountryUpdateFormProps) => {
+}: RegionUpdateFormProps) => {
   const history = useHistory()
   const {path} = useRouteMatch()
   const [updateRegion, {data: updateData, error: updateError, loading: updateLoading}] = useUpdateRegionMutation({
@@ -53,6 +59,7 @@ const RegionUpdateForm = ({
   const [deleteRegion, {data: deleteData, error: deleteError, loading: deleteLoading}] = useDeleteRegionMutation({
     variables: {id: region.id},
     refetchQueries: [{query: ListRegionsDocument}],
+    awaitRefetchQueries: true,
     onCompleted: data => {
       if (onDeleteSuccess) {
         onDeleteSuccess(data)
@@ -68,7 +75,8 @@ const RegionUpdateForm = ({
   })
 
   const {data: countryData, error: countryError, loading: countryLoading} = useListCountriesQuery()
-  const options = countryData?.listCountries.edges.map(({node}) => {
+
+  const countryOptions = countryData?.listCountries.edges.map(({node}) => {
     return {
       name: node?.name,
       value: node?.id,
@@ -81,25 +89,24 @@ const RegionUpdateForm = ({
         name: region.name || '',
         country: region.country?.id || '',
       }}
-      onSubmit={(values, {setSubmitting}) => {
-        updateRegion({variables: {id: region.id, input: values}})
-          .then(res => {
-            console.log({res})
-            setSubmitting(false)
-          })
-          .catch(err => {
-            console.log({err})
-            setSubmitting(false)
-          })
+      onSubmit={async (values, {setSubmitting}) => {
+        await updateRegion({
+          variables: {
+            id: region.id,
+            input: {
+              ...values,
+              country: values.country.length ? values.country : null,
+            },
+          },
+        })
+        setSubmitting(false)
       }}
     >
-      {({setFieldValue}) => {
+      {({setFieldValue, values}) => {
         return (
           <Form>
-            <Flex sx={{flexDirection: 'column'}}>
-              <Box>
-                <Heading>{region.id}</Heading>
-              </Box>
+            <Card variant={isModal ? 'blank' : 'primary'} sx={{p: 3}}>
+              {title ? <Heading>{title}</Heading> : null}
               {!fields || fields.includes('name') ? (
                 <Box>
                   <Field name="name" label="Name" as={ThemeField} />
@@ -107,28 +114,29 @@ const RegionUpdateForm = ({
               ) : null}
               {!fields || fields.includes('country') ? (
                 <Box>
-                  {countryData ? (
-                    <Combobox
-                      label="Country"
-                      // @ts-ignore
-                      options={options}
-                      // @ts-ignore
-                      initialSelectedItem={options?.find(option => option.value === region.country?.id)}
-                      onChange={value => setFieldValue('country', value.selectedItem?.value)}
-                    />
-                  ) : null}
+                  <Combobox
+                    label="Country"
+                    // @ts-ignore
+                    options={countryOptions}
+                    // @ts-ignore
+                    initialSelectedItem={countryOptions?.find(option => option.value === values.country)}
+                    loading={countryLoading}
+                    onChange={value => {
+                      setFieldValue('country', value.selectedItem?.value)
+                    }}
+                  />
                 </Box>
               ) : null}
-              <Flex sx={{justifyContent: 'flex-end'}}>
-                <Box sx={{order: 1}}>
-                  <Button type="submit">Submit</Button>
-                </Box>
-                <Box sx={{mr: 2}}>
-                  <Button type="button" variant="buttons.text" onClick={() => deleteRegion()}>
-                    Delete
-                  </Button>
-                </Box>
-              </Flex>
+            </Card>
+            <Flex sx={{justifyContent: 'flex-end', mt: 4, px: 3}}>
+              <Box sx={{order: 1}}>
+                <Button type="submit">Submit</Button>
+              </Box>
+              <Box sx={{mr: 2}}>
+                <Button type="button" variant="buttons.text" onClick={() => deleteRegion()}>
+                  Delete
+                </Button>
+              </Box>
             </Flex>
           </Form>
         )

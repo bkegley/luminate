@@ -3,7 +3,7 @@ import React from 'react'
 import {jsx, Flex, Box, Card, Button, Heading, Text, Image} from 'theme-ui'
 import {useGetCoffeeQuery} from '../../graphql'
 import {Drawer, StyledLink} from '@luminate/gatsby-theme-luminate/src'
-import {Link, RouteComponentProps} from 'react-router-dom'
+import {RouteComponentProps} from 'react-router-dom'
 import CoffeeUpdateForm from './UpdateForm'
 
 interface Params {

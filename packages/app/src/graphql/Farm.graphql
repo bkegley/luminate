@@ -9,6 +9,23 @@ query ListFarms {
   }
 }
 
+query ListFarmsTable {
+  listFarms {
+    edges {
+      node {
+        id
+        name
+        country {
+          id
+          name
+        }
+        createdAt
+        updatedAt
+      }
+    }
+  }
+}
+
 query GetFarm($id: ID!) {
   getFarm(id: $id) {
     ...FarmFragment
