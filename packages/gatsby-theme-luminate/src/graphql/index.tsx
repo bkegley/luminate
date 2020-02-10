@@ -226,6 +226,9 @@ export type FarmZoneEdge = {
 
 export type Mutation = {
   __typename: 'Mutation'
+  createCupping?: Maybe<Cupping>
+  updateCupping?: Maybe<Cupping>
+  deleteCupping?: Maybe<Cupping>
   createAccount?: Maybe<Account>
   updateAccount?: Maybe<Account>
   deleteAccount?: Maybe<Account>
@@ -266,9 +269,19 @@ export type Mutation = {
   updateVariety?: Maybe<Variety>
   deleteVariety?: Maybe<Variety>
   makeVarietyPublic?: Maybe<Scalars['Boolean']>
-  createCupping?: Maybe<Cupping>
-  updateCupping?: Maybe<Cupping>
-  deleteCupping?: Maybe<Cupping>
+}
+
+export type MutationCreateCuppingArgs = {
+  input: CreateCuppingInput
+}
+
+export type MutationUpdateCuppingArgs = {
+  id: Scalars['ID']
+  input: UpdateCuppingInput
+}
+
+export type MutationDeleteCuppingArgs = {
+  id: Scalars['ID']
 }
 
 export type MutationCreateAccountArgs = {
@@ -444,19 +457,6 @@ export type MutationMakeVarietyPublicArgs = {
   id: Scalars['ID']
 }
 
-export type MutationCreateCuppingArgs = {
-  input: CreateCuppingInput
-}
-
-export type MutationUpdateCuppingArgs = {
-  id: Scalars['ID']
-  input: UpdateCuppingInput
-}
-
-export type MutationDeleteCuppingArgs = {
-  id: Scalars['ID']
-}
-
 export enum OperationEnum {
   Read = 'read',
   Write = 'write',
@@ -487,6 +487,8 @@ export enum PermissionTypeEnum {
 
 export type Query = {
   __typename: 'Query'
+  listCuppings: CuppingConnection
+  getCupping?: Maybe<Cupping>
   listAccounts: AccountConnection
   getAccount?: Maybe<Account>
   listRoles: RoleConnection
@@ -510,8 +512,16 @@ export type Query = {
   getRoast?: Maybe<Roast>
   listVarieties: VarietyConnection
   getVariety?: Maybe<Variety>
-  listCuppings: CuppingConnection
-  getCupping?: Maybe<Cupping>
+}
+
+export type QueryListCuppingsArgs = {
+  cursor?: Maybe<Scalars['String']>
+  limit?: Maybe<Scalars['Int']>
+  query?: Maybe<Array<Maybe<QueryInput>>>
+}
+
+export type QueryGetCuppingArgs = {
+  id: Scalars['ID']
 }
 
 export type QueryListAccountsArgs = {
@@ -621,16 +631,6 @@ export type QueryListVarietiesArgs = {
 }
 
 export type QueryGetVarietyArgs = {
-  id: Scalars['ID']
-}
-
-export type QueryListCuppingsArgs = {
-  cursor?: Maybe<Scalars['String']>
-  limit?: Maybe<Scalars['Int']>
-  query?: Maybe<Array<Maybe<QueryInput>>>
-}
-
-export type QueryGetCuppingArgs = {
   id: Scalars['ID']
 }
 

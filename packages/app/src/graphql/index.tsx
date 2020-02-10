@@ -226,6 +226,9 @@ export type FarmZoneEdge = {
 
 export type Mutation = {
   __typename: 'Mutation'
+  createCupping?: Maybe<Cupping>
+  updateCupping?: Maybe<Cupping>
+  deleteCupping?: Maybe<Cupping>
   createAccount?: Maybe<Account>
   updateAccount?: Maybe<Account>
   deleteAccount?: Maybe<Account>
@@ -266,9 +269,19 @@ export type Mutation = {
   updateVariety?: Maybe<Variety>
   deleteVariety?: Maybe<Variety>
   makeVarietyPublic?: Maybe<Scalars['Boolean']>
-  createCupping?: Maybe<Cupping>
-  updateCupping?: Maybe<Cupping>
-  deleteCupping?: Maybe<Cupping>
+}
+
+export type MutationCreateCuppingArgs = {
+  input: CreateCuppingInput
+}
+
+export type MutationUpdateCuppingArgs = {
+  id: Scalars['ID']
+  input: UpdateCuppingInput
+}
+
+export type MutationDeleteCuppingArgs = {
+  id: Scalars['ID']
 }
 
 export type MutationCreateAccountArgs = {
@@ -444,19 +457,6 @@ export type MutationMakeVarietyPublicArgs = {
   id: Scalars['ID']
 }
 
-export type MutationCreateCuppingArgs = {
-  input: CreateCuppingInput
-}
-
-export type MutationUpdateCuppingArgs = {
-  id: Scalars['ID']
-  input: UpdateCuppingInput
-}
-
-export type MutationDeleteCuppingArgs = {
-  id: Scalars['ID']
-}
-
 export enum OperationEnum {
   Read = 'read',
   Write = 'write',
@@ -487,6 +487,8 @@ export enum PermissionTypeEnum {
 
 export type Query = {
   __typename: 'Query'
+  listCuppings: CuppingConnection
+  getCupping?: Maybe<Cupping>
   listAccounts: AccountConnection
   getAccount?: Maybe<Account>
   listRoles: RoleConnection
@@ -510,8 +512,16 @@ export type Query = {
   getRoast?: Maybe<Roast>
   listVarieties: VarietyConnection
   getVariety?: Maybe<Variety>
-  listCuppings: CuppingConnection
-  getCupping?: Maybe<Cupping>
+}
+
+export type QueryListCuppingsArgs = {
+  cursor?: Maybe<Scalars['String']>
+  limit?: Maybe<Scalars['Int']>
+  query?: Maybe<Array<Maybe<QueryInput>>>
+}
+
+export type QueryGetCuppingArgs = {
+  id: Scalars['ID']
 }
 
 export type QueryListAccountsArgs = {
@@ -621,16 +631,6 @@ export type QueryListVarietiesArgs = {
 }
 
 export type QueryGetVarietyArgs = {
-  id: Scalars['ID']
-}
-
-export type QueryListCuppingsArgs = {
-  cursor?: Maybe<Scalars['String']>
-  limit?: Maybe<Scalars['Int']>
-  query?: Maybe<Array<Maybe<QueryInput>>>
-}
-
-export type QueryGetCuppingArgs = {
   id: Scalars['ID']
 }
 
@@ -917,6 +917,18 @@ export type ListCountriesQueryVariables = {}
 export type ListCountriesQuery = {__typename: 'Query'} & {
   listCountries: {__typename: 'CountryConnection'} & {
     edges: Array<{__typename: 'CountryEdge'} & {node: Maybe<{__typename: 'Country'} & Pick<Country, 'id' | 'name'>>}>
+  }
+}
+
+export type ListCountriesTableQueryVariables = {}
+
+export type ListCountriesTableQuery = {__typename: 'Query'} & {
+  listCountries: {__typename: 'CountryConnection'} & {
+    edges: Array<
+      {__typename: 'CountryEdge'} & {
+        node: Maybe<{__typename: 'Country'} & Pick<Country, 'id' | 'name' | 'createdAt' | 'updatedAt'>>
+      }
+    >
   }
 }
 
@@ -1486,6 +1498,58 @@ export function useListCountriesLazyQuery(
 export type ListCountriesQueryHookResult = ReturnType<typeof useListCountriesQuery>
 export type ListCountriesLazyQueryHookResult = ReturnType<typeof useListCountriesLazyQuery>
 export type ListCountriesQueryResult = ApolloReactCommon.QueryResult<ListCountriesQuery, ListCountriesQueryVariables>
+export const ListCountriesTableDocument = gql`
+  query ListCountriesTable {
+    listCountries {
+      edges {
+        node {
+          id
+          name
+          createdAt
+          updatedAt
+        }
+      }
+    }
+  }
+`
+
+/**
+ * __useListCountriesTableQuery__
+ *
+ * To run a query within a React component, call `useListCountriesTableQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListCountriesTableQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useListCountriesTableQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useListCountriesTableQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<ListCountriesTableQuery, ListCountriesTableQueryVariables>,
+) {
+  return ApolloReactHooks.useQuery<ListCountriesTableQuery, ListCountriesTableQueryVariables>(
+    ListCountriesTableDocument,
+    baseOptions,
+  )
+}
+export function useListCountriesTableLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ListCountriesTableQuery, ListCountriesTableQueryVariables>,
+) {
+  return ApolloReactHooks.useLazyQuery<ListCountriesTableQuery, ListCountriesTableQueryVariables>(
+    ListCountriesTableDocument,
+    baseOptions,
+  )
+}
+export type ListCountriesTableQueryHookResult = ReturnType<typeof useListCountriesTableQuery>
+export type ListCountriesTableLazyQueryHookResult = ReturnType<typeof useListCountriesTableLazyQuery>
+export type ListCountriesTableQueryResult = ApolloReactCommon.QueryResult<
+  ListCountriesTableQuery,
+  ListCountriesTableQueryVariables
+>
 export const GetCountryDocument = gql`
   query GetCountry($id: ID!) {
     getCountry(id: $id) {

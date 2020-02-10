@@ -1,28 +1,39 @@
 /** @jsx jsx */
-import {jsx, Flex, Box, Heading, Button, Field as ThemeField} from 'theme-ui'
+import {jsx, Flex, Box, Card, Heading, Button, Field as ThemeField} from 'theme-ui'
 import React from 'react'
 import {Formik, Form, Field} from 'formik'
-import {useCreateCountryMutation, CreateCountryInput, CreateCountryMutation, ListCountriesDocument} from '../../graphql'
-import {useHistory, useRouteMatch} from 'react-router-dom'
+import {useCreateCountryMutation, CreateCountryMutation, ListCountriesDocument, CreateCountryInput} from '../../graphql'
+import {useHistory} from 'react-router-dom'
 
 interface CountryCreateFormProps {
+  title?: React.ReactNode
+  isModal?: boolean
   fields?: Array<keyof CreateCountryInput>
+  initialValues?: Partial<CreateCountryInput>
   /* Add functionality when entity successfully creates - default is to redirect to detail view*/
   onCreateSuccess?: (data: CreateCountryMutation) => void
   /* Add functionality when entity fails to create */
   onCreateError?: (err: any) => void
+  onCancel?: (dirty: boolean) => void
 }
 
-const CountryCreateForm = ({fields, onCreateSuccess, onCreateError}: CountryCreateFormProps) => {
+const CountryCreateForm = ({
+  title,
+  isModal,
+  fields,
+  initialValues,
+  onCreateSuccess,
+  onCreateError,
+  onCancel,
+}: CountryCreateFormProps) => {
   const history = useHistory()
-  const {url} = useRouteMatch()
   const [createCountry, {data, error, loading}] = useCreateCountryMutation({
     refetchQueries: [{query: ListCountriesDocument}],
     onCompleted: data => {
       if (onCreateSuccess) {
         onCreateSuccess(data)
       } else {
-        history.push(`${url}/${data.createCountry?.id}`)
+        history.push(`/app/countries/${data.createCountry?.id}`)
       }
     },
     onError: err => {
@@ -36,6 +47,7 @@ const CountryCreateForm = ({fields, onCreateSuccess, onCreateError}: CountryCrea
     <Formik
       initialValues={{
         name: '',
+        ...initialValues,
       }}
       onSubmit={async (values, {setSubmitting}) => {
         await createCountry({
@@ -46,20 +58,29 @@ const CountryCreateForm = ({fields, onCreateSuccess, onCreateError}: CountryCrea
         setSubmitting(false)
       }}
     >
-      {() => {
+      {({dirty}) => {
         return (
           <Form>
-            <Flex sx={{flexDirection: 'column'}}>
-              <Box>
-                <Heading>Create a Country</Heading>
-              </Box>
+            <Card variant={isModal ? 'blank' : 'primary'} sx={{p: 3}}>
+              {title ? <Heading>{title}</Heading> : null}
               {!fields || fields.includes('name') ? (
-                <Box>
+                <Box sx={{mb: 3}}>
                   <Field name="name" label="Name" as={ThemeField} />
                 </Box>
               ) : null}
+            </Card>
+            <Flex sx={{justifyContent: 'flex-end', mt: 4, px: 3}}>
+              {onCancel ? (
+                <Box sx={{mr: 3}}>
+                  <Button type="button" variant="text" onClick={() => onCancel(dirty)}>
+                    Cancel
+                  </Button>
+                </Box>
+              ) : null}
               <Box>
-                <Button type="submit">Submit</Button>
+                <Button type="submit" variant="primary">
+                  Submit
+                </Button>
               </Box>
             </Flex>
           </Form>
