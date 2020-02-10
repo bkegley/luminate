@@ -8,7 +8,7 @@ import Header from '../components/AppHeader'
 import App from '../app'
 
 const AppPage = () => {
-  const {data, logout} = useUser()
+  const {data} = useUser()
 
   if (!data) {
     if (typeof window !== 'undefined') {
@@ -19,7 +19,7 @@ const AppPage = () => {
 
   return (
     <BrowserRouter>
-      <Layout header={<Header user={data} logout={logout} />} sidebar={<Sidebar />}>
+      <Layout header={<Header />} sidebar={<Sidebar />}>
         <Box sx={{pt: 6, px: 4, mb: 6}}>
           <App />
         </Box>

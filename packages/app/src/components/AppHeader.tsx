@@ -1,13 +1,16 @@
 /** @jsx jsx */
-import {jsx, Flex, Box, Input, Avatar, Heading} from 'theme-ui'
-import {UserFragmentFragment} from '@luminate/gatsby-theme-luminate/src'
+import {jsx, Flex, Box, Button, Card, Input, Avatar, Heading} from 'theme-ui'
+import React from 'react'
+import {Menu, MenuSeparator, StyledLink, useUser} from '@luminate/gatsby-theme-luminate/src'
 
-interface HeaderProps {
-  user: UserFragmentFragment | null
-  logout: () => void
-}
+interface HeaderProps {}
 
 const Header = ({}: HeaderProps) => {
+  const {user, logout, logoutMeta} = useUser()
+  const {client} = logoutMeta
+  const handleLogoutClick = () => {
+    client?.clearStore().then(() => logout())
+  }
   return (
     <Box
       sx={{
@@ -46,7 +49,29 @@ const Header = ({}: HeaderProps) => {
             <Input sx={{bg: 'white', maxWidth: 400, mx: 'auto'}} />
           </Box>
           <Box sx={{flex: 1, textAlign: 'end'}}>
-            <Avatar src="https://picsum.photos/48/48" />
+            <Menu
+              as={Card}
+              sx={{display: 'flex', flexDirection: 'column', alignItems: 'flex-start', mt: 2, pt: 2}}
+              button={<Avatar src="https://picsum.photos/48/48" />}
+            >
+              {menu => {
+                return (
+                  <React.Fragment>
+                    <Box sx={{my: 1, mx: 3, fontSize: 0}}>
+                      <StyledLink {...menu} to="/app/account" variant="links.nav">
+                        Account
+                      </StyledLink>
+                    </Box>
+                    <MenuSeparator {...menu} sx={{width: '100%', borderTopColor: 'greys.0', borderWidth: '0.5px'}} />
+                    <Box sx={{my: 1, mx: 3}}>
+                      <Button type="button" onClick={handleLogoutClick} variant="text" sx={{fontSize: 0}}>
+                        Log Out
+                      </Button>
+                    </Box>
+                  </React.Fragment>
+                )
+              }}
+            </Menu>
           </Box>
         </Flex>
       </Flex>
