@@ -1,21 +1,22 @@
 /** @jsx jsx */
-import {jsx, Flex, Box, Field as ThemeField, Heading, Button} from 'theme-ui'
+import {jsx, Flex, Box, Card, Field as ThemeField, Heading, Button} from 'theme-ui'
 import React from 'react'
-import {Select, Combobox} from '@luminate/gatsby-theme-luminate/src'
 import {
   useUpdateCountryMutation,
   useDeleteCountryMutation,
   ListCountriesDocument,
   Country,
-  UpdateCountryInput,
   UpdateCountryMutation,
   DeleteCountryMutation,
+  UpdateCountryInput,
 } from '../../graphql'
 import {Formik, Form, Field} from 'formik'
 import {useHistory, useRouteMatch} from 'react-router-dom'
 
 interface CountryUpdateFormProps {
   country: Country
+  title?: React.ReactNode
+  isModal?: boolean
   fields?: Array<keyof UpdateCountryInput>
   /* Add functionality when entity successfully updates */
   onUpdateSuccess?: (data: UpdateCountryMutation) => void
@@ -28,8 +29,10 @@ interface CountryUpdateFormProps {
 }
 
 const CountryUpdateForm = ({
-  fields,
   country,
+  title,
+  isModal,
+  fields,
   onUpdateSuccess,
   onUpdateError,
   onDeleteSuccess,
@@ -73,32 +76,35 @@ const CountryUpdateForm = ({
         name: country.name || '',
       }}
       onSubmit={async (values, {setSubmitting}) => {
-        await updateCountry({variables: {id: country.id, input: values}})
+        await updateCountry({
+          variables: {
+            id: country.id,
+            input: values,
+          },
+        })
         setSubmitting(false)
       }}
     >
       {() => {
         return (
           <Form>
-            <Flex sx={{flexDirection: 'column'}}>
-              <Box>
-                <Heading>{country.id}</Heading>
-              </Box>
+            <Card variant={isModal ? 'blank' : 'primary'} sx={{p: 3}}>
+              {title ? <Heading>{title}</Heading> : null}
               {!fields || fields.includes('name') ? (
                 <Box>
                   <Field name="name" label="Name" as={ThemeField} />
                 </Box>
               ) : null}
-              <Flex sx={{justifyContent: 'flex-end'}}>
-                <Box sx={{order: 1}}>
-                  <Button type="submit">Submit</Button>
-                </Box>
-                <Box sx={{mr: 2}}>
-                  <Button type="button" variant="buttons.text" onClick={() => deleteCountry()}>
-                    Delete
-                  </Button>
-                </Box>
-              </Flex>
+            </Card>
+            <Flex sx={{justifyContent: 'flex-end', mt: 4, px: 3}}>
+              <Box sx={{order: 1}}>
+                <Button type="submit">Submit</Button>
+              </Box>
+              <Box sx={{mr: 2}}>
+                <Button type="button" variant="buttons.text" onClick={() => deleteCountry()}>
+                  Delete
+                </Button>
+              </Box>
             </Flex>
           </Form>
         )

@@ -9,6 +9,19 @@ query ListCountries {
   }
 }
 
+query ListCountriesTable {
+  listCountries {
+    edges {
+      node {
+        id
+        name
+        createdAt
+        updatedAt
+      }
+    }
+  }
+}
+
 query GetCountry($id: ID!) {
   getCountry(id: $id) {
     ...CountryFragment
