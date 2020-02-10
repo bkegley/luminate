@@ -5,6 +5,7 @@ import Coffees from './Coffees'
 import Countries from './Countries'
 import Farms from './Farms'
 import Regions from './Regions'
+import Varieties from './Varieties'
 
 const AppRouter = () => {
   return (
@@ -23,6 +24,9 @@ const AppRouter = () => {
       </Route>
       <Route path="/app/farms">
         <Farms />
+      </Route>
+      <Route path="/app/varieties">
+        <Varieties />
       </Route>
     </Switch>
   )

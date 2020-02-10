@@ -27,6 +27,9 @@ const Sidebar = () => {
       <StyledLink to="/app/farms" variant="links.nav">
         Farms
       </StyledLink>
+      <StyledLink to="/app/varieties" variant="links.nav">
+        Varieties
+      </StyledLink>
     </Flex>
   )
 }
