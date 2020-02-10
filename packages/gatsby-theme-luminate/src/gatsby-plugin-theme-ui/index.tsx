@@ -1,14 +1,18 @@
-import {Theme} from 'theme-ui'
+import {Theme, SxStyleProp} from 'theme-ui'
 import {base} from '@theme-ui/presets'
 import merge from 'lodash.merge'
 import colors from './colors'
 import buttons from './buttons'
+import {ThemeVariants} from './variants'
 
 const cardDefaults = {
+  overflow: 'hidden',
   bg: 'background',
 }
 
-const theme: Theme = {
+interface LuminateTheme extends Theme, ThemeVariants {}
+
+const theme: LuminateTheme = {
   colors,
   buttons,
   fonts: {
