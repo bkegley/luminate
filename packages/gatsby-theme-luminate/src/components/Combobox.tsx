@@ -53,6 +53,7 @@ const Combobox = ({
     selectedItem,
     highlightedIndex,
     getItemProps,
+    inputValue,
     setInputValue,
   } = useCombobox({
     initialSelectedItem,
@@ -68,6 +69,9 @@ const Combobox = ({
       } else {
         setInputOptions(initialOptions)
       }
+      if (Array.isArray(initialOptions) && inputValue === '') {
+        setInputValue('')
+      }
     },
     itemToString,
     onSelectedItemChange: changes => {
@@ -76,6 +80,9 @@ const Combobox = ({
       }
       if (onChange && changes.selectedItem?.value !== '__createNew') {
         onChange(changes)
+      }
+      if (Array.isArray(initialOptions)) {
+        setInputValue('')
       }
     },
   })
