@@ -1,14 +1,9 @@
 /** @jsx jsx */
-import {jsx, Flex, Box, Button} from 'theme-ui'
-import {Link} from 'react-router-dom'
+import {jsx, Flex, Box} from 'theme-ui'
 import {useLogout, StyledLink} from '@luminate/gatsby-theme-luminate/src'
 import {Book} from 'react-feather'
 
 const Sidebar = () => {
-  const [logout, {client}] = useLogout()
-  const handleLogoutClick = () => {
-    client?.clearStore().then(() => logout())
-  }
   return (
     <Flex
       sx={{
@@ -32,11 +27,6 @@ const Sidebar = () => {
       <StyledLink to="/app/farms" variant="links.nav">
         Farms
       </StyledLink>
-      <Box>
-        <Button type="button" variant="text" onClick={handleLogoutClick}>
-          Logout
-        </Button>
-      </Box>
     </Flex>
   )
 }

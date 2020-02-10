@@ -2,6 +2,7 @@
 import {jsx, Flex, Box, Button, Card, Input, Avatar, Heading} from 'theme-ui'
 import React from 'react'
 import {Menu, MenuSeparator, StyledLink, useUser} from '@luminate/gatsby-theme-luminate/src'
+import {Link} from 'react-router-dom'
 
 interface HeaderProps {}
 
@@ -29,9 +30,11 @@ const Header = ({}: HeaderProps) => {
         }}
       >
         <Box sx={{flexGrow: 1, flexBasis: 'sidebar'}}>
-          <Heading as="h3" sx={{color: 'primary'}}>
-            Luminate
-          </Heading>
+          <StyledLink to="/app">
+            <Heading as="h3" sx={{color: 'primary'}}>
+              Luminate
+            </Heading>
+          </StyledLink>
         </Box>
 
         <Flex
