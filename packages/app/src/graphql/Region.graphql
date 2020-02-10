@@ -9,6 +9,23 @@ query ListRegions($cursor: String, $limit: Int, $query: [QueryInput]) {
   }
 }
 
+query ListRegionsTable {
+  listRegions {
+    edges {
+      node {
+        id
+        name
+        country {
+          id
+          name
+        }
+        createdAt
+        updatedAt
+      }
+    }
+  }
+}
+
 query GetRegion($id: ID!) {
   getRegion(id: $id) {
     ...RegionFragment
