@@ -1,17 +1,13 @@
 /** @jsx jsx */
 import {jsx, Flex, Box, Heading, Button, Card} from 'theme-ui'
-import React from 'react'
 import {useListCoffeesTableQuery} from '../../graphql'
 import {Link, RouteComponentProps} from 'react-router-dom'
-import {Drawer, Coffee, Tooltip} from '@luminate/gatsby-theme-luminate/src'
-import CreateCoffeeForm from './CreateForm'
+import {Coffee, Tooltip} from '@luminate/gatsby-theme-luminate/src'
 import {formatDistanceToNow, format} from 'date-fns'
 
 interface Props extends RouteComponentProps {}
 
-const ListCoffeesView = ({match}: Props) => {
-  const [showCreateForm, setShowCreateForm] = React.useState(false)
-  const toggleShowCreateForm = () => setShowCreateForm(old => !old)
+const ListCoffeesView = ({match, history}: Props) => {
   const {url} = match
   const {data, error, loading} = useListCoffeesTableQuery()
 
@@ -29,7 +25,9 @@ const ListCoffeesView = ({match}: Props) => {
           <Heading as="h1">Coffee</Heading>
         </Box>
         <Box>
-          <Button onClick={toggleShowCreateForm}>Create New</Button>
+          <Button as="a" onClick={() => history.push(`${url}/create`)}>
+            Create New
+          </Button>
         </Box>
       </Flex>
       <Card>
@@ -42,46 +40,7 @@ const ListCoffeesView = ({match}: Props) => {
             </div>
           )
         })}
-        {data.listCoffees.edges.map(({node}, index) => {
-          return (
-            <div key={node?.id}>
-              <Link to={`${url}/${node?.id}`} sx={{textDecoration: 'none', color: 'inherit'}}>
-                <CoffeeRow coffee={node} index={index} />
-              </Link>
-            </div>
-          )
-        })}
-        {data.listCoffees.edges.map(({node}, index) => {
-          return (
-            <div key={node?.id}>
-              <Link to={`${url}/${node?.id}`} sx={{textDecoration: 'none', color: 'inherit'}}>
-                <CoffeeRow coffee={node} index={index} />
-              </Link>
-            </div>
-          )
-        })}
-        {data.listCoffees.edges.map(({node}, index) => {
-          return (
-            <div key={node?.id}>
-              <Link to={`${url}/${node?.id}`} sx={{textDecoration: 'none', color: 'inherit'}}>
-                <CoffeeRow coffee={node} index={index} />
-              </Link>
-            </div>
-          )
-        })}
-        {data.listCoffees.edges.map(({node}, index) => {
-          return (
-            <div key={node?.id}>
-              <Link to={`${url}/${node?.id}`} sx={{textDecoration: 'none', color: 'inherit'}}>
-                <CoffeeRow coffee={node} index={index} />
-              </Link>
-            </div>
-          )
-        })}
       </Card>
-      <Drawer from="right" onClickOutside={toggleShowCreateForm} open={showCreateForm}>
-        <CreateCoffeeForm />
-      </Drawer>
     </Flex>
   )
 }

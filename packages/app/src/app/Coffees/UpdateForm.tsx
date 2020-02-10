@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import {jsx, Flex, Box, Field as ThemeField, Heading, Button} from 'theme-ui'
+import {jsx, Flex, Box, Card, Field as ThemeField, Heading, Button} from 'theme-ui'
 import React from 'react'
 import {Combobox} from '@luminate/gatsby-theme-luminate/src'
 import {
@@ -19,6 +19,8 @@ import {useHistory, useRouteMatch} from 'react-router-dom'
 
 interface CoffeeUpdateFormProps {
   coffee: Coffee
+  title?: React.ReactNode
+  isModal?: boolean
   fields?: Array<keyof UpdateCoffeeInput>
   /* Add functionality when entity successfully updates */
   onUpdateSuccess?: (data: UpdateCoffeeMutation) => void
@@ -32,6 +34,8 @@ interface CoffeeUpdateFormProps {
 
 const CoffeeUpdateForm = ({
   coffee,
+  title,
+  isModal,
   fields,
   onUpdateSuccess,
   onUpdateError,
@@ -113,10 +117,8 @@ const CoffeeUpdateForm = ({
       {({setFieldValue, values}) => {
         return (
           <Form>
-            <Flex sx={{flexDirection: 'column'}}>
-              <Box>
-                <Heading>{coffee.id}</Heading>
-              </Box>
+            <Card variant={isModal ? 'blank' : 'primary'} sx={{p: 3}}>
+              {title ? <Heading>{title}</Heading> : null}
               {!fields || fields.includes('name') ? (
                 <Box>
                   <Field name="name" label="Name" as={ThemeField} />
@@ -124,54 +126,50 @@ const CoffeeUpdateForm = ({
               ) : null}
               {!fields || fields.includes('country') ? (
                 <Box>
-                  {countryData ? (
-                    <Combobox
-                      label="Country"
-                      // @ts-ignore
-                      options={countryOptions}
-                      // @ts-ignore
-                      initialSelectedItem={countryOptions?.find(option => option.value === values.country)}
-                      onChange={value => {
-                        if (value.selectedItem) {
-                          if (value.selectedItem.value !== values.country) {
-                            setFieldValue('region', '')
-                          }
-                          regionRefetch({
-                            query: [
-                              {field: 'country', operator: 'eq' as OperatorEnum, value: value.selectedItem.value},
-                            ],
-                          })
+                  <Combobox
+                    label="Country"
+                    // @ts-ignore
+                    options={countryOptions}
+                    // @ts-ignore
+                    initialSelectedItem={countryOptions?.find(option => option.value === values.country)}
+                    loading={countryLoading}
+                    onChange={value => {
+                      if (value.selectedItem) {
+                        if (value.selectedItem.value !== values.country) {
+                          setFieldValue('region', '')
                         }
-                        setFieldValue('country', value.selectedItem?.value)
-                      }}
-                    />
-                  ) : null}
+                        regionRefetch({
+                          query: [{field: 'country', operator: 'eq' as OperatorEnum, value: value.selectedItem.value}],
+                        })
+                      }
+                      setFieldValue('country', value.selectedItem?.value)
+                    }}
+                  />
                 </Box>
               ) : null}
               {!fields || fields.includes('region') ? (
                 <Box>
-                  {regionData ? (
-                    <Combobox
-                      label="Region"
-                      // @ts-ignore
-                      options={regionOptions}
-                      // @ts-ignore
-                      initialSelectedItem={regionOptions?.find(option => option.value === values.region)}
-                      onChange={value => setFieldValue('region', value.selectedItem?.value)}
-                    />
-                  ) : null}
+                  <Combobox
+                    label="Region"
+                    // @ts-ignore
+                    options={regionOptions}
+                    // @ts-ignore
+                    initialSelectedItem={regionOptions?.find(option => option.value === values.region)}
+                    loading={regionLoading}
+                    onChange={value => setFieldValue('region', value.selectedItem?.value)}
+                  />
                 </Box>
               ) : null}
-              <Flex sx={{justifyContent: 'flex-end'}}>
-                <Box sx={{order: 1}}>
-                  <Button type="submit">Submit</Button>
-                </Box>
-                <Box sx={{mr: 2}}>
-                  <Button type="button" variant="buttons.text" onClick={() => deleteCoffee()}>
-                    Delete
-                  </Button>
-                </Box>
-              </Flex>
+            </Card>
+            <Flex sx={{justifyContent: 'flex-end', mt: 4, px: 3}}>
+              <Box sx={{order: 1}}>
+                <Button type="submit">Submit</Button>
+              </Box>
+              <Box sx={{mr: 2}}>
+                <Button type="button" variant="buttons.text" onClick={() => deleteCoffee()}>
+                  Delete
+                </Button>
+              </Box>
             </Flex>
           </Form>
         )
