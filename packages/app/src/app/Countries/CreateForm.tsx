@@ -61,7 +61,7 @@ const CountryCreateForm = ({
       {({dirty}) => {
         return (
           <Form>
-            <Card variant={isModal ? 'blank' : 'primary'} sx={{p: 3}}>
+            <Card variant={isModal ? 'blank' : 'primary'} sx={{p: 3, overflow: 'visible'}}>
               {title ? <Heading>{title}</Heading> : null}
               {!fields || fields.includes('name') ? (
                 <Box sx={{mb: 3}}>

@@ -104,7 +104,7 @@ const RegionCreateForm = ({
                 </Box>
               ) : null}
             </Card>
-            <Flex sx={{justifyContent: 'flex-end', mt: 4, px: 3}}>
+            <Flex sx={{justifyContent: 'flex-end', mt: 4, px: 3, overflow: 'visible'}}>
               <Box sx={{order: 1}}>
                 <Button type="submit" variant="primary">
                   Submit
