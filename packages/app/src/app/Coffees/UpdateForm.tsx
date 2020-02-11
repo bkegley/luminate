@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import {jsx, Flex, Box, Card, Field as ThemeField, Heading, Button} from 'theme-ui'
+import {jsx, Flex, Box, Badge, Card, Field as ThemeField, Heading, Button, Close} from 'theme-ui'
 import React from 'react'
 import {Combobox} from '@luminate/gatsby-theme-luminate/src'
 import {
@@ -13,9 +13,11 @@ import {
   UpdateCoffeeMutation,
   DeleteCoffeeMutation,
   UpdateCoffeeInput,
+  useListVarietiesQuery,
 } from '../../graphql'
 import {Formik, Form, Field} from 'formik'
 import {useHistory, useRouteMatch} from 'react-router-dom'
+import Tag from '../../components/Tag'
 
 interface CoffeeUpdateFormProps {
   coffee: Coffee
@@ -78,6 +80,7 @@ const CoffeeUpdateForm = ({
   const {data: regionData, error: regionError, loading: regionLoading, refetch: regionRefetch} = useListRegionsQuery({
     variables: {query: [{field: 'country', operator: 'eq' as OperatorEnum, value: coffee.country?.id}]},
   })
+  const {data: varietyData, error: varietyError, loading: varietyLoading} = useListVarietiesQuery()
 
   const countryOptions = countryData?.listCountries.edges.map(({node}) => {
     return {
@@ -99,6 +102,9 @@ const CoffeeUpdateForm = ({
         name: coffee.name || '',
         country: coffee.country?.id || '',
         region: coffee.region?.id || '',
+        varieties: coffee.varieties
+          ? coffee.varieties.map(variety => (variety ? {value: variety.id, name: variety.name} : null)).filter(Boolean)
+          : [],
       }}
       onSubmit={async (values, {setSubmitting}) => {
         await updateCoffee({
@@ -108,6 +114,7 @@ const CoffeeUpdateForm = ({
               ...values,
               country: values.country.length ? values.country : null,
               region: values.region.length ? values.region : null,
+              varieties: values.varieties.map(variety => (variety ? variety.value : null)).filter(Boolean),
             },
           },
         })
@@ -115,6 +122,15 @@ const CoffeeUpdateForm = ({
       }}
     >
       {({setFieldValue, values}) => {
+        const varietyOptions = varietyData?.listVarieties.edges
+          .filter(({node}) => !values.varieties.find(value => value && node && value.value === node.id))
+          .map(({node}) => {
+            return {
+              name: node?.name,
+              value: node?.id,
+            }
+          })
+
         return (
           <Form>
             <Card variant={isModal ? 'blank' : 'primary'} sx={{p: 3, overflow: 'visible'}}>
@@ -158,6 +174,41 @@ const CoffeeUpdateForm = ({
                     loading={regionLoading}
                     onChange={value => setFieldValue('region', value.selectedItem?.value)}
                   />
+                </Box>
+              ) : null}
+              {!fields || fields.includes('varieties') ? (
+                <Box>
+                  <Combobox
+                    label="Varieties"
+                    // @ts-ignore
+                    options={varietyOptions}
+                    // @ts-ignore
+                    initialSelectedItem={varietyOptions?.find(option => option.value === values.varieties)}
+                    loading={varietyLoading}
+                    onChange={value =>
+                      setFieldValue(
+                        'varieties',
+                        value.selectedItem ? values.varieties.concat(value.selectedItem) : values.varieties,
+                      )
+                    }
+                  />
+                  <Flex sx={{flexWrap: 'wrap', px: 2}}>
+                    {values.varieties.map(variety => {
+                      return (
+                        <Box key={variety?.value} sx={{m: 1}}>
+                          <Tag
+                            text={variety?.name || ''}
+                            onCloseClick={() =>
+                              setFieldValue(
+                                'varieties',
+                                values.varieties.filter(valueVariety => valueVariety?.value !== variety?.value),
+                              )
+                            }
+                          />
+                        </Box>
+                      )
+                    })}
+                  </Flex>
                 </Box>
               ) : null}
             </Card>
