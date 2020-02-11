@@ -59,12 +59,10 @@ const startServer = async () => {
 
   const corsOptions: CorsOptions = {
     origin: (origin, callback) => {
-      console.log({origin})
       if (!origin) return callback(null, true)
       // allow cors from deployment branches in netlify
       const originSplitForStaging = origin.split('--')
       const parsedOrigin = originSplitForStaging.length > 1 ? `https://${originSplitForStaging[1]}` : origin
-      console.log({parsedOrigin})
       if (whitelist.includes(parsedOrigin)) return callback(null, true)
 
       callback(new Error('Request rejected by CORS'))
@@ -163,11 +161,6 @@ const startServer = async () => {
   })
 
   server.applyMiddleware({app, cors: corsOptions})
-
-  app.get('/', (req, res) => {
-    console.log({req})
-    res.send('This is working!!')
-  })
 
   app.listen({port: PORT}, () => console.log(`🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`))
 }
