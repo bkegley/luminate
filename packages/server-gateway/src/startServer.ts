@@ -49,7 +49,6 @@ const startServer = async () => {
   await createMongoConnection(process.env.MONGO_URL)
   //configure cors
   const whitelist = [
-    `http://localhost:${PORT}`,
     'http://localhost:8000',
     'https://luminate.coffee',
     'http://api.luminate.coffee',
@@ -74,9 +73,9 @@ const startServer = async () => {
   const buildHostname = (env: string) => {
     switch (env.toLowerCase()) {
       case 'production':
-        return 'http://api.luminate.coffee'
+        return 'https://api.luminate.coffee'
       case 'staging':
-        return 'http://staging.api.luminate.coffee'
+        return 'https://staging.api.luminate.coffee'
       default:
         return 'http://localhost'
     }
