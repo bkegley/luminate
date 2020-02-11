@@ -74,9 +74,9 @@ const startServer = async () => {
   const buildHostname = (env: string) => {
     switch (env.toLowerCase()) {
       case 'production':
-        return 'https://api.luminate.coffee'
+        return 'http://api.luminate.coffee'
       case 'staging':
-        return 'https://staging.api.luminate.coffee'
+        return 'http://staging.api.luminate.coffee'
       default:
         return 'http://localhost'
     }
