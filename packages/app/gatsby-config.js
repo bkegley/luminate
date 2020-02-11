@@ -11,12 +11,6 @@ module.exports = {
         uri: process.env.API_URL || 'http://localhost:3000/graphql',
       },
     },
-    {
-      resolve: 'gatsby-plugin-create-client-paths',
-      options: {
-        prefixes: ['/app/*'],
-      },
-    },
     'gatsby-plugin-typescript',
   ],
 }

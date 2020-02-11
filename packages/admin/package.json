@@ -17,7 +17,6 @@
     "cross-fetch": "^3.0.4",
     "formik": "^2.1.1",
     "gatsby": "^2.18.17",
-    "gatsby-plugin-create-client-paths": "^2.1.20",
     "gatsby-plugin-typescript": "^2.1.23",
     "graphql-tag": "^2.10.1",
     "react": "^16.12.0",
