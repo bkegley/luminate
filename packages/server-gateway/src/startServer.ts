@@ -59,10 +59,12 @@ const startServer = async () => {
 
   const corsOptions: CorsOptions = {
     origin: (origin, callback) => {
+      console.log({origin})
       if (!origin) return callback(null, true)
       // allow cors from deployment branches in netlify
       const originSplitForStaging = origin.split('--')
       const parsedOrigin = originSplitForStaging.length > 1 ? `https://${originSplitForStaging[1]}` : origin
+      console.log({parsedOrigin})
       if (whitelist.includes(parsedOrigin)) return callback(null, true)
 
       callback(new Error('Request rejected by CORS'))
