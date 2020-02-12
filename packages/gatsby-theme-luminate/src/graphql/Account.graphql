@@ -1,0 +1,3 @@
+mutation SwitchAccount($accountId: ID!) {
+  switchAccount(accountId: $accountId)
+}

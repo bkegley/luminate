@@ -49,6 +49,7 @@ const startServer = async () => {
   await createMongoConnection(process.env.MONGO_URL)
   //configure cors
   const whitelist = [
+    `http://localhost:${PORT}`,
     'http://localhost:8000',
     'https://luminate.coffee',
     'http://api.luminate.coffee',
@@ -107,7 +108,6 @@ const startServer = async () => {
           token = parseToken(req.cookies.id, USER_AUTH_TOKEN)
           if (token) {
             user = (await models.User.findById(token.userId)
-              .populate({path: 'account'})
               .populate({path: 'accounts'})
               .populate({
                 path: 'roles.roles',

@@ -35,3 +35,15 @@ export const useLogout = () => {
 
   return [logout, logoutMeta] as const
 }
+
+export const useSwitchAccount = () => {
+  const context = React.useContext(UserContext)
+
+  if (!context) {
+    throw new Error('useSwitchAccount must be wrapped in a UserProvider')
+  }
+
+  const {switchAccount} = context
+
+  return switchAccount
+}

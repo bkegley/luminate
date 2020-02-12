@@ -5,7 +5,7 @@ import express from 'express'
 import {AuthenticatedUserDocument, RoleDocument} from '@luminate/mongo'
 
 const createToken = (
-  {userId, accountId}: {userId: string | mongoose.Types.ObjectId; accountId?: mongoose.Types.ObjectId},
+  {userId, accountId}: {userId: string | mongoose.Types.ObjectId; accountId?: string | mongoose.Types.ObjectId},
   secret: string,
 ) => {
   const token = jwt.sign(

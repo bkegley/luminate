@@ -1,6 +1,7 @@
 import React from 'react'
 import {Switch, Route} from 'react-router-dom'
 import Home from './Home'
+import Account from './Account'
 import Coffees from './Coffees'
 import Countries from './Countries'
 import Farms from './Farms'
@@ -12,6 +13,9 @@ const AppRouter = () => {
     <Switch>
       <Route exact path="/app">
         <Home />
+      </Route>
+      <Route path="/app/account">
+        <Account />
       </Route>
       <Route path="/app/coffees">
         <Coffees />
