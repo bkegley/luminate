@@ -233,6 +233,7 @@ export type Mutation = {
   updateAccount?: Maybe<Account>
   deleteAccount?: Maybe<Account>
   addUserToAccount?: Maybe<Scalars['Boolean']>
+  switchAccount?: Maybe<Scalars['Boolean']>
   createRole?: Maybe<Role>
   updateRole?: Maybe<Role>
   deleteRole?: Maybe<Role>
@@ -300,6 +301,10 @@ export type MutationDeleteAccountArgs = {
 export type MutationAddUserToAccountArgs = {
   accountId: Scalars['ID']
   userId: Scalars['ID']
+}
+
+export type MutationSwitchAccountArgs = {
+  accountId: Scalars['ID']
 }
 
 export type MutationCreateRoleArgs = {
@@ -801,6 +806,7 @@ export type User = {
   username?: Maybe<Scalars['String']>
   firstName?: Maybe<Scalars['String']>
   lastName?: Maybe<Scalars['String']>
+  account?: Maybe<Account>
   accounts?: Maybe<Array<Maybe<Account>>>
   roles?: Maybe<Array<Maybe<Role>>>
   scopes?: Maybe<Array<Maybe<Scope>>>

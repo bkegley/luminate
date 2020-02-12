@@ -12,6 +12,7 @@ const typeDefs = gql`
     username: String
     firstName: String
     lastName: String
+    account: Account
     accounts: [Account]
     roles: [Role]
     scopes: [Scope]
@@ -158,6 +159,13 @@ const resolvers: Resolvers = {
     },
   },
   User: {
+    account: (parent, args, {user}) => {
+      if (!user || !user.account) return null
+      return {
+        ...user.account,
+        id: user.account._id,
+      }
+    },
     accounts: async (parent, args, {loaders}) => {
       const {accounts} = loaders
       if (!parent.accounts) return null

@@ -19,6 +19,14 @@ fragment UserFragment on User {
   username
   firstName
   lastName
+  account {
+    id
+    name
+  }
+  accounts {
+    id
+    name
+  }
   roles {
     id
     name

@@ -63,6 +63,7 @@ export type Mutation = {
   updateAccount?: Maybe<Account>
   deleteAccount?: Maybe<Account>
   addUserToAccount?: Maybe<Scalars['Boolean']>
+  switchAccount?: Maybe<Scalars['Boolean']>
   createRole?: Maybe<Role>
   updateRole?: Maybe<Role>
   deleteRole?: Maybe<Role>
@@ -94,6 +95,10 @@ export type MutationDeleteAccountArgs = {
 export type MutationAddUserToAccountArgs = {
   accountId: Scalars['ID']
   userId: Scalars['ID']
+}
+
+export type MutationSwitchAccountArgs = {
+  accountId: Scalars['ID']
 }
 
 export type MutationCreateRoleArgs = {
@@ -308,6 +313,7 @@ export type User = {
   username?: Maybe<Scalars['String']>
   firstName?: Maybe<Scalars['String']>
   lastName?: Maybe<Scalars['String']>
+  account?: Maybe<Account>
   accounts?: Maybe<Array<Maybe<Account>>>
   roles?: Maybe<Array<Maybe<Role>>>
   scopes?: Maybe<Array<Maybe<Scope>>>
@@ -528,6 +534,7 @@ export type UserResolvers<
   username?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   firstName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   lastName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  account?: Resolver<Maybe<ResolversTypes['Account']>, ParentType, ContextType>
   accounts?: Resolver<Maybe<Array<Maybe<ResolversTypes['Account']>>>, ParentType, ContextType>
   roles?: Resolver<Maybe<Array<Maybe<ResolversTypes['Role']>>>, ParentType, ContextType>
   scopes?: Resolver<Maybe<Array<Maybe<ResolversTypes['Scope']>>>, ParentType, ContextType>
@@ -632,6 +639,12 @@ export type MutationResolvers<
     ParentType,
     ContextType,
     RequireFields<MutationAddUserToAccountArgs, 'accountId' | 'userId'>
+  >
+  switchAccount?: Resolver<
+    Maybe<ResolversTypes['Boolean']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationSwitchAccountArgs, 'accountId'>
   >
   createRole?: Resolver<
     Maybe<ResolversTypes['Role']>,

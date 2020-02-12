@@ -1,7 +1,9 @@
 import {gql, ApolloError} from 'apollo-server-express'
-import {createConnectionResults, LoaderFn} from '@luminate/graphql-utils'
+import {createConnectionResults, createToken, LoaderFn} from '@luminate/graphql-utils'
 import {Resolvers} from '../types'
 import {AccountDocument} from '@luminate/mongo'
+
+const USER_AUTH_TOKEN = process.env.USER_AUTH_TOKEN || 'localsecrettoken'
 
 const typeDefs = gql`
   type Account {
@@ -40,6 +42,7 @@ const typeDefs = gql`
     updateAccount(id: ID!, input: UpdateAccountInput!): Account
     deleteAccount(id: ID!): Account
     addUserToAccount(accountId: ID!, userId: ID!): Boolean
+    switchAccount(accountId: ID!): Boolean
   }
 `
 
@@ -87,6 +90,25 @@ const resolvers: Resolvers = {
       const {User} = models
       const updatedUser = await User.findByIdAndUpdateByUser(user, userId, {$push: {accounts: accountId}}, {new: true})
       return !!updatedUser
+    },
+    switchAccount: async (parent, {accountId}, {models, user, res}) => {
+      if (!user) return false
+
+      const {User} = models
+      const foundUser = await User.findById(user._id)
+      if (!foundUser) return false
+
+      if (user?.accounts?.find(account => account._id.toString() === accountId.toString())) {
+        const token = createToken({userId: foundUser.id, accountId}, USER_AUTH_TOKEN)
+
+        res.cookie('id', token, {
+          httpOnly: true,
+          secure: false,
+        })
+
+        return true
+      }
+      return false
     },
   },
   Account: {

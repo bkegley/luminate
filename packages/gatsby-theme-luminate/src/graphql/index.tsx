@@ -233,6 +233,7 @@ export type Mutation = {
   updateAccount?: Maybe<Account>
   deleteAccount?: Maybe<Account>
   addUserToAccount?: Maybe<Scalars['Boolean']>
+  switchAccount?: Maybe<Scalars['Boolean']>
   createRole?: Maybe<Role>
   updateRole?: Maybe<Role>
   deleteRole?: Maybe<Role>
@@ -300,6 +301,10 @@ export type MutationDeleteAccountArgs = {
 export type MutationAddUserToAccountArgs = {
   accountId: Scalars['ID']
   userId: Scalars['ID']
+}
+
+export type MutationSwitchAccountArgs = {
+  accountId: Scalars['ID']
 }
 
 export type MutationCreateRoleArgs = {
@@ -801,6 +806,7 @@ export type User = {
   username?: Maybe<Scalars['String']>
   firstName?: Maybe<Scalars['String']>
   lastName?: Maybe<Scalars['String']>
+  account?: Maybe<Account>
   accounts?: Maybe<Array<Maybe<Account>>>
   roles?: Maybe<Array<Maybe<Role>>>
   scopes?: Maybe<Array<Maybe<Scope>>>
@@ -840,6 +846,12 @@ export type VarietyEdge = {
   node?: Maybe<Variety>
 }
 
+export type SwitchAccountMutationVariables = {
+  accountId: Scalars['ID']
+}
+
+export type SwitchAccountMutation = {__typename: 'Mutation'} & Pick<Mutation, 'switchAccount'>
+
 export type HydrateMeQueryVariables = {}
 
 export type HydrateMeQuery = {__typename: 'Query'} & {hydrateMe: Maybe<{__typename: 'User'} & UserFragmentFragment>}
@@ -856,6 +868,8 @@ export type LogoutMutationVariables = {}
 export type LogoutMutation = {__typename: 'Mutation'} & Pick<Mutation, 'logout'>
 
 export type UserFragmentFragment = {__typename: 'User'} & Pick<User, 'id' | 'username' | 'firstName' | 'lastName'> & {
+    account: Maybe<{__typename: 'Account'} & Pick<Account, 'id' | 'name'>>
+    accounts: Maybe<Array<Maybe<{__typename: 'Account'} & Pick<Account, 'id' | 'name'>>>>
     roles: Maybe<Array<Maybe<{__typename: 'Role'} & Pick<Role, 'id' | 'name'>>>>
     scopes: Maybe<Array<Maybe<{__typename: 'Scope'} & Pick<Scope, 'id' | 'name' | 'resource' | 'operation'>>>>
   }
@@ -866,6 +880,14 @@ export const UserFragmentFragmentDoc = gql`
     username
     firstName
     lastName
+    account {
+      id
+      name
+    }
+    accounts {
+      id
+      name
+    }
     roles {
       id
       name
@@ -878,6 +900,47 @@ export const UserFragmentFragmentDoc = gql`
     }
   }
 `
+export const SwitchAccountDocument = gql`
+  mutation SwitchAccount($accountId: ID!) {
+    switchAccount(accountId: $accountId)
+  }
+`
+export type SwitchAccountMutationFn = ApolloReactCommon.MutationFunction<
+  SwitchAccountMutation,
+  SwitchAccountMutationVariables
+>
+
+/**
+ * __useSwitchAccountMutation__
+ *
+ * To run a mutation, you first call `useSwitchAccountMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSwitchAccountMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [switchAccountMutation, { data, loading, error }] = useSwitchAccountMutation({
+ *   variables: {
+ *      accountId: // value for 'accountId'
+ *   },
+ * });
+ */
+export function useSwitchAccountMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<SwitchAccountMutation, SwitchAccountMutationVariables>,
+) {
+  return ApolloReactHooks.useMutation<SwitchAccountMutation, SwitchAccountMutationVariables>(
+    SwitchAccountDocument,
+    baseOptions,
+  )
+}
+export type SwitchAccountMutationHookResult = ReturnType<typeof useSwitchAccountMutation>
+export type SwitchAccountMutationResult = ApolloReactCommon.MutationResult<SwitchAccountMutation>
+export type SwitchAccountMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  SwitchAccountMutation,
+  SwitchAccountMutationVariables
+>
 export const HydrateMeDocument = gql`
   query hydrateMe {
     hydrateMe {

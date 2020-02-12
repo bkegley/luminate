@@ -15,10 +15,11 @@ export interface SelectProps {
   label: React.ReactNode
   onChange?: (values: Partial<UseComboboxState<IItem>>) => void
   options: IItem[]
+  initialSelectedItem?: IItem
   styles?: IStyles
 }
 
-const Select = ({onChange, options, label, styles = defaultStyles}: SelectProps) => {
+const Select = ({onChange, options, initialSelectedItem, label, styles = defaultStyles}: SelectProps) => {
   const itemToString = (option: IItem | null) => (option ? option.name : '')
 
   const {
@@ -32,6 +33,7 @@ const Select = ({onChange, options, label, styles = defaultStyles}: SelectProps)
   } = useSelect({
     items: options,
     itemToString,
+    initialSelectedItem,
     onSelectedItemChange: changes => {
       if (onChange) {
         onChange(changes)

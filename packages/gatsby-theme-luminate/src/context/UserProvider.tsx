@@ -3,6 +3,7 @@ import {
   useHydrateMeQuery,
   useLoginMutation,
   useLogoutMutation,
+  useSwitchAccountMutation,
   UserFragmentFragment,
   HydrateMeQueryHookResult,
   LoginMutationResult,
@@ -30,6 +31,7 @@ interface IUserContext {
   logoutMeta: ModifiedLogoutMutationResult
   login: ({username, password}: {username: string; password: string}) => void
   logout: () => void
+  switchAccount: (accountId: string) => void
 }
 
 // add initial context for gatsby builds
@@ -40,6 +42,7 @@ const initialContext = {
   logoutMeta: {},
   login: () => {},
   logout: () => {},
+  switchAccount: () => {},
 }
 
 export const UserContext = React.createContext<IUserContext | undefined>(
@@ -79,6 +82,15 @@ const UserProvider = ({children}: Props) => {
     }
   }, [logoutMeta.called, logoutMeta.data])
 
+  const [switchAccount, {data: switchAccountData, client}] = useSwitchAccountMutation()
+  React.useEffect(() => {
+    if (switchAccountData && switchAccountData.switchAccount) {
+      client?.clearStore().then(() => {
+        hydrateMeta.refetch()
+      })
+    }
+  }, [switchAccountData])
+
   const value: IUserContext = {
     data,
     hydrateMeta: {
@@ -97,6 +109,9 @@ const UserProvider = ({children}: Props) => {
       login({variables: {username, password}})
     },
     logout,
+    switchAccount: (accountId: string) => {
+      switchAccount({variables: {accountId}})
+    },
   }
 
   if (hydrateMeta.error) {

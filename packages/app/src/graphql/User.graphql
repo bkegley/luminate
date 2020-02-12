@@ -4,5 +4,9 @@ mutation Login($username: String!, $password: String!) {
     username
     firstName
     lastName
+    accounts {
+      id
+      name
+    }
   }
 }
