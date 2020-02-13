@@ -1,8 +1,15 @@
 import {gql, ApolloError} from 'apollo-server-express'
-import {createConnectionResults, LoaderFn, createToken} from '@luminate/graphql-utils'
+import {
+  createConnectionResults,
+  LoaderFn,
+  createToken,
+  parseArgs,
+  parseCursorHash,
+  createCursorHash,
+} from '@luminate/graphql-utils'
 import bcrypt from 'bcrypt'
 import {Resolvers} from '../types'
-import {UserDocument} from '@luminate/mongo'
+import {AuthenticatedUserDocument, UserDocument} from '@luminate/mongo'
 
 const USER_AUTH_TOKEN = process.env.USER_AUTH_TOKEN || 'localsecrettoken'
 
@@ -69,8 +76,47 @@ const resolvers: Resolvers = {
   Query: {
     listUsers: async (parent, args, {models, user}) => {
       const {User} = models
-      const results = await createConnectionResults({user, args: {...args, type: 'user'}, model: User})
-      return results
+      const {cursor, limit, query, ...remainingArgs} = args
+      const cursorWithDefault = cursor || createCursorHash(new Date())
+      const limitWithDefault = limit || 100
+
+      const parsedArgs = parseArgs({cursor: cursorWithDefault, query})
+      const resultsPlusOne = await User.find({...parsedArgs, type: 'user'}, null, {
+        sort: '-updatedAt',
+        limit: limitWithDefault + 1,
+      })
+
+      if (!resultsPlusOne.length) {
+        return {
+          pageInfo: {
+            hasNextPage: false,
+            nextCursor: null,
+            previousCursor: '',
+          },
+          edges: [],
+        }
+      }
+
+      const hasNextPage = resultsPlusOne.length > limitWithDefault
+      const documents = hasNextPage ? resultsPlusOne.slice(0, -1) : resultsPlusOne
+
+      const nextCursor = hasNextPage ? createCursorHash(resultsPlusOne[resultsPlusOne.length - 1].updatedAt) : null
+
+      const data = {
+        pageInfo: {
+          hasNextPage,
+          nextCursor,
+          previousCursor: '',
+        },
+        edges: documents.map(document => {
+          return {
+            node: document,
+            cursor: createCursorHash(document.updatedAt),
+          }
+        }),
+      }
+
+      return data
     },
     getUser: async (parent, {id}, {loaders}, info) => {
       const {users} = loaders
@@ -131,8 +177,9 @@ const resolvers: Resolvers = {
       return updatedUser
     },
     login: async (parent, {username, password}, {models, res}) => {
+      let account: AuthenticatedUserDocument['account']
       const {User} = models
-      const user = await User.findOne({username})
+      const user = (await User.findOne({username}).populate({path: 'accounts'})) as AuthenticatedUserDocument
 
       if (!user) return null
 
@@ -140,8 +187,12 @@ const resolvers: Resolvers = {
 
       if (!passwordMatches) return null
 
-      const accountId = user.defaultAccount ? user.defaultAccount : user.accounts ? user.accounts[0] : undefined
-
+      const accountId = user.defaultAccount
+        ? user.defaultAccount.toString()
+        : user.accounts
+        ? user.accounts[0]._id.toString()
+        : undefined
+      account = user.accounts?.find(account => account._id.toString() === accountId)
       const token = createToken({userId: user.id, accountId}, USER_AUTH_TOKEN)
 
       res.cookie('id', token, {
@@ -149,7 +200,12 @@ const resolvers: Resolvers = {
         secure: false,
       })
 
-      return user
+      return {
+        ...user.toObject(),
+        id: user._id,
+        account,
+        accounts: user.accounts?.map(account => account._id),
+      }
     },
     logout: (parent, args, {res}) => {
       res.cookie('id', '', {
@@ -160,6 +216,12 @@ const resolvers: Resolvers = {
   },
   User: {
     account: (parent, args, {user}) => {
+      // login mutation attached account to parent
+      const {account} = parent as AuthenticatedUserDocument
+      if (account) {
+        return account
+      }
+
       if (!user || !user.account) return null
       return {
         ...user.account,
@@ -176,7 +238,7 @@ const resolvers: Resolvers = {
       if (!parent.roles) return null
 
       const accountRoles = parent.roles
-        ?.filter(role => role.account.toString() === user?.account?.toString())
+        ?.filter(role => role.account.toString() === user?.account?._id.toString())
         .map(role => role.roles)
         .flat()
 
@@ -184,23 +246,22 @@ const resolvers: Resolvers = {
     },
     scopes: async (parent, args, {loaders, models, user}) => {
       const {Role} = models
-      return null
-      // const accountRoles = parent.roles
-      //   ?.filter(role => role.account.toString() === user?.account?.toString())
-      //   .map(role => role.roles)
-      //   .flat()
-      // const roles = await Role.find({_id: accountRoles})
+      const accountRoles = parent.roles
+        ?.filter(role => role.account.toString() === user?.account?._id.toString())
+        .map(role => role.roles)
+        .flat()
+      const roles = await Role.find({_id: accountRoles})
 
-      // if (!roles) return null
+      if (!roles) return null
 
-      // const {scopes} = loaders
-      // const allScopeIds = roles.reduce((acc, role) => {
-      //   return acc.concat(
-      //     role.scopes?.filter(id => !acc.find(existingId => existingId.toString() === id.toString())) || [],
-      //   )
-      // }, [] as string[])
+      const {scopes} = loaders
+      const allScopeIds = roles.reduce((acc, role) => {
+        return acc.concat(
+          role.scopes?.filter(id => !acc.find(existingId => existingId.toString() === id.toString())) || [],
+        )
+      }, [] as string[])
 
-      // return Promise.all(allScopeIds.map(id => scopes.load(id)))
+      return Promise.all(allScopeIds.map(id => scopes.load(id)))
     },
   },
 }
