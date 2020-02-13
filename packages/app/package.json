@@ -17,6 +17,7 @@
     "formik": "^2.1.1",
     "gatsby": "^2.18.17",
     "gatsby-plugin-typescript": "^2.1.23",
+    "lodash.debounce": "^4.0.8",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-feather": "^2.0.3",

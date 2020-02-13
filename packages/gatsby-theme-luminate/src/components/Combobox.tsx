@@ -5,6 +5,7 @@ import {useCombobox, UseComboboxState} from 'downshift'
 import defaultStyles, {IStyles} from './styles'
 import {Box, Button, Label, Input, Spinner} from 'theme-ui'
 import DownArrow from './DownArrow'
+import debounce from 'lodash.debounce'
 
 interface IItem {
   name: string
@@ -15,6 +16,8 @@ export interface ComboboxProps {
   children?: React.ReactNode
   initialSelectedItem?: IItem
   label: React.ReactNode
+  onInputChange?: (inputValue: string | undefined) => void
+  onInputChangeTimeout?: number
   onChange?: (values: Partial<UseComboboxState<IItem>>) => void
   onCreateNew?: (values: Partial<UseComboboxState<IItem>>) => void
   options?: IItem[]
@@ -27,6 +30,8 @@ const Combobox = ({
   initialSelectedItem,
   options,
   label,
+  onInputChange,
+  onInputChangeTimeout = 700,
   onChange,
   onCreateNew,
   loading,
@@ -42,6 +47,15 @@ const Combobox = ({
   React.useEffect(() => {
     setInputOptions(initialOptions)
   }, [options])
+
+  const handleInputChange = React.useCallback(
+    debounce((value: string | undefined) => {
+      if (onInputChange) {
+        onInputChange(value)
+      }
+    }, onInputChangeTimeout),
+    [onInputChange],
+  )
 
   const {
     isOpen,
@@ -71,6 +85,9 @@ const Combobox = ({
       }
       if (Array.isArray(initialOptions) && inputValue === '') {
         setInputValue('')
+      }
+      if (onInputChange) {
+        handleInputChange(inputValue)
       }
     },
     itemToString,
