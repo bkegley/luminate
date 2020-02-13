@@ -1,12 +1,10 @@
-mutation Login($username: String!, $password: String!) {
-  login(username: $username, password: $password) {
-    id
-    username
-    firstName
-    lastName
-    accounts {
-      id
-      name
+query UserSearch($searchText: String) {
+  listUsers(query: [{field: "username", operator: contains, value: $searchText}]) {
+    edges {
+      node {
+        id
+        username
+      }
     }
   }
 }

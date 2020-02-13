@@ -854,6 +854,13 @@ export type CreateAccountMutation = {__typename: 'Mutation'} & {
   createAccount: Maybe<{__typename: 'Account'} & Pick<Account, 'id' | 'name'>>
 }
 
+export type AddUserToAccountMutationVariables = {
+  accountId: Scalars['ID']
+  userId: Scalars['ID']
+}
+
+export type AddUserToAccountMutation = {__typename: 'Mutation'} & Pick<Mutation, 'addUserToAccount'>
+
 export type ListCoffeesQueryVariables = {}
 
 export type ListCoffeesQuery = {__typename: 'Query'} & {
@@ -1102,17 +1109,14 @@ export type RegionFragmentFragment = {__typename: 'Region'} & Pick<
     farms: Maybe<Array<Maybe<{__typename: 'Farm'} & Pick<Farm, 'id'>>>>
   }
 
-export type LoginMutationVariables = {
-  username: Scalars['String']
-  password: Scalars['String']
+export type UserSearchQueryVariables = {
+  searchText?: Maybe<Scalars['String']>
 }
 
-export type LoginMutation = {__typename: 'Mutation'} & {
-  login: Maybe<
-    {__typename: 'User'} & Pick<User, 'id' | 'username' | 'firstName' | 'lastName'> & {
-        accounts: Maybe<Array<Maybe<{__typename: 'Account'} & Pick<Account, 'id' | 'name'>>>>
-      }
-  >
+export type UserSearchQuery = {__typename: 'Query'} & {
+  listUsers: {__typename: 'UserConnection'} & {
+    edges: Array<{__typename: 'UserEdge'} & {node: Maybe<{__typename: 'User'} & Pick<User, 'id' | 'username'>>}>
+  }
 }
 
 export type ListVarietiesQueryVariables = {}
@@ -1299,6 +1303,48 @@ export type CreateAccountMutationResult = ApolloReactCommon.MutationResult<Creat
 export type CreateAccountMutationOptions = ApolloReactCommon.BaseMutationOptions<
   CreateAccountMutation,
   CreateAccountMutationVariables
+>
+export const AddUserToAccountDocument = gql`
+  mutation AddUserToAccount($accountId: ID!, $userId: ID!) {
+    addUserToAccount(accountId: $accountId, userId: $userId)
+  }
+`
+export type AddUserToAccountMutationFn = ApolloReactCommon.MutationFunction<
+  AddUserToAccountMutation,
+  AddUserToAccountMutationVariables
+>
+
+/**
+ * __useAddUserToAccountMutation__
+ *
+ * To run a mutation, you first call `useAddUserToAccountMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddUserToAccountMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addUserToAccountMutation, { data, loading, error }] = useAddUserToAccountMutation({
+ *   variables: {
+ *      accountId: // value for 'accountId'
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useAddUserToAccountMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<AddUserToAccountMutation, AddUserToAccountMutationVariables>,
+) {
+  return ApolloReactHooks.useMutation<AddUserToAccountMutation, AddUserToAccountMutationVariables>(
+    AddUserToAccountDocument,
+    baseOptions,
+  )
+}
+export type AddUserToAccountMutationHookResult = ReturnType<typeof useAddUserToAccountMutation>
+export type AddUserToAccountMutationResult = ApolloReactCommon.MutationResult<AddUserToAccountMutation>
+export type AddUserToAccountMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  AddUserToAccountMutation,
+  AddUserToAccountMutationVariables
 >
 export const ListCoffeesDocument = gql`
   query ListCoffees {
@@ -2347,48 +2393,48 @@ export type DeleteRegionMutationOptions = ApolloReactCommon.BaseMutationOptions<
   DeleteRegionMutation,
   DeleteRegionMutationVariables
 >
-export const LoginDocument = gql`
-  mutation Login($username: String!, $password: String!) {
-    login(username: $username, password: $password) {
-      id
-      username
-      firstName
-      lastName
-      accounts {
-        id
-        name
+export const UserSearchDocument = gql`
+  query UserSearch($searchText: String) {
+    listUsers(query: [{field: "username", operator: contains, value: $searchText}]) {
+      edges {
+        node {
+          id
+          username
+        }
       }
     }
   }
 `
-export type LoginMutationFn = ApolloReactCommon.MutationFunction<LoginMutation, LoginMutationVariables>
 
 /**
- * __useLoginMutation__
+ * __useUserSearchQuery__
  *
- * To run a mutation, you first call `useLoginMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useLoginMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
+ * To run a query within a React component, call `useUserSearchQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserSearchQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
  *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const [loginMutation, { data, loading, error }] = useLoginMutation({
+ * const { data, loading, error } = useUserSearchQuery({
  *   variables: {
- *      username: // value for 'username'
- *      password: // value for 'password'
+ *      searchText: // value for 'searchText'
  *   },
  * });
  */
-export function useLoginMutation(
-  baseOptions?: ApolloReactHooks.MutationHookOptions<LoginMutation, LoginMutationVariables>,
+export function useUserSearchQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<UserSearchQuery, UserSearchQueryVariables>,
 ) {
-  return ApolloReactHooks.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument, baseOptions)
+  return ApolloReactHooks.useQuery<UserSearchQuery, UserSearchQueryVariables>(UserSearchDocument, baseOptions)
 }
-export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>
-export type LoginMutationResult = ApolloReactCommon.MutationResult<LoginMutation>
-export type LoginMutationOptions = ApolloReactCommon.BaseMutationOptions<LoginMutation, LoginMutationVariables>
+export function useUserSearchLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<UserSearchQuery, UserSearchQueryVariables>,
+) {
+  return ApolloReactHooks.useLazyQuery<UserSearchQuery, UserSearchQueryVariables>(UserSearchDocument, baseOptions)
+}
+export type UserSearchQueryHookResult = ReturnType<typeof useUserSearchQuery>
+export type UserSearchLazyQueryHookResult = ReturnType<typeof useUserSearchLazyQuery>
+export type UserSearchQueryResult = ApolloReactCommon.QueryResult<UserSearchQuery, UserSearchQueryVariables>
 export const ListVarietiesDocument = gql`
   query ListVarieties {
     listVarieties {

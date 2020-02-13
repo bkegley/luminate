@@ -4,3 +4,7 @@ mutation CreateAccount($input: CreateAccountInput!) {
     name
   }
 }
+
+mutation AddUserToAccount($accountId: ID!, $userId: ID!) {
+  addUserToAccount(accountId: $accountId, userId: $userId)
+}

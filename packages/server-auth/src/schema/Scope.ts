@@ -92,7 +92,7 @@ export interface ScopeLoaders {
 export const loaders: ScopeLoaders = {
   scopes: async (ids, models, user) => {
     const {Scope} = models
-    const scopes = await Scope.findByUser(user, {_id: ids})
+    const scopes = await Scope.find({_id: ids})
     return ids.map(id => {
       const scope = scopes.find(scope => scope._id.toString() === id.toString())
       if (!scope) return null
