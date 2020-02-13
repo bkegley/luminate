@@ -152,18 +152,15 @@ const startServer = async () => {
       }
     },
     introspection: true,
-    playground: {
-      settings: {
-        'request.credentials': 'include',
-      },
-    },
-    // process.env.NODE_ENV !== 'production' || DEPLOY_ENV !== 'production'
-    //   ? false
-    //   : {
-    //       settings: {
-    //         'request.credentials': 'include',
-    //       },
-    //     },
+    engine: process.env.NODE_ENV === 'production' ? {apiKey: process.env.ENGINE_API_KEY} : false,
+    playground:
+      process.env.NODE_ENV !== 'production' || DEPLOY_ENV !== 'production'
+        ? {
+            settings: {
+              'request.credentials': 'include',
+            },
+          }
+        : false,
   })
 
   server.applyMiddleware({app, cors: corsOptions})
