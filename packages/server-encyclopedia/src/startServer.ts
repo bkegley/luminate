@@ -1,3 +1,7 @@
+import path from 'path'
+require('dotenv').config({
+  path: path.join(process.cwd(), '../..', '.env'),
+})
 import {ApolloServer, CorsOptions} from 'apollo-server-express'
 import {buildFederatedSchema} from '@apollo/federation'
 import express from 'express'

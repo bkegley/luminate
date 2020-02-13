@@ -1,3 +1,7 @@
+import path from 'path'
+require('dotenv').config({
+  path: path.join(process.cwd(), '../..', '.env'),
+})
 import {ApolloServer, CorsOptions} from 'apollo-server-express'
 import {ApolloGateway, RemoteGraphQLDataSource} from '@apollo/gateway'
 import {
