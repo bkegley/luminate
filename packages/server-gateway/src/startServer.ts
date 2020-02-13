@@ -17,7 +17,7 @@ app.use(cookieParser())
 
 const PORT = 3000
 const USER_AUTH_TOKEN = process.env.USER_AUTH_TOKEN || 'localsecrettoken'
-const NODE_ENV = process.env.NODE_ENV || 'development'
+const DEPLOY_ENV = process.env.DEPLOY_ENV || 'development'
 
 export interface Context {
   req: express.Request
@@ -54,8 +54,10 @@ const startServer = async () => {
     'https://luminate.coffee',
     'http://api.luminate.coffee',
     'http://staging.luminate.coffee',
+    'http://staging.api.luminate.coffee',
     'https://api.luminate.coffee',
     'https://staging.luminate.coffee',
+    'https://staging.api.luminate.coffee',
   ]
 
   const corsOptions: CorsOptions = {
@@ -84,9 +86,9 @@ const startServer = async () => {
 
   const gateway = new ApolloGateway({
     serviceList: [
-      {name: 'auth', url: `${buildHostname(NODE_ENV)}:3003/graphql`},
-      {name: 'encyclopedia', url: `${buildHostname(NODE_ENV)}:3001/graphql`},
-      {name: 'sensory-eval', url: `${buildHostname(NODE_ENV)}:3002/graphql`},
+      {name: 'auth', url: `${buildHostname(DEPLOY_ENV)}:3003/graphql`},
+      {name: 'encyclopedia', url: `${buildHostname(DEPLOY_ENV)}:3001/graphql`},
+      {name: 'sensory-eval', url: `${buildHostname(DEPLOY_ENV)}:3002/graphql`},
     ],
     buildService: ({url}) => {
       return new AuthenticatedDataSource({url})
@@ -146,18 +148,14 @@ const startServer = async () => {
       }
     },
     introspection: true,
-    playground: {
-      settings: {
-        'request.credentials': 'include',
-      },
-    },
-    // process.env.NODE_ENV === 'production'
-    //   ? false
-    //   : {
-    //       settings: {
-    //         'request.credentials': 'include',
-    //       },
-    //     },
+    playground:
+      process.env.NODE_ENV !== 'production' || DEPLOY_ENV !== 'production'
+        ? false
+        : {
+            settings: {
+              'request.credentials': 'include',
+            },
+          },
   })
 
   server.applyMiddleware({app, cors: corsOptions})
