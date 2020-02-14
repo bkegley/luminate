@@ -3,7 +3,6 @@ import extendSchema from '../extendSchema'
 import bcrypt from 'bcrypt'
 const saltRounds = 10
 import {DocumentWithTimestamps} from '@luminate/graphql-utils'
-import {ScopeDocument} from './Scope'
 import {BaseAuthenticatedSchema, AuthenticatedEntity, WithAuthenticatedMethods} from '../baseSchemas'
 import {AccountDocument} from './Account'
 
@@ -22,6 +21,7 @@ interface BaseUserDocument extends PersonDocument {
   password: string
   defaultAccount?: mongoose.Types.ObjectId
   roles?: UserRole[]
+  scopes: string[]
   lastLoggedIn?: Date
 }
 export interface UserDocument extends BaseUserDocument {
@@ -38,7 +38,6 @@ interface UserRole {
 export interface AuthenticatedUserDocument extends BaseUserDocument {
   account?: AccountDocument | undefined
   accounts?: AccountDocument[] | undefined
-  scopes?: ScopeDocument[]
 }
 
 type ContactType = 'work' | 'home' | 'mobile' | 'other'

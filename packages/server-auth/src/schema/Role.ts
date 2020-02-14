@@ -3,15 +3,48 @@ import {createConnectionResults, LoaderFn} from '@luminate/graphql-utils'
 import {Resolvers} from '../types'
 import {RoleDocument} from '@luminate/mongo'
 
+enum Resources {
+  ACCOUNT = 'account',
+  COFFEE = 'coffee',
+  COUNTRY = 'country',
+  CUPPING = 'cupping',
+  FARM = 'farm',
+  FARMZONE = 'farmZone',
+  PERSON = 'person',
+  USER = 'user',
+  ORGANIZATION = 'organization',
+  REGION = 'region',
+  ROLE = 'role',
+  SCOPE = 'scope',
+  VARIETY = 'variety',
+}
+
+enum Operations {
+  READ = 'read',
+  WRITE = 'write',
+  ADMIN = 'admin',
+}
+
+function scopesAreValid(scopes: string[]) {
+  return scopes.every(scope => {
+    if (scope.indexOf(':') === -1) {
+      return false
+    }
+
+    let splt = scope.split(':')
+    const [operation, resource] = [splt[0], splt.slice(1).join(':')]
+    return Operations.hasOwnProperty(operation.toUpperCase()) && Resources.hasOwnProperty(resource.toUpperCase())
+  })
+}
+
 const typeDefs = gql`
   type Role {
     id: ID!
     name: String!
-    scopes: [Scope!]!
+    scopes: [String!]!
     createdAt: String!
     updatedAt: String!
   }
-
   type RoleConnection {
     pageInfo: PageInfo!
     edges: [RoleEdge!]!
@@ -24,12 +57,12 @@ const typeDefs = gql`
 
   input CreateRoleInput {
     name: String!
-    scopes: [ID!]
+    scopes: [String!]
   }
 
   input UpdateRoleInput {
     name: String
-    scopes: [ID!]
+    scopes: [String!]
   }
 
   extend type Query {
@@ -59,11 +92,19 @@ const resolvers: Resolvers = {
   Mutation: {
     createRole: async (parent, {input}, {models, user}) => {
       const {Role} = models
+      const validScopes = input.scopes ? scopesAreValid(input.scopes) : true
+      if (!validScopes) {
+        throw new Error('Provided invalid scopes')
+      }
       const role = await Role.createByUser(user, {...input, type: ['role']})
       return role
     },
     updateRole: async (parent, {id, input}, {models, user}) => {
       const {Role} = models
+      const validScopes = input.scopes ? scopesAreValid(input.scopes) : true
+      if (!validScopes) {
+        throw new Error('Provided invalid scopes')
+      }
       const role = await Role.findByIdAndUpdateByUser(user, id, input, {new: true})
       return role
     },
@@ -74,13 +115,6 @@ const resolvers: Resolvers = {
         throw new ApolloError('Document not found')
       }
       return role
-    },
-  },
-  Role: {
-    scopes: async (parent, args, {loaders}) => {
-      const {scopes} = loaders
-      if (!parent.scopes) return []
-      return (await Promise.all(parent.scopes.map(id => scopes.load(id)))).filter(Boolean)
     },
   },
 }

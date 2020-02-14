@@ -49,7 +49,6 @@ const serverGenerates = {
       federation: true,
       mappers: {
         Role: '@luminate/mongo#RoleDocument',
-        Scope: '@luminate/mongo#ScopeDocument',
         User: '@luminate/mongo#UserDocument',
       },
     },

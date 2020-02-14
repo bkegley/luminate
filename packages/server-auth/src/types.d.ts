@@ -1,5 +1,5 @@
 import {GraphQLResolveInfo} from 'graphql'
-import {RoleDocument, ScopeDocument, UserDocument} from '@luminate/mongo'
+import {RoleDocument, UserDocument} from '@luminate/mongo'
 import {Context} from './startServer'
 export type Maybe<T> = T | null
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
@@ -43,12 +43,7 @@ export type CreateAccountInput = {
 
 export type CreateRoleInput = {
   name: Scalars['String']
-  scopes?: Maybe<Array<Scalars['ID']>>
-}
-
-export type CreateScopeInput = {
-  resource: Scalars['String']
-  operation: OperationEnum
+  scopes?: Maybe<Array<Scalars['String']>>
 }
 
 export type CreateUserInput = {
@@ -141,12 +136,6 @@ export type MutationLoginArgs = {
   password: Scalars['String']
 }
 
-export enum OperationEnum {
-  Read = 'read',
-  Write = 'write',
-  Admin = 'admin',
-}
-
 export enum OperatorEnum {
   Eq = 'eq',
   Ne = 'ne',
@@ -171,8 +160,6 @@ export type Query = {
   getAccount?: Maybe<Account>
   listRoles: RoleConnection
   getRole?: Maybe<Role>
-  listScopes: ScopeConnection
-  getScope?: Maybe<Scope>
   listUsers: UserConnection
   getUser?: Maybe<User>
   hydrateMe?: Maybe<User>
@@ -198,16 +185,6 @@ export type QueryGetRoleArgs = {
   id: Scalars['ID']
 }
 
-export type QueryListScopesArgs = {
-  cursor?: Maybe<Scalars['String']>
-  limit?: Maybe<Scalars['Int']>
-  query?: Maybe<Array<Maybe<QueryInput>>>
-}
-
-export type QueryGetScopeArgs = {
-  id: Scalars['ID']
-}
-
 export type QueryListUsersArgs = {
   cursor?: Maybe<Scalars['String']>
   limit?: Maybe<Scalars['Int']>
@@ -228,7 +205,7 @@ export type Role = {
   __typename?: 'Role'
   id: Scalars['ID']
   name: Scalars['String']
-  scopes: Array<Scope>
+  scopes: Array<Scalars['String']>
   createdAt: Scalars['String']
   updatedAt: Scalars['String']
 }
@@ -245,29 +222,6 @@ export type RoleEdge = {
   node: Role
 }
 
-export type Scope = {
-  __typename?: 'Scope'
-  id: Scalars['ID']
-  name: Scalars['String']
-  resource: Scalars['String']
-  operation: OperationEnum
-  category: Scalars['String']
-  createdAt: Scalars['String']
-  updatedAt: Scalars['String']
-}
-
-export type ScopeConnection = {
-  __typename?: 'ScopeConnection'
-  pageInfo: PageInfo
-  edges: Array<ScopeEdge>
-}
-
-export type ScopeEdge = {
-  __typename?: 'ScopeEdge'
-  cursor: Scalars['String']
-  node: Scope
-}
-
 export type UpdateAccountInput = {
   name?: Maybe<Scalars['String']>
 }
@@ -279,12 +233,7 @@ export type UpdatePasswordInput = {
 
 export type UpdateRoleInput = {
   name?: Maybe<Scalars['String']>
-  scopes?: Maybe<Array<Scalars['ID']>>
-}
-
-export type UpdateScopeInput = {
-  resource: Scalars['String']
-  operation: OperationEnum
+  scopes?: Maybe<Array<Scalars['String']>>
 }
 
 export type UpdateUserInput = {
@@ -303,7 +252,7 @@ export type User = {
   account?: Maybe<Account>
   accounts: Array<Account>
   roles: Array<Role>
-  scopes: Array<Scope>
+  scopes: Array<Scalars['String']>
   createdAt: Scalars['String']
   updatedAt: Scalars['String']
 }
@@ -406,12 +355,8 @@ export type ResolversTypes = ResolversObject<{
   ID: ResolverTypeWrapper<Scalars['ID']>
   User: ResolverTypeWrapper<UserDocument>
   Role: ResolverTypeWrapper<RoleDocument>
-  Scope: ResolverTypeWrapper<ScopeDocument>
-  OperationEnum: OperationEnum
   RoleConnection: ResolverTypeWrapper<Omit<RoleConnection, 'edges'> & {edges: Array<ResolversTypes['RoleEdge']>}>
   RoleEdge: ResolverTypeWrapper<Omit<RoleEdge, 'node'> & {node: ResolversTypes['Role']}>
-  ScopeConnection: ResolverTypeWrapper<Omit<ScopeConnection, 'edges'> & {edges: Array<ResolversTypes['ScopeEdge']>}>
-  ScopeEdge: ResolverTypeWrapper<Omit<ScopeEdge, 'node'> & {node: ResolversTypes['Scope']}>
   UserConnection: ResolverTypeWrapper<Omit<UserConnection, 'edges'> & {edges: Array<ResolversTypes['UserEdge']>}>
   UserEdge: ResolverTypeWrapper<Omit<UserEdge, 'node'> & {node: ResolversTypes['User']}>
   Mutation: ResolverTypeWrapper<{}>
@@ -422,8 +367,6 @@ export type ResolversTypes = ResolversObject<{
   CreateUserInput: CreateUserInput
   UpdateUserInput: UpdateUserInput
   UpdatePasswordInput: UpdatePasswordInput
-  CreateScopeInput: CreateScopeInput
-  UpdateScopeInput: UpdateScopeInput
 }>
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -441,12 +384,8 @@ export type ResolversParentTypes = ResolversObject<{
   ID: Scalars['ID']
   User: UserDocument
   Role: RoleDocument
-  Scope: ScopeDocument
-  OperationEnum: OperationEnum
   RoleConnection: Omit<RoleConnection, 'edges'> & {edges: Array<ResolversParentTypes['RoleEdge']>}
   RoleEdge: Omit<RoleEdge, 'node'> & {node: ResolversParentTypes['Role']}
-  ScopeConnection: Omit<ScopeConnection, 'edges'> & {edges: Array<ResolversParentTypes['ScopeEdge']>}
-  ScopeEdge: Omit<ScopeEdge, 'node'> & {node: ResolversParentTypes['Scope']}
   UserConnection: Omit<UserConnection, 'edges'> & {edges: Array<ResolversParentTypes['UserEdge']>}
   UserEdge: Omit<UserEdge, 'node'> & {node: ResolversParentTypes['User']}
   Mutation: {}
@@ -457,8 +396,6 @@ export type ResolversParentTypes = ResolversObject<{
   CreateUserInput: CreateUserInput
   UpdateUserInput: UpdateUserInput
   UpdatePasswordInput: UpdatePasswordInput
-  CreateScopeInput: CreateScopeInput
-  UpdateScopeInput: UpdateScopeInput
 }>
 
 export type QueryResolvers<
@@ -474,8 +411,6 @@ export type QueryResolvers<
   >
   listRoles?: Resolver<ResolversTypes['RoleConnection'], ParentType, ContextType, QueryListRolesArgs>
   getRole?: Resolver<Maybe<ResolversTypes['Role']>, ParentType, ContextType, RequireFields<QueryGetRoleArgs, 'id'>>
-  listScopes?: Resolver<ResolversTypes['ScopeConnection'], ParentType, ContextType, QueryListScopesArgs>
-  getScope?: Resolver<Maybe<ResolversTypes['Scope']>, ParentType, ContextType, RequireFields<QueryGetScopeArgs, 'id'>>
   listUsers?: Resolver<ResolversTypes['UserConnection'], ParentType, ContextType, QueryListUsersArgs>
   getUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryGetUserArgs, 'id'>>
   hydrateMe?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>
@@ -528,7 +463,7 @@ export type UserResolvers<
   account?: Resolver<Maybe<ResolversTypes['Account']>, ParentType, ContextType>
   accounts?: Resolver<Array<ResolversTypes['Account']>, ParentType, ContextType>
   roles?: Resolver<Array<ResolversTypes['Role']>, ParentType, ContextType>
-  scopes?: Resolver<Array<ResolversTypes['Scope']>, ParentType, ContextType>
+  scopes?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>
 }>
@@ -539,20 +474,7 @@ export type RoleResolvers<
 > = ResolversObject<{
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>
-  scopes?: Resolver<Array<ResolversTypes['Scope']>, ParentType, ContextType>
-  createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>
-  updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>
-}>
-
-export type ScopeResolvers<
-  ContextType = Context,
-  ParentType extends ResolversParentTypes['Scope'] = ResolversParentTypes['Scope']
-> = ResolversObject<{
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
-  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>
-  resource?: Resolver<ResolversTypes['String'], ParentType, ContextType>
-  operation?: Resolver<ResolversTypes['OperationEnum'], ParentType, ContextType>
-  category?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  scopes?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>
 }>
@@ -571,22 +493,6 @@ export type RoleEdgeResolvers<
 > = ResolversObject<{
   cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   node?: Resolver<ResolversTypes['Role'], ParentType, ContextType>
-}>
-
-export type ScopeConnectionResolvers<
-  ContextType = Context,
-  ParentType extends ResolversParentTypes['ScopeConnection'] = ResolversParentTypes['ScopeConnection']
-> = ResolversObject<{
-  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>
-  edges?: Resolver<Array<ResolversTypes['ScopeEdge']>, ParentType, ContextType>
-}>
-
-export type ScopeEdgeResolvers<
-  ContextType = Context,
-  ParentType extends ResolversParentTypes['ScopeEdge'] = ResolversParentTypes['ScopeEdge']
-> = ResolversObject<{
-  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>
-  node?: Resolver<ResolversTypes['Scope'], ParentType, ContextType>
 }>
 
 export type UserConnectionResolvers<
@@ -704,11 +610,8 @@ export type Resolvers<ContextType = Context> = ResolversObject<{
   Account?: AccountResolvers<ContextType>
   User?: UserResolvers<ContextType>
   Role?: RoleResolvers<ContextType>
-  Scope?: ScopeResolvers<ContextType>
   RoleConnection?: RoleConnectionResolvers<ContextType>
   RoleEdge?: RoleEdgeResolvers<ContextType>
-  ScopeConnection?: ScopeConnectionResolvers<ContextType>
-  ScopeEdge?: ScopeEdgeResolvers<ContextType>
   UserConnection?: UserConnectionResolvers<ContextType>
   UserEdge?: UserEdgeResolvers<ContextType>
   Mutation?: MutationResolvers<ContextType>

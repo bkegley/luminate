@@ -22,7 +22,7 @@ const typeDefs = gql`
     account: Account
     accounts: [Account!]!
     roles: [Role!]!
-    scopes: [Scope!]!
+    scopes: [String!]!
     createdAt: String!
     updatedAt: String!
   }
@@ -247,25 +247,14 @@ const resolvers: Resolvers = {
 
       return (await Promise.all(accountRoles.map(role => roles.load(role.toString())))).filter(Boolean)
     },
-    scopes: async (parent, args, {loaders, models, user}) => {
+    scopes: async (parent, args, {loaders, models}) => {
       const {Role} = models
       const {account} = parent as AuthenticatedUserDocument
-      const accountRoles = parent.roles
-        ?.filter(role => role.account.toString() === account?._id.toString())
-        .map(role => role.roles)
-        .flat()
+      const accountRoles = parent.roles?.find(role => {
+        return role.account.toString() === account?._id.toString()
+      })?.roles
       const roles = await Role.find({_id: accountRoles})
-
-      if (!roles) return []
-
-      const {scopes} = loaders
-      const allScopeIds = roles.reduce((acc, role) => {
-        return acc.concat(
-          role.scopes?.filter(id => !acc.find(existingId => existingId.toString() === id.toString())) || [],
-        )
-      }, [] as string[])
-
-      return (await Promise.all(allScopeIds.map(id => scopes.load(id)))).filter(Boolean)
+      return roles.map(role => role.scopes).flat()
     },
   },
 }

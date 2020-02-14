@@ -67,8 +67,8 @@ const typeDefs = gql`
 const resolvers: Resolvers = {
   Query: {
     listCoffees: async (parent, args, {models, user}) => {
-      // const isAuthorized = hasScopes(user, ['read: Coffee'])
-      // if (!isAuthorized) throw new Error('Not authorized!')
+      const isAuthorized = hasScopes(user, ['read:coffee'])
+      if (!isAuthorized) throw new Error('Not authorized!')
       const {Coffee} = models
       const results = await createConnectionResults({user, args, model: Coffee})
       return results

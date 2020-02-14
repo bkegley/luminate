@@ -4,14 +4,7 @@ require('dotenv').config({
 })
 import {ApolloServer, CorsOptions} from 'apollo-server-express'
 import {ApolloGateway, RemoteGraphQLDataSource} from '@apollo/gateway'
-import {
-  createMongoConnection,
-  models,
-  RoleDocument,
-  ScopeDocument,
-  AuthenticatedUserDocument,
-  AccountDocument,
-} from '@luminate/mongo'
+import {createMongoConnection, models, RoleDocument, AuthenticatedUserDocument, AccountDocument} from '@luminate/mongo'
 import {parseToken} from '@luminate/graphql-utils'
 import cookieParser from 'cookie-parser'
 import express from 'express'
@@ -107,7 +100,7 @@ const startServer = async () => {
       let user: AuthenticatedUserDocument | null | undefined
       let account: AuthenticatedUserDocument['account']
       let roles: RoleDocument[] | undefined
-      let scopes: AuthenticatedUserDocument['scopes']
+      let scopes: AuthenticatedUserDocument['scopes'] = []
 
       if (req.cookies.id) {
         try {
@@ -117,7 +110,6 @@ const startServer = async () => {
               .populate({path: 'accounts'})
               .populate({
                 path: 'roles.roles',
-                populate: {path: 'scopes'},
               })) as AuthenticatedUserDocument | null | undefined
 
             if (user) {
@@ -128,13 +120,12 @@ const startServer = async () => {
                 .map(role => (role.roles as unknown) as RoleDocument)
                 .flat()
 
-              scopes = roles?.reduce((acc, role) => {
-                const scopes = (role.scopes as unknown) as ScopeDocument[]
-                const newScopes = scopes.filter(
-                  scope => !acc.find(existingScope => existingScope._id.toString() === scope._id.toString()),
-                )
-                return acc.concat(newScopes)
-              }, [] as ScopeDocument[])
+              scopes =
+                roles?.reduce((acc, role) => {
+                  const scopes = role.scopes
+                  const newScopes = scopes?.filter(scope => !acc.find(existingScope => existingScope === scope))
+                  return acc.concat(newScopes || [])
+                }, [] as string[]) || []
             }
           }
         } catch (err) {}

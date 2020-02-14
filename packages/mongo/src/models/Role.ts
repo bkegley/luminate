@@ -5,10 +5,32 @@ import {BaseAuthenticatedSchema, AuthenticatedEntity, WithAuthenticatedMethods} 
 
 export interface RoleDocument extends DocumentWithTimestamps {
   name: string
-  scopes?: string[]
+  scopes: string[]
 }
 
 export interface RoleModel extends WithAuthenticatedMethods<RoleDocument> {}
+
+export enum ScopeResources {
+  ACCOUNT = 'account',
+  COFFEE = 'coffee',
+  COUNTRY = 'country',
+  CUPPING = 'cupping',
+  FARM = 'farm',
+  FARMZONE = 'farmZone',
+  PERSON = 'person',
+  USER = 'user',
+  ORGANIZATION = 'organization',
+  REGION = 'region',
+  ROLE = 'role',
+  SCOPE = 'scope',
+  VARIETY = 'variety',
+}
+
+export enum ScopeOperations {
+  READ = 'read',
+  WRITE = 'write',
+  ADMIN = 'admin',
+}
 
 const Role = extendSchema(
   BaseAuthenticatedSchema,
@@ -18,12 +40,7 @@ const Role = extendSchema(
       required: true,
       unique: true,
     },
-    scopes: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'scope',
-      },
-    ],
+    scopes: [{type: String}],
   },
   {timestamps: true},
 )

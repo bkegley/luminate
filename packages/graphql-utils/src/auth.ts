@@ -60,7 +60,7 @@ const hasScopes = (user: AuthenticatedUserDocument | null, requiredScopes: strin
       return
     }
 
-    const hasScopes = requiredScopes.every(requiredScope => !!user.scopes?.find(scope => scope.name === requiredScope))
+    const hasScopes = requiredScopes.every(requiredScope => !!user.scopes?.find(scope => scope === requiredScope))
 
     if (!hasScopes) {
       reject(new ForbiddenError('You do not have permission to view this resource'))
