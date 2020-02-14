@@ -16,7 +16,7 @@ const populateDb = async () => {
 
   const scopeInputs = resources.reduce((acc, resource) => {
     return acc.concat(
-      operations.map(operation => ({resource, operation, name: `${operation}: ${resource}`, permissionType: 'public'})),
+      operations.map(operation => ({resource, operation, name: `${operation}:${resource}`, permissionType: 'public'})),
     )
   }, [] as CreateScopeInput[])
 
