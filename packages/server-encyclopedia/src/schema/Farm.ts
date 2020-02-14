@@ -6,12 +6,12 @@ import {FarmDocument, FarmZoneDocument} from '@luminate/mongo'
 const typeDefs = gql`
   type Farm {
     id: ID!
-    name: String
+    name: String!
     country: Country
     region: Region
-    farmZones: [FarmZone]
-    createdAt: String
-    updatedAt: String
+    farmZones: [FarmZone!]!
+    createdAt: String!
+    updatedAt: String!
   }
 
   type FarmConnection {
@@ -20,8 +20,8 @@ const typeDefs = gql`
   }
 
   type FarmEdge {
-    cursor: String
-    node: Farm
+    cursor: String!
+    node: Farm!
   }
 
   input CreateFarmInput {

@@ -7,13 +7,13 @@ import {CoffeeDocument, VarietyDocument} from '@luminate/mongo'
 const typeDefs = gql`
   type Coffee @key(fields: "id") {
     id: ID!
-    name: String
+    name: String!
     country: Country
     region: Region
-    varieties: [Variety]
+    varieties: [Variety!]!
     elevation: String
-    createdAt: String
-    updatedAt: String
+    createdAt: String!
+    updatedAt: String!
   }
 
   type CoffeeConnection {
@@ -22,12 +22,12 @@ const typeDefs = gql`
   }
 
   type CoffeeEdge {
-    cursor: String
-    node: Coffee
+    cursor: String!
+    node: Coffee!
   }
 
   input CreateCoffeeInput {
-    name: String
+    name: String!
     country: ID
     region: ID
     farm: ID

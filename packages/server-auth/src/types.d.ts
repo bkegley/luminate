@@ -29,8 +29,8 @@ export type AccountConnection = {
 
 export type AccountEdge = {
   __typename?: 'AccountEdge'
-  cursor?: Maybe<Scalars['String']>
-  node?: Maybe<Account>
+  cursor: Scalars['String']
+  node: Account
 }
 
 export type CreateAccountInput = {
@@ -67,16 +67,13 @@ export type Mutation = {
   createRole?: Maybe<Role>
   updateRole?: Maybe<Role>
   deleteRole?: Maybe<Role>
-  createScope?: Maybe<Scope>
-  updateScope?: Maybe<Scope>
-  deleteScope?: Maybe<Scope>
   createUser?: Maybe<User>
   updateUser?: Maybe<User>
   deleteUser?: Maybe<User>
-  updatePassword?: Maybe<Scalars['Boolean']>
+  updatePassword: Scalars['Boolean']
   updateUserRoles?: Maybe<User>
   login?: Maybe<User>
-  logout?: Maybe<Scalars['Boolean']>
+  logout: Scalars['Boolean']
 }
 
 export type MutationCreateAccountArgs = {
@@ -111,19 +108,6 @@ export type MutationUpdateRoleArgs = {
 }
 
 export type MutationDeleteRoleArgs = {
-  id: Scalars['ID']
-}
-
-export type MutationCreateScopeArgs = {
-  input: CreateScopeInput
-}
-
-export type MutationUpdateScopeArgs = {
-  id: Scalars['ID']
-  input: UpdateScopeInput
-}
-
-export type MutationDeleteScopeArgs = {
   id: Scalars['ID']
 }
 
@@ -310,13 +294,13 @@ export type UpdateUserInput = {
 export type User = {
   __typename?: 'User'
   id: Scalars['ID']
-  username?: Maybe<Scalars['String']>
+  username: Scalars['String']
   firstName?: Maybe<Scalars['String']>
   lastName?: Maybe<Scalars['String']>
   account?: Maybe<Account>
-  accounts?: Maybe<Array<Maybe<Account>>>
-  roles?: Maybe<Array<Maybe<Role>>>
-  scopes?: Maybe<Array<Maybe<Scope>>>
+  accounts: Array<Account>
+  roles: Array<Role>
+  scopes: Array<Scope>
 }
 
 export type UserConnection = {
@@ -327,8 +311,8 @@ export type UserConnection = {
 
 export type UserEdge = {
   __typename?: 'UserEdge'
-  cursor?: Maybe<Scalars['String']>
-  node?: Maybe<User>
+  cursor: Scalars['String']
+  node: User
 }
 
 export type WithIndex<TObject> = TObject & Record<string, any>
@@ -412,7 +396,7 @@ export type ResolversTypes = ResolversObject<{
   >
   PageInfo: ResolverTypeWrapper<PageInfo>
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>
-  AccountEdge: ResolverTypeWrapper<Omit<AccountEdge, 'node'> & {node?: Maybe<ResolversTypes['Account']>}>
+  AccountEdge: ResolverTypeWrapper<Omit<AccountEdge, 'node'> & {node: ResolversTypes['Account']}>
   Account: ResolverTypeWrapper<Omit<Account, 'users'> & {users?: Maybe<Array<ResolversTypes['User']>>}>
   ID: ResolverTypeWrapper<Scalars['ID']>
   User: ResolverTypeWrapper<UserDocument>
@@ -423,18 +407,18 @@ export type ResolversTypes = ResolversObject<{
   ScopeConnection: ResolverTypeWrapper<Omit<ScopeConnection, 'edges'> & {edges: Array<ResolversTypes['ScopeEdge']>}>
   ScopeEdge: ResolverTypeWrapper<Omit<ScopeEdge, 'node'> & {node?: Maybe<ResolversTypes['Scope']>}>
   UserConnection: ResolverTypeWrapper<Omit<UserConnection, 'edges'> & {edges: Array<ResolversTypes['UserEdge']>}>
-  UserEdge: ResolverTypeWrapper<Omit<UserEdge, 'node'> & {node?: Maybe<ResolversTypes['User']>}>
+  UserEdge: ResolverTypeWrapper<Omit<UserEdge, 'node'> & {node: ResolversTypes['User']}>
   Mutation: ResolverTypeWrapper<{}>
   CreateAccountInput: CreateAccountInput
   UpdateAccountInput: UpdateAccountInput
   CreateRoleInput: CreateRoleInput
   UpdateRoleInput: UpdateRoleInput
-  CreateScopeInput: CreateScopeInput
-  OperationEnum: OperationEnum
-  UpdateScopeInput: UpdateScopeInput
   CreateUserInput: CreateUserInput
   UpdateUserInput: UpdateUserInput
   UpdatePasswordInput: UpdatePasswordInput
+  OperationEnum: OperationEnum
+  CreateScopeInput: CreateScopeInput
+  UpdateScopeInput: UpdateScopeInput
 }>
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -447,7 +431,7 @@ export type ResolversParentTypes = ResolversObject<{
   AccountConnection: Omit<AccountConnection, 'edges'> & {edges: Array<ResolversParentTypes['AccountEdge']>}
   PageInfo: PageInfo
   Boolean: Scalars['Boolean']
-  AccountEdge: Omit<AccountEdge, 'node'> & {node?: Maybe<ResolversParentTypes['Account']>}
+  AccountEdge: Omit<AccountEdge, 'node'> & {node: ResolversParentTypes['Account']}
   Account: Omit<Account, 'users'> & {users?: Maybe<Array<ResolversParentTypes['User']>>}
   ID: Scalars['ID']
   User: UserDocument
@@ -458,18 +442,18 @@ export type ResolversParentTypes = ResolversObject<{
   ScopeConnection: Omit<ScopeConnection, 'edges'> & {edges: Array<ResolversParentTypes['ScopeEdge']>}
   ScopeEdge: Omit<ScopeEdge, 'node'> & {node?: Maybe<ResolversParentTypes['Scope']>}
   UserConnection: Omit<UserConnection, 'edges'> & {edges: Array<ResolversParentTypes['UserEdge']>}
-  UserEdge: Omit<UserEdge, 'node'> & {node?: Maybe<ResolversParentTypes['User']>}
+  UserEdge: Omit<UserEdge, 'node'> & {node: ResolversParentTypes['User']}
   Mutation: {}
   CreateAccountInput: CreateAccountInput
   UpdateAccountInput: UpdateAccountInput
   CreateRoleInput: CreateRoleInput
   UpdateRoleInput: UpdateRoleInput
-  CreateScopeInput: CreateScopeInput
-  OperationEnum: OperationEnum
-  UpdateScopeInput: UpdateScopeInput
   CreateUserInput: CreateUserInput
   UpdateUserInput: UpdateUserInput
   UpdatePasswordInput: UpdatePasswordInput
+  OperationEnum: OperationEnum
+  CreateScopeInput: CreateScopeInput
+  UpdateScopeInput: UpdateScopeInput
 }>
 
 export type QueryResolvers<
@@ -513,8 +497,8 @@ export type AccountEdgeResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['AccountEdge'] = ResolversParentTypes['AccountEdge']
 > = ResolversObject<{
-  cursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
-  node?: Resolver<Maybe<ResolversTypes['Account']>, ParentType, ContextType>
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  node?: Resolver<ResolversTypes['Account'], ParentType, ContextType>
 }>
 
 export type AccountResolvers<
@@ -531,13 +515,13 @@ export type UserResolvers<
   ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']
 > = ResolversObject<{
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
-  username?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  username?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   firstName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   lastName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   account?: Resolver<Maybe<ResolversTypes['Account']>, ParentType, ContextType>
-  accounts?: Resolver<Maybe<Array<Maybe<ResolversTypes['Account']>>>, ParentType, ContextType>
-  roles?: Resolver<Maybe<Array<Maybe<ResolversTypes['Role']>>>, ParentType, ContextType>
-  scopes?: Resolver<Maybe<Array<Maybe<ResolversTypes['Scope']>>>, ParentType, ContextType>
+  accounts?: Resolver<Array<ResolversTypes['Account']>, ParentType, ContextType>
+  roles?: Resolver<Array<ResolversTypes['Role']>, ParentType, ContextType>
+  scopes?: Resolver<Array<ResolversTypes['Scope']>, ParentType, ContextType>
 }>
 
 export type RoleResolvers<
@@ -608,8 +592,8 @@ export type UserEdgeResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['UserEdge'] = ResolversParentTypes['UserEdge']
 > = ResolversObject<{
-  cursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
-  node?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  node?: Resolver<ResolversTypes['User'], ParentType, ContextType>
 }>
 
 export type MutationResolvers<
@@ -664,24 +648,6 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationDeleteRoleArgs, 'id'>
   >
-  createScope?: Resolver<
-    Maybe<ResolversTypes['Scope']>,
-    ParentType,
-    ContextType,
-    RequireFields<MutationCreateScopeArgs, 'input'>
-  >
-  updateScope?: Resolver<
-    Maybe<ResolversTypes['Scope']>,
-    ParentType,
-    ContextType,
-    RequireFields<MutationUpdateScopeArgs, 'id' | 'input'>
-  >
-  deleteScope?: Resolver<
-    Maybe<ResolversTypes['Scope']>,
-    ParentType,
-    ContextType,
-    RequireFields<MutationDeleteScopeArgs, 'id'>
-  >
   createUser?: Resolver<
     Maybe<ResolversTypes['User']>,
     ParentType,
@@ -701,7 +667,7 @@ export type MutationResolvers<
     RequireFields<MutationDeleteUserArgs, 'id'>
   >
   updatePassword?: Resolver<
-    Maybe<ResolversTypes['Boolean']>,
+    ResolversTypes['Boolean'],
     ParentType,
     ContextType,
     RequireFields<MutationUpdatePasswordArgs, 'id' | 'input'>
@@ -718,7 +684,7 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationLoginArgs, 'username' | 'password'>
   >
-  logout?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>
+  logout?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>
 }>
 
 export type Resolvers<ContextType = Context> = ResolversObject<{

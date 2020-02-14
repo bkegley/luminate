@@ -12,7 +12,7 @@ const AccountPage = () => {
     {data: addUserData, loading: addUserLoading, error: addUserError},
   ] = useAddUserToAccountMutation()
 
-  const accountOptions = data?.accounts?.map(account => ({name: account?.name, value: account?.id}))
+  const accountOptions = data?.accounts.map(account => ({name: account?.name, value: account?.id}))
   const activeAccount = accountOptions?.find(option => option.value === data?.account?.id)
 
   const userOptions = users?.listUsers?.edges.map(({node}) => ({name: node?.username, value: node?.id}))

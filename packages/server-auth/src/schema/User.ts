@@ -16,13 +16,15 @@ const USER_AUTH_TOKEN = process.env.USER_AUTH_TOKEN || 'localsecrettoken'
 const typeDefs = gql`
   type User {
     id: ID!
-    username: String
+    username: String!
     firstName: String
     lastName: String
     account: Account
-    accounts: [Account]
-    roles: [Role]
-    scopes: [Scope]
+    accounts: [Account!]!
+    roles: [Role!]!
+    scopes: [Scope!]!
+    createdAt: String!
+    updatedAt: String!
   }
 
   type UserConnection {
@@ -31,8 +33,8 @@ const typeDefs = gql`
   }
 
   type UserEdge {
-    cursor: String
-    node: User
+    cursor: String!
+    node: User!
   }
 
   input CreateUserInput {
@@ -65,10 +67,10 @@ const typeDefs = gql`
     createUser(input: CreateUserInput!): User
     updateUser(id: ID!, input: UpdateUserInput!): User
     deleteUser(id: ID!): User
-    updatePassword(id: ID!, input: UpdatePasswordInput!): Boolean
+    updatePassword(id: ID!, input: UpdatePasswordInput!): Boolean!
     updateUserRoles(userId: ID!, roles: [ID!]!): User
     login(username: String!, password: String!): User
-    logout: Boolean
+    logout: Boolean!
   }
 `
 
@@ -230,12 +232,12 @@ const resolvers: Resolvers = {
     },
     accounts: async (parent, args, {loaders}) => {
       const {accounts} = loaders
-      if (!parent.accounts) return null
+      if (!parent.accounts) return []
       return (await Promise.all(parent.accounts.map(id => accounts.load(id)))).filter(Boolean)
     },
     roles: async (parent, args, {loaders, user}) => {
       const {roles} = loaders
-      if (!parent.roles) return null
+      if (!parent.roles) return []
 
       const accountRoles = parent.roles
         ?.filter(role => role.account.toString() === user?.account?._id.toString())
@@ -252,7 +254,7 @@ const resolvers: Resolvers = {
         .flat()
       const roles = await Role.find({_id: accountRoles})
 
-      if (!roles) return null
+      if (!roles) return []
 
       const {scopes} = loaders
       const allScopeIds = roles.reduce((acc, role) => {
@@ -261,7 +263,7 @@ const resolvers: Resolvers = {
         )
       }, [] as string[])
 
-      return Promise.all(allScopeIds.map(id => scopes.load(id)))
+      return (await Promise.all(allScopeIds.map(id => scopes.load(id)))).filter(Boolean)
     },
   },
 }

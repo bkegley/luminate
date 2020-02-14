@@ -7,9 +7,9 @@ const typeDefs = gql`
   type Scope {
     id: ID!
     name: String!
-    resource: String
-    operation: String
-    category: String
+    resource: String!
+    operation: OperationEnum!
+    category: String!
     createdAt: String!
     updatedAt: String!
   }
@@ -20,13 +20,14 @@ const typeDefs = gql`
   }
 
   type ScopeEdge {
-    cursor: String
-    node: Scope
+    cursor: String!
+    node: Scope!
   }
 
   enum OperationEnum {
     read
     write
+    admin
   }
 
   input CreateScopeInput {

@@ -6,11 +6,11 @@ import {VarietyDocument} from '@luminate/mongo'
 const typeDefs = gql`
   type Variety {
     id: ID!
-    name: String
+    name: String!
     background: String
     coffees: [Coffee]
-    createdAt: String
-    updatedAt: String
+    createdAt: String!
+    updatedAt: String!
   }
 
   type VarietyConnection {
@@ -19,12 +19,12 @@ const typeDefs = gql`
   }
 
   type VarietyEdge {
-    cursor: String
-    node: Variety
+    cursor: String!
+    node: Variety!
   }
 
   input CreateVarietyInput {
-    name: String
+    name: String!
   }
 
   input UpdateVarietyInput {

@@ -10,6 +10,8 @@ const typeDefs = gql`
     id: ID!
     name: String!
     users: [User!]
+    createdAt: String!
+    updatedAt: String!
   }
 
   type AccountConnection {
@@ -18,8 +20,8 @@ const typeDefs = gql`
   }
 
   type AccountEdge {
-    cursor: String
-    node: Account
+    cursor: String!
+    node: Account!
   }
 
   input CreateAccountInput {

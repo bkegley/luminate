@@ -6,9 +6,9 @@ import {RoastDocument} from '@luminate/mongo'
 const typeDefs = gql`
   type Roast @key(fields: "id") {
     id: ID!
-    name: String
-    createdAt: String
-    updatedAt: String
+    name: String!
+    createdAt: String!
+    updatedAt: String!
   }
 
   type RoastConnection {
@@ -17,12 +17,12 @@ const typeDefs = gql`
   }
 
   type RoastEdge {
-    cursor: String
-    node: Roast
+    cursor: String!
+    node: Roast!
   }
 
   input CreateRoastInput {
-    name: String
+    name: String!
   }
 
   input UpdateRoastInput {

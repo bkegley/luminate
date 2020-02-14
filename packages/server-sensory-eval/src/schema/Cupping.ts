@@ -7,9 +7,9 @@ const typeDefs = gql`
   type Cupping @key(fields: "id") {
     id: ID!
     description: String
-    coffees: [CuppingCoffee]
-    createdAt: String
-    updatedAt: String
+    coffees: [CuppingCoffee!]!
+    createdAt: String!
+    updatedAt: String!
   }
 
   type CuppingCoffee {
@@ -27,8 +27,8 @@ const typeDefs = gql`
   }
 
   type CuppingEdge {
-    cursor: String
-    node: Cupping
+    cursor: String!
+    node: Cupping!
   }
 
   input CreateCuppingInput {

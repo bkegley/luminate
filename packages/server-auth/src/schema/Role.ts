@@ -7,7 +7,7 @@ const typeDefs = gql`
   type Role {
     id: ID!
     name: String!
-    scopes: [Scope!]
+    scopes: [Scope!]!
     createdAt: String!
     updatedAt: String!
   }
@@ -18,8 +18,8 @@ const typeDefs = gql`
   }
 
   type RoleEdge {
-    cursor: String
-    node: Role
+    cursor: String!
+    node: Role!
   }
 
   input CreateRoleInput {

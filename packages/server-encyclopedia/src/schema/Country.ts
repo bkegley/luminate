@@ -6,10 +6,10 @@ import {CountryDocument, RegionDocument} from '@luminate/mongo'
 const typeDefs = gql`
   type Country {
     id: ID!
-    name: String
+    name: String!
     regions: [Region]
-    createdAt: String
-    updatedAt: String
+    createdAt: String!
+    updatedAt: String!
   }
 
   type CountryConnection {
@@ -18,12 +18,12 @@ const typeDefs = gql`
   }
 
   type CountryEdge {
-    cursor: String
-    node: Country
+    cursor: String!
+    node: Country!
   }
 
   input CreateCountryInput {
-    name: String
+    name: String!
   }
 
   input UpdateCountryInput {
