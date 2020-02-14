@@ -19,24 +19,6 @@ query getScope($id: ID!) {
   }
 }
 
-mutation createScope($input: CreateScopeInput!) {
-  createScope(input: $input) {
-    ...ScopeFragment
-  }
-}
-
-mutation updateScope($id: ID!, $input: UpdateScopeInput!) {
-  updateScope(id: $id, input: $input) {
-    ...ScopeFragment
-  }
-}
-
-mutation deleteScope($id: ID!) {
-  deleteScope(id: $id) {
-    id
-  }
-}
-
 fragment ScopeFragment on Scope {
   id
   name

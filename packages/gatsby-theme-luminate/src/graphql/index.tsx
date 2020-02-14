@@ -21,6 +21,8 @@ export type Account = {
   id: Scalars['ID']
   name: Scalars['String']
   users?: Maybe<Array<User>>
+  createdAt: Scalars['String']
+  updatedAt: Scalars['String']
 }
 
 export type AccountConnection = {
@@ -31,20 +33,20 @@ export type AccountConnection = {
 
 export type AccountEdge = {
   __typename: 'AccountEdge'
-  cursor?: Maybe<Scalars['String']>
-  node?: Maybe<Account>
+  cursor: Scalars['String']
+  node: Account
 }
 
 export type Coffee = {
   __typename: 'Coffee'
   id: Scalars['ID']
-  name?: Maybe<Scalars['String']>
+  name: Scalars['String']
   country?: Maybe<Country>
   region?: Maybe<Region>
-  varieties?: Maybe<Array<Maybe<Variety>>>
+  varieties: Array<Variety>
   elevation?: Maybe<Scalars['String']>
-  createdAt?: Maybe<Scalars['String']>
-  updatedAt?: Maybe<Scalars['String']>
+  createdAt: Scalars['String']
+  updatedAt: Scalars['String']
 }
 
 export type CoffeeConnection = {
@@ -55,17 +57,17 @@ export type CoffeeConnection = {
 
 export type CoffeeEdge = {
   __typename: 'CoffeeEdge'
-  cursor?: Maybe<Scalars['String']>
-  node?: Maybe<Coffee>
+  cursor: Scalars['String']
+  node: Coffee
 }
 
 export type Country = {
   __typename: 'Country'
   id: Scalars['ID']
-  name?: Maybe<Scalars['String']>
+  name: Scalars['String']
   regions?: Maybe<Array<Maybe<Region>>>
-  createdAt?: Maybe<Scalars['String']>
-  updatedAt?: Maybe<Scalars['String']>
+  createdAt: Scalars['String']
+  updatedAt: Scalars['String']
 }
 
 export type CountryConnection = {
@@ -76,8 +78,8 @@ export type CountryConnection = {
 
 export type CountryEdge = {
   __typename: 'CountryEdge'
-  cursor?: Maybe<Scalars['String']>
-  node?: Maybe<Country>
+  cursor: Scalars['String']
+  node: Country
 }
 
 export type CreateAccountInput = {
@@ -87,7 +89,7 @@ export type CreateAccountInput = {
 }
 
 export type CreateCoffeeInput = {
-  name?: Maybe<Scalars['String']>
+  name: Scalars['String']
   country?: Maybe<Scalars['ID']>
   region?: Maybe<Scalars['ID']>
   farm?: Maybe<Scalars['ID']>
@@ -97,7 +99,7 @@ export type CreateCoffeeInput = {
 }
 
 export type CreateCountryInput = {
-  name?: Maybe<Scalars['String']>
+  name: Scalars['String']
 }
 
 export type CreateCuppingInput = {
@@ -111,17 +113,17 @@ export type CreateFarmInput = {
 }
 
 export type CreateFarmZoneInput = {
-  name?: Maybe<Scalars['String']>
+  name: Scalars['String']
   farm?: Maybe<Scalars['ID']>
 }
 
 export type CreateRegionInput = {
-  name?: Maybe<Scalars['String']>
+  name: Scalars['String']
   country?: Maybe<Scalars['ID']>
 }
 
 export type CreateRoastInput = {
-  name?: Maybe<Scalars['String']>
+  name: Scalars['String']
 }
 
 export type CreateRoleInput = {
@@ -143,16 +145,16 @@ export type CreateUserInput = {
 }
 
 export type CreateVarietyInput = {
-  name?: Maybe<Scalars['String']>
+  name: Scalars['String']
 }
 
 export type Cupping = {
   __typename: 'Cupping'
   id: Scalars['ID']
   description?: Maybe<Scalars['String']>
-  coffees?: Maybe<Array<Maybe<CuppingCoffee>>>
-  createdAt?: Maybe<Scalars['String']>
-  updatedAt?: Maybe<Scalars['String']>
+  coffees: Array<CuppingCoffee>
+  createdAt: Scalars['String']
+  updatedAt: Scalars['String']
 }
 
 export type CuppingCoffee = {
@@ -174,19 +176,19 @@ export type CuppingConnection = {
 
 export type CuppingEdge = {
   __typename: 'CuppingEdge'
-  cursor?: Maybe<Scalars['String']>
-  node?: Maybe<Cupping>
+  cursor: Scalars['String']
+  node: Cupping
 }
 
 export type Farm = {
   __typename: 'Farm'
   id: Scalars['ID']
-  name?: Maybe<Scalars['String']>
+  name: Scalars['String']
   country?: Maybe<Country>
   region?: Maybe<Region>
-  farmZones?: Maybe<Array<Maybe<FarmZone>>>
-  createdAt?: Maybe<Scalars['String']>
-  updatedAt?: Maybe<Scalars['String']>
+  farmZones: Array<FarmZone>
+  createdAt: Scalars['String']
+  updatedAt: Scalars['String']
 }
 
 export type FarmConnection = {
@@ -197,19 +199,19 @@ export type FarmConnection = {
 
 export type FarmEdge = {
   __typename: 'FarmEdge'
-  cursor?: Maybe<Scalars['String']>
-  node?: Maybe<Farm>
+  cursor: Scalars['String']
+  node: Farm
 }
 
 export type FarmZone = {
   __typename: 'FarmZone'
   id: Scalars['ID']
-  name?: Maybe<Scalars['String']>
+  name: Scalars['String']
   country?: Maybe<Country>
   region?: Maybe<Region>
   farm?: Maybe<Farm>
-  createdAt?: Maybe<Scalars['String']>
-  updatedAt?: Maybe<Scalars['String']>
+  createdAt: Scalars['String']
+  updatedAt: Scalars['String']
 }
 
 export type FarmZoneConnection = {
@@ -220,8 +222,8 @@ export type FarmZoneConnection = {
 
 export type FarmZoneEdge = {
   __typename: 'FarmZoneEdge'
-  cursor?: Maybe<Scalars['String']>
-  node?: Maybe<FarmZone>
+  cursor: Scalars['String']
+  node: FarmZone
 }
 
 export type Mutation = {
@@ -237,16 +239,13 @@ export type Mutation = {
   createRole?: Maybe<Role>
   updateRole?: Maybe<Role>
   deleteRole?: Maybe<Role>
-  createScope?: Maybe<Scope>
-  updateScope?: Maybe<Scope>
-  deleteScope?: Maybe<Scope>
   createUser?: Maybe<User>
   updateUser?: Maybe<User>
   deleteUser?: Maybe<User>
-  updatePassword?: Maybe<Scalars['Boolean']>
+  updatePassword: Scalars['Boolean']
   updateUserRoles?: Maybe<User>
   login?: Maybe<User>
-  logout?: Maybe<Scalars['Boolean']>
+  logout: Scalars['Boolean']
   createCoffee?: Maybe<Coffee>
   updateCoffee?: Maybe<Coffee>
   deleteCoffee?: Maybe<Coffee>
@@ -317,19 +316,6 @@ export type MutationUpdateRoleArgs = {
 }
 
 export type MutationDeleteRoleArgs = {
-  id: Scalars['ID']
-}
-
-export type MutationCreateScopeArgs = {
-  input: CreateScopeInput
-}
-
-export type MutationUpdateScopeArgs = {
-  id: Scalars['ID']
-  input: UpdateScopeInput
-}
-
-export type MutationDeleteScopeArgs = {
   id: Scalars['ID']
 }
 
@@ -465,6 +451,7 @@ export type MutationMakeVarietyPublicArgs = {
 export enum OperationEnum {
   Read = 'read',
   Write = 'write',
+  Admin = 'admin',
 }
 
 export enum OperatorEnum {
@@ -648,11 +635,11 @@ export type QueryInput = {
 export type Region = {
   __typename: 'Region'
   id: Scalars['ID']
-  name?: Maybe<Scalars['String']>
+  name: Scalars['String']
   country?: Maybe<Country>
   farms?: Maybe<Array<Maybe<Farm>>>
-  createdAt?: Maybe<Scalars['String']>
-  updatedAt?: Maybe<Scalars['String']>
+  createdAt: Scalars['String']
+  updatedAt: Scalars['String']
 }
 
 export type RegionConnection = {
@@ -663,16 +650,16 @@ export type RegionConnection = {
 
 export type RegionEdge = {
   __typename: 'RegionEdge'
-  cursor?: Maybe<Scalars['String']>
-  node?: Maybe<Region>
+  cursor: Scalars['String']
+  node: Region
 }
 
 export type Roast = {
   __typename: 'Roast'
   id: Scalars['ID']
-  name?: Maybe<Scalars['String']>
-  createdAt?: Maybe<Scalars['String']>
-  updatedAt?: Maybe<Scalars['String']>
+  name: Scalars['String']
+  createdAt: Scalars['String']
+  updatedAt: Scalars['String']
 }
 
 export type RoastConnection = {
@@ -683,15 +670,15 @@ export type RoastConnection = {
 
 export type RoastEdge = {
   __typename: 'RoastEdge'
-  cursor?: Maybe<Scalars['String']>
-  node?: Maybe<Roast>
+  cursor: Scalars['String']
+  node: Roast
 }
 
 export type Role = {
   __typename: 'Role'
   id: Scalars['ID']
   name: Scalars['String']
-  scopes?: Maybe<Array<Scope>>
+  scopes: Array<Scope>
   createdAt: Scalars['String']
   updatedAt: Scalars['String']
 }
@@ -704,17 +691,17 @@ export type RoleConnection = {
 
 export type RoleEdge = {
   __typename: 'RoleEdge'
-  cursor?: Maybe<Scalars['String']>
-  node?: Maybe<Role>
+  cursor: Scalars['String']
+  node: Role
 }
 
 export type Scope = {
   __typename: 'Scope'
   id: Scalars['ID']
   name: Scalars['String']
-  resource?: Maybe<Scalars['String']>
-  operation?: Maybe<Scalars['String']>
-  category?: Maybe<Scalars['String']>
+  resource: Scalars['String']
+  operation: OperationEnum
+  category: Scalars['String']
   createdAt: Scalars['String']
   updatedAt: Scalars['String']
 }
@@ -727,8 +714,8 @@ export type ScopeConnection = {
 
 export type ScopeEdge = {
   __typename: 'ScopeEdge'
-  cursor?: Maybe<Scalars['String']>
-  node?: Maybe<Scope>
+  cursor: Scalars['String']
+  node: Scope
 }
 
 export type UpdateAccountInput = {
@@ -803,13 +790,15 @@ export type UpdateVarietyInput = {
 export type User = {
   __typename: 'User'
   id: Scalars['ID']
-  username?: Maybe<Scalars['String']>
+  username: Scalars['String']
   firstName?: Maybe<Scalars['String']>
   lastName?: Maybe<Scalars['String']>
   account?: Maybe<Account>
-  accounts?: Maybe<Array<Maybe<Account>>>
-  roles?: Maybe<Array<Maybe<Role>>>
-  scopes?: Maybe<Array<Maybe<Scope>>>
+  accounts: Array<Account>
+  roles: Array<Role>
+  scopes: Array<Scope>
+  createdAt: Scalars['String']
+  updatedAt: Scalars['String']
 }
 
 export type UserConnection = {
@@ -820,18 +809,18 @@ export type UserConnection = {
 
 export type UserEdge = {
   __typename: 'UserEdge'
-  cursor?: Maybe<Scalars['String']>
-  node?: Maybe<User>
+  cursor: Scalars['String']
+  node: User
 }
 
 export type Variety = {
   __typename: 'Variety'
   id: Scalars['ID']
-  name?: Maybe<Scalars['String']>
+  name: Scalars['String']
   background?: Maybe<Scalars['String']>
   coffees?: Maybe<Array<Maybe<Coffee>>>
-  createdAt?: Maybe<Scalars['String']>
-  updatedAt?: Maybe<Scalars['String']>
+  createdAt: Scalars['String']
+  updatedAt: Scalars['String']
 }
 
 export type VarietyConnection = {
@@ -842,8 +831,8 @@ export type VarietyConnection = {
 
 export type VarietyEdge = {
   __typename: 'VarietyEdge'
-  cursor?: Maybe<Scalars['String']>
-  node?: Maybe<Variety>
+  cursor: Scalars['String']
+  node: Variety
 }
 
 export type SwitchAccountMutationVariables = {
@@ -869,9 +858,9 @@ export type LogoutMutation = {__typename: 'Mutation'} & Pick<Mutation, 'logout'>
 
 export type UserFragmentFragment = {__typename: 'User'} & Pick<User, 'id' | 'username' | 'firstName' | 'lastName'> & {
     account: Maybe<{__typename: 'Account'} & Pick<Account, 'id' | 'name'>>
-    accounts: Maybe<Array<Maybe<{__typename: 'Account'} & Pick<Account, 'id' | 'name'>>>>
-    roles: Maybe<Array<Maybe<{__typename: 'Role'} & Pick<Role, 'id' | 'name'>>>>
-    scopes: Maybe<Array<Maybe<{__typename: 'Scope'} & Pick<Scope, 'id' | 'name' | 'resource' | 'operation'>>>>
+    accounts: Array<{__typename: 'Account'} & Pick<Account, 'id' | 'name'>>
+    roles: Array<{__typename: 'Role'} & Pick<Role, 'id' | 'name'>>
+    scopes: Array<{__typename: 'Scope'} & Pick<Scope, 'id' | 'name' | 'resource' | 'operation'>>
   }
 
 export const UserFragmentFragmentDoc = gql`
