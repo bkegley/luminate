@@ -46,10 +46,5 @@ fragment UserFragment on User {
     id
     name
   }
-  scopes {
-    id
-    name
-    resource
-    operation
-  }
+  scopes
 }

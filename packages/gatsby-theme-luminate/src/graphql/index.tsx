@@ -128,12 +128,7 @@ export type CreateRoastInput = {
 
 export type CreateRoleInput = {
   name: Scalars['String']
-  scopes?: Maybe<Array<Scalars['ID']>>
-}
-
-export type CreateScopeInput = {
-  resource: Scalars['String']
-  operation: OperationEnum
+  scopes?: Maybe<Array<Scalars['String']>>
 }
 
 export type CreateUserInput = {
@@ -448,12 +443,6 @@ export type MutationMakeVarietyPublicArgs = {
   id: Scalars['ID']
 }
 
-export enum OperationEnum {
-  Read = 'read',
-  Write = 'write',
-  Admin = 'admin',
-}
-
 export enum OperatorEnum {
   Eq = 'eq',
   Ne = 'ne',
@@ -485,8 +474,6 @@ export type Query = {
   getAccount?: Maybe<Account>
   listRoles: RoleConnection
   getRole?: Maybe<Role>
-  listScopes: ScopeConnection
-  getScope?: Maybe<Scope>
   listUsers: UserConnection
   getUser?: Maybe<User>
   hydrateMe?: Maybe<User>
@@ -533,16 +520,6 @@ export type QueryListRolesArgs = {
 }
 
 export type QueryGetRoleArgs = {
-  id: Scalars['ID']
-}
-
-export type QueryListScopesArgs = {
-  cursor?: Maybe<Scalars['String']>
-  limit?: Maybe<Scalars['Int']>
-  query?: Maybe<Array<Maybe<QueryInput>>>
-}
-
-export type QueryGetScopeArgs = {
   id: Scalars['ID']
 }
 
@@ -678,7 +655,7 @@ export type Role = {
   __typename: 'Role'
   id: Scalars['ID']
   name: Scalars['String']
-  scopes: Array<Scope>
+  scopes: Array<Scalars['String']>
   createdAt: Scalars['String']
   updatedAt: Scalars['String']
 }
@@ -693,29 +670,6 @@ export type RoleEdge = {
   __typename: 'RoleEdge'
   cursor: Scalars['String']
   node: Role
-}
-
-export type Scope = {
-  __typename: 'Scope'
-  id: Scalars['ID']
-  name: Scalars['String']
-  resource: Scalars['String']
-  operation: OperationEnum
-  category: Scalars['String']
-  createdAt: Scalars['String']
-  updatedAt: Scalars['String']
-}
-
-export type ScopeConnection = {
-  __typename: 'ScopeConnection'
-  pageInfo: PageInfo
-  edges: Array<ScopeEdge>
-}
-
-export type ScopeEdge = {
-  __typename: 'ScopeEdge'
-  cursor: Scalars['String']
-  node: Scope
 }
 
 export type UpdateAccountInput = {
@@ -768,12 +722,7 @@ export type UpdateRoastInput = {
 
 export type UpdateRoleInput = {
   name?: Maybe<Scalars['String']>
-  scopes?: Maybe<Array<Scalars['ID']>>
-}
-
-export type UpdateScopeInput = {
-  resource: Scalars['String']
-  operation: OperationEnum
+  scopes?: Maybe<Array<Scalars['String']>>
 }
 
 export type UpdateUserInput = {
@@ -796,7 +745,7 @@ export type User = {
   account?: Maybe<Account>
   accounts: Array<Account>
   roles: Array<Role>
-  scopes: Array<Scope>
+  scopes: Array<Scalars['String']>
   createdAt: Scalars['String']
   updatedAt: Scalars['String']
 }
@@ -856,11 +805,13 @@ export type LogoutMutationVariables = {}
 
 export type LogoutMutation = {__typename: 'Mutation'} & Pick<Mutation, 'logout'>
 
-export type UserFragmentFragment = {__typename: 'User'} & Pick<User, 'id' | 'username' | 'firstName' | 'lastName'> & {
+export type UserFragmentFragment = {__typename: 'User'} & Pick<
+  User,
+  'id' | 'username' | 'firstName' | 'lastName' | 'scopes'
+> & {
     account: Maybe<{__typename: 'Account'} & Pick<Account, 'id' | 'name'>>
     accounts: Array<{__typename: 'Account'} & Pick<Account, 'id' | 'name'>>
     roles: Array<{__typename: 'Role'} & Pick<Role, 'id' | 'name'>>
-    scopes: Array<{__typename: 'Scope'} & Pick<Scope, 'id' | 'name' | 'resource' | 'operation'>>
   }
 
 export const UserFragmentFragmentDoc = gql`
@@ -881,12 +832,7 @@ export const UserFragmentFragmentDoc = gql`
       id
       name
     }
-    scopes {
-      id
-      name
-      resource
-      operation
-    }
+    scopes
   }
 `
 export const SwitchAccountDocument = gql`

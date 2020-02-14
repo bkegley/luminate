@@ -40,12 +40,7 @@ mutation deleteRole($id: ID!) {
 fragment RoleFragment on Role {
   id
   name
-  scopes {
-    id
-    name
-    resource
-    operation
-  }
+  scopes
   createdAt
   updatedAt
 }

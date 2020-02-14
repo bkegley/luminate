@@ -128,12 +128,7 @@ export type CreateRoastInput = {
 
 export type CreateRoleInput = {
   name: Scalars['String']
-  scopes?: Maybe<Array<Scalars['ID']>>
-}
-
-export type CreateScopeInput = {
-  resource: Scalars['String']
-  operation: OperationEnum
+  scopes?: Maybe<Array<Scalars['String']>>
 }
 
 export type CreateUserInput = {
@@ -448,12 +443,6 @@ export type MutationMakeVarietyPublicArgs = {
   id: Scalars['ID']
 }
 
-export enum OperationEnum {
-  Read = 'read',
-  Write = 'write',
-  Admin = 'admin',
-}
-
 export enum OperatorEnum {
   Eq = 'eq',
   Ne = 'ne',
@@ -485,8 +474,6 @@ export type Query = {
   getAccount?: Maybe<Account>
   listRoles: RoleConnection
   getRole?: Maybe<Role>
-  listScopes: ScopeConnection
-  getScope?: Maybe<Scope>
   listUsers: UserConnection
   getUser?: Maybe<User>
   hydrateMe?: Maybe<User>
@@ -533,16 +520,6 @@ export type QueryListRolesArgs = {
 }
 
 export type QueryGetRoleArgs = {
-  id: Scalars['ID']
-}
-
-export type QueryListScopesArgs = {
-  cursor?: Maybe<Scalars['String']>
-  limit?: Maybe<Scalars['Int']>
-  query?: Maybe<Array<Maybe<QueryInput>>>
-}
-
-export type QueryGetScopeArgs = {
   id: Scalars['ID']
 }
 
@@ -678,7 +655,7 @@ export type Role = {
   __typename: 'Role'
   id: Scalars['ID']
   name: Scalars['String']
-  scopes: Array<Scope>
+  scopes: Array<Scalars['String']>
   createdAt: Scalars['String']
   updatedAt: Scalars['String']
 }
@@ -693,29 +670,6 @@ export type RoleEdge = {
   __typename: 'RoleEdge'
   cursor: Scalars['String']
   node: Role
-}
-
-export type Scope = {
-  __typename: 'Scope'
-  id: Scalars['ID']
-  name: Scalars['String']
-  resource: Scalars['String']
-  operation: OperationEnum
-  category: Scalars['String']
-  createdAt: Scalars['String']
-  updatedAt: Scalars['String']
-}
-
-export type ScopeConnection = {
-  __typename: 'ScopeConnection'
-  pageInfo: PageInfo
-  edges: Array<ScopeEdge>
-}
-
-export type ScopeEdge = {
-  __typename: 'ScopeEdge'
-  cursor: Scalars['String']
-  node: Scope
 }
 
 export type UpdateAccountInput = {
@@ -768,12 +722,7 @@ export type UpdateRoastInput = {
 
 export type UpdateRoleInput = {
   name?: Maybe<Scalars['String']>
-  scopes?: Maybe<Array<Scalars['ID']>>
-}
-
-export type UpdateScopeInput = {
-  resource: Scalars['String']
-  operation: OperationEnum
+  scopes?: Maybe<Array<Scalars['String']>>
 }
 
 export type UpdateUserInput = {
@@ -796,7 +745,7 @@ export type User = {
   account?: Maybe<Account>
   accounts: Array<Account>
   roles: Array<Role>
-  scopes: Array<Scope>
+  scopes: Array<Scalars['String']>
   createdAt: Scalars['String']
   updatedAt: Scalars['String']
 }
@@ -875,30 +824,9 @@ export type DeleteRoleMutationVariables = {
 
 export type DeleteRoleMutation = {__typename: 'Mutation'} & {deleteRole: Maybe<{__typename: 'Role'} & Pick<Role, 'id'>>}
 
-export type RoleFragmentFragment = {__typename: 'Role'} & Pick<Role, 'id' | 'name' | 'createdAt' | 'updatedAt'> & {
-    scopes: Array<{__typename: 'Scope'} & Pick<Scope, 'id' | 'name' | 'resource' | 'operation'>>
-  }
-
-export type ListScopesQueryVariables = {
-  cursor?: Maybe<Scalars['String']>
-}
-
-export type ListScopesQuery = {__typename: 'Query'} & {
-  listScopes: {__typename: 'ScopeConnection'} & {
-    pageInfo: {__typename: 'PageInfo'} & Pick<PageInfo, 'hasNextPage' | 'nextCursor' | 'prevCursor'>
-    edges: Array<{__typename: 'ScopeEdge'} & {node: {__typename: 'Scope'} & ScopeFragmentFragment}>
-  }
-}
-
-export type GetScopeQueryVariables = {
-  id: Scalars['ID']
-}
-
-export type GetScopeQuery = {__typename: 'Query'} & {getScope: Maybe<{__typename: 'Scope'} & ScopeFragmentFragment>}
-
-export type ScopeFragmentFragment = {__typename: 'Scope'} & Pick<
-  Scope,
-  'id' | 'name' | 'resource' | 'operation' | 'createdAt' | 'updatedAt'
+export type RoleFragmentFragment = {__typename: 'Role'} & Pick<
+  Role,
+  'id' | 'name' | 'scopes' | 'createdAt' | 'updatedAt'
 >
 
 export type ListUsersQueryVariables = {
@@ -941,31 +869,16 @@ export type DeleteUserMutationVariables = {
 
 export type DeleteUserMutation = {__typename: 'Mutation'} & {deleteUser: Maybe<{__typename: 'User'} & Pick<User, 'id'>>}
 
-export type UserFragmentFragment = {__typename: 'User'} & Pick<User, 'id' | 'username' | 'firstName' | 'lastName'> & {
-    roles: Array<{__typename: 'Role'} & Pick<Role, 'id' | 'name'>>
-    scopes: Array<{__typename: 'Scope'} & Pick<Scope, 'id' | 'name' | 'resource' | 'operation'>>
-  }
+export type UserFragmentFragment = {__typename: 'User'} & Pick<
+  User,
+  'id' | 'username' | 'firstName' | 'lastName' | 'scopes'
+> & {roles: Array<{__typename: 'Role'} & Pick<Role, 'id' | 'name'>>}
 
 export const RoleFragmentFragmentDoc = gql`
   fragment RoleFragment on Role {
     id
     name
-    scopes {
-      id
-      name
-      resource
-      operation
-    }
-    createdAt
-    updatedAt
-  }
-`
-export const ScopeFragmentFragmentDoc = gql`
-  fragment ScopeFragment on Scope {
-    id
-    name
-    resource
-    operation
+    scopes
     createdAt
     updatedAt
   }
@@ -980,12 +893,7 @@ export const UserFragmentFragmentDoc = gql`
       id
       name
     }
-    scopes {
-      id
-      name
-      resource
-      operation
-    }
+    scopes
   }
 `
 export const ListRolesDocument = gql`
@@ -1185,91 +1093,6 @@ export type DeleteRoleMutationOptions = ApolloReactCommon.BaseMutationOptions<
   DeleteRoleMutation,
   DeleteRoleMutationVariables
 >
-export const ListScopesDocument = gql`
-  query listScopes($cursor: String) {
-    listScopes(limit: 10, cursor: $cursor) {
-      pageInfo {
-        hasNextPage
-        nextCursor
-        prevCursor
-      }
-      edges {
-        node {
-          ...ScopeFragment
-        }
-      }
-    }
-  }
-  ${ScopeFragmentFragmentDoc}
-`
-
-/**
- * __useListScopesQuery__
- *
- * To run a query within a React component, call `useListScopesQuery` and pass it any options that fit your needs.
- * When your component renders, `useListScopesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useListScopesQuery({
- *   variables: {
- *      cursor: // value for 'cursor'
- *   },
- * });
- */
-export function useListScopesQuery(
-  baseOptions?: ApolloReactHooks.QueryHookOptions<ListScopesQuery, ListScopesQueryVariables>,
-) {
-  return ApolloReactHooks.useQuery<ListScopesQuery, ListScopesQueryVariables>(ListScopesDocument, baseOptions)
-}
-export function useListScopesLazyQuery(
-  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ListScopesQuery, ListScopesQueryVariables>,
-) {
-  return ApolloReactHooks.useLazyQuery<ListScopesQuery, ListScopesQueryVariables>(ListScopesDocument, baseOptions)
-}
-export type ListScopesQueryHookResult = ReturnType<typeof useListScopesQuery>
-export type ListScopesLazyQueryHookResult = ReturnType<typeof useListScopesLazyQuery>
-export type ListScopesQueryResult = ApolloReactCommon.QueryResult<ListScopesQuery, ListScopesQueryVariables>
-export const GetScopeDocument = gql`
-  query getScope($id: ID!) {
-    getScope(id: $id) {
-      ...ScopeFragment
-    }
-  }
-  ${ScopeFragmentFragmentDoc}
-`
-
-/**
- * __useGetScopeQuery__
- *
- * To run a query within a React component, call `useGetScopeQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetScopeQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetScopeQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useGetScopeQuery(
-  baseOptions?: ApolloReactHooks.QueryHookOptions<GetScopeQuery, GetScopeQueryVariables>,
-) {
-  return ApolloReactHooks.useQuery<GetScopeQuery, GetScopeQueryVariables>(GetScopeDocument, baseOptions)
-}
-export function useGetScopeLazyQuery(
-  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetScopeQuery, GetScopeQueryVariables>,
-) {
-  return ApolloReactHooks.useLazyQuery<GetScopeQuery, GetScopeQueryVariables>(GetScopeDocument, baseOptions)
-}
-export type GetScopeQueryHookResult = ReturnType<typeof useGetScopeQuery>
-export type GetScopeLazyQueryHookResult = ReturnType<typeof useGetScopeLazyQuery>
-export type GetScopeQueryResult = ApolloReactCommon.QueryResult<GetScopeQuery, GetScopeQueryVariables>
 export const ListUsersDocument = gql`
   query listUsers($cursor: String) {
     listUsers(limit: 10, cursor: $cursor) {
