@@ -1,7 +1,8 @@
 {
   "scripts": {
     "dokku": {
-      "predeploy": "yarn build:utils"
+      "predeploy": "yarn build:utils",
+      "postdeploy": "yarn seed-database"
     }
   }
 }
