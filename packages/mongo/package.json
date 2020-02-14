@@ -7,7 +7,8 @@
   "license": "MIT",
   "scripts": {
     "develop": "rimraf ./dist && tsc -w",
-    "build": "rimraf ./dist && tsc"
+    "build": "rimraf ./dist && tsc",
+    "seed-database": "node ./dist/seedDatabase.js"
   },
   "dependencies": {
     "@luminate/graphql-utils": "*",

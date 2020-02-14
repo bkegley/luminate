@@ -43,12 +43,6 @@ const typeDefs = gql`
     listScopes(cursor: String, limit: Int, query: [QueryInput]): ScopeConnection!
     getScope(id: ID!): Scope
   }
-
-  extend type Mutation {
-    createScope(input: CreateScopeInput!): Scope
-    updateScope(id: ID!, input: UpdateScopeInput!): Scope
-    deleteScope(id: ID!): Scope
-  }
 `
 
 const resolvers: Resolvers = {
@@ -61,26 +55,6 @@ const resolvers: Resolvers = {
     getScope: async (parent, {id}, {loaders}, info) => {
       const {scopes} = loaders
       return scopes.load(id)
-    },
-  },
-  Mutation: {
-    createScope: async (parent, {input}, {models, user}) => {
-      const {Scope} = models
-      const scope = await Scope.createByUser(user, {...input, type: ['scope']})
-      return scope
-    },
-    updateScope: async (parent, {id, input}, {models, user}) => {
-      const {Scope} = models
-      const scope = await Scope.findByIdAndUpdateByUser(user, id, input, {new: true})
-      return scope
-    },
-    deleteScope: async (parent, {id}, {models, user}) => {
-      const {Scope} = models
-      const scope = await Scope.findByIdAndDeleteByUser(user, id, {})
-      if (!scope) {
-        throw new ApolloError('Document not found')
-      }
-      return scope
     },
   },
 }

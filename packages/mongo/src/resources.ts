@@ -1,0 +1,15 @@
+export default [
+  'account',
+  'coffee',
+  'country',
+  'cupping',
+  'farm',
+  'farmZone',
+  'person',
+  'user',
+  'organization',
+  'region',
+  'role',
+  'scope',
+  'variety',
+] as const
