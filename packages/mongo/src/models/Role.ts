@@ -16,6 +16,7 @@ const Role = extendSchema(
     name: {
       type: String,
       required: true,
+      unique: true,
     },
     scopes: [
       {

@@ -27,7 +27,11 @@ const populateDb = async () => {
   )
 
   console.log(`Updated ${scopes.length} scopes`)
-  await Role.findOneAndUpdate({name: 'Owner'}, {$set: {scopes: scopes.map(scope => scope._id)}}, {upsert: true})
+  await Role.findOneAndUpdate(
+    {name: 'Owner'},
+    {$set: {scopes: scopes.map(scope => scope._id)}, permissionType: 'public'},
+    {upsert: true},
+  )
   console.log('Updated Owner role to have all scopes')
   process.exit()
 }

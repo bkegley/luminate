@@ -62,12 +62,22 @@ const resolvers: Resolvers = {
   },
   Mutation: {
     createAccount: async (parent, {input}, {models}) => {
-      const {Account, User} = models
+      const {Account, User, Role} = models
       const {name, username, password} = input
       const account = await Account.create({name, type: ['account']})
+      const ownerRole = await Role.findOne({name: 'Owner'})
+      if (!ownerRole) {
+        return null
+      }
       const user = await User.create({
         username,
         password,
+        roles: [
+          {
+            account: account._id,
+            roles: [ownerRole._id],
+          },
+        ],
         accounts: [account._id],
         readAccess: [account._id],
         writeAccess: [account._id],

@@ -236,20 +236,22 @@ const resolvers: Resolvers = {
       return (await Promise.all(parent.accounts.map(id => accounts.load(id)))).filter(Boolean)
     },
     roles: async (parent, args, {loaders, user}) => {
+      const {account} = parent as AuthenticatedUserDocument
       const {roles} = loaders
       if (!parent.roles) return []
 
       const accountRoles = parent.roles
-        ?.filter(role => role.account.toString() === user?.account?._id.toString())
+        ?.filter(role => role.account.toString() === account?._id.toString())
         .map(role => role.roles)
         .flat()
 
-      return (await Promise.all(accountRoles.map(role => roles.load(role)))).filter(Boolean)
+      return (await Promise.all(accountRoles.map(role => roles.load(role.toString())))).filter(Boolean)
     },
     scopes: async (parent, args, {loaders, models, user}) => {
       const {Role} = models
+      const {account} = parent as AuthenticatedUserDocument
       const accountRoles = parent.roles
-        ?.filter(role => role.account.toString() === user?.account?._id.toString())
+        ?.filter(role => role.account.toString() === account?._id.toString())
         .map(role => role.roles)
         .flat()
       const roles = await Role.find({_id: accountRoles})

@@ -93,11 +93,13 @@ export const loaders: RoleLoaders = {
   roles: async (ids, models, user) => {
     const {Role} = models
     const roles = await Role.findByUser(user, {_id: ids})
-    return ids.map(id => {
-      const role = roles.find(role => role._id.toString() === id.toString())
-      if (!role) return null
-      return role
-    })
+    return ids
+      .map(id => {
+        const role = roles.find(role => role._id.toString() === id.toString())
+        if (!role) return null
+        return role
+      })
+      .filter(Boolean)
   },
 }
 
