@@ -65,6 +65,7 @@ const resolvers: Resolvers = {
       const {Account, User, Role} = models
       const {name, username, password} = input
       const account = await Account.create({name, type: ['account']})
+
       const ownerRole = await Role.findOne({name: 'Owner'})
       if (!ownerRole) {
         return null

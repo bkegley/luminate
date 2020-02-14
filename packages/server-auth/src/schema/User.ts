@@ -206,7 +206,7 @@ const resolvers: Resolvers = {
         ...user.toObject(),
         id: user._id,
         account,
-        accounts: user.accounts?.map(account => account._id),
+        accounts: user.accounts?.map(account => ({...account.toObject(), id: account._id})) || [],
       }
     },
     logout: (parent, args, {res}) => {
@@ -230,10 +230,13 @@ const resolvers: Resolvers = {
         id: user.account._id,
       }
     },
-    accounts: async (parent, args, {loaders}) => {
-      const {accounts} = loaders
-      if (!parent.accounts) return []
-      return (await Promise.all(parent.accounts.map(id => accounts.load(id)))).filter(Boolean)
+    accounts: async (parent, args, {user}) => {
+      const {accounts} = parent as AuthenticatedUserDocument
+      if (accounts) {
+        return accounts
+      }
+
+      return user?.accounts || []
     },
     roles: async (parent, args, {loaders, user}) => {
       const {account} = parent as AuthenticatedUserDocument
