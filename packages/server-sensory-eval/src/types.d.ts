@@ -27,9 +27,9 @@ export type Cupping = {
   __typename?: 'Cupping'
   id: Scalars['ID']
   description?: Maybe<Scalars['String']>
-  coffees?: Maybe<Array<Maybe<CuppingCoffee>>>
-  createdAt?: Maybe<Scalars['String']>
-  updatedAt?: Maybe<Scalars['String']>
+  coffees: Array<CuppingCoffee>
+  createdAt: Scalars['String']
+  updatedAt: Scalars['String']
 }
 
 export type CuppingCoffee = {
@@ -51,8 +51,8 @@ export type CuppingConnection = {
 
 export type CuppingEdge = {
   __typename?: 'CuppingEdge'
-  cursor?: Maybe<Scalars['String']>
-  node?: Maybe<Cupping>
+  cursor: Scalars['String']
+  node: Cupping
 }
 
 export type Mutation = {
@@ -207,7 +207,7 @@ export type ResolversTypes = ResolversObject<{
   >
   PageInfo: ResolverTypeWrapper<PageInfo>
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>
-  CuppingEdge: ResolverTypeWrapper<Omit<CuppingEdge, 'node'> & {node?: Maybe<ResolversTypes['Cupping']>}>
+  CuppingEdge: ResolverTypeWrapper<Omit<CuppingEdge, 'node'> & {node: ResolversTypes['Cupping']}>
   Cupping: ResolverTypeWrapper<CuppingDocument>
   ID: ResolverTypeWrapper<Scalars['ID']>
   CuppingCoffee: ResolverTypeWrapper<CoffeeCuppingDocument>
@@ -228,7 +228,7 @@ export type ResolversParentTypes = ResolversObject<{
   CuppingConnection: Omit<CuppingConnection, 'edges'> & {edges: Array<ResolversParentTypes['CuppingEdge']>}
   PageInfo: PageInfo
   Boolean: Scalars['Boolean']
-  CuppingEdge: Omit<CuppingEdge, 'node'> & {node?: Maybe<ResolversParentTypes['Cupping']>}
+  CuppingEdge: Omit<CuppingEdge, 'node'> & {node: ResolversParentTypes['Cupping']}
   Cupping: CuppingDocument
   ID: Scalars['ID']
   CuppingCoffee: CoffeeCuppingDocument
@@ -273,8 +273,8 @@ export type CuppingEdgeResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['CuppingEdge'] = ResolversParentTypes['CuppingEdge']
 > = ResolversObject<{
-  cursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
-  node?: Resolver<Maybe<ResolversTypes['Cupping']>, ParentType, ContextType>
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  node?: Resolver<ResolversTypes['Cupping'], ParentType, ContextType>
 }>
 
 export type CuppingResolvers<
@@ -288,9 +288,9 @@ export type CuppingResolvers<
   >
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
-  coffees?: Resolver<Maybe<Array<Maybe<ResolversTypes['CuppingCoffee']>>>, ParentType, ContextType>
-  createdAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
-  updatedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  coffees?: Resolver<Array<ResolversTypes['CuppingCoffee']>, ParentType, ContextType>
+  createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>
 }>
 
 export type CuppingCoffeeResolvers<

@@ -89,11 +89,13 @@ export const loaders: RoastLoaders = {
   roasts: async (ids, models, user) => {
     const {Roast} = models
     const roasts = await Roast.findByUser(user, {_id: ids})
-    return ids.map(id => {
-      const roast = roasts.find(roast => roast._id.toString() === id.toString())
-      if (!roast) return null
-      return roast
-    })
+    return ids
+      .map(id => {
+        const roast = roasts.find(roast => roast._id.toString() === id.toString())
+        if (!roast) return null
+        return roast
+      })
+      .filter(Boolean)
   },
 }
 

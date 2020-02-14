@@ -79,7 +79,7 @@ const resolvers: Resolvers = {
   Role: {
     scopes: async (parent, args, {loaders}) => {
       const {scopes} = loaders
-      if (!parent.scopes) return null
+      if (!parent.scopes) return []
       return (await Promise.all(parent.scopes.map(id => scopes.load(id)))).filter(Boolean)
     },
   },

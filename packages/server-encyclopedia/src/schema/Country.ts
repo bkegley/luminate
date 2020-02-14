@@ -91,11 +91,13 @@ export const loaders: CountryLoaders = {
   countries: async (ids, models, user) => {
     const {Country} = models
     const countries = await Country.findByUser(user, {_id: ids})
-    return ids.map(id => {
-      const country = countries.find(country => country._id.toString() === id.toString())
-      if (!country) return null
-      return country
-    })
+    return ids
+      .map(id => {
+        const country = countries.find(country => country._id.toString() === id.toString())
+        if (!country) return null
+        return country
+      })
+      .filter(Boolean)
   },
   regionsOfCountry: async (ids, models, user) => {
     const {Region} = models

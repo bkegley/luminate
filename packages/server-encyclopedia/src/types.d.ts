@@ -25,13 +25,13 @@ export type Scalars = {
 export type Coffee = {
   __typename?: 'Coffee'
   id: Scalars['ID']
-  name?: Maybe<Scalars['String']>
+  name: Scalars['String']
   country?: Maybe<Country>
   region?: Maybe<Region>
-  varieties?: Maybe<Array<Maybe<Variety>>>
+  varieties: Array<Variety>
   elevation?: Maybe<Scalars['String']>
-  createdAt?: Maybe<Scalars['String']>
-  updatedAt?: Maybe<Scalars['String']>
+  createdAt: Scalars['String']
+  updatedAt: Scalars['String']
 }
 
 export type CoffeeConnection = {
@@ -42,17 +42,17 @@ export type CoffeeConnection = {
 
 export type CoffeeEdge = {
   __typename?: 'CoffeeEdge'
-  cursor?: Maybe<Scalars['String']>
-  node?: Maybe<Coffee>
+  cursor: Scalars['String']
+  node: Coffee
 }
 
 export type Country = {
   __typename?: 'Country'
   id: Scalars['ID']
-  name?: Maybe<Scalars['String']>
+  name: Scalars['String']
   regions?: Maybe<Array<Maybe<Region>>>
-  createdAt?: Maybe<Scalars['String']>
-  updatedAt?: Maybe<Scalars['String']>
+  createdAt: Scalars['String']
+  updatedAt: Scalars['String']
 }
 
 export type CountryConnection = {
@@ -63,12 +63,12 @@ export type CountryConnection = {
 
 export type CountryEdge = {
   __typename?: 'CountryEdge'
-  cursor?: Maybe<Scalars['String']>
-  node?: Maybe<Country>
+  cursor: Scalars['String']
+  node: Country
 }
 
 export type CreateCoffeeInput = {
-  name?: Maybe<Scalars['String']>
+  name: Scalars['String']
   country?: Maybe<Scalars['ID']>
   region?: Maybe<Scalars['ID']>
   farm?: Maybe<Scalars['ID']>
@@ -78,7 +78,7 @@ export type CreateCoffeeInput = {
 }
 
 export type CreateCountryInput = {
-  name?: Maybe<Scalars['String']>
+  name: Scalars['String']
 }
 
 export type CreateFarmInput = {
@@ -88,32 +88,32 @@ export type CreateFarmInput = {
 }
 
 export type CreateFarmZoneInput = {
-  name?: Maybe<Scalars['String']>
+  name: Scalars['String']
   farm?: Maybe<Scalars['ID']>
 }
 
 export type CreateRegionInput = {
-  name?: Maybe<Scalars['String']>
+  name: Scalars['String']
   country?: Maybe<Scalars['ID']>
 }
 
 export type CreateRoastInput = {
-  name?: Maybe<Scalars['String']>
+  name: Scalars['String']
 }
 
 export type CreateVarietyInput = {
-  name?: Maybe<Scalars['String']>
+  name: Scalars['String']
 }
 
 export type Farm = {
   __typename?: 'Farm'
   id: Scalars['ID']
-  name?: Maybe<Scalars['String']>
+  name: Scalars['String']
   country?: Maybe<Country>
   region?: Maybe<Region>
-  farmZones?: Maybe<Array<Maybe<FarmZone>>>
-  createdAt?: Maybe<Scalars['String']>
-  updatedAt?: Maybe<Scalars['String']>
+  farmZones: Array<FarmZone>
+  createdAt: Scalars['String']
+  updatedAt: Scalars['String']
 }
 
 export type FarmConnection = {
@@ -124,19 +124,19 @@ export type FarmConnection = {
 
 export type FarmEdge = {
   __typename?: 'FarmEdge'
-  cursor?: Maybe<Scalars['String']>
-  node?: Maybe<Farm>
+  cursor: Scalars['String']
+  node: Farm
 }
 
 export type FarmZone = {
   __typename?: 'FarmZone'
   id: Scalars['ID']
-  name?: Maybe<Scalars['String']>
+  name: Scalars['String']
   country?: Maybe<Country>
   region?: Maybe<Region>
   farm?: Maybe<Farm>
-  createdAt?: Maybe<Scalars['String']>
-  updatedAt?: Maybe<Scalars['String']>
+  createdAt: Scalars['String']
+  updatedAt: Scalars['String']
 }
 
 export type FarmZoneConnection = {
@@ -147,8 +147,8 @@ export type FarmZoneConnection = {
 
 export type FarmZoneEdge = {
   __typename?: 'FarmZoneEdge'
-  cursor?: Maybe<Scalars['String']>
-  node?: Maybe<FarmZone>
+  cursor: Scalars['String']
+  node: FarmZone
 }
 
 export type Mutation = {
@@ -399,11 +399,11 @@ export type QueryInput = {
 export type Region = {
   __typename?: 'Region'
   id: Scalars['ID']
-  name?: Maybe<Scalars['String']>
+  name: Scalars['String']
   country?: Maybe<Country>
   farms?: Maybe<Array<Maybe<Farm>>>
-  createdAt?: Maybe<Scalars['String']>
-  updatedAt?: Maybe<Scalars['String']>
+  createdAt: Scalars['String']
+  updatedAt: Scalars['String']
 }
 
 export type RegionConnection = {
@@ -414,16 +414,16 @@ export type RegionConnection = {
 
 export type RegionEdge = {
   __typename?: 'RegionEdge'
-  cursor?: Maybe<Scalars['String']>
-  node?: Maybe<Region>
+  cursor: Scalars['String']
+  node: Region
 }
 
 export type Roast = {
   __typename?: 'Roast'
   id: Scalars['ID']
-  name?: Maybe<Scalars['String']>
-  createdAt?: Maybe<Scalars['String']>
-  updatedAt?: Maybe<Scalars['String']>
+  name: Scalars['String']
+  createdAt: Scalars['String']
+  updatedAt: Scalars['String']
 }
 
 export type RoastConnection = {
@@ -434,8 +434,8 @@ export type RoastConnection = {
 
 export type RoastEdge = {
   __typename?: 'RoastEdge'
-  cursor?: Maybe<Scalars['String']>
-  node?: Maybe<Roast>
+  cursor: Scalars['String']
+  node: Roast
 }
 
 export type UpdateCoffeeInput = {
@@ -479,11 +479,11 @@ export type UpdateVarietyInput = {
 export type Variety = {
   __typename?: 'Variety'
   id: Scalars['ID']
-  name?: Maybe<Scalars['String']>
+  name: Scalars['String']
   background?: Maybe<Scalars['String']>
   coffees?: Maybe<Array<Maybe<Coffee>>>
-  createdAt?: Maybe<Scalars['String']>
-  updatedAt?: Maybe<Scalars['String']>
+  createdAt: Scalars['String']
+  updatedAt: Scalars['String']
 }
 
 export type VarietyConnection = {
@@ -494,8 +494,8 @@ export type VarietyConnection = {
 
 export type VarietyEdge = {
   __typename?: 'VarietyEdge'
-  cursor?: Maybe<Scalars['String']>
-  node?: Maybe<Variety>
+  cursor: Scalars['String']
+  node: Variety
 }
 
 export type WithIndex<TObject> = TObject & Record<string, any>
@@ -583,7 +583,7 @@ export type ResolversTypes = ResolversObject<{
   CoffeeConnection: ResolverTypeWrapper<Omit<CoffeeConnection, 'edges'> & {edges: Array<ResolversTypes['CoffeeEdge']>}>
   PageInfo: ResolverTypeWrapper<PageInfo>
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>
-  CoffeeEdge: ResolverTypeWrapper<Omit<CoffeeEdge, 'node'> & {node?: Maybe<ResolversTypes['Coffee']>}>
+  CoffeeEdge: ResolverTypeWrapper<Omit<CoffeeEdge, 'node'> & {node: ResolversTypes['Coffee']}>
   Coffee: ResolverTypeWrapper<CoffeeDocument>
   ID: ResolverTypeWrapper<Scalars['ID']>
   Country: ResolverTypeWrapper<CountryDocument>
@@ -594,22 +594,22 @@ export type ResolversTypes = ResolversObject<{
   CountryConnection: ResolverTypeWrapper<
     Omit<CountryConnection, 'edges'> & {edges: Array<ResolversTypes['CountryEdge']>}
   >
-  CountryEdge: ResolverTypeWrapper<Omit<CountryEdge, 'node'> & {node?: Maybe<ResolversTypes['Country']>}>
+  CountryEdge: ResolverTypeWrapper<Omit<CountryEdge, 'node'> & {node: ResolversTypes['Country']}>
   FarmConnection: ResolverTypeWrapper<Omit<FarmConnection, 'edges'> & {edges: Array<ResolversTypes['FarmEdge']>}>
-  FarmEdge: ResolverTypeWrapper<Omit<FarmEdge, 'node'> & {node?: Maybe<ResolversTypes['Farm']>}>
+  FarmEdge: ResolverTypeWrapper<Omit<FarmEdge, 'node'> & {node: ResolversTypes['Farm']}>
   FarmZoneConnection: ResolverTypeWrapper<
     Omit<FarmZoneConnection, 'edges'> & {edges: Array<ResolversTypes['FarmZoneEdge']>}
   >
-  FarmZoneEdge: ResolverTypeWrapper<Omit<FarmZoneEdge, 'node'> & {node?: Maybe<ResolversTypes['FarmZone']>}>
+  FarmZoneEdge: ResolverTypeWrapper<Omit<FarmZoneEdge, 'node'> & {node: ResolversTypes['FarmZone']}>
   RegionConnection: ResolverTypeWrapper<Omit<RegionConnection, 'edges'> & {edges: Array<ResolversTypes['RegionEdge']>}>
-  RegionEdge: ResolverTypeWrapper<Omit<RegionEdge, 'node'> & {node?: Maybe<ResolversTypes['Region']>}>
+  RegionEdge: ResolverTypeWrapper<Omit<RegionEdge, 'node'> & {node: ResolversTypes['Region']}>
   RoastConnection: ResolverTypeWrapper<Omit<RoastConnection, 'edges'> & {edges: Array<ResolversTypes['RoastEdge']>}>
-  RoastEdge: ResolverTypeWrapper<Omit<RoastEdge, 'node'> & {node?: Maybe<ResolversTypes['Roast']>}>
+  RoastEdge: ResolverTypeWrapper<Omit<RoastEdge, 'node'> & {node: ResolversTypes['Roast']}>
   Roast: ResolverTypeWrapper<RoastDocument>
   VarietyConnection: ResolverTypeWrapper<
     Omit<VarietyConnection, 'edges'> & {edges: Array<ResolversTypes['VarietyEdge']>}
   >
-  VarietyEdge: ResolverTypeWrapper<Omit<VarietyEdge, 'node'> & {node?: Maybe<ResolversTypes['Variety']>}>
+  VarietyEdge: ResolverTypeWrapper<Omit<VarietyEdge, 'node'> & {node: ResolversTypes['Variety']}>
   Mutation: ResolverTypeWrapper<{}>
   CreateCoffeeInput: CreateCoffeeInput
   UpdateCoffeeInput: UpdateCoffeeInput
@@ -638,7 +638,7 @@ export type ResolversParentTypes = ResolversObject<{
   CoffeeConnection: Omit<CoffeeConnection, 'edges'> & {edges: Array<ResolversParentTypes['CoffeeEdge']>}
   PageInfo: PageInfo
   Boolean: Scalars['Boolean']
-  CoffeeEdge: Omit<CoffeeEdge, 'node'> & {node?: Maybe<ResolversParentTypes['Coffee']>}
+  CoffeeEdge: Omit<CoffeeEdge, 'node'> & {node: ResolversParentTypes['Coffee']}
   Coffee: CoffeeDocument
   ID: Scalars['ID']
   Country: CountryDocument
@@ -647,18 +647,18 @@ export type ResolversParentTypes = ResolversObject<{
   FarmZone: FarmZoneDocument
   Variety: VarietyDocument
   CountryConnection: Omit<CountryConnection, 'edges'> & {edges: Array<ResolversParentTypes['CountryEdge']>}
-  CountryEdge: Omit<CountryEdge, 'node'> & {node?: Maybe<ResolversParentTypes['Country']>}
+  CountryEdge: Omit<CountryEdge, 'node'> & {node: ResolversParentTypes['Country']}
   FarmConnection: Omit<FarmConnection, 'edges'> & {edges: Array<ResolversParentTypes['FarmEdge']>}
-  FarmEdge: Omit<FarmEdge, 'node'> & {node?: Maybe<ResolversParentTypes['Farm']>}
+  FarmEdge: Omit<FarmEdge, 'node'> & {node: ResolversParentTypes['Farm']}
   FarmZoneConnection: Omit<FarmZoneConnection, 'edges'> & {edges: Array<ResolversParentTypes['FarmZoneEdge']>}
-  FarmZoneEdge: Omit<FarmZoneEdge, 'node'> & {node?: Maybe<ResolversParentTypes['FarmZone']>}
+  FarmZoneEdge: Omit<FarmZoneEdge, 'node'> & {node: ResolversParentTypes['FarmZone']}
   RegionConnection: Omit<RegionConnection, 'edges'> & {edges: Array<ResolversParentTypes['RegionEdge']>}
-  RegionEdge: Omit<RegionEdge, 'node'> & {node?: Maybe<ResolversParentTypes['Region']>}
+  RegionEdge: Omit<RegionEdge, 'node'> & {node: ResolversParentTypes['Region']}
   RoastConnection: Omit<RoastConnection, 'edges'> & {edges: Array<ResolversParentTypes['RoastEdge']>}
-  RoastEdge: Omit<RoastEdge, 'node'> & {node?: Maybe<ResolversParentTypes['Roast']>}
+  RoastEdge: Omit<RoastEdge, 'node'> & {node: ResolversParentTypes['Roast']}
   Roast: RoastDocument
   VarietyConnection: Omit<VarietyConnection, 'edges'> & {edges: Array<ResolversParentTypes['VarietyEdge']>}
-  VarietyEdge: Omit<VarietyEdge, 'node'> & {node?: Maybe<ResolversParentTypes['Variety']>}
+  VarietyEdge: Omit<VarietyEdge, 'node'> & {node: ResolversParentTypes['Variety']}
   Mutation: {}
   CreateCoffeeInput: CreateCoffeeInput
   UpdateCoffeeInput: UpdateCoffeeInput
@@ -743,8 +743,8 @@ export type CoffeeEdgeResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['CoffeeEdge'] = ResolversParentTypes['CoffeeEdge']
 > = ResolversObject<{
-  cursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
-  node?: Resolver<Maybe<ResolversTypes['Coffee']>, ParentType, ContextType>
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  node?: Resolver<ResolversTypes['Coffee'], ParentType, ContextType>
 }>
 
 export type CoffeeResolvers<
@@ -757,13 +757,13 @@ export type CoffeeResolvers<
     ContextType
   >
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
-  name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   country?: Resolver<Maybe<ResolversTypes['Country']>, ParentType, ContextType>
   region?: Resolver<Maybe<ResolversTypes['Region']>, ParentType, ContextType>
-  varieties?: Resolver<Maybe<Array<Maybe<ResolversTypes['Variety']>>>, ParentType, ContextType>
+  varieties?: Resolver<Array<ResolversTypes['Variety']>, ParentType, ContextType>
   elevation?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
-  createdAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
-  updatedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>
 }>
 
 export type CountryResolvers<
@@ -771,10 +771,10 @@ export type CountryResolvers<
   ParentType extends ResolversParentTypes['Country'] = ResolversParentTypes['Country']
 > = ResolversObject<{
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
-  name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   regions?: Resolver<Maybe<Array<Maybe<ResolversTypes['Region']>>>, ParentType, ContextType>
-  createdAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
-  updatedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>
 }>
 
 export type RegionResolvers<
@@ -782,11 +782,11 @@ export type RegionResolvers<
   ParentType extends ResolversParentTypes['Region'] = ResolversParentTypes['Region']
 > = ResolversObject<{
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
-  name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   country?: Resolver<Maybe<ResolversTypes['Country']>, ParentType, ContextType>
   farms?: Resolver<Maybe<Array<Maybe<ResolversTypes['Farm']>>>, ParentType, ContextType>
-  createdAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
-  updatedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>
 }>
 
 export type FarmResolvers<
@@ -794,12 +794,12 @@ export type FarmResolvers<
   ParentType extends ResolversParentTypes['Farm'] = ResolversParentTypes['Farm']
 > = ResolversObject<{
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
-  name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   country?: Resolver<Maybe<ResolversTypes['Country']>, ParentType, ContextType>
   region?: Resolver<Maybe<ResolversTypes['Region']>, ParentType, ContextType>
-  farmZones?: Resolver<Maybe<Array<Maybe<ResolversTypes['FarmZone']>>>, ParentType, ContextType>
-  createdAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
-  updatedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  farmZones?: Resolver<Array<ResolversTypes['FarmZone']>, ParentType, ContextType>
+  createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>
 }>
 
 export type FarmZoneResolvers<
@@ -807,12 +807,12 @@ export type FarmZoneResolvers<
   ParentType extends ResolversParentTypes['FarmZone'] = ResolversParentTypes['FarmZone']
 > = ResolversObject<{
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
-  name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   country?: Resolver<Maybe<ResolversTypes['Country']>, ParentType, ContextType>
   region?: Resolver<Maybe<ResolversTypes['Region']>, ParentType, ContextType>
   farm?: Resolver<Maybe<ResolversTypes['Farm']>, ParentType, ContextType>
-  createdAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
-  updatedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>
 }>
 
 export type VarietyResolvers<
@@ -820,11 +820,11 @@ export type VarietyResolvers<
   ParentType extends ResolversParentTypes['Variety'] = ResolversParentTypes['Variety']
 > = ResolversObject<{
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
-  name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   background?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   coffees?: Resolver<Maybe<Array<Maybe<ResolversTypes['Coffee']>>>, ParentType, ContextType>
-  createdAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
-  updatedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>
 }>
 
 export type CountryConnectionResolvers<
@@ -839,8 +839,8 @@ export type CountryEdgeResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['CountryEdge'] = ResolversParentTypes['CountryEdge']
 > = ResolversObject<{
-  cursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
-  node?: Resolver<Maybe<ResolversTypes['Country']>, ParentType, ContextType>
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  node?: Resolver<ResolversTypes['Country'], ParentType, ContextType>
 }>
 
 export type FarmConnectionResolvers<
@@ -855,8 +855,8 @@ export type FarmEdgeResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['FarmEdge'] = ResolversParentTypes['FarmEdge']
 > = ResolversObject<{
-  cursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
-  node?: Resolver<Maybe<ResolversTypes['Farm']>, ParentType, ContextType>
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  node?: Resolver<ResolversTypes['Farm'], ParentType, ContextType>
 }>
 
 export type FarmZoneConnectionResolvers<
@@ -871,8 +871,8 @@ export type FarmZoneEdgeResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['FarmZoneEdge'] = ResolversParentTypes['FarmZoneEdge']
 > = ResolversObject<{
-  cursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
-  node?: Resolver<Maybe<ResolversTypes['FarmZone']>, ParentType, ContextType>
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  node?: Resolver<ResolversTypes['FarmZone'], ParentType, ContextType>
 }>
 
 export type RegionConnectionResolvers<
@@ -887,8 +887,8 @@ export type RegionEdgeResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['RegionEdge'] = ResolversParentTypes['RegionEdge']
 > = ResolversObject<{
-  cursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
-  node?: Resolver<Maybe<ResolversTypes['Region']>, ParentType, ContextType>
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  node?: Resolver<ResolversTypes['Region'], ParentType, ContextType>
 }>
 
 export type RoastConnectionResolvers<
@@ -903,8 +903,8 @@ export type RoastEdgeResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['RoastEdge'] = ResolversParentTypes['RoastEdge']
 > = ResolversObject<{
-  cursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
-  node?: Resolver<Maybe<ResolversTypes['Roast']>, ParentType, ContextType>
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  node?: Resolver<ResolversTypes['Roast'], ParentType, ContextType>
 }>
 
 export type RoastResolvers<
@@ -917,9 +917,9 @@ export type RoastResolvers<
     ContextType
   >
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
-  name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
-  createdAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
-  updatedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>
 }>
 
 export type VarietyConnectionResolvers<
@@ -934,8 +934,8 @@ export type VarietyEdgeResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['VarietyEdge'] = ResolversParentTypes['VarietyEdge']
 > = ResolversObject<{
-  cursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
-  node?: Resolver<Maybe<ResolversTypes['Variety']>, ParentType, ContextType>
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  node?: Resolver<ResolversTypes['Variety'], ParentType, ContextType>
 }>
 
 export type MutationResolvers<

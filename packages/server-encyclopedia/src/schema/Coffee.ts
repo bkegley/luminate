@@ -123,7 +123,7 @@ const resolvers: Resolvers = {
     },
     varieties: async (parent, args, {models, loaders}) => {
       const {varieties} = loaders
-      if (!parent.varieties) return null
+      if (!parent.varieties) return []
       return (await Promise.all(parent.varieties.map(id => varieties.load(id)))).filter(Boolean)
     },
   },

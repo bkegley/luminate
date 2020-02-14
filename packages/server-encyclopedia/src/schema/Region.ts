@@ -100,11 +100,13 @@ export const loaders: RegionLoaders = {
   regions: async (ids, models, user) => {
     const {Region} = models
     const regions = await Region.findByUser(user, {_id: ids})
-    return ids.map(id => {
-      const region = regions.find((region: any) => region._id.toString() === id.toString())
-      if (!region) return null
-      return region
-    })
+    return ids
+      .map(id => {
+        const region = regions.find((region: any) => region._id.toString() === id.toString())
+        if (!region) return null
+        return region
+      })
+      .filter(Boolean)
   },
   farmsOfRegion: async (ids, models, user) => {
     const {Farm} = models

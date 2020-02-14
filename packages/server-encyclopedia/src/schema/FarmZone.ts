@@ -116,11 +116,13 @@ export const loaders: FarmZoneLoaders = {
   farmZones: async (ids, models, user) => {
     const {FarmZone} = models
     const farmZones = await FarmZone.findByUser(user, {_id: ids})
-    return ids.map(id => {
-      const farmZone = farmZones.find(farmZone => farmZone._id.toString() === id.toString())
-      if (!farmZone) return null
-      return farmZone
-    })
+    return ids
+      .map(id => {
+        const farmZone = farmZones.find(farmZone => farmZone._id.toString() === id.toString())
+        if (!farmZone) return null
+        return farmZone
+      })
+      .filter(Boolean)
   },
 }
 
