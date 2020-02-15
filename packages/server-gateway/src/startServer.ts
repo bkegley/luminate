@@ -4,7 +4,14 @@ require('dotenv').config({
 })
 import {ApolloServer, CorsOptions} from 'apollo-server-express'
 import {ApolloGateway, RemoteGraphQLDataSource} from '@apollo/gateway'
-import {createMongoConnection, models, RoleDocument, AuthenticatedUserDocument, AccountDocument} from '@luminate/mongo'
+import {
+  createMongoConnection,
+  models,
+  RoleDocument,
+  AuthenticatedUserDocument,
+  AccountDocument,
+  UserDocument,
+} from '@luminate/mongo'
 import {parseToken} from '@luminate/graphql-utils'
 import cookieParser from 'cookie-parser'
 import express from 'express'
@@ -115,8 +122,10 @@ const startServer = async () => {
             if (user) {
               const accounts = (user.accounts as unknown) as AccountDocument[] | undefined
               account = accounts?.find(account => account._id.toString() === token?.accountId)
-              roles = user?.roles
-                ?.filter(role => account && role.account.toString() === account.toString())
+
+              const {roles: userDocRoles} = user as UserDocument
+              roles = userDocRoles
+                ?.filter(role => account && role.account.toString() === account._id.toString())
                 .map(role => (role.roles as unknown) as RoleDocument)
                 .flat()
 

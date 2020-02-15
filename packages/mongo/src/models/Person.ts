@@ -5,6 +5,7 @@ const saltRounds = 10
 import {DocumentWithTimestamps} from '@luminate/graphql-utils'
 import {BaseAuthenticatedSchema, AuthenticatedEntity, WithAuthenticatedMethods} from '../baseSchemas'
 import {AccountDocument} from './Account'
+import {RoleDocument} from './Role'
 
 export interface PersonDocument extends DocumentWithTimestamps {
   firstName?: string
@@ -20,12 +21,12 @@ interface BaseUserDocument extends PersonDocument {
   username: string
   password: string
   defaultAccount?: mongoose.Types.ObjectId
-  roles?: UserRole[]
   scopes: string[]
   lastLoggedIn?: Date
 }
 export interface UserDocument extends BaseUserDocument {
   accounts?: Array<mongoose.Types.ObjectId>
+  roles?: UserRole[]
 }
 
 export interface UserModel extends WithAuthenticatedMethods<UserDocument> {}
@@ -38,6 +39,7 @@ interface UserRole {
 export interface AuthenticatedUserDocument extends BaseUserDocument {
   account?: AccountDocument | undefined
   accounts?: AccountDocument[] | undefined
+  roles?: RoleDocument[]
 }
 
 type ContactType = 'work' | 'home' | 'mobile' | 'other'

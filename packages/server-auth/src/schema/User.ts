@@ -9,7 +9,7 @@ import {
 } from '@luminate/graphql-utils'
 import bcrypt from 'bcrypt'
 import {Resolvers} from '../types'
-import {AuthenticatedUserDocument, UserDocument} from '@luminate/mongo'
+import {AuthenticatedUserDocument, UserDocument, RoleDocument} from '@luminate/mongo'
 
 const USER_AUTH_TOKEN = process.env.USER_AUTH_TOKEN || 'localsecrettoken'
 
@@ -230,15 +230,17 @@ const resolvers: Resolvers = {
         id: user.account._id,
       }
     },
-    accounts: async (parent, args, {user}) => {
-      const {accounts} = parent as AuthenticatedUserDocument
-      if (accounts) {
-        return accounts
+    accounts: async (parent, args, {loaders, user}) => {
+      if (user?.accounts) {
+        return user.accounts?.map(account => ({...account, id: account._id})) || []
       }
-
-      return user?.accounts || []
+      const {accounts} = parent as AuthenticatedUserDocument
+      return accounts || []
     },
     roles: async (parent, args, {loaders, user}) => {
+      if (user?.roles) {
+        return user.roles.map(role => ({...role, id: role._id})) as RoleDocument[]
+      }
       const {account} = parent as AuthenticatedUserDocument
       const {roles} = loaders
       if (!parent.roles) return []
@@ -250,7 +252,10 @@ const resolvers: Resolvers = {
 
       return (await Promise.all(accountRoles.map(role => roles.load(role.toString())))).filter(Boolean)
     },
-    scopes: async (parent, args, {loaders, models}) => {
+    scopes: async (parent, args, {loaders, models, user}) => {
+      if (user?.scopes?.length) {
+        return user.scopes
+      }
       const {Role} = models
       const {account} = parent as AuthenticatedUserDocument
       const accountRoles = parent.roles?.find(role => {
