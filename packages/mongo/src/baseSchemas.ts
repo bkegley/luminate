@@ -173,13 +173,14 @@ export class AuthenticatedEntity extends mongoose.Model {
     ...args: Parameters<typeof mongoose.Model.findByIdAndDelete>
   ) {
     const [id, options] = args
+    console.log({user, id, options})
     return this.findOneAndUpdate(
       {_id: id, ...buildWriteConditionsForUser(user)},
       {
         $pull: {
-          readAccess: user?.account,
-          writeAccess: user?.account,
-          adminAccess: user?.account,
+          readAccess: user?.account?._id,
+          writeAccess: user?.account?._id,
+          adminAccess: user?.account?._id,
         },
       },
       options,
