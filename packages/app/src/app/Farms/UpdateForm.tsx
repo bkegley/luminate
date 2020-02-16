@@ -1,7 +1,8 @@
 /** @jsx jsx */
 import {jsx, Flex, Box, Card, Field as ThemeField, Heading, Button} from 'theme-ui'
 import React from 'react'
-import {Combobox} from '@luminate/gatsby-theme-luminate/src'
+import {Combobox, Modal} from '@luminate/gatsby-theme-luminate/src'
+import Alert from '../../components/Alert'
 import {
   useUpdateFarmMutation,
   useDeleteFarmMutation,
@@ -165,11 +166,33 @@ const FarmUpdateForm = ({
               <Box sx={{order: 1}}>
                 <Button type="submit">Submit</Button>
               </Box>
-              <Box sx={{mr: 2}}>
-                <Button type="button" variant="buttons.text" onClick={() => deleteFarm()}>
-                  Delete
-                </Button>
-              </Box>
+              <Modal
+                backdrop={true}
+                disclosure={
+                  <Button type="button" variant="buttons.text">
+                    Delete
+                  </Button>
+                }
+              >
+                {dialog => {
+                  return (
+                    <Box
+                      sx={{
+                        width: ['90vw', '75vw', '50vw'],
+                        maxWidth: '600px',
+                      }}
+                    >
+                      <Alert
+                        heading="Are you sure?"
+                        text="This action cannot be undone."
+                        onCancelClick={dialog.toggle}
+                        onConfirmClick={() => deleteFarm({variables: {id: farm.id}})}
+                        variant="danger"
+                      />
+                    </Box>
+                  )
+                }}
+              </Modal>
             </Flex>
           </Form>
         )
