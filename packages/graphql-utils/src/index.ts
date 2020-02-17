@@ -1,11 +1,12 @@
 import {BatchLoadFn, default as Dataloader} from 'dataloader'
 import mongoose from 'mongoose'
-import {models as dbModels, AuthenticatedUserDocument} from '@luminate/mongo'
+import {models as dbModels} from '@luminate/mongo'
+import {Token} from './auth'
 
 export type LoaderFn<T> = (
   ids: string[],
   models: typeof dbModels,
-  user: AuthenticatedUserDocument | null,
+  user: Token | null,
 ) => ReturnType<BatchLoadFn<string, T | null | undefined>>
 
 type ExtractGraphQLType<L> = L extends LoaderFn<infer T> ? T : never

@@ -69,8 +69,9 @@ export type Mutation = {
   deleteUser?: Maybe<User>
   updatePassword: Scalars['Boolean']
   updateUserRoles?: Maybe<User>
-  login?: Maybe<User>
+  login?: Maybe<Scalars['Boolean']>
   logout: Scalars['Boolean']
+  refreshToken?: Maybe<Scalars['Boolean']>
 }
 
 export type MutationCreateAccountArgs = {
@@ -162,7 +163,7 @@ export type Query = {
   getRole?: Maybe<Role>
   listUsers: UserConnection
   getUser?: Maybe<User>
-  hydrateMe?: Maybe<User>
+  me?: Maybe<User>
 }
 
 export type QueryListAccountsArgs = {
@@ -413,7 +414,7 @@ export type QueryResolvers<
   getRole?: Resolver<Maybe<ResolversTypes['Role']>, ParentType, ContextType, RequireFields<QueryGetRoleArgs, 'id'>>
   listUsers?: Resolver<ResolversTypes['UserConnection'], ParentType, ContextType, QueryListUsersArgs>
   getUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryGetUserArgs, 'id'>>
-  hydrateMe?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>
+  me?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>
 }>
 
 export type AccountConnectionResolvers<
@@ -594,12 +595,13 @@ export type MutationResolvers<
     RequireFields<MutationUpdateUserRolesArgs, 'userId' | 'roles'>
   >
   login?: Resolver<
-    Maybe<ResolversTypes['User']>,
+    Maybe<ResolversTypes['Boolean']>,
     ParentType,
     ContextType,
     RequireFields<MutationLoginArgs, 'username' | 'password'>
   >
   logout?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>
+  refreshToken?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>
 }>
 
 export type Resolvers<ContextType = Context> = ResolversObject<{

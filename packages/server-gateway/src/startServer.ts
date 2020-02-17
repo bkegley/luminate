@@ -4,15 +4,8 @@ require('dotenv').config({
 })
 import {ApolloServer, CorsOptions} from 'apollo-server-express'
 import {ApolloGateway, RemoteGraphQLDataSource} from '@apollo/gateway'
-import {
-  createMongoConnection,
-  models,
-  RoleDocument,
-  AuthenticatedUserDocument,
-  AccountDocument,
-  UserDocument,
-} from '@luminate/mongo'
-import {parseToken} from '@luminate/graphql-utils'
+import {createMongoConnection} from '@luminate/mongo'
+import {parseToken, Token} from '@luminate/graphql-utils'
 import cookieParser from 'cookie-parser'
 import express from 'express'
 const app = express()
@@ -26,7 +19,7 @@ const DEPLOY_ENV = process.env.DEPLOY_ENV || 'development'
 export interface Context {
   req: express.Request
   res: express.Response
-  user: AuthenticatedUserDocument | null
+  user: Token | null
 }
 
 class AuthenticatedDataSource extends RemoteGraphQLDataSource {
@@ -103,52 +96,15 @@ const startServer = async () => {
     gateway,
     subscriptions: false,
     context: async ({req, res}) => {
-      let token: ReturnType<typeof parseToken> | undefined
-      let user: AuthenticatedUserDocument | null | undefined
-      let account: AuthenticatedUserDocument['account']
-      let roles: RoleDocument[] | undefined
-      let scopes: AuthenticatedUserDocument['scopes'] = []
-
-      if (req.cookies.id) {
-        try {
-          token = parseToken(req.cookies.id, USER_AUTH_TOKEN)
-          if (token) {
-            user = (await models.User.findById(token.userId)
-              .populate({path: 'accounts'})
-              .populate({
-                path: 'roles.roles',
-              })) as AuthenticatedUserDocument | null | undefined
-
-            if (user) {
-              const accounts = (user.accounts as unknown) as AccountDocument[] | undefined
-              account = accounts?.find(account => account._id.toString() === token?.accountId)
-
-              const {roles: userDocRoles} = user as UserDocument
-              roles = userDocRoles
-                ?.filter(role => account && role.account.toString() === account._id.toString())
-                .map(role => (role.roles as unknown) as RoleDocument)
-                .flat()
-
-              scopes =
-                roles?.reduce((acc, role) => {
-                  const scopes = role.scopes
-                  const newScopes = scopes?.filter(scope => !acc.find(existingScope => existingScope === scope))
-                  return acc.concat(newScopes || [])
-                }, [] as string[]) || []
-            }
-          }
-        } catch (err) {}
-      }
+      let user = null
+      try {
+        user = parseToken(req.cookies?.id, USER_AUTH_TOKEN)
+      } catch {}
 
       return {
         req,
         res,
-        user: {
-          ...user?.toObject(),
-          account,
-          roles,
-          scopes,
-        },
+        user,
       }
     },
     introspection: true,

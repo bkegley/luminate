@@ -1,7 +1,7 @@
 import {gql, ApolloError} from 'apollo-server-express'
-import {createConnectionResults, createToken, LoaderFn} from '@luminate/graphql-utils'
+import {createConnectionResults, createToken, parseToken, LoaderFn} from '@luminate/graphql-utils'
 import {Resolvers} from '../types'
-import {AccountDocument} from '@luminate/mongo'
+import {AccountDocument, UserDocument} from '@luminate/mongo'
 
 const USER_AUTH_TOKEN = process.env.USER_AUTH_TOKEN || 'localsecrettoken'
 
@@ -114,22 +114,30 @@ const resolvers: Resolvers = {
       )
       return !!updatedUser
     },
-    switchAccount: async (parent, {accountId}, {models, user, res}) => {
+    switchAccount: async (parent, {accountId}, {models, user, res, req}) => {
       if (!user) return false
 
       const {User} = models
-      const foundUser = await User.findById(user._id)
+
+      interface PopulatedUser extends ReturnType<typeof User.findById> {
+        accounts: AccountDocument[] | undefined
+      }
+
+      const foundUser = ((await User.findById(user.j).populate({path: 'accounts'})) as unknown) as PopulatedUser
       if (!foundUser) return false
 
-      if (user?.accounts?.find(account => account._id.toString() === accountId.toString())) {
-        const token = createToken({userId: foundUser.id, accountId}, USER_AUTH_TOKEN)
+      const newAccount = foundUser.accounts?.find(account => account._id.toString() === accountId.toString())
 
-        res.cookie('id', token, {
-          httpOnly: true,
-          secure: false,
-        })
+      if (newAccount) {
+        const existingToken = parseToken(req.cookies.id, USER_AUTH_TOKEN)
+        const {account, iat, exp, ...remainingToken} = existingToken
+        const token = createToken(
+          res,
+          {...remainingToken, account: {id: newAccount._id, name: newAccount.name}},
+          USER_AUTH_TOKEN,
+        )
 
-        return true
+        return !!token
       }
       return false
     },
