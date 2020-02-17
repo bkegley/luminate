@@ -6,6 +6,7 @@ import {
   parseArgs,
   parseCursorHash,
   createCursorHash,
+  hasScopes,
 } from '@luminate/graphql-utils'
 import bcrypt from 'bcrypt'
 import {Resolvers} from '../types'
@@ -138,8 +139,17 @@ const resolvers: Resolvers = {
       return newUser
     },
     updateUser: async (parent, {id, input}, {models, user}) => {
+      if (!user || !hasScopes(user, ['admin:user'])) {
+        throw new Error('Not allowed')
+      }
       const {User} = models
-      const updatedUser = await User.findByIdAndUpdateByUser(user, id, input, {new: true})
+      const {roles, ...remainingInput} = input
+
+      const data = Object.assign(remainingInput, roles ? {$set: {[`roles.$.roles`]: roles}} : null)
+
+      const updatedUser = await User.findOneAndUpdateByUser(user, {_id: id, 'roles.account': user.account?._id}, data, {
+        new: true,
+      })
       return updatedUser
     },
     deleteUser: async (parent, {id}, {models}) => {
