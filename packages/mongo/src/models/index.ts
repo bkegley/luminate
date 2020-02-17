@@ -7,7 +7,7 @@ import FarmZone, {FarmZoneDocument, FarmZoneModel} from './FarmZone'
 import {Person, User, PersonDocument, PersonModel, UserDocument, UserModel, AuthenticatedUserDocument} from './Person'
 import Region, {RegionDocument, RegionModel} from './Region'
 import Roast, {RoastDocument, RoastModel} from './Roast'
-import Role, {RoleDocument, RoleModel, ScopeResources, ScopeOperations} from './Role'
+import Role, {RoleDocument, RoleModel} from './Role'
 import Variety, {VarietyDocument, VarietyModel} from './Variety'
 
 export const models = {
@@ -50,8 +50,6 @@ export {
   RoastModel,
   RoleDocument,
   RoleModel,
-  ScopeOperations,
-  ScopeResources,
   VarietyDocument,
   VarietyModel,
 }
