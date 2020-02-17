@@ -194,11 +194,21 @@ const resolvers: Resolvers = {
     login: async (parent, {username, password}, {models, res}) => {
       const {User} = models
 
-      const user = await User.findOne({username})
+      interface PopulatedUser extends Omit<UserDocument, 'accounts' | 'roles'> {
+        accounts: AccountDocument[] | undefined
+        roles:
+          | Array<{
+              account: string
+              roles: RoleDocument[] | undefined
+            }>
+          | undefined
+      }
+
+      const user = ((await User.findOne({username})
         .populate({path: 'accounts'})
         .populate({
           path: 'roles.roles',
-        })
+        })) as unknown) as PopulatedUser
 
       if (!user) return false
 
@@ -206,22 +216,18 @@ const resolvers: Resolvers = {
 
       if (!passwordMatches) return false
 
-      const accounts = (user.accounts as unknown) as AccountDocument[] | undefined
-      const accountId = user.defaultAccount
-        ? user.defaultAccount.toString()
-        : accounts
-        ? accounts[0]._id.toString()
-        : undefined
+      const accounts = user.accounts?.map(account => ({id: account._id.toString() as string, name: account.name}))
+      const accountId = user.defaultAccount ? user.defaultAccount.toString() : accounts ? accounts[0].id : undefined
 
-      const account = accounts?.find(account => account._id.toString() === accountId)
+      const account = accounts?.find(account => account.id === accountId)
 
       const {roles: userDocRoles} = user
       const accountRoles = (userDocRoles
-        ?.filter(role => account && role.account.toString() === account._id.toString())
+        ?.filter(role => account && role.account.toString() === account.id)
         .map(role => role.roles)
-        .flat() as unknown) as RoleDocument[]
+        .flat() as unknown) as RoleDocument[] | undefined
 
-      const roles = accountRoles.map(role => ({id: role._id, name: role.name}))
+      const roles = accountRoles?.map(role => ({id: role._id.toString() as string, name: role.name}))
 
       const scopes =
         accountRoles?.reduce((acc, role) => {
@@ -231,9 +237,14 @@ const resolvers: Resolvers = {
         }, [] as string[]) || []
 
       const input = {
-        jti: user._id,
+        jti: user._id.toString() as string,
         sub: user.username,
-        account,
+        account: account
+          ? {
+              id: account.id,
+              name: account.name,
+            }
+          : undefined,
         accounts,
         roles,
         scopes,
@@ -255,68 +266,29 @@ const resolvers: Resolvers = {
       try {
         createToken(res, remainingToken, USER_AUTH_TOKEN)
         return true
-      } catch (err) {
-        console.log({err})
+      } catch {
         return false
       }
     },
   },
   User: {
-    account: (parent, args, {user}) => {
-      return null
-      // login mutation attached account to parent
-      // const {account} = parent as Token
-      // if (account) {
-      //   return account
-      // }
-
-      // if (!user || !user.account) return null
-      // return {
-      //   ...user.account,
-      //   id: user.account.id,
-      // }
+    account: (parent, args, {user, loaders}) => {
+      if (!user || !user.account) return null
+      const {accounts} = loaders
+      return accounts.load(user.account.id)
     },
     accounts: async (parent, args, {loaders, user}) => {
-      return []
-      // if (!user) return []
-      // if (user?.accounts) {
-      //   return user.accounts?.map(account => ({...account, id: account.id})) || []
-      // }
-      // const {accounts} = user
-      // return accounts || []
+      if (!user || !user.accounts) return []
+      const {accounts} = loaders
+      return await (await Promise.all(user.accounts.map(account => accounts.load(account.id)))).filter(Boolean)
     },
     roles: async (parent, args, {loaders, user}) => {
-      return []
-      // if (!user) return []
-      // if (user?.roles) {
-      //   return user.roles.map(role => ({...role, id: role.id})) as RoleDocument[]
-      // }
-      // const {account} = user
-      // const {roles} = loaders
-      // if (!parent.roles) return []
-
-      // const accountRoles = parent.roles
-      //   ?.filter(role => role.account.toString() === account?.id.toString())
-      //   .map(role => role.roles)
-      //   .flat()
-
-      // return (await Promise.all(accountRoles.map(role => roles.load(role.toString())))).filter(Boolean)
+      if (!user || !user.roles) return []
+      const {roles} = loaders
+      return (await Promise.all(user.roles.map(role => roles.load(role.id)))).filter(Boolean)
     },
-    scopes: async (parent, args, {loaders, models, user}) => {
-      return []
-      // if (!user) {
-      //   return []
-      // }
-      // if (user?.scopes?.length) {
-      //   return user.scopes
-      // }
-      // const {Role} = models
-      // const {account} = user
-      // const accountRoles = parent.roles?.find(role => {
-      //   return role.account.toString() === account?.id.toString()
-      // })?.roles
-      // const roles = await Role.find({_id: accountRoles})
-      // return roles.map(role => role.scopes).flat()
+    scopes: async (parent, args, {user}) => {
+      return user?.scopes || []
     },
   },
 }
