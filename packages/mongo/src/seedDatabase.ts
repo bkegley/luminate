@@ -1,5 +1,6 @@
 import createMongoConnection from './createMongoConnection'
-import {models, ScopeOperations, ScopeResources} from './models'
+import {models} from './models'
+import {ScopeOperations, ScopeResources} from '@luminate/graphql-utils'
 const {Role} = models
 
 const populateDb = async () => {
