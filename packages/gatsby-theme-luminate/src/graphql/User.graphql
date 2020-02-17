@@ -1,13 +1,15 @@
-query hydrateMe {
-  hydrateMe {
+query me {
+  me {
     ...UserFragment
   }
 }
 
+mutation refreshToken {
+  refreshToken
+}
+
 mutation login($username: String!, $password: String!) {
-  login(username: $username, password: $password) {
-    ...UserFragment
-  }
+  login(username: $username, password: $password)
 }
 
 mutation logout {

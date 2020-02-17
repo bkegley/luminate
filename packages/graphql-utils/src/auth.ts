@@ -24,17 +24,23 @@ interface TokenInput {
 }
 
 export interface Token extends TokenInput {
-  iat: string
-  exp: string
+  iat: number
+  exp: number
 }
 
 const createToken = (res: express.Response, input: TokenInput, secret: string) => {
-  const token = jwt.sign(input, secret, {expiresIn: '10m'})
+  const token = jwt.sign(input, secret, {expiresIn: '10s'})
   res.cookie('id', token, {
     httpOnly: false,
     secure: process.env.NODE_ENV === 'production',
   })
   return token
+}
+
+const removeToken = (res: express.Response): void => {
+  res.cookie('id', '', {
+    expires: new Date(0),
+  })
 }
 
 const parseToken = (token: string, secret: string) => {
@@ -83,4 +89,4 @@ const hasScopes = (user: Token | null, requiredScopes: ValidScopes[]) => {
   })
 }
 
-export {createToken, hasRole, hasScopes, parseToken, parseUserFromRequest}
+export {createToken, removeToken, hasRole, hasScopes, parseToken, parseUserFromRequest}

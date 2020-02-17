@@ -8,6 +8,7 @@ import {
   parseCursorHash,
   createCursorHash,
   hasScopes,
+  removeToken,
   Token,
 } from '@luminate/graphql-utils'
 import bcrypt from 'bcrypt'
@@ -255,18 +256,20 @@ const resolvers: Resolvers = {
       return !!token
     },
     logout: (parent, args, {res}) => {
-      res.cookie('id', '', {
-        expires: new Date(0),
-      })
+      removeToken(res)
       return true
     },
     refreshToken: (parent, args, {res, user}) => {
-      if (!user) return false
+      if (!user) {
+        removeToken(res)
+        return false
+      }
       const {iat, exp, ...remainingToken} = user
       try {
         createToken(res, remainingToken, USER_AUTH_TOKEN)
         return true
       } catch {
+        removeToken(res)
         return false
       }
     },
