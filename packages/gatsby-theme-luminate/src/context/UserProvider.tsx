@@ -1,43 +1,20 @@
 import React from 'react'
-import {
-  useHydrateMeQuery,
-  useLoginMutation,
-  useLogoutMutation,
-  useSwitchAccountMutation,
-  UserFragmentFragment,
-  HydrateMeQueryHookResult,
-  LoginMutationResult,
-  LogoutMutationResult,
-} from '../graphql'
-
-type ModifiedHookResult<T> = Omit<T, 'data'>
-
-interface ModifiedHydrateMeQueryHookResult extends ModifiedHookResult<HydrateMeQueryHookResult> {
-  data: UserFragmentFragment | null
-}
-
-interface ModifiedLoginMutationResult extends ModifiedHookResult<LoginMutationResult> {
-  data: UserFragmentFragment | null
-}
-
-interface ModifiedLogoutMutationResult extends ModifiedHookResult<LogoutMutationResult> {
-  data: UserFragmentFragment | null
-}
+import {useLoginMutation, useLogoutMutation, useSwitchAccountMutation, useRefreshTokenMutation} from '../graphql'
+import {Token} from '@luminate/graphql-utils'
 
 interface IUserContext {
-  data: UserFragmentFragment | null
-  hydrateMeta: ModifiedHydrateMeQueryHookResult
-  loginMeta: ModifiedLoginMutationResult
-  logoutMeta: ModifiedLogoutMutationResult
-  login: ({username, password}: {username: string; password: string}) => void
-  logout: () => void
-  switchAccount: (accountId: string) => void
+  user: Token | null
+  login: ReturnType<typeof useLoginMutation>[0]
+  loginMeta: ReturnType<typeof useLoginMutation>[1]
+  logout: ReturnType<typeof useLogoutMutation>[0]
+  logoutMeta: ReturnType<typeof useLogoutMutation>[1]
+  switchAccount: ReturnType<typeof useSwitchAccountMutation>[0]
+  switchAccountMeta: ReturnType<typeof useSwitchAccountMutation>[1]
 }
 
 // add initial context for gatsby builds
 const initialContext = {
-  data: null,
-  hydrateMeta: {},
+  user: null,
   loginMeta: {},
   logoutMeta: {},
   login: () => {},
@@ -53,74 +30,76 @@ interface Props {
   children: React.ReactNode
 }
 
+const getCookie = (name: string) => {
+  const cookieString = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)')
+  return cookieString ? cookieString[2] : null
+}
+
+const parseJWT = (name: string) => {
+  const cookie = getCookie(name)
+  if (cookie) {
+    return JSON.parse(atob(cookie.split('.')[1]))
+  }
+  return false
+}
+
 const UserProvider = ({children}: Props) => {
-  const [data, setData] = React.useState<UserFragmentFragment | null>(null)
-  const [hasHydrated, setHasHydrated] = React.useState(false)
+  const [shouldRefreshToken, setShouldRefreshToken] = React.useState(true)
+  const [refreshToken, {error, loading, data, called}] = useRefreshTokenMutation()
+  const [shouldStartRefreshTimer, setShouldStartRefreshTimer] = React.useState(true)
 
-  // handle initial render (including page refreshes)
-  const hydrateMeta = useHydrateMeQuery()
   React.useEffect(() => {
-    if (hydrateMeta.data) {
-      setData(hydrateMeta.data.hydrateMe)
-      setHasHydrated(true)
+    if (shouldRefreshToken) {
+      refreshToken()
     }
-  }, [hydrateMeta.data])
+  }, [shouldRefreshToken])
 
-  // handle login
+  React.useEffect(() => {
+    const timeout = setTimeout(() => {
+      refreshToken()
+      setShouldStartRefreshTimer(true)
+    }, 1000 * 60 * 9)
+    setShouldStartRefreshTimer(false)
+    return () => clearTimeout(timeout)
+  }, [shouldStartRefreshTimer])
+
   const [login, loginMeta] = useLoginMutation()
-  React.useEffect(() => {
-    if (loginMeta.called && loginMeta.data?.login) {
-      setData(loginMeta.data.login)
-    }
-  }, [loginMeta.called, loginMeta.data])
-
-  // handle logout
   const [logout, logoutMeta] = useLogoutMutation()
-  React.useEffect(() => {
-    if (logoutMeta.called && logoutMeta.data?.logout) {
-      setData(null)
-    }
-  }, [logoutMeta.called, logoutMeta.data])
+  const [switchAccount, switchAccountMeta] = useSwitchAccountMutation()
 
-  const [switchAccount, {data: switchAccountData, client}] = useSwitchAccountMutation()
-  React.useEffect(() => {
-    if (switchAccountData && switchAccountData.switchAccount) {
-      client?.clearStore().then(() => {
-        hydrateMeta.refetch()
-      })
-    }
-  }, [switchAccountData])
+  const user: Token | false = parseJWT('id')
 
   const value: IUserContext = {
-    data,
-    hydrateMeta: {
-      ...hydrateMeta,
-      data,
+    user: user ? user : null,
+    login: options => {
+      return new Promise(async resolve => {
+        const response = await login(options)
+        setShouldRefreshToken(true)
+        resolve(response)
+      })
     },
-    loginMeta: {
-      ...loginMeta,
-      data,
+    loginMeta,
+    logout: options => {
+      return new Promise(async resolve => {
+        const response = await logout(options)
+        setShouldRefreshToken(true)
+        resolve(response)
+      })
     },
-    logoutMeta: {
-      ...logoutMeta,
-      data,
+    logoutMeta,
+    switchAccount: options => {
+      return new Promise(async resolve => {
+        const response = await switchAccount(options)
+        setShouldRefreshToken(true)
+        resolve(response)
+      })
     },
-    login: ({username, password}: {username: string; password: string}) => {
-      login({variables: {username, password}})
-    },
-    logout,
-    switchAccount: (accountId: string) => {
-      switchAccount({variables: {accountId}})
-    },
+    switchAccountMeta,
   }
 
-  if (hydrateMeta.error) {
-    console.log({error: hydrateMeta.error})
-  }
+  const shouldRenderChildren = !loading && called
 
-  const renderChildren = hasHydrated && !hydrateMeta.loading && !hydrateMeta.error
-
-  return <UserContext.Provider value={value}>{renderChildren ? children : null}</UserContext.Provider>
+  return <UserContext.Provider value={value}>{shouldRenderChildren ? children : null}</UserContext.Provider>
 }
 
 export default UserProvider

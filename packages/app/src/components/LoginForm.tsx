@@ -8,10 +8,11 @@ const LoginForm = () => {
   const [login, {data, loading, error}] = useLogin()
 
   if (data) {
-    navigate('/app')
+    if (typeof window !== 'undefined') {
+      navigate('/app')
+    }
     return null
   }
-
   return (
     <Formik
       initialValues={{
@@ -19,7 +20,7 @@ const LoginForm = () => {
         password: '',
       }}
       onSubmit={values => {
-        login(values)
+        login({variables: values})
       }}
     >
       {() => {

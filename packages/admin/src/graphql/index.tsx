@@ -239,8 +239,9 @@ export type Mutation = {
   deleteUser?: Maybe<User>
   updatePassword: Scalars['Boolean']
   updateUserRoles?: Maybe<User>
-  login?: Maybe<User>
+  login?: Maybe<Scalars['Boolean']>
   logout: Scalars['Boolean']
+  refreshToken?: Maybe<Scalars['Boolean']>
   createCoffee?: Maybe<Coffee>
   updateCoffee?: Maybe<Coffee>
   deleteCoffee?: Maybe<Coffee>
@@ -476,7 +477,7 @@ export type Query = {
   getRole?: Maybe<Role>
   listUsers: UserConnection
   getUser?: Maybe<User>
-  hydrateMe?: Maybe<User>
+  me?: Maybe<User>
   listCoffees: CoffeeConnection
   getCoffee?: Maybe<Coffee>
   listCountries: CountryConnection

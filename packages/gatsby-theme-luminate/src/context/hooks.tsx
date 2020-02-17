@@ -7,9 +7,7 @@ export const useUser = () => {
   if (!context) {
     throw new Error('useUser must be wrapped in a UserProvider')
   }
-  const {hydrateMeta, ...remainingContext} = context
-
-  return remainingContext
+  return context
 }
 
 export const useLogin = () => {
@@ -31,7 +29,7 @@ export const useLogout = () => {
     throw new Error('useLogin must be wrapped in a UserProvider')
   }
 
-  const {logout, logoutMeta, data} = context
+  const {logout, logoutMeta} = context
 
   return [logout, logoutMeta] as const
 }
@@ -43,7 +41,7 @@ export const useSwitchAccount = () => {
     throw new Error('useSwitchAccount must be wrapped in a UserProvider')
   }
 
-  const {switchAccount} = context
+  const {switchAccount, switchAccountMeta} = context
 
-  return switchAccount
+  return [switchAccount, switchAccountMeta] as const
 }

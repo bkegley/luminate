@@ -239,8 +239,9 @@ export type Mutation = {
   deleteUser?: Maybe<User>
   updatePassword: Scalars['Boolean']
   updateUserRoles?: Maybe<User>
-  login?: Maybe<User>
+  login?: Maybe<Scalars['Boolean']>
   logout: Scalars['Boolean']
+  refreshToken?: Maybe<Scalars['Boolean']>
   createCoffee?: Maybe<Coffee>
   updateCoffee?: Maybe<Coffee>
   deleteCoffee?: Maybe<Coffee>
@@ -476,7 +477,7 @@ export type Query = {
   getRole?: Maybe<Role>
   listUsers: UserConnection
   getUser?: Maybe<User>
-  hydrateMe?: Maybe<User>
+  me?: Maybe<User>
   listCoffees: CoffeeConnection
   getCoffee?: Maybe<Coffee>
   listCountries: CountryConnection
@@ -790,16 +791,20 @@ export type SwitchAccountMutationVariables = {
 
 export type SwitchAccountMutation = {__typename: 'Mutation'} & Pick<Mutation, 'switchAccount'>
 
-export type HydrateMeQueryVariables = {}
+export type MeQueryVariables = {}
 
-export type HydrateMeQuery = {__typename: 'Query'} & {hydrateMe: Maybe<{__typename: 'User'} & UserFragmentFragment>}
+export type MeQuery = {__typename: 'Query'} & {me: Maybe<{__typename: 'User'} & UserFragmentFragment>}
+
+export type RefreshTokenMutationVariables = {}
+
+export type RefreshTokenMutation = {__typename: 'Mutation'} & Pick<Mutation, 'refreshToken'>
 
 export type LoginMutationVariables = {
   username: Scalars['String']
   password: Scalars['String']
 }
 
-export type LoginMutation = {__typename: 'Mutation'} & {login: Maybe<{__typename: 'User'} & UserFragmentFragment>}
+export type LoginMutation = {__typename: 'Mutation'} & Pick<Mutation, 'login'>
 
 export type LogoutMutationVariables = {}
 
@@ -876,9 +881,9 @@ export type SwitchAccountMutationOptions = ApolloReactCommon.BaseMutationOptions
   SwitchAccountMutation,
   SwitchAccountMutationVariables
 >
-export const HydrateMeDocument = gql`
-  query hydrateMe {
-    hydrateMe {
+export const MeDocument = gql`
+  query me {
+    me {
       ...UserFragment
     }
   }
@@ -886,40 +891,73 @@ export const HydrateMeDocument = gql`
 `
 
 /**
- * __useHydrateMeQuery__
+ * __useMeQuery__
  *
- * To run a query within a React component, call `useHydrateMeQuery` and pass it any options that fit your needs.
- * When your component renders, `useHydrateMeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useMeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMeQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useHydrateMeQuery({
+ * const { data, loading, error } = useMeQuery({
  *   variables: {
  *   },
  * });
  */
-export function useHydrateMeQuery(
-  baseOptions?: ApolloReactHooks.QueryHookOptions<HydrateMeQuery, HydrateMeQueryVariables>,
-) {
-  return ApolloReactHooks.useQuery<HydrateMeQuery, HydrateMeQueryVariables>(HydrateMeDocument, baseOptions)
+export function useMeQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<MeQuery, MeQueryVariables>) {
+  return ApolloReactHooks.useQuery<MeQuery, MeQueryVariables>(MeDocument, baseOptions)
 }
-export function useHydrateMeLazyQuery(
-  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<HydrateMeQuery, HydrateMeQueryVariables>,
-) {
-  return ApolloReactHooks.useLazyQuery<HydrateMeQuery, HydrateMeQueryVariables>(HydrateMeDocument, baseOptions)
+export function useMeLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<MeQuery, MeQueryVariables>) {
+  return ApolloReactHooks.useLazyQuery<MeQuery, MeQueryVariables>(MeDocument, baseOptions)
 }
-export type HydrateMeQueryHookResult = ReturnType<typeof useHydrateMeQuery>
-export type HydrateMeLazyQueryHookResult = ReturnType<typeof useHydrateMeLazyQuery>
-export type HydrateMeQueryResult = ApolloReactCommon.QueryResult<HydrateMeQuery, HydrateMeQueryVariables>
+export type MeQueryHookResult = ReturnType<typeof useMeQuery>
+export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>
+export type MeQueryResult = ApolloReactCommon.QueryResult<MeQuery, MeQueryVariables>
+export const RefreshTokenDocument = gql`
+  mutation refreshToken {
+    refreshToken
+  }
+`
+export type RefreshTokenMutationFn = ApolloReactCommon.MutationFunction<
+  RefreshTokenMutation,
+  RefreshTokenMutationVariables
+>
+
+/**
+ * __useRefreshTokenMutation__
+ *
+ * To run a mutation, you first call `useRefreshTokenMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRefreshTokenMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [refreshTokenMutation, { data, loading, error }] = useRefreshTokenMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useRefreshTokenMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<RefreshTokenMutation, RefreshTokenMutationVariables>,
+) {
+  return ApolloReactHooks.useMutation<RefreshTokenMutation, RefreshTokenMutationVariables>(
+    RefreshTokenDocument,
+    baseOptions,
+  )
+}
+export type RefreshTokenMutationHookResult = ReturnType<typeof useRefreshTokenMutation>
+export type RefreshTokenMutationResult = ApolloReactCommon.MutationResult<RefreshTokenMutation>
+export type RefreshTokenMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  RefreshTokenMutation,
+  RefreshTokenMutationVariables
+>
 export const LoginDocument = gql`
   mutation login($username: String!, $password: String!) {
-    login(username: $username, password: $password) {
-      ...UserFragment
-    }
+    login(username: $username, password: $password)
   }
-  ${UserFragmentFragmentDoc}
 `
 export type LoginMutationFn = ApolloReactCommon.MutationFunction<LoginMutation, LoginMutationVariables>
 

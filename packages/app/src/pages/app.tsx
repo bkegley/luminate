@@ -8,9 +8,9 @@ import Header from '../components/AppHeader'
 import App from '../app'
 
 const AppPage = () => {
-  const {data} = useUser()
+  const {user} = useUser()
 
-  if (!data) {
+  if (!user) {
     if (typeof window !== 'undefined') {
       navigate('/login')
     }
