@@ -102,7 +102,16 @@ const resolvers: Resolvers = {
     addUserToAccount: async (parent, {accountId, userId}, {models, user}) => {
       // TODO: add adminAccess privies on user
       const {User} = models
-      const updatedUser = await User.findByIdAndUpdate(userId, {$addToSet: {accounts: accountId}}, {new: true})
+      const updatedUser = await User.findOneAndUpdate(
+        {_id: userId, 'roles.account': {$ne: accountId}},
+        {
+          $addToSet: {accounts: accountId},
+          $push: {
+            roles: {account: accountId},
+          },
+        },
+        {new: true},
+      )
       return !!updatedUser
     },
     switchAccount: async (parent, {accountId}, {models, user, res}) => {
