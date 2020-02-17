@@ -31,6 +31,7 @@ interface Props {
 }
 
 const getCookie = (name: string) => {
+  if (typeof document === 'undefined') return null
   const cookieString = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)')
   return cookieString ? cookieString[2] : null
 }
