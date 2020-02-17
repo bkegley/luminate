@@ -3,6 +3,7 @@ import {AuthenticationError, ForbiddenError} from 'apollo-server-express'
 import jwt from 'jsonwebtoken'
 import express from 'express'
 import {AuthenticatedUserDocument, RoleDocument} from '@luminate/mongo'
+import {scopes} from './scopes'
 
 const createToken = (
   {userId, accountId}: {userId: string | mongoose.Types.ObjectId; accountId?: string | mongoose.Types.ObjectId},
@@ -53,7 +54,9 @@ const hasRole = (user: AuthenticatedUserDocument | null, roleName: string) => {
   })
 }
 
-const hasScopes = (user: AuthenticatedUserDocument | null, requiredScopes: string[]) => {
+type ValidScopes = keyof typeof scopes
+
+const hasScopes = (user: AuthenticatedUserDocument | null, requiredScopes: ValidScopes[]) => {
   return new Promise((resolve, reject) => {
     if (!user) {
       reject(new AuthenticationError('Please authenticate'))

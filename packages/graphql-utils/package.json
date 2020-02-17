@@ -7,10 +7,11 @@
   "license": "MIT",
   "scripts": {
     "develop": "nodemon --watch src/ -e ts --exec \"npm run start\"",
-    "build": "rimraf ./dist && tsc",
+    "build": "yarn generate-scopes && rimraf ./dist && tsc",
     "start": "node dist/index.js",
     "prestart": "yarn build",
-    "generate-tokens": "node dist/generateTokens"
+    "generate-tokens": "node dist/generateTokens",
+    "generate-scopes": "ts-node src/generateScopeTypes.ts"
   },
   "dependencies": {
     "@luminate/mongo": "*",
