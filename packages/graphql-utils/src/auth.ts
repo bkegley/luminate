@@ -29,7 +29,7 @@ export interface Token extends TokenInput {
 }
 
 const createToken = (res: express.Response, input: TokenInput, secret: string) => {
-  const token = jwt.sign(input, secret, {expiresIn: '10s'})
+  const token = jwt.sign(input, secret, {expiresIn: '10m'})
   res.cookie('id', token, {
     httpOnly: false,
     secure: process.env.NODE_ENV === 'production',
