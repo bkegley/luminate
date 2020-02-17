@@ -4,3 +4,5 @@ dist
 coverage
 public
 .cache
+
+packages/graphql-utils/src/scopes.ts
