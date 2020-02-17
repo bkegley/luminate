@@ -36,12 +36,6 @@ interface UserRole {
   roles: Array<mongoose.Types.ObjectId | string>
 }
 
-export interface AuthenticatedUserDocument extends BaseUserDocument {
-  account?: AccountDocument | undefined
-  accounts?: AccountDocument[] | undefined
-  roles?: RoleDocument[]
-}
-
 type ContactType = 'work' | 'home' | 'mobile' | 'other'
 
 interface ContactInfo {

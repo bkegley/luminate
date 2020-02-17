@@ -1,7 +1,8 @@
 import mongoose from 'mongoose'
 import {parseArgs, TQueryInput} from './parseArgs'
 import {createCursorHash} from './cursor'
-import {AuthenticatedUserDocument, WithAuthenticatedMethods} from '@luminate/mongo'
+import {WithAuthenticatedMethods} from '@luminate/mongo'
+import {Token} from './auth'
 
 interface ArgsInput {
   cursor?: string | null | undefined
@@ -19,7 +20,7 @@ export interface DocumentWithTimestamps extends mongoose.Document {
 interface CreateConnectionResultsArgs<T extends DocumentWithTimestamps> {
   args: ArgsInput
   model: WithAuthenticatedMethods<T>
-  user: AuthenticatedUserDocument | null
+  user: Token | null
 }
 
 type ExtractModelType<T> = T extends mongoose.Model<infer M> ? M : never

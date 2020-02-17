@@ -8,9 +8,9 @@ import express from 'express'
 const app = express()
 
 import {schemas, loaders as loadersObject, Loaders} from './schema'
-import {createMongoConnection, models, AuthenticatedUserDocument} from '@luminate/mongo'
+import {createMongoConnection, models} from '@luminate/mongo'
 import DataLoader from 'dataloader'
-import {LoaderContext, parseUserFromRequest} from '@luminate/graphql-utils'
+import {LoaderContext, parseUserFromRequest, parseToken, Token} from '@luminate/graphql-utils'
 
 const PORT = 3001
 
@@ -19,7 +19,7 @@ export interface Context {
   res: express.Response
   models: typeof models
   loaders: LoaderContext<Loaders>
-  user: AuthenticatedUserDocument | null
+  user: Token | null
 }
 
 const startServer = async () => {

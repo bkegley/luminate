@@ -1,29 +1,28 @@
 import mongoose from 'mongoose'
-import {DocumentWithTimestamps} from '@luminate/graphql-utils'
+import {DocumentWithTimestamps, Token} from '@luminate/graphql-utils'
 import extendSchema from '../extendSchema'
 import {BaseAuthenticatedSchema, AuthenticatedEntity, WithAuthenticatedMethods} from '../baseSchemas'
-import {AuthenticatedUserDocument} from './Person'
 
-const buildAccountReadConditionsForUser = (user: AuthenticatedUserDocument | null) => {
+const buildAccountReadConditionsForUser = (user: Token | null) => {
   return {
     $or: [
       {permissionType: 'public'},
       {
         $or: [
           {
-            _id: user?.accounts,
+            _id: user?.accounts?.map(account => account.id),
           },
           {
             readAccess: {
               $elemMatch: {
-                $in: user ? [user.accounts] : [],
+                $in: user && user.accounts ? [user.accounts.map(account => account.id)] : [],
               },
             },
           },
           {
             adminAccess: {
               $elemMatch: {
-                $in: user ? [user.accounts] : [],
+                $in: user && user.accounts ? [user.accounts.map(account => account.id)] : [],
               },
             },
           },
@@ -33,23 +32,23 @@ const buildAccountReadConditionsForUser = (user: AuthenticatedUserDocument | nul
   }
 }
 
-const buildAccountWriteConditionsForUser = (user: AuthenticatedUserDocument | null) => {
+const buildAccountWriteConditionsForUser = (user: Token | null) => {
   return {
     $or: [
       {
-        _id: user?.accounts,
+        _id: user?.accounts?.map(account => account.id),
       },
       {
         writeAccess: {
           $elemMatch: {
-            $in: user ? [user.accounts] : [],
+            $in: user && user.accounts ? [user.accounts.map(account => account.id)] : [],
           },
         },
       },
       {
         adminAccess: {
           $elemMatch: {
-            $in: user ? [user.accounts] : [],
+            $in: user && user.accounts ? [user.accounts.map(account => account.id)] : [],
           },
         },
       },
@@ -57,16 +56,16 @@ const buildAccountWriteConditionsForUser = (user: AuthenticatedUserDocument | nu
   }
 }
 
-const buildAccountAdminConditionsForUser = (user: AuthenticatedUserDocument | null) => {
+const buildAccountAdminConditionsForUser = (user: Token | null) => {
   return {
     $or: [
       {
-        _id: user?.accounts,
+        _id: user?.accounts?.map(account => account.id),
       },
       {
         adminAccess: {
           $elemMatch: {
-            $in: user ? [user.accounts] : [],
+            $in: user && user.accounts ? [user.accounts.map(account => account.id)] : [],
           },
         },
       },
@@ -92,10 +91,7 @@ const Account = extendSchema(
 )
 
 class AccountAuthenticatedEntity extends AuthenticatedEntity {
-  static findByUser(
-    user: AuthenticatedUserDocument | null,
-    ...args: Parameters<typeof mongoose.Model.find> | undefined[]
-  ) {
+  static findByUser(user: Token | null, ...args: Parameters<typeof mongoose.Model.find> | undefined[]) {
     const [conditions = {}] = args
     const {$or, ...remainingConditions} = conditions
 
