@@ -119,11 +119,13 @@ const resolvers: Resolvers = {
 
       const {User} = models
 
-      interface PopulatedUser extends ReturnType<typeof User.findById> {
+      interface PopulatedUser extends Omit<UserDocument, 'accounts'> {
         accounts: AccountDocument[] | undefined
       }
 
-      const foundUser = ((await User.findById(user.j).populate({path: 'accounts'})) as unknown) as PopulatedUser
+      const foundUser = ((await User.findById(user.jti).populate({
+        path: 'accounts',
+      })) as unknown) as PopulatedUser | null
       if (!foundUser) return false
 
       const newAccount = foundUser.accounts?.find(account => account._id.toString() === accountId.toString())
