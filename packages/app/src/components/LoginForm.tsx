@@ -1,13 +1,13 @@
 /** @jsx jsx */
 import {jsx, Flex, Box, Button, Label, Input} from 'theme-ui'
 import {navigate} from 'gatsby'
-import {useLogin} from '@luminate/gatsby-theme-luminate/src'
+import {useUser} from '@luminate/gatsby-theme-luminate/src'
 import {Formik, Form, Field} from 'formik'
 
 const LoginForm = () => {
-  const [login, {data, loading, error}] = useLogin()
+  const {user, login} = useUser()
 
-  if (data) {
+  if (user) {
     if (typeof window !== 'undefined') {
       navigate('/app')
     }
