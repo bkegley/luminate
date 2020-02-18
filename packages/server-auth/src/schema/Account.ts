@@ -83,6 +83,7 @@ const resolvers: Resolvers = {
         readAccess: [account._id],
         writeAccess: [account._id],
         adminAccess: [account._id],
+        type: ['user'],
       })
       return account
     },
