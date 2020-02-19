@@ -6,6 +6,7 @@ import defaultStyles, {IStyles} from './styles'
 import {Box, Button, Label, Input, Spinner} from 'theme-ui'
 import DownArrow from './DownArrow'
 import debounce from 'lodash.debounce'
+import {DialogDisclosure, DialogStateReturn} from 'reakit'
 
 interface IItem {
   name: string
@@ -19,7 +20,7 @@ export interface ComboboxProps {
   onInputChange?: (inputValue: string | undefined) => void
   onInputChangeTimeout?: number
   onChange?: (values: Partial<UseComboboxState<IItem>>) => void
-  onCreateNew?: (values: Partial<UseComboboxState<IItem>>) => void
+  createNewDialog?: DialogStateReturn
   options?: IItem[]
   loading?: boolean
   styles?: IStyles
@@ -33,12 +34,12 @@ const Combobox = ({
   onInputChange,
   onInputChangeTimeout = 700,
   onChange,
-  onCreateNew,
   loading,
   styles = defaultStyles,
+  createNewDialog,
 }: ComboboxProps) => {
   const itemToString = (option: IItem | null) => (option ? option.name : '')
-  const createNewOptions: IItem[] = onCreateNew ? [{name: '-- Create New --', value: '__createNew'}] : []
+  const createNewOptions: IItem[] = createNewDialog ? [{name: '-- Create New --', value: '__createNew'}] : []
   const initialOptions = options ? createNewOptions.concat(options) : createNewOptions
 
   const [inputOptions, setInputOptions] = React.useState(initialOptions)
@@ -92,14 +93,29 @@ const Combobox = ({
     },
     itemToString,
     onSelectedItemChange: changes => {
-      if (onCreateNew && changes.selectedItem?.value === '__createNew') {
-        onCreateNew(changes)
-      }
       if (onChange && changes.selectedItem?.value !== '__createNew') {
         onChange(changes)
       }
       if (Array.isArray(initialOptions)) {
         setInputValue('')
+      }
+    },
+    stateReducer: (state, actionAndChanges) => {
+      // prevent dropdown from closing on 'Create New' click
+      switch (actionAndChanges.type) {
+        case useCombobox.stateChangeTypes.InputKeyDownEnter:
+        case useCombobox.stateChangeTypes.ItemClick:
+          if (state.selectedItem?.value === '__createNew') {
+            return {
+              ...actionAndChanges.changes,
+              inputValue: '',
+              isOpen: state.isOpen,
+              highlightedIndex: state.highlightedIndex,
+            }
+          }
+          return actionAndChanges.changes
+        default:
+          return actionAndChanges.changes
       }
     },
   })
@@ -134,6 +150,25 @@ const Combobox = ({
             </Box>
           ) : (
             inputOptions.map((option, index) => {
+              if (option.value === '__createNew') {
+                const {onClick, ...remainingProps} = getItemProps({item: option, index})
+                return (
+                  <DialogDisclosure
+                    {...createNewDialog}
+                    as="li"
+                    key={`${option.value}-${index}`}
+                    sx={Object.assign(
+                      {},
+                      styles.item,
+                      highlightedIndex === index ? styles.highlighted : null,
+                      selectedItem?.value === option.value ? styles.selected : null,
+                    )}
+                    {...remainingProps}
+                  >
+                    {option.name}
+                  </DialogDisclosure>
+                )
+              }
               return (
                 <li
                   key={`${option.value}-${index}`}
