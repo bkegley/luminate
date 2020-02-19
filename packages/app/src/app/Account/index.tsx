@@ -5,15 +5,15 @@ import {Select, useUser, Combobox} from '@luminate/gatsby-theme-luminate/src'
 import {useUserSearchQuery, useAddUserToAccountMutation} from '../../graphql'
 
 const AccountPage = () => {
-  const {data, switchAccount} = useUser()
+  const {user, switchAccount} = useUser()
   const {data: users, loading, error, refetch} = useUserSearchQuery({variables: {searchText: ''}})
   const [
     addUserToAccount,
     {data: addUserData, loading: addUserLoading, error: addUserError},
   ] = useAddUserToAccountMutation()
 
-  const accountOptions = data?.accounts.map(account => ({name: account?.name, value: account?.id}))
-  const activeAccount = accountOptions?.find(option => option.value === data?.account?.id)
+  const accountOptions = user?.accounts?.map(account => ({name: account?.name, value: account?.id}))
+  const activeAccount = accountOptions?.find(option => option.value === user?.account?.id)
 
   const userOptions = users?.listUsers?.edges.map(({node}) => ({name: node?.username, value: node?.id}))
 
@@ -26,7 +26,7 @@ const AccountPage = () => {
         initialSelectedItem={activeAccount}
         onChange={value => {
           if (value.selectedItem) {
-            switchAccount(value.selectedItem.value.toString())
+            switchAccount({variables: {accountId: value.selectedItem.value.toString()}})
           }
         }}
       />
@@ -39,7 +39,7 @@ const AccountPage = () => {
           onChange={value => {
             console.log({data, value})
             if (value.selectedItem) {
-              addUserToAccount({variables: {accountId: data?.account.id, userId: value.selectedItem.value}})
+              addUserToAccount({variables: {accountId: user?.account?.id, userId: value.selectedItem.value}})
             }
           }}
         />
