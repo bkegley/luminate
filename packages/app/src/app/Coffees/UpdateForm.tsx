@@ -19,6 +19,7 @@ import {
 import {Formik, Form, Field} from 'formik'
 import {useHistory, useRouteMatch} from 'react-router-dom'
 import Tag from '../../components/Tag'
+import {useDialogState, Dialog, DialogBackdrop} from 'reakit'
 
 interface CoffeeUpdateFormProps {
   coffee: Coffee
@@ -45,6 +46,7 @@ const CoffeeUpdateForm = ({
   onDeleteSuccess,
   onDeleteError,
 }: CoffeeUpdateFormProps) => {
+  const createNewVarietyDialog = useDialogState()
   const history = useHistory()
   const {path} = useRouteMatch()
   const [updateCoffee, {data: updateData, error: updateError, loading: updateLoading}] = useUpdateCoffeeMutation({
@@ -133,121 +135,159 @@ const CoffeeUpdateForm = ({
           })
 
         return (
-          <Form>
-            <Card variant={isModal ? 'blank' : 'primary'} sx={{p: 3, overflow: 'visible'}}>
-              {title ? <Heading>{title}</Heading> : null}
-              {!fields || fields.includes('name') ? (
-                <Box>
-                  <Field name="name" label="Name" as={ThemeField} />
-                </Box>
-              ) : null}
-              {!fields || fields.includes('country') ? (
-                <Box>
-                  <Combobox
-                    label="Country"
-                    // @ts-ignore
-                    options={countryOptions}
-                    // @ts-ignore
-                    initialSelectedItem={countryOptions?.find(option => option.value === values.country)}
-                    loading={countryLoading}
-                    onChange={value => {
-                      if (value.selectedItem) {
-                        if (value.selectedItem.value !== values.country) {
-                          setFieldValue('region', '')
+          <React.Fragment>
+            <DialogBackdrop
+              {...createNewVarietyDialog}
+              sx={{
+                bg: 'rgba(0, 0, 0, 0.5)',
+                position: 'fixed',
+                top: 0,
+                right: 0,
+                bottom: 0,
+                left: 0,
+                zIndex: 999,
+              }}
+            >
+              <Dialog
+                {...createNewVarietyDialog}
+                sx={{
+                  position: 'fixed',
+                  top: '50px',
+                  left: '50%',
+                  bg: 'white',
+                  transform: 'translateX(-50%)',
+                  borderRadius: 'small',
+                  padding: 3,
+                  maxHeight: 'calc(100vh - 100px)',
+                  outline: 0,
+                  zIndex: 999,
+                }}
+              >
+                <div>
+                  <h1>Hey there!</h1>
+                  <button onClick={createNewVarietyDialog.hide}>Hide</button>
+                </div>
+              </Dialog>
+            </DialogBackdrop>
+            <Form>
+              <Card variant={isModal ? 'blank' : 'primary'} sx={{p: 3, overflow: 'visible'}}>
+                {title ? <Heading>{title}</Heading> : null}
+                {!fields || fields.includes('name') ? (
+                  <Box>
+                    <Field name="name" label="Name" as={ThemeField} />
+                  </Box>
+                ) : null}
+                {!fields || fields.includes('country') ? (
+                  <Box>
+                    <Combobox
+                      label="Country"
+                      // @ts-ignore
+                      options={countryOptions}
+                      // @ts-ignore
+                      initialSelectedItem={countryOptions?.find(option => option.value === values.country)}
+                      loading={countryLoading}
+                      onChange={value => {
+                        if (value.selectedItem) {
+                          if (value.selectedItem.value !== values.country) {
+                            setFieldValue('region', '')
+                          }
+                          regionRefetch({
+                            query: [
+                              {field: 'country', operator: 'eq' as OperatorEnum, value: value.selectedItem.value},
+                            ],
+                          })
                         }
-                        regionRefetch({
-                          query: [{field: 'country', operator: 'eq' as OperatorEnum, value: value.selectedItem.value}],
-                        })
+                        setFieldValue('country', value.selectedItem?.value)
+                      }}
+                    />
+                  </Box>
+                ) : null}
+                {!fields || fields.includes('region') ? (
+                  <Box>
+                    <Combobox
+                      label="Region"
+                      // @ts-ignore
+                      options={regionOptions}
+                      // @ts-ignore
+                      initialSelectedItem={regionOptions?.find(option => option.value === values.region)}
+                      loading={regionLoading}
+                      onChange={value => setFieldValue('region', value.selectedItem?.value)}
+                    />
+                  </Box>
+                ) : null}
+                {!fields || fields.includes('varieties') ? (
+                  <Box>
+                    <Combobox
+                      label="Varieties"
+                      // @ts-ignore
+                      options={varietyOptions}
+                      // @ts-ignore
+                      initialSelectedItem={varietyOptions?.find(option => option.value === values.varieties)}
+                      loading={varietyLoading}
+                      onChange={value =>
+                        setFieldValue(
+                          'varieties',
+                          value.selectedItem ? values.varieties.concat(value.selectedItem) : values.varieties,
+                        )
                       }
-                      setFieldValue('country', value.selectedItem?.value)
-                    }}
-                  />
+                      createNewDialog={createNewVarietyDialog}
+                    />
+                    <Flex sx={{flexWrap: 'wrap', px: 2}}>
+                      {values.varieties.map(variety => {
+                        return (
+                          <Box key={variety?.value} sx={{m: 1}}>
+                            <Tag
+                              text={variety?.name || ''}
+                              onCloseClick={() =>
+                                setFieldValue(
+                                  'varieties',
+                                  values.varieties.filter(valueVariety => valueVariety?.value !== variety?.value),
+                                )
+                              }
+                            />
+                          </Box>
+                        )
+                      })}
+                    </Flex>
+                  </Box>
+                ) : null}
+              </Card>
+              <Flex sx={{justifyContent: 'flex-end', mt: 4, px: 3}}>
+                <Box sx={{order: 1}}>
+                  <Button type="submit">Submit</Button>
                 </Box>
-              ) : null}
-              {!fields || fields.includes('region') ? (
-                <Box>
-                  <Combobox
-                    label="Region"
-                    // @ts-ignore
-                    options={regionOptions}
-                    // @ts-ignore
-                    initialSelectedItem={regionOptions?.find(option => option.value === values.region)}
-                    loading={regionLoading}
-                    onChange={value => setFieldValue('region', value.selectedItem?.value)}
-                  />
-                </Box>
-              ) : null}
-              {!fields || fields.includes('varieties') ? (
-                <Box>
-                  <Combobox
-                    label="Varieties"
-                    // @ts-ignore
-                    options={varietyOptions}
-                    // @ts-ignore
-                    initialSelectedItem={varietyOptions?.find(option => option.value === values.varieties)}
-                    loading={varietyLoading}
-                    onChange={value =>
-                      setFieldValue(
-                        'varieties',
-                        value.selectedItem ? values.varieties.concat(value.selectedItem) : values.varieties,
-                      )
+                <Box sx={{mr: 2}}>
+                  <Modal
+                    backdrop={true}
+                    disclosure={
+                      <Button type="button" variant="buttons.text">
+                        Delete
+                      </Button>
                     }
-                  />
-                  <Flex sx={{flexWrap: 'wrap', px: 2}}>
-                    {values.varieties.map(variety => {
+                  >
+                    {dialog => {
                       return (
-                        <Box key={variety?.value} sx={{m: 1}}>
-                          <Tag
-                            text={variety?.name || ''}
-                            onCloseClick={() =>
-                              setFieldValue(
-                                'varieties',
-                                values.varieties.filter(valueVariety => valueVariety?.value !== variety?.value),
-                              )
-                            }
+                        <Box
+                          sx={{
+                            width: ['90vw', '75vw', '50vw'],
+                            maxWidth: '600px',
+                          }}
+                        >
+                          <Alert
+                            heading="Are you sure?"
+                            text="This action cannot be undone."
+                            onCancelClick={dialog.toggle}
+                            onConfirmClick={() => deleteCoffee({variables: {id: coffee.id}})}
+                            variant="danger"
                           />
                         </Box>
                       )
-                    })}
-                  </Flex>
+                    }}
+                  </Modal>
                 </Box>
-              ) : null}
-            </Card>
-            <Flex sx={{justifyContent: 'flex-end', mt: 4, px: 3}}>
-              <Box sx={{order: 1}}>
-                <Button type="submit">Submit</Button>
-              </Box>
-              <Box sx={{mr: 2}}>
-                <Modal
-                  backdrop={true}
-                  disclosure={
-                    <Button type="button" variant="buttons.text">
-                      Delete
-                    </Button>
-                  }
-                >
-                  {dialog => {
-                    return (
-                      <Box
-                        sx={{
-                          width: ['90vw', '75vw', '50vw'],
-                          maxWidth: '600px',
-                        }}
-                      >
-                        <Alert
-                          heading="Are you sure?"
-                          text="This action cannot be undone."
-                          onCancelClick={dialog.toggle}
-                          onConfirmClick={() => deleteCoffee({variables: {id: coffee.id}})}
-                          variant="danger"
-                        />
-                      </Box>
-                    )
-                  }}
-                </Modal>
-              </Box>
-            </Flex>
-          </Form>
+              </Flex>
+            </Form>
+          </React.Fragment>
         )
       }}
     </Formik>
