@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import {jsx, Flex, Box, Badge, Card, Field as ThemeField, Heading, Button, Close} from 'theme-ui'
 import React from 'react'
-import {Combobox, Modal} from '@luminate/gatsby-theme-luminate/src'
+import {Combobox, Modal, useDialogState} from '@luminate/gatsby-theme-luminate/src'
 import Alert from '../../components/Alert'
 import {
   useUpdateCoffeeMutation,
@@ -19,7 +19,6 @@ import {
 import {Formik, Form, Field} from 'formik'
 import {useHistory, useRouteMatch} from 'react-router-dom'
 import Tag from '../../components/Tag'
-import {useDialogState, Dialog, DialogBackdrop} from 'reakit'
 
 interface CoffeeUpdateFormProps {
   coffee: Coffee
@@ -136,39 +135,11 @@ const CoffeeUpdateForm = ({
 
         return (
           <React.Fragment>
-            <DialogBackdrop
-              {...createNewVarietyDialog}
-              sx={{
-                bg: 'rgba(0, 0, 0, 0.5)',
-                position: 'fixed',
-                top: 0,
-                right: 0,
-                bottom: 0,
-                left: 0,
-                zIndex: 999,
-              }}
-            >
-              <Dialog
-                {...createNewVarietyDialog}
-                sx={{
-                  position: 'fixed',
-                  top: '50px',
-                  left: '50%',
-                  bg: 'white',
-                  transform: 'translateX(-50%)',
-                  borderRadius: 'small',
-                  padding: 3,
-                  maxHeight: 'calc(100vh - 100px)',
-                  outline: 0,
-                  zIndex: 999,
-                }}
-              >
-                <div>
-                  <h1>Hey there!</h1>
-                  <button onClick={createNewVarietyDialog.hide}>Hide</button>
-                </div>
-              </Dialog>
-            </DialogBackdrop>
+            <Modal dialog={createNewVarietyDialog}>
+              <div>
+                <h1>Hey ma!</h1>
+              </div>
+            </Modal>
             <Form>
               <Card variant={isModal ? 'blank' : 'primary'} sx={{p: 3, overflow: 'visible'}}>
                 {title ? <Heading>{title}</Heading> : null}
