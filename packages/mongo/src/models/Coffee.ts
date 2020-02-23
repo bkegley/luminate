@@ -12,6 +12,7 @@ export interface CoffeeDocument extends DocumentWithTimestamps {
   farmZone?: mongoose.Types.ObjectId
   varieties?: Array<mongoose.Types.ObjectId>
   elevation: string
+  components: Array<{coffee: mongoose.Types.ObjectId; percentage: number}>
 }
 
 export interface CoffeeModel extends WithAuthenticatedMethods<CoffeeDocument> {}
@@ -48,6 +49,12 @@ const Coffee = extendSchema(
     elevation: {
       type: String,
     },
+    components: [
+      {
+        coffee: mongoose.Types.ObjectId,
+        percentage: Number,
+      },
+    ],
   },
   {timestamps: true},
 )

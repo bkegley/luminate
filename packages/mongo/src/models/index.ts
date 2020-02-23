@@ -7,7 +7,6 @@ import Farm, {FarmDocument, FarmModel} from './Farm'
 import FarmZone, {FarmZoneDocument, FarmZoneModel} from './FarmZone'
 import {Person, User, PersonDocument, PersonModel, UserDocument, UserModel} from './Person'
 import Region, {RegionDocument, RegionModel} from './Region'
-import Roast, {RoastDocument, RoastModel} from './Roast'
 import Role, {RoleDocument, RoleModel} from './Role'
 import Variety, {VarietyDocument, VarietyModel} from './Variety'
 
@@ -21,7 +20,6 @@ export const models = {
   FarmZone,
   Person,
   Region,
-  Roast,
   Role,
   User,
   Variety,
@@ -49,8 +47,6 @@ export {
   UserModel,
   RegionDocument,
   RegionModel,
-  RoastDocument,
-  RoastModel,
   RoleDocument,
   RoleModel,
   VarietyDocument,
