@@ -2,6 +2,7 @@ import Account, {AccountDocument, AccountModel} from './Account'
 import Coffee, {CoffeeDocument, CoffeeModel} from './Coffee'
 import Country, {CountryDocument, CountryModel} from './Country'
 import Cupping, {CuppingDocument, CoffeeCuppingDocument, CuppingModel} from './Cupping'
+import Device, {DeviceDocument, DeviceModel} from './Device'
 import Farm, {FarmDocument, FarmModel} from './Farm'
 import FarmZone, {FarmZoneDocument, FarmZoneModel} from './FarmZone'
 import {Person, User, PersonDocument, PersonModel, UserDocument, UserModel} from './Person'
@@ -15,6 +16,7 @@ export const models = {
   Coffee,
   Country,
   Cupping,
+  Device,
   Farm,
   FarmZone,
   Person,
@@ -35,6 +37,8 @@ export {
   CuppingDocument,
   CuppingModel,
   CoffeeCuppingDocument,
+  DeviceDocument,
+  DeviceModel,
   FarmDocument,
   FarmModel,
   FarmZoneDocument,

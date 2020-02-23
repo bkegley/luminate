@@ -6,6 +6,8 @@ import {loaders as coffeeLoaders, CoffeeLoaders, schema as coffeeSchema} from '.
 
 import {loaders as countryLoaders, CountryLoaders, schema as countrySchema} from './Country'
 
+import {loaders as deviceLoaders, DeviceLoaders, schema as deviceSchema} from './Device'
+
 import {loaders as farmLoaders, FarmLoaders, schema as farmSchema} from './Farm'
 
 import {loaders as farmZoneLoaders, FarmZoneLoaders, schema as farmZoneSchema} from './FarmZone'
@@ -20,6 +22,7 @@ export const schemas = [
   {typeDefs: sharedTypeDefs},
   coffeeSchema,
   countrySchema,
+  deviceSchema,
   farmSchema,
   farmZoneSchema,
   regionSchema,
@@ -30,6 +33,7 @@ export const schemas = [
 export interface Loaders
   extends CoffeeLoaders,
     CountryLoaders,
+    DeviceLoaders,
     FarmLoaders,
     FarmZoneLoaders,
     RegionLoaders,
@@ -39,6 +43,7 @@ export interface Loaders
 export const loaders: Loaders = merge(
   coffeeLoaders,
   countryLoaders,
+  deviceLoaders,
   farmLoaders,
   farmZoneLoaders,
   regionLoaders,

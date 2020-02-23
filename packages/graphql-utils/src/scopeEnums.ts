@@ -3,16 +3,16 @@ export enum ScopeResources {
   COFFEE = 'coffee',
   COUNTRY = 'country',
   CUPPING = 'cupping',
+  DEVICE = 'device',
   FARM = 'farm',
   FARMZONE = 'farmZone',
+  ORGANIZATION = 'organization',
   PERSON = 'person',
   USER = 'user',
-  ORGANIZATION = 'organization',
   REGION = 'region',
   ROLE = 'role',
   SCOPE = 'scope',
   VARIETY = 'variety',
-  SOMETHING = 'something',
 }
 
 export enum ScopeOperations {
