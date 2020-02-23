@@ -12,8 +12,19 @@ const typeDefs = gql`
     region: Region
     varieties: [Variety!]!
     elevation: String
+    components: [CoffeeComponent]
     createdAt: String!
     updatedAt: String!
+  }
+
+  type CoffeeComponent {
+    coffee: CoffeeSummary!
+    percentage: Float!
+  }
+
+  type CoffeeSummary {
+    id: ID!
+    name: String!
   }
 
   type CoffeeConnection {
@@ -34,6 +45,7 @@ const typeDefs = gql`
     farmZone: ID
     varieties: [ID]
     elevation: String
+    components: [ComponentInput]
   }
 
   input UpdateCoffeeInput {
@@ -44,6 +56,12 @@ const typeDefs = gql`
     farmZone: ID
     varieties: [ID]
     elevation: String
+    components: [ComponentInput]
+  }
+
+  input ComponentInput {
+    coffee: ID!
+    percentage: Float!
   }
 
   extend type Query {
@@ -125,6 +143,13 @@ const resolvers: Resolvers = {
       const {varieties} = loaders
       if (!parent.varieties) return []
       return (await Promise.all(parent.varieties.map(id => varieties.load(id)))).filter(Boolean)
+    },
+  },
+  CoffeeComponent: {
+    coffee: async (parent, args, {loaders}) => {
+      const {coffees} = loaders
+      const coffee = coffees.load((parent.coffee as unknown) as string)
+      return coffee
     },
   },
 }
