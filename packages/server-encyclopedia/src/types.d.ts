@@ -1,12 +1,5 @@
 import {GraphQLResolveInfo} from 'graphql'
-import {
-  CoffeeDocument,
-  CountryDocument,
-  FarmDocument,
-  FarmZoneDocument,
-  RegionDocument,
-  VarietyDocument,
-} from '@luminate/mongo'
+import {CoffeeDocument, CountryDocument, FarmDocument, RegionDocument, VarietyDocument} from '@luminate/mongo'
 import {Context} from './startServer'
 export type Maybe<T> = T | null
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
@@ -111,7 +104,6 @@ export type CreateFarmInput = {
 
 export type CreateFarmZoneInput = {
   name: Scalars['String']
-  farm?: Maybe<Scalars['ID']>
 }
 
 export type CreateRegionInput = {
@@ -170,23 +162,6 @@ export type FarmZone = {
   __typename?: 'FarmZone'
   id: Scalars['ID']
   name: Scalars['String']
-  country?: Maybe<Country>
-  region?: Maybe<Region>
-  farm?: Maybe<Farm>
-  createdAt: Scalars['String']
-  updatedAt: Scalars['String']
-}
-
-export type FarmZoneConnection = {
-  __typename?: 'FarmZoneConnection'
-  pageInfo: PageInfo
-  edges: Array<FarmZoneEdge>
-}
-
-export type FarmZoneEdge = {
-  __typename?: 'FarmZoneEdge'
-  cursor: Scalars['String']
-  node: FarmZone
 }
 
 export type Mutation = {
@@ -205,9 +180,9 @@ export type Mutation = {
   createFarm?: Maybe<Farm>
   updateFarm?: Maybe<Farm>
   deleteFarm?: Maybe<Farm>
-  createFarmZone?: Maybe<FarmZone>
-  updateFarmZone?: Maybe<FarmZone>
-  deleteFarmZone?: Maybe<FarmZone>
+  createFarmZone?: Maybe<Farm>
+  updateFarmZone?: Maybe<Farm>
+  deleteFarmZone?: Maybe<Farm>
   createRegion?: Maybe<Region>
   updateRegion?: Maybe<Region>
   deleteRegion?: Maybe<Region>
@@ -282,12 +257,13 @@ export type MutationDeleteFarmArgs = {
 }
 
 export type MutationCreateFarmZoneArgs = {
-  input: CreateFarmZoneInput
+  farmId: Scalars['ID']
+  input?: Maybe<CreateFarmZoneInput>
 }
 
 export type MutationUpdateFarmZoneArgs = {
   id: Scalars['ID']
-  input: UpdateFarmZoneInput
+  input?: Maybe<UpdateFarmZoneInput>
 }
 
 export type MutationDeleteFarmZoneArgs = {
@@ -357,8 +333,6 @@ export type Query = {
   getDevice?: Maybe<Device>
   listFarms: FarmConnection
   getFarm?: Maybe<Farm>
-  listFarmZones: FarmZoneConnection
-  getFarmZone?: Maybe<FarmZone>
   listRegions: RegionConnection
   getRegion?: Maybe<Region>
   listVarieties: VarietyConnection
@@ -402,16 +376,6 @@ export type QueryListFarmsArgs = {
 }
 
 export type QueryGetFarmArgs = {
-  id: Scalars['ID']
-}
-
-export type QueryListFarmZonesArgs = {
-  cursor?: Maybe<Scalars['String']>
-  limit?: Maybe<Scalars['Int']>
-  query?: Maybe<Array<Maybe<QueryInput>>>
-}
-
-export type QueryGetFarmZoneArgs = {
   id: Scalars['ID']
 }
 
@@ -489,8 +453,7 @@ export type UpdateFarmInput = {
 }
 
 export type UpdateFarmZoneInput = {
-  name?: Maybe<Scalars['String']>
-  farm?: Maybe<Scalars['ID']>
+  name: Scalars['String']
 }
 
 export type UpdateRegionInput = {
@@ -615,7 +578,7 @@ export type ResolversTypes = ResolversObject<{
   Country: ResolverTypeWrapper<CountryDocument>
   Region: ResolverTypeWrapper<RegionDocument>
   Farm: ResolverTypeWrapper<FarmDocument>
-  FarmZone: ResolverTypeWrapper<FarmZoneDocument>
+  FarmZone: ResolverTypeWrapper<FarmZone>
   Variety: ResolverTypeWrapper<VarietyDocument>
   CoffeeComponent: ResolverTypeWrapper<CoffeeComponent>
   CoffeeSummary: ResolverTypeWrapper<CoffeeSummary>
@@ -629,10 +592,6 @@ export type ResolversTypes = ResolversObject<{
   Device: ResolverTypeWrapper<Device>
   FarmConnection: ResolverTypeWrapper<Omit<FarmConnection, 'edges'> & {edges: Array<ResolversTypes['FarmEdge']>}>
   FarmEdge: ResolverTypeWrapper<Omit<FarmEdge, 'node'> & {node: ResolversTypes['Farm']}>
-  FarmZoneConnection: ResolverTypeWrapper<
-    Omit<FarmZoneConnection, 'edges'> & {edges: Array<ResolversTypes['FarmZoneEdge']>}
-  >
-  FarmZoneEdge: ResolverTypeWrapper<Omit<FarmZoneEdge, 'node'> & {node: ResolversTypes['FarmZone']}>
   RegionConnection: ResolverTypeWrapper<Omit<RegionConnection, 'edges'> & {edges: Array<ResolversTypes['RegionEdge']>}>
   RegionEdge: ResolverTypeWrapper<Omit<RegionEdge, 'node'> & {node: ResolversTypes['Region']}>
   VarietyConnection: ResolverTypeWrapper<
@@ -674,7 +633,7 @@ export type ResolversParentTypes = ResolversObject<{
   Country: CountryDocument
   Region: RegionDocument
   Farm: FarmDocument
-  FarmZone: FarmZoneDocument
+  FarmZone: FarmZone
   Variety: VarietyDocument
   CoffeeComponent: CoffeeComponent
   CoffeeSummary: CoffeeSummary
@@ -686,8 +645,6 @@ export type ResolversParentTypes = ResolversObject<{
   Device: Device
   FarmConnection: Omit<FarmConnection, 'edges'> & {edges: Array<ResolversParentTypes['FarmEdge']>}
   FarmEdge: Omit<FarmEdge, 'node'> & {node: ResolversParentTypes['Farm']}
-  FarmZoneConnection: Omit<FarmZoneConnection, 'edges'> & {edges: Array<ResolversParentTypes['FarmZoneEdge']>}
-  FarmZoneEdge: Omit<FarmZoneEdge, 'node'> & {node: ResolversParentTypes['FarmZone']}
   RegionConnection: Omit<RegionConnection, 'edges'> & {edges: Array<ResolversParentTypes['RegionEdge']>}
   RegionEdge: Omit<RegionEdge, 'node'> & {node: ResolversParentTypes['Region']}
   VarietyConnection: Omit<VarietyConnection, 'edges'> & {edges: Array<ResolversParentTypes['VarietyEdge']>}
@@ -738,13 +695,6 @@ export type QueryResolvers<
   >
   listFarms?: Resolver<ResolversTypes['FarmConnection'], ParentType, ContextType, QueryListFarmsArgs>
   getFarm?: Resolver<Maybe<ResolversTypes['Farm']>, ParentType, ContextType, RequireFields<QueryGetFarmArgs, 'id'>>
-  listFarmZones?: Resolver<ResolversTypes['FarmZoneConnection'], ParentType, ContextType, QueryListFarmZonesArgs>
-  getFarmZone?: Resolver<
-    Maybe<ResolversTypes['FarmZone']>,
-    ParentType,
-    ContextType,
-    RequireFields<QueryGetFarmZoneArgs, 'id'>
-  >
   listRegions?: Resolver<ResolversTypes['RegionConnection'], ParentType, ContextType, QueryListRegionsArgs>
   getRegion?: Resolver<
     Maybe<ResolversTypes['Region']>,
@@ -848,11 +798,6 @@ export type FarmZoneResolvers<
 > = ResolversObject<{
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>
-  country?: Resolver<Maybe<ResolversTypes['Country']>, ParentType, ContextType>
-  region?: Resolver<Maybe<ResolversTypes['Region']>, ParentType, ContextType>
-  farm?: Resolver<Maybe<ResolversTypes['Farm']>, ParentType, ContextType>
-  createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>
-  updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>
 }>
 
 export type VarietyResolvers<
@@ -939,22 +884,6 @@ export type FarmEdgeResolvers<
 > = ResolversObject<{
   cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   node?: Resolver<ResolversTypes['Farm'], ParentType, ContextType>
-}>
-
-export type FarmZoneConnectionResolvers<
-  ContextType = Context,
-  ParentType extends ResolversParentTypes['FarmZoneConnection'] = ResolversParentTypes['FarmZoneConnection']
-> = ResolversObject<{
-  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>
-  edges?: Resolver<Array<ResolversTypes['FarmZoneEdge']>, ParentType, ContextType>
-}>
-
-export type FarmZoneEdgeResolvers<
-  ContextType = Context,
-  ParentType extends ResolversParentTypes['FarmZoneEdge'] = ResolversParentTypes['FarmZoneEdge']
-> = ResolversObject<{
-  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>
-  node?: Resolver<ResolversTypes['FarmZone'], ParentType, ContextType>
 }>
 
 export type RegionConnectionResolvers<
@@ -1078,19 +1007,19 @@ export type MutationResolvers<
     RequireFields<MutationDeleteFarmArgs, 'id'>
   >
   createFarmZone?: Resolver<
-    Maybe<ResolversTypes['FarmZone']>,
+    Maybe<ResolversTypes['Farm']>,
     ParentType,
     ContextType,
-    RequireFields<MutationCreateFarmZoneArgs, 'input'>
+    RequireFields<MutationCreateFarmZoneArgs, 'farmId'>
   >
   updateFarmZone?: Resolver<
-    Maybe<ResolversTypes['FarmZone']>,
+    Maybe<ResolversTypes['Farm']>,
     ParentType,
     ContextType,
-    RequireFields<MutationUpdateFarmZoneArgs, 'id' | 'input'>
+    RequireFields<MutationUpdateFarmZoneArgs, 'id'>
   >
   deleteFarmZone?: Resolver<
-    Maybe<ResolversTypes['FarmZone']>,
+    Maybe<ResolversTypes['Farm']>,
     ParentType,
     ContextType,
     RequireFields<MutationDeleteFarmZoneArgs, 'id'>
@@ -1159,8 +1088,6 @@ export type Resolvers<ContextType = Context> = ResolversObject<{
   Device?: DeviceResolvers<ContextType>
   FarmConnection?: FarmConnectionResolvers<ContextType>
   FarmEdge?: FarmEdgeResolvers<ContextType>
-  FarmZoneConnection?: FarmZoneConnectionResolvers<ContextType>
-  FarmZoneEdge?: FarmZoneEdgeResolvers<ContextType>
   RegionConnection?: RegionConnectionResolvers<ContextType>
   RegionEdge?: RegionEdgeResolvers<ContextType>
   VarietyConnection?: VarietyConnectionResolvers<ContextType>

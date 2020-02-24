@@ -5,7 +5,6 @@ export enum ScopeResources {
   CUPPING = 'cupping',
   DEVICE = 'device',
   FARM = 'farm',
-  FARMZONE = 'farmZone',
   ORGANIZATION = 'organization',
   PERSON = 'person',
   USER = 'user',

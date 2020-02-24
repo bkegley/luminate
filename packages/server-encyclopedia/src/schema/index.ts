@@ -10,8 +10,6 @@ import {loaders as deviceLoaders, DeviceLoaders, schema as deviceSchema} from '.
 
 import {loaders as farmLoaders, FarmLoaders, schema as farmSchema} from './Farm'
 
-import {loaders as farmZoneLoaders, FarmZoneLoaders, schema as farmZoneSchema} from './FarmZone'
-
 import {loaders as regionLoaders, RegionLoaders, schema as regionSchema} from './Region'
 
 import {loaders as varietyLoaders, VarietyLoaders, schema as varietySchema} from './Variety'
@@ -22,7 +20,6 @@ export const schemas = [
   countrySchema,
   deviceSchema,
   farmSchema,
-  farmZoneSchema,
   regionSchema,
   varietySchema,
 ]
@@ -32,7 +29,6 @@ export interface Loaders
     CountryLoaders,
     DeviceLoaders,
     FarmLoaders,
-    FarmZoneLoaders,
     RegionLoaders,
     VarietyLoaders {}
 
@@ -41,7 +37,6 @@ export const loaders: Loaders = merge(
   countryLoaders,
   deviceLoaders,
   farmLoaders,
-  farmZoneLoaders,
   regionLoaders,
   varietyLoaders,
 )

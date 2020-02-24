@@ -38,7 +38,6 @@ const Coffee = extendSchema(
     },
     farmZone: {
       type: mongoose.Types.ObjectId,
-      ref: 'farmZone',
     },
     varieties: [
       {
