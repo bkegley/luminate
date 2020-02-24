@@ -3,76 +3,6 @@ import {DocumentWithTimestamps, Token} from '@luminate/graphql-utils'
 import extendSchema from '../extendSchema'
 import {BaseAuthenticatedSchema, AuthenticatedEntity, WithAuthenticatedMethods} from '../baseSchemas'
 
-const buildAccountReadConditionsForUser = (user: Token | null) => {
-  return {
-    $or: [
-      {permissionType: 'public'},
-      {
-        $or: [
-          {
-            _id: user?.accounts?.map(account => account.id),
-          },
-          {
-            readAccess: {
-              $elemMatch: {
-                $in: user && user.accounts ? [user.accounts.map(account => account.id)] : [],
-              },
-            },
-          },
-          {
-            adminAccess: {
-              $elemMatch: {
-                $in: user && user.accounts ? [user.accounts.map(account => account.id)] : [],
-              },
-            },
-          },
-        ],
-      },
-    ],
-  }
-}
-
-const buildAccountWriteConditionsForUser = (user: Token | null) => {
-  return {
-    $or: [
-      {
-        _id: user?.accounts?.map(account => account.id),
-      },
-      {
-        writeAccess: {
-          $elemMatch: {
-            $in: user && user.accounts ? [user.accounts.map(account => account.id)] : [],
-          },
-        },
-      },
-      {
-        adminAccess: {
-          $elemMatch: {
-            $in: user && user.accounts ? [user.accounts.map(account => account.id)] : [],
-          },
-        },
-      },
-    ],
-  }
-}
-
-const buildAccountAdminConditionsForUser = (user: Token | null) => {
-  return {
-    $or: [
-      {
-        _id: user?.accounts?.map(account => account.id),
-      },
-      {
-        adminAccess: {
-          $elemMatch: {
-            $in: user && user.accounts ? [user.accounts.map(account => account.id)] : [],
-          },
-        },
-      },
-    ],
-  }
-}
-
 export interface AccountDocument extends DocumentWithTimestamps {
   name: string
 }
@@ -91,18 +21,74 @@ const Account = extendSchema(
 )
 
 class AccountAuthenticatedEntity extends AuthenticatedEntity {
-  static findByUser(user: Token | null, ...args: Parameters<typeof mongoose.Model.find> | undefined[]) {
-    const [conditions = {}] = args
-    const {$or, ...remainingConditions} = conditions
+  static buildReadConditionsForUser(user: Token | null) {
+    return {
+      $or: [
+        {permissionType: 'public'},
+        {
+          $or: [
+            {
+              _id: user?.accounts?.map(account => account.id),
+            },
+            {
+              readAccess: {
+                $elemMatch: {
+                  $in: user && user.account ? [user.account.id] : [],
+                },
+              },
+            },
+            {
+              adminAccess: {
+                $elemMatch: {
+                  $in: user && user.account ? [user.account.id] : [],
+                },
+              },
+            },
+          ],
+        },
+      ],
+    }
+  }
 
-    const authConditions = buildAccountReadConditionsForUser(user)
+  static buildWriteConditionsForUser(user: Token | null) {
+    return {
+      $or: [
+        {
+          _id: user?.account?.id,
+        },
+        {
+          writeAccess: {
+            $elemMatch: {
+              $in: user && user.account ? [user.account.id] : [],
+            },
+          },
+        },
+        {
+          adminAccess: {
+            $elemMatch: {
+              $in: user && user.account ? [user.account.id] : [],
+            },
+          },
+        },
+      ],
+    }
+  }
 
-    const additionalConditions = $or ? {$and: [{$or: $or}, authConditions]} : authConditions
-
-    return this.find({
-      ...remainingConditions,
-      ...additionalConditions,
-    })
+  static buildAdminConditionsForUser(user: Token | null) {
+    return {
+      $or: [
+        {
+          _id: user?.account?.id,
+        },
+        {
+          adminAccess: {
+            $elemMatch: {
+              $in: user && user.account ? [user.account.id] : [],
+            },
+          },
+        },
+      ],
+    }
   }
 }
 

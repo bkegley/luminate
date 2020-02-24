@@ -38,70 +38,70 @@ export const BaseAuthenticatedSchema = new mongoose.Schema({
   },
 })
 
-const buildReadConditionsForUser = (user: Token | null) => {
-  return {
-    $or: [
-      {permissionType: 'public'},
-      {
-        $or: [
-          {
-            readAccess: {
-              $elemMatch: {
-                $in: [user?.account?.id].filter(Boolean),
-              },
-            },
-          },
-          {
-            adminAccess: {
-              $elemMatch: {
-                $in: [user?.account?.id].filter(Boolean),
-              },
-            },
-          },
-        ],
-      },
-    ],
-  }
-}
-
-const buildWriteConditionsForUser = (user: Token | null) => {
-  return {
-    $or: [
-      {
-        writeAccess: {
-          $elemMatch: {
-            $in: [user?.account?.id].filter(Boolean),
-          },
-        },
-      },
-      {
-        adminAccess: {
-          $elemMatch: {
-            $in: [user?.account?.id].filter(Boolean),
-          },
-        },
-      },
-    ],
-  }
-}
-
-const buildAdminConditionsForUser = (user: Token | null) => {
-  return {
-    adminAccess: {
-      $elemMatch: {
-        $in: [user?.account?.id].filter(Boolean),
-      },
-    },
-  }
-}
-
 // TODO: identify args with type overloads
 export class AuthenticatedEntity extends mongoose.Model {
+  static buildReadConditionsForUser(user: Token | null): any {
+    return {
+      $or: [
+        {permissionType: 'public'},
+        {
+          $or: [
+            {
+              readAccess: {
+                $elemMatch: {
+                  $in: [user?.account?.id].filter(Boolean),
+                },
+              },
+            },
+            {
+              adminAccess: {
+                $elemMatch: {
+                  $in: [user?.account?.id].filter(Boolean),
+                },
+              },
+            },
+          ],
+        },
+      ],
+    }
+  }
+
+  static buildWriteConditionsForUser(user: Token | null): any {
+    return {
+      $or: [
+        {
+          writeAccess: {
+            $elemMatch: {
+              $in: [user?.account?.id].filter(Boolean),
+            },
+          },
+        },
+        {
+          adminAccess: {
+            $elemMatch: {
+              $in: [user?.account?.id].filter(Boolean),
+            },
+          },
+        },
+      ],
+    }
+  }
+
+  static buildAdminConditionsForUser(user: Token | null): any {
+    return {
+      adminAccess: {
+        $elemMatch: {
+          $in: [user?.account?.id].filter(Boolean),
+        },
+      },
+    }
+  }
+
   static findByUser(user: Token | null, ...args: Parameters<typeof mongoose.Model.find> | undefined[]) {
     const [conditions = {}] = args
     const {$or, ...remainingConditions} = conditions
 
-    const authConditions = buildReadConditionsForUser(user)
+    const authConditions = this.buildReadConditionsForUser(user)
 
     const additionalConditions = $or ? {$and: [{$or: $or}, authConditions]} : authConditions
 
@@ -116,7 +116,7 @@ export class AuthenticatedEntity extends mongoose.Model {
     id: mongoose.Types.ObjectId | string,
     ...args: Parameters<typeof mongoose.Model.findById> | undefined[]
   ) {
-    return this.findOne({_id: id, ...buildReadConditionsForUser(user)})
+    return this.findOne({_id: id, ...this.buildReadConditionsForUser(user)})
   }
 
   static findOneAndUpdateByUser(
@@ -126,7 +126,7 @@ export class AuthenticatedEntity extends mongoose.Model {
     const [conditions = {}, input = {}, options = {}] = args
     const {$or, ...remainingConditions} = conditions
 
-    const authConditions = buildWriteConditionsForUser(user)
+    const authConditions = this.buildWriteConditionsForUser(user)
 
     const additionalConditions = $or ? {$and: [{$or: $or}, authConditions]} : authConditions
 
@@ -154,7 +154,7 @@ export class AuthenticatedEntity extends mongoose.Model {
 
   static findByIdAndUpdateByUser(user: Token | null, ...args: Parameters<typeof mongoose.Model.findByIdAndUpdate>) {
     const [id, update = {}, options] = args
-    return this.findOneAndUpdate({_id: id, ...buildWriteConditionsForUser(user)}, update, options)
+    return this.findOneAndUpdate({_id: id, ...this.buildWriteConditionsForUser(user)}, update, options)
   }
 
   /**
@@ -166,7 +166,7 @@ export class AuthenticatedEntity extends mongoose.Model {
     const [id, options] = args
     console.log({user, id, options})
     return this.findOneAndUpdate(
-      {_id: id, ...buildWriteConditionsForUser(user)},
+      {_id: id, ...this.buildWriteConditionsForUser(user)},
       {
         $pull: {
           readAccess: user?.account?.id,
@@ -197,7 +197,7 @@ export class AuthenticatedEntity extends mongoose.Model {
     return this.findOneAndUpdate(
       {
         _id: entityId,
-        ...buildWriteConditionsForUser(user),
+        ...this.buildWriteConditionsForUser(user),
       },
       {
         $push: push,
@@ -211,7 +211,7 @@ export class AuthenticatedEntity extends mongoose.Model {
     return this.findOneAndUpdate(
       {
         _id: entityId,
-        ...buildAdminConditionsForUser(user),
+        ...this.buildAdminConditionsForUser(user),
       },
       {
         $set: {
