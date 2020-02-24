@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 import extendSchema from '../extendSchema'
 import bcrypt from 'bcrypt'
 const saltRounds = 10
-import {DocumentWithTimestamps} from '@luminate/graphql-utils'
+import {DocumentWithTimestamps, Token} from '@luminate/graphql-utils'
 import {BaseAuthenticatedSchema, AuthenticatedEntity, WithAuthenticatedMethods} from '../baseSchemas'
 
 export interface PersonDocument extends DocumentWithTimestamps {
@@ -151,8 +151,92 @@ UserSchema.pre<UserDocument>('save', async function(next) {
   next()
 })
 
+class UserAuthenticatedEntity extends AuthenticatedEntity {
+  static buildReadConditionsForUser(user: Token | null) {
+    return {
+      $or: [
+        {permissionType: 'public'},
+        {
+          $or: [
+            {
+              accounts: {
+                $elemMatch: {
+                  $in: user && user.account ? [user.account.id] : [],
+                },
+              },
+            },
+            {
+              readAccess: {
+                $elemMatch: {
+                  $in: user && user.account ? [user.account.id] : [],
+                },
+              },
+            },
+            {
+              adminAccess: {
+                $elemMatch: {
+                  $in: user && user.account ? [user.account.id] : [],
+                },
+              },
+            },
+          ],
+        },
+      ],
+    }
+  }
+
+  static buildWriteConditionsForUser(user: Token | null) {
+    return {
+      $or: [
+        {
+          accounts: {
+            $elemMatch: {
+              $in: user && user.account ? [user.account.id] : [],
+            },
+          },
+        },
+        {
+          writeAccess: {
+            $elemMatch: {
+              $in: user && user.account ? [user.account.id] : [],
+            },
+          },
+        },
+        {
+          adminAccess: {
+            $elemMatch: {
+              $in: user && user.account ? [user.account.id] : [],
+            },
+          },
+        },
+      ],
+    }
+  }
+
+  static buildAdminConditionsForUser(user: Token | null) {
+    return {
+      $or: [
+        {
+          accounts: {
+            $elemMatch: {
+              $in: user && user.account ? [user.account.id] : [],
+            },
+          },
+        },
+        {
+          adminAccess: {
+            $elemMatch: {
+              $in: user && user.account ? [user.account.id] : [],
+            },
+          },
+        },
+      ],
+    }
+  }
+}
+
 PersonSchema.loadClass(AuthenticatedEntity)
-UserSchema.loadClass(AuthenticatedEntity)
+UserSchema.loadClass(UserAuthenticatedEntity)
 
 export const Person = mongoose.model<PersonDocument, PersonModel>('person', PersonSchema, 'people')
 export const User = mongoose.model<UserDocument, UserModel>('user', UserSchema, 'people')

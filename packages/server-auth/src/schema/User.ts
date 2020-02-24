@@ -83,47 +83,8 @@ const resolvers: Resolvers = {
   Query: {
     listUsers: async (parent, args, {models, user}) => {
       const {User} = models
-      const {cursor, limit, query, ...remainingArgs} = args
-      const cursorWithDefault = cursor || createCursorHash(new Date())
-      const limitWithDefault = limit || 100
-
-      const parsedArgs = parseArgs({cursor: cursorWithDefault, query})
-      const resultsPlusOne = await User.find({...parsedArgs, type: 'user'}, null, {
-        sort: '-updatedAt',
-        limit: limitWithDefault + 1,
-      })
-
-      if (!resultsPlusOne.length) {
-        return {
-          pageInfo: {
-            hasNextPage: false,
-            nextCursor: null,
-            previousCursor: '',
-          },
-          edges: [],
-        }
-      }
-
-      const hasNextPage = resultsPlusOne.length > limitWithDefault
-      const documents = hasNextPage ? resultsPlusOne.slice(0, -1) : resultsPlusOne
-
-      const nextCursor = hasNextPage ? createCursorHash(resultsPlusOne[resultsPlusOne.length - 1].updatedAt) : null
-
-      const data = {
-        pageInfo: {
-          hasNextPage,
-          nextCursor,
-          previousCursor: '',
-        },
-        edges: documents.map(document => {
-          return {
-            node: document,
-            cursor: createCursorHash(document.updatedAt),
-          }
-        }),
-      }
-
-      return data
+      const results = await createConnectionResults({user, args, model: User})
+      return results
     },
     getUser: async (parent, {id}, {loaders}, info) => {
       const {users} = loaders
