@@ -67,16 +67,19 @@ const resolvers: Resolvers = {
       const account = await Account.create({name, type: ['account']})
 
       const ownerRole = await Role.findOne({name: 'Owner'})
+
       if (!ownerRole) {
+        await Account.findByIdAndDelete(account._id)
         return null
       }
+
       const user = await User.create({
         username,
         password,
         roles: [
           {
             account: account._id,
-            roles: [ownerRole._id],
+            roles: [ownerRole?._id].filter(Boolean),
           },
         ],
         accounts: [account._id],
@@ -84,7 +87,15 @@ const resolvers: Resolvers = {
         writeAccess: [account._id],
         adminAccess: [account._id],
         type: ['user'],
+      }).catch(async () => {
+        await Account.findByIdAndDelete(account._id)
+        return null
       })
+
+      if (!user) {
+        return null
+      }
+
       return account
     },
     updateAccount: async (parent, {id, input}, {models, user}) => {
