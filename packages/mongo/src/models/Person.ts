@@ -4,8 +4,6 @@ import bcrypt from 'bcrypt'
 const saltRounds = 10
 import {DocumentWithTimestamps} from '@luminate/graphql-utils'
 import {BaseAuthenticatedSchema, AuthenticatedEntity, WithAuthenticatedMethods} from '../baseSchemas'
-import {AccountDocument} from './Account'
-import {RoleDocument} from './Role'
 
 export interface PersonDocument extends DocumentWithTimestamps {
   firstName?: string
