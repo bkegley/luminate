@@ -11,6 +11,13 @@ export interface FarmDocument extends DocumentWithTimestamps {
 
 export interface FarmModel extends WithAuthenticatedMethods<FarmDocument> {}
 
+const FarmZone = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+})
+
 const Farm = extendSchema(
   BaseAuthenticatedSchema,
   {
@@ -26,6 +33,7 @@ const Farm = extendSchema(
       type: mongoose.Types.ObjectId,
       ref: 'region',
     },
+    farmZones: [FarmZone],
   },
   {timestamps: true},
 )

@@ -64,7 +64,6 @@ const serverGenerates = {
         Coffee: '@luminate/mongo#CoffeeDocument',
         Country: '@luminate/mongo#CountryDocument',
         Farm: '@luminate/mongo#FarmDocument',
-        FarmZone: '@luminate/mongo#FarmZoneDocument',
         Region: '@luminate/mongo#RegionDocument',
         Variety: '@luminate/mongo#VarietyDocument',
       },

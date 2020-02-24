@@ -1,7 +1,7 @@
 import {gql, ApolloError} from 'apollo-server-express'
 import {createConnectionResults, LoaderFn} from '@luminate/graphql-utils'
 import {Resolvers} from '../types'
-import {FarmDocument, FarmZoneDocument} from '@luminate/mongo'
+import {FarmDocument} from '@luminate/mongo'
 
 const typeDefs = gql`
   type Farm {
@@ -12,6 +12,11 @@ const typeDefs = gql`
     farmZones: [FarmZone!]!
     createdAt: String!
     updatedAt: String!
+  }
+
+  type FarmZone {
+    id: ID!
+    name: String!
   }
 
   type FarmConnection {
@@ -36,6 +41,14 @@ const typeDefs = gql`
     region: ID
   }
 
+  input CreateFarmZoneInput {
+    name: String!
+  }
+
+  input UpdateFarmZoneInput {
+    name: String!
+  }
+
   extend type Query {
     listFarms(cursor: String, limit: Int, query: [QueryInput]): FarmConnection!
     getFarm(id: ID!): Farm
@@ -45,6 +58,9 @@ const typeDefs = gql`
     createFarm(input: CreateFarmInput!): Farm
     updateFarm(id: ID!, input: UpdateFarmInput!): Farm
     deleteFarm(id: ID!): Farm
+    createFarmZone(farmId: ID!, input: CreateFarmZoneInput): Farm
+    updateFarmZone(id: ID!, input: UpdateFarmZoneInput): Farm
+    deleteFarmZone(id: ID!): Farm
   }
 `
 
@@ -79,6 +95,31 @@ const resolvers: Resolvers = {
       }
       return farm
     },
+    createFarmZone: async (parent, {farmId, input}, {user, models}) => {
+      const {Farm} = models
+      const farm = await Farm.findByIdAndUpdateByUser(user, farmId, {$push: {farmZones: input}}, {new: true})
+      return farm
+    },
+    updateFarmZone: async (parent, {id, input}, {user, models}) => {
+      const {Farm} = models
+      const farm = await Farm.findOneAndUpdateByUser(
+        user,
+        {'farmZones._id': id},
+        {$set: {'farmZones.$': {_id: id, ...input}}},
+        {new: true},
+      )
+      return farm
+    },
+    deleteFarmZone: async (parent, {id}, {user, models}) => {
+      const {Farm} = models
+      const farm = await Farm.findOneAndUpdateByUser(
+        user,
+        {'farmZones._id': id},
+        {$pull: {farmZones: {_id: id}}},
+        {new: true},
+      )
+      return farm
+    },
   },
   Farm: {
     country: async (parent, args, {loaders}) => {
@@ -91,16 +132,11 @@ const resolvers: Resolvers = {
       if (!parent.region) return null
       return regions.load(parent.region)
     },
-    farmZones: async (parent, args, {models, loaders}) => {
-      const {farmZonesOfFarm} = loaders
-      return farmZonesOfFarm.load(parent.id)
-    },
   },
 }
 
 export interface FarmLoaders {
   farms: LoaderFn<FarmDocument>
-  farmZonesOfFarm: LoaderFn<FarmZoneDocument[]>
 }
 
 export const loaders: FarmLoaders = {
@@ -114,13 +150,6 @@ export const loaders: FarmLoaders = {
         return farm
       })
       .filter(Boolean)
-  },
-  farmZonesOfFarm: async (ids, models, user) => {
-    const {FarmZone} = models
-    const farmZones = await FarmZone.findByUser(user, {farm: ids})
-    return ids.map(id => {
-      return farmZones.filter((farmZone: any) => farmZone.farm && farmZone.farm.toString() === id)
-    })
   },
 }
 
