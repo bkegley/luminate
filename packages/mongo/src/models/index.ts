@@ -4,6 +4,7 @@ import Country, {CountryDocument, CountryModel} from './Country'
 import Cupping, {CuppingDocument, CoffeeCuppingDocument, CuppingModel} from './Cupping'
 import Device, {DeviceDocument, DeviceModel} from './Device'
 import Farm, {FarmDocument, FarmModel} from './Farm'
+import Note, {NoteDocument, NoteModel} from './Note'
 import {Person, User, PersonDocument, PersonModel, UserDocument, UserModel} from './Person'
 import Region, {RegionDocument, RegionModel} from './Region'
 import Role, {RoleDocument, RoleModel} from './Role'
@@ -16,6 +17,7 @@ export const models = {
   Cupping,
   Device,
   Farm,
+  Note,
   Person,
   Region,
   Role,
@@ -37,6 +39,8 @@ export {
   DeviceModel,
   FarmDocument,
   FarmModel,
+  NoteDocument,
+  NoteModel,
   PersonDocument,
   PersonModel,
   UserDocument,
