@@ -1,6 +1,6 @@
 import {gql} from 'apollo-server-express'
 
-export const sharedTypeDefs = gql`
+export const typeDefs = gql`
   type PageInfo {
     hasNextPage: Boolean
     prevCursor: String
