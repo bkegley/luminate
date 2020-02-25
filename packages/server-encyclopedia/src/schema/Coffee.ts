@@ -13,7 +13,7 @@ const typeDefs = gql`
     varieties: [Variety!]!
     elevation: String
     components: [CoffeeComponent]
-    notes: [Note]
+    notes(fields: [String]): [Note]
     createdAt: String!
     updatedAt: String!
   }
@@ -135,9 +135,10 @@ const resolvers: Resolvers = {
       if (!parent.country) return null
       return countries.load(parent.country)
     },
-    notes: async (parent, args, {loaders}) => {
+    notes: async (parent, {fields}, {loaders}) => {
       const {notesOfEntity} = loaders
-      return notesOfEntity.load(parent._id)
+      const notes = await notesOfEntity.load(parent._id)
+      return fields ? notes.filter(note => fields.includes(note.field)) : notes
     },
     region: async (parent, args, {loaders}) => {
       const {regions} = loaders

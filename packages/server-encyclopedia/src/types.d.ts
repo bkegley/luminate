@@ -35,6 +35,10 @@ export type Coffee = {
   updatedAt: Scalars['String']
 }
 
+export type CoffeeNotesArgs = {
+  fields?: Maybe<Array<Maybe<Scalars['String']>>>
+}
+
 export type CoffeeComponent = {
   __typename?: 'CoffeeComponent'
   coffee: CoffeeSummary
@@ -803,7 +807,7 @@ export type CoffeeResolvers<
   varieties?: Resolver<Array<ResolversTypes['Variety']>, ParentType, ContextType>
   elevation?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   components?: Resolver<Maybe<Array<Maybe<ResolversTypes['CoffeeComponent']>>>, ParentType, ContextType>
-  notes?: Resolver<Maybe<Array<Maybe<ResolversTypes['Note']>>>, ParentType, ContextType>
+  notes?: Resolver<Maybe<Array<Maybe<ResolversTypes['Note']>>>, ParentType, ContextType, CoffeeNotesArgs>
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>
 }>
