@@ -2,10 +2,12 @@ import merge from 'lodash.merge'
 
 import {typeDefs as sharedTypeDefs} from '@luminate/graphql-utils'
 
-import {loaders as cuppingLoaders, CuppingLoaders, schema as cuppingSchema} from './Cupping'
+import {loaders as cuppingSessionLoaders, CuppingSessionLoaders, schema as cuppingSessionSchema} from './CuppingSession'
 
-export const schemas = [{typeDefs: sharedTypeDefs}, cuppingSchema]
+import {schema as scoreSheetSchema} from './ScoreSheet'
 
-export interface Loaders extends CuppingLoaders {}
+export const schemas = [{typeDefs: sharedTypeDefs}, cuppingSessionSchema, scoreSheetSchema]
 
-export const loaders: Loaders = merge(cuppingLoaders)
+export interface Loaders extends CuppingSessionLoaders {}
+
+export const loaders: Loaders = merge(cuppingSessionLoaders)

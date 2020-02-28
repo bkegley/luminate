@@ -1,7 +1,12 @@
 import Account, {AccountDocument, AccountModel} from './Account'
 import Coffee, {CoffeeDocument, CoffeeModel} from './Coffee'
 import Country, {CountryDocument, CountryModel} from './Country'
-import Cupping, {CuppingDocument, CoffeeCuppingDocument, CuppingModel} from './Cupping'
+import CuppingSession, {
+  CuppingSessionDocument,
+  SessionCoffeeDocument,
+  CuppingSessionModel,
+  ScoreSheetDocument,
+} from './CuppingSession'
 import Device, {DeviceDocument, DeviceModel} from './Device'
 import Farm, {FarmDocument, FarmModel} from './Farm'
 import Note, {NoteDocument, NoteModel} from './Note'
@@ -14,7 +19,7 @@ export const models = {
   Account,
   Coffee,
   Country,
-  Cupping,
+  CuppingSession,
   Device,
   Farm,
   Note,
@@ -32,9 +37,8 @@ export {
   CoffeeModel,
   CountryDocument,
   CountryModel,
-  CuppingDocument,
-  CuppingModel,
-  CoffeeCuppingDocument,
+  CuppingSessionDocument,
+  CuppingSessionModel,
   DeviceDocument,
   DeviceModel,
   FarmDocument,
@@ -49,6 +53,8 @@ export {
   RegionModel,
   RoleDocument,
   RoleModel,
+  SessionCoffeeDocument,
+  ScoreSheetDocument,
   VarietyDocument,
   VarietyModel,
 }
