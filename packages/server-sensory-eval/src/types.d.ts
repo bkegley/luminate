@@ -1,8 +1,7 @@
 import {GraphQLResolveInfo} from 'graphql'
-import {CuppingDocument, CoffeeCuppingDocument} from '@luminate/mongo'
+import {CuppingSessionDocument, SessionCoffeeDocument} from '@luminate/mongo'
 import {Context} from './startServer'
 export type Maybe<T> = T | null
-export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
 export type RequireFields<T, K extends keyof T> = {[X in Exclude<keyof T, K>]?: T[X]} & {[P in K]-?: NonNullable<T[P]>}
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -19,59 +18,72 @@ export type Coffee = {
   id: Scalars['ID']
 }
 
-export type CreateCuppingInput = {
+export type CreateCuppingSessionInput = {
+  internalId?: Maybe<Scalars['ID']>
   description?: Maybe<Scalars['String']>
 }
 
-export type Cupping = {
-  __typename?: 'Cupping'
+export type CreateScoreSheetInput = {
+  totalScore?: Maybe<Scalars['Float']>
+}
+
+export type CuppingSession = {
+  __typename?: 'CuppingSession'
   id: Scalars['ID']
+  internalId?: Maybe<Scalars['ID']>
   description?: Maybe<Scalars['String']>
-  coffees: Array<CuppingCoffee>
+  sessionCoffees?: Maybe<Array<Maybe<SessionCoffee>>>
   createdAt: Scalars['String']
   updatedAt: Scalars['String']
 }
 
-export type CuppingCoffee = {
-  __typename?: 'CuppingCoffee'
-  sessionCoffeeId: Scalars['ID']
-  coffee: Coffee
-}
-
-export type CuppingCoffeeInput = {
-  sessionCoffeeId: Scalars['ID']
-  coffee?: Maybe<Scalars['ID']>
-}
-
-export type CuppingConnection = {
-  __typename?: 'CuppingConnection'
+export type CuppingSessionConnection = {
+  __typename?: 'CuppingSessionConnection'
   pageInfo: PageInfo
-  edges: Array<CuppingEdge>
+  edges: Array<CuppingSessionEdge>
 }
 
-export type CuppingEdge = {
-  __typename?: 'CuppingEdge'
+export type CuppingSessionEdge = {
+  __typename?: 'CuppingSessionEdge'
   cursor: Scalars['String']
-  node: Cupping
+  node: CuppingSession
 }
 
 export type Mutation = {
   __typename?: 'Mutation'
-  createCupping?: Maybe<Cupping>
-  updateCupping?: Maybe<Cupping>
-  deleteCupping?: Maybe<Cupping>
+  createCuppingSession?: Maybe<CuppingSession>
+  updateCuppingSession?: Maybe<CuppingSession>
+  deleteCuppingSession?: Maybe<CuppingSession>
+  createScoreSheet?: Maybe<ScoreSheet>
+  updateScoreSheet?: Maybe<ScoreSheet>
+  deleteScoreSheet?: Maybe<ScoreSheet>
 }
 
-export type MutationCreateCuppingArgs = {
-  input: CreateCuppingInput
+export type MutationCreateCuppingSessionArgs = {
+  input: CreateCuppingSessionInput
 }
 
-export type MutationUpdateCuppingArgs = {
+export type MutationUpdateCuppingSessionArgs = {
   id: Scalars['ID']
-  input: UpdateCuppingInput
+  input: UpdateCuppingSessionInput
 }
 
-export type MutationDeleteCuppingArgs = {
+export type MutationDeleteCuppingSessionArgs = {
+  id: Scalars['ID']
+}
+
+export type MutationCreateScoreSheetArgs = {
+  cuppingSessionId: Scalars['ID']
+  sampleNumber: Scalars['ID']
+  input: CreateScoreSheetInput
+}
+
+export type MutationUpdateScoreSheetArgs = {
+  id: Scalars['ID']
+  input: UpdateScoreSheetInput
+}
+
+export type MutationDeleteScoreSheetArgs = {
   id: Scalars['ID']
 }
 
@@ -95,17 +107,17 @@ export type PageInfo = {
 
 export type Query = {
   __typename?: 'Query'
-  listCuppings: CuppingConnection
-  getCupping?: Maybe<Cupping>
+  listCuppingSessions: CuppingSessionConnection
+  getCuppingSession?: Maybe<CuppingSession>
 }
 
-export type QueryListCuppingsArgs = {
+export type QueryListCuppingSessionsArgs = {
   cursor?: Maybe<Scalars['String']>
   limit?: Maybe<Scalars['Int']>
   query?: Maybe<Array<Maybe<QueryInput>>>
 }
 
-export type QueryGetCuppingArgs = {
+export type QueryGetCuppingSessionArgs = {
   id: Scalars['ID']
 }
 
@@ -115,9 +127,34 @@ export type QueryInput = {
   operator?: Maybe<OperatorEnum>
 }
 
-export type UpdateCuppingInput = {
+export type ScoreSheet = {
+  __typename?: 'ScoreSheet'
+  id: Scalars['ID']
+  totalScore?: Maybe<Scalars['Float']>
+  createdAt: Scalars['String']
+  updatedAt: Scalars['String']
+}
+
+export type SessionCoffee = {
+  __typename?: 'SessionCoffee'
+  sampleNumber: Scalars['ID']
+  coffee: Coffee
+  scoreSheets?: Maybe<Array<Maybe<ScoreSheet>>>
+}
+
+export type SessionCoffeeInput = {
+  sampleNumber: Scalars['ID']
+  coffee?: Maybe<Scalars['ID']>
+}
+
+export type UpdateCuppingSessionInput = {
+  internalId?: Maybe<Scalars['ID']>
   description?: Maybe<Scalars['String']>
-  coffees?: Maybe<Array<Maybe<CuppingCoffeeInput>>>
+  sessionCoffees?: Maybe<Array<Maybe<SessionCoffeeInput>>>
+}
+
+export type UpdateScoreSheetInput = {
+  totalScore?: Maybe<Scalars['Float']>
 }
 
 export type WithIndex<TObject> = TObject & Record<string, any>
@@ -202,20 +239,22 @@ export type ResolversTypes = ResolversObject<{
   Int: ResolverTypeWrapper<Scalars['Int']>
   QueryInput: QueryInput
   OperatorEnum: OperatorEnum
-  CuppingConnection: ResolverTypeWrapper<
-    Omit<CuppingConnection, 'edges'> & {edges: Array<ResolversTypes['CuppingEdge']>}
-  >
+  CuppingSessionConnection: ResolverTypeWrapper<CuppingSessionConnection>
   PageInfo: ResolverTypeWrapper<PageInfo>
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>
-  CuppingEdge: ResolverTypeWrapper<Omit<CuppingEdge, 'node'> & {node: ResolversTypes['Cupping']}>
-  Cupping: ResolverTypeWrapper<CuppingDocument>
+  CuppingSessionEdge: ResolverTypeWrapper<CuppingSessionEdge>
+  CuppingSession: ResolverTypeWrapper<CuppingSession>
   ID: ResolverTypeWrapper<Scalars['ID']>
-  CuppingCoffee: ResolverTypeWrapper<CoffeeCuppingDocument>
+  SessionCoffee: ResolverTypeWrapper<SessionCoffee>
   Coffee: ResolverTypeWrapper<Coffee>
+  ScoreSheet: ResolverTypeWrapper<ScoreSheet>
+  Float: ResolverTypeWrapper<Scalars['Float']>
   Mutation: ResolverTypeWrapper<{}>
-  CreateCuppingInput: CreateCuppingInput
-  UpdateCuppingInput: UpdateCuppingInput
-  CuppingCoffeeInput: CuppingCoffeeInput
+  CreateCuppingSessionInput: CreateCuppingSessionInput
+  UpdateCuppingSessionInput: UpdateCuppingSessionInput
+  SessionCoffeeInput: SessionCoffeeInput
+  CreateScoreSheetInput: CreateScoreSheetInput
+  UpdateScoreSheetInput: UpdateScoreSheetInput
 }>
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -225,39 +264,48 @@ export type ResolversParentTypes = ResolversObject<{
   Int: Scalars['Int']
   QueryInput: QueryInput
   OperatorEnum: OperatorEnum
-  CuppingConnection: Omit<CuppingConnection, 'edges'> & {edges: Array<ResolversParentTypes['CuppingEdge']>}
+  CuppingSessionConnection: CuppingSessionConnection
   PageInfo: PageInfo
   Boolean: Scalars['Boolean']
-  CuppingEdge: Omit<CuppingEdge, 'node'> & {node: ResolversParentTypes['Cupping']}
-  Cupping: CuppingDocument
+  CuppingSessionEdge: CuppingSessionEdge
+  CuppingSession: CuppingSession
   ID: Scalars['ID']
-  CuppingCoffee: CoffeeCuppingDocument
+  SessionCoffee: SessionCoffee
   Coffee: Coffee
+  ScoreSheet: ScoreSheet
+  Float: Scalars['Float']
   Mutation: {}
-  CreateCuppingInput: CreateCuppingInput
-  UpdateCuppingInput: UpdateCuppingInput
-  CuppingCoffeeInput: CuppingCoffeeInput
+  CreateCuppingSessionInput: CreateCuppingSessionInput
+  UpdateCuppingSessionInput: UpdateCuppingSessionInput
+  SessionCoffeeInput: SessionCoffeeInput
+  CreateScoreSheetInput: CreateScoreSheetInput
+  UpdateScoreSheetInput: UpdateScoreSheetInput
 }>
 
 export type QueryResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']
 > = ResolversObject<{
-  listCuppings?: Resolver<ResolversTypes['CuppingConnection'], ParentType, ContextType, QueryListCuppingsArgs>
-  getCupping?: Resolver<
-    Maybe<ResolversTypes['Cupping']>,
+  listCuppingSessions?: Resolver<
+    ResolversTypes['CuppingSessionConnection'],
     ParentType,
     ContextType,
-    RequireFields<QueryGetCuppingArgs, 'id'>
+    QueryListCuppingSessionsArgs
+  >
+  getCuppingSession?: Resolver<
+    Maybe<ResolversTypes['CuppingSession']>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryGetCuppingSessionArgs, 'id'>
   >
 }>
 
-export type CuppingConnectionResolvers<
+export type CuppingSessionConnectionResolvers<
   ContextType = Context,
-  ParentType extends ResolversParentTypes['CuppingConnection'] = ResolversParentTypes['CuppingConnection']
+  ParentType extends ResolversParentTypes['CuppingSessionConnection'] = ResolversParentTypes['CuppingSessionConnection']
 > = ResolversObject<{
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>
-  edges?: Resolver<Array<ResolversTypes['CuppingEdge']>, ParentType, ContextType>
+  edges?: Resolver<Array<ResolversTypes['CuppingSessionEdge']>, ParentType, ContextType>
 }>
 
 export type PageInfoResolvers<
@@ -269,36 +317,38 @@ export type PageInfoResolvers<
   nextCursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
 }>
 
-export type CuppingEdgeResolvers<
+export type CuppingSessionEdgeResolvers<
   ContextType = Context,
-  ParentType extends ResolversParentTypes['CuppingEdge'] = ResolversParentTypes['CuppingEdge']
+  ParentType extends ResolversParentTypes['CuppingSessionEdge'] = ResolversParentTypes['CuppingSessionEdge']
 > = ResolversObject<{
   cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>
-  node?: Resolver<ResolversTypes['Cupping'], ParentType, ContextType>
+  node?: Resolver<ResolversTypes['CuppingSession'], ParentType, ContextType>
 }>
 
-export type CuppingResolvers<
+export type CuppingSessionResolvers<
   ContextType = Context,
-  ParentType extends ResolversParentTypes['Cupping'] = ResolversParentTypes['Cupping']
+  ParentType extends ResolversParentTypes['CuppingSession'] = ResolversParentTypes['CuppingSession']
 > = ResolversObject<{
   __resolveReference?: ReferenceResolver<
-    Maybe<ResolversTypes['Cupping']>,
-    {__typename: 'Cupping'} & Pick<ParentType, 'id'>,
+    Maybe<ResolversTypes['CuppingSession']>,
+    {__typename: 'CuppingSession'} & Pick<ParentType, 'id'>,
     ContextType
   >
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
+  internalId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
-  coffees?: Resolver<Array<ResolversTypes['CuppingCoffee']>, ParentType, ContextType>
+  sessionCoffees?: Resolver<Maybe<Array<Maybe<ResolversTypes['SessionCoffee']>>>, ParentType, ContextType>
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>
 }>
 
-export type CuppingCoffeeResolvers<
+export type SessionCoffeeResolvers<
   ContextType = Context,
-  ParentType extends ResolversParentTypes['CuppingCoffee'] = ResolversParentTypes['CuppingCoffee']
+  ParentType extends ResolversParentTypes['SessionCoffee'] = ResolversParentTypes['SessionCoffee']
 > = ResolversObject<{
-  sessionCoffeeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
+  sampleNumber?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
   coffee?: Resolver<ResolversTypes['Coffee'], ParentType, ContextType>
+  scoreSheets?: Resolver<Maybe<Array<Maybe<ResolversTypes['ScoreSheet']>>>, ParentType, ContextType>
 }>
 
 export type CoffeeResolvers<
@@ -312,38 +362,72 @@ export type CoffeeResolvers<
   >
 }>
 
+export type ScoreSheetResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['ScoreSheet'] = ResolversParentTypes['ScoreSheet']
+> = ResolversObject<{
+  __resolveReference?: ReferenceResolver<
+    Maybe<ResolversTypes['ScoreSheet']>,
+    {__typename: 'ScoreSheet'} & Pick<ParentType, 'id'>,
+    ContextType
+  >
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
+  totalScore?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>
+  createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+}>
+
 export type MutationResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']
 > = ResolversObject<{
-  createCupping?: Resolver<
-    Maybe<ResolversTypes['Cupping']>,
+  createCuppingSession?: Resolver<
+    Maybe<ResolversTypes['CuppingSession']>,
     ParentType,
     ContextType,
-    RequireFields<MutationCreateCuppingArgs, 'input'>
+    RequireFields<MutationCreateCuppingSessionArgs, 'input'>
   >
-  updateCupping?: Resolver<
-    Maybe<ResolversTypes['Cupping']>,
+  updateCuppingSession?: Resolver<
+    Maybe<ResolversTypes['CuppingSession']>,
     ParentType,
     ContextType,
-    RequireFields<MutationUpdateCuppingArgs, 'id' | 'input'>
+    RequireFields<MutationUpdateCuppingSessionArgs, 'id' | 'input'>
   >
-  deleteCupping?: Resolver<
-    Maybe<ResolversTypes['Cupping']>,
+  deleteCuppingSession?: Resolver<
+    Maybe<ResolversTypes['CuppingSession']>,
     ParentType,
     ContextType,
-    RequireFields<MutationDeleteCuppingArgs, 'id'>
+    RequireFields<MutationDeleteCuppingSessionArgs, 'id'>
+  >
+  createScoreSheet?: Resolver<
+    Maybe<ResolversTypes['ScoreSheet']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationCreateScoreSheetArgs, 'cuppingSessionId' | 'sampleNumber' | 'input'>
+  >
+  updateScoreSheet?: Resolver<
+    Maybe<ResolversTypes['ScoreSheet']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationUpdateScoreSheetArgs, 'id' | 'input'>
+  >
+  deleteScoreSheet?: Resolver<
+    Maybe<ResolversTypes['ScoreSheet']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationDeleteScoreSheetArgs, 'id'>
   >
 }>
 
 export type Resolvers<ContextType = Context> = ResolversObject<{
   Query?: QueryResolvers<ContextType>
-  CuppingConnection?: CuppingConnectionResolvers<ContextType>
+  CuppingSessionConnection?: CuppingSessionConnectionResolvers<ContextType>
   PageInfo?: PageInfoResolvers<ContextType>
-  CuppingEdge?: CuppingEdgeResolvers<ContextType>
-  Cupping?: CuppingResolvers<ContextType>
-  CuppingCoffee?: CuppingCoffeeResolvers<ContextType>
+  CuppingSessionEdge?: CuppingSessionEdgeResolvers<ContextType>
+  CuppingSession?: CuppingSessionResolvers<ContextType>
+  SessionCoffee?: SessionCoffeeResolvers<ContextType>
   Coffee?: CoffeeResolvers<ContextType>
+  ScoreSheet?: ScoreSheetResolvers<ContextType>
   Mutation?: MutationResolvers<ContextType>
 }>
 
