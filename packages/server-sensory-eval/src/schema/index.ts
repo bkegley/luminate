@@ -1,6 +1,6 @@
 import merge from 'lodash.merge'
 
-import {sharedTypeDefs} from '@luminate/graphql-utils'
+import {typeDefs as sharedTypeDefs} from '@luminate/graphql-utils'
 
 import {loaders as cuppingSessionLoaders, CuppingSessionLoaders, schema as cuppingSessionSchema} from './CuppingSession'
 
