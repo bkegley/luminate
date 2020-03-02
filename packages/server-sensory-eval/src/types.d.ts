@@ -54,9 +54,9 @@ export type Mutation = {
   createCuppingSession?: Maybe<CuppingSession>
   updateCuppingSession?: Maybe<CuppingSession>
   deleteCuppingSession?: Maybe<CuppingSession>
-  createScoreSheet?: Maybe<ScoreSheet>
-  updateScoreSheet?: Maybe<ScoreSheet>
-  deleteScoreSheet?: Maybe<ScoreSheet>
+  createScoreSheet?: Maybe<CuppingSession>
+  updateScoreSheet?: Maybe<CuppingSession>
+  deleteScoreSheet?: Maybe<CuppingSession>
 }
 
 export type MutationCreateCuppingSessionArgs = {
@@ -400,19 +400,19 @@ export type MutationResolvers<
     RequireFields<MutationDeleteCuppingSessionArgs, 'id'>
   >
   createScoreSheet?: Resolver<
-    Maybe<ResolversTypes['ScoreSheet']>,
+    Maybe<ResolversTypes['CuppingSession']>,
     ParentType,
     ContextType,
     RequireFields<MutationCreateScoreSheetArgs, 'cuppingSessionId' | 'sampleNumber' | 'input'>
   >
   updateScoreSheet?: Resolver<
-    Maybe<ResolversTypes['ScoreSheet']>,
+    Maybe<ResolversTypes['CuppingSession']>,
     ParentType,
     ContextType,
     RequireFields<MutationUpdateScoreSheetArgs, 'id' | 'input'>
   >
   deleteScoreSheet?: Resolver<
-    Maybe<ResolversTypes['ScoreSheet']>,
+    Maybe<ResolversTypes['CuppingSession']>,
     ParentType,
     ContextType,
     RequireFields<MutationDeleteScoreSheetArgs, 'id'>
