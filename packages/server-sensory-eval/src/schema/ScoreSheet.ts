@@ -1,4 +1,5 @@
 import {gql, ApolloError} from 'apollo-server-express'
+import {GraphQLScalarType, Kind} from 'graphql'
 import {createConnectionResults, LoaderFn} from '@luminate/graphql-utils'
 import {Resolvers} from '../types'
 
@@ -6,16 +7,16 @@ const typeDefs = gql`
   type ScoreSheet @key(fields: "id") {
     id: ID!
     totalScore: Float
-    fragranceAroma: Float
-    flavor: Float
-    aftertaste: Float
-    acidity: Float
-    body: Float
-    uniformity: Float
-    cleanCup: Float
-    balance: Float
-    sweetness: Float
-    overall: Float
+    fragranceAroma: ScoreFloat
+    flavor: ScoreFloat
+    aftertaste: ScoreFloat
+    acidity: ScoreFloat
+    body: ScoreFloat
+    uniformity: ScoreFloat
+    cleanCup: ScoreFloat
+    balance: ScoreFloat
+    sweetness: ScoreFloat
+    overall: ScoreFloat
     taints: DefectScore
     defects: DefectScore
     createdAt: String!
@@ -27,32 +28,34 @@ const typeDefs = gql`
     intensity: Float
   }
 
+  scalar ScoreFloat
+
   input CreateScoreSheetInput {
-    fragranceAroma: Float
-    flavor: Float
-    aftertaste: Float
-    acidity: Float
-    body: Float
-    uniformity: Float
-    cleanCup: Float
-    balance: Float
-    sweetness: Float
-    overall: Float
+    fragranceAroma: ScoreFloat
+    flavor: ScoreFloat
+    aftertaste: ScoreFloat
+    acidity: ScoreFloat
+    body: ScoreFloat
+    uniformity: ScoreFloat
+    cleanCup: ScoreFloat
+    balance: ScoreFloat
+    sweetness: ScoreFloat
+    overall: ScoreFloat
     taints: DefectScoreInput
     defects: DefectScoreInput
   }
 
   input UpdateScoreSheetInput {
-    fragranceAroma: Float
-    flavor: Float
-    aftertaste: Float
-    acidity: Float
-    body: Float
-    uniformity: Float
-    cleanCup: Float
-    balance: Float
-    sweetness: Float
-    overall: Float
+    fragranceAroma: ScoreFloat
+    flavor: ScoreFloat
+    aftertaste: ScoreFloat
+    acidity: ScoreFloat
+    body: ScoreFloat
+    uniformity: ScoreFloat
+    cleanCup: ScoreFloat
+    balance: ScoreFloat
+    sweetness: ScoreFloat
+    overall: ScoreFloat
     taints: DefectScoreInput
     defects: DefectScoreInput
   }
@@ -132,6 +135,28 @@ const resolvers: Resolvers = {
       return totalScore - totalDefects
     },
   },
+  ScoreFloat: new GraphQLScalarType({
+    name: 'ScoreFloat',
+    description: 'Valid cupping score input',
+    parseValue: value => value,
+    serialize: value => value,
+    parseLiteral: ast => {
+      // @ts-ignore
+      const {kind, value} = ast
+      if (kind !== Kind.FLOAT && kind !== Kind.INT) {
+        throw new Error('Must be a float or int')
+      }
+      if (value < 0 || value > 10) {
+        throw new Error('Must be between 0 and 10')
+      }
+
+      if ((value * 4) % 1 !== 0) {
+        throw new Error('Must be in .25 point intervals')
+      }
+
+      return value
+    },
+  }),
 }
 
 export const schema = {typeDefs, resolvers}

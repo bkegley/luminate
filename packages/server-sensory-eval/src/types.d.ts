@@ -1,4 +1,4 @@
-import {GraphQLResolveInfo} from 'graphql'
+import {GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig} from 'graphql'
 import {CuppingSessionDocument, SessionCoffeeDocument, ScoreSheetDocument} from '@luminate/mongo'
 import {Context} from './startServer'
 export type Maybe<T> = T | null
@@ -11,6 +11,7 @@ export type Scalars = {
   Boolean: boolean
   Int: number
   Float: number
+  ScoreFloat: any
   _FieldSet: any
 }
 
@@ -25,7 +26,18 @@ export type CreateCuppingSessionInput = {
 }
 
 export type CreateScoreSheetInput = {
-  totalScore?: Maybe<Scalars['Float']>
+  fragranceAroma?: Maybe<Scalars['Float']>
+  flavor?: Maybe<Scalars['Float']>
+  aftertaste?: Maybe<Scalars['Float']>
+  acidity?: Maybe<Scalars['Float']>
+  body?: Maybe<Scalars['Float']>
+  uniformity?: Maybe<Scalars['Float']>
+  cleanCup?: Maybe<Scalars['Float']>
+  balance?: Maybe<Scalars['Float']>
+  sweetness?: Maybe<Scalars['Float']>
+  overall?: Maybe<Scalars['Float']>
+  taints?: Maybe<DefectScoreInput>
+  defects?: Maybe<DefectScoreInput>
 }
 
 export type CuppingSession = {
@@ -48,6 +60,17 @@ export type CuppingSessionEdge = {
   __typename?: 'CuppingSessionEdge'
   cursor: Scalars['String']
   node: CuppingSession
+}
+
+export type DefectScore = {
+  __typename?: 'DefectScore'
+  numberOfCups?: Maybe<Scalars['Int']>
+  intensity?: Maybe<Scalars['Float']>
+}
+
+export type DefectScoreInput = {
+  numberOfCups?: Maybe<Scalars['Int']>
+  intensity?: Maybe<Scalars['Float']>
 }
 
 export type Mutation = {
@@ -134,6 +157,18 @@ export type ScoreSheet = {
   __typename?: 'ScoreSheet'
   id: Scalars['ID']
   totalScore?: Maybe<Scalars['Float']>
+  fragranceAroma?: Maybe<Scalars['Float']>
+  flavor?: Maybe<Scalars['Float']>
+  aftertaste?: Maybe<Scalars['Float']>
+  acidity?: Maybe<Scalars['Float']>
+  body?: Maybe<Scalars['Float']>
+  uniformity?: Maybe<Scalars['Float']>
+  cleanCup?: Maybe<Scalars['Float']>
+  balance?: Maybe<Scalars['Float']>
+  sweetness?: Maybe<Scalars['Float']>
+  overall?: Maybe<Scalars['Float']>
+  taints?: Maybe<DefectScore>
+  defects?: Maybe<DefectScore>
   createdAt: Scalars['String']
   updatedAt: Scalars['String']
 }
@@ -158,7 +193,18 @@ export type UpdateCuppingSessionInput = {
 }
 
 export type UpdateScoreSheetInput = {
-  totalScore?: Maybe<Scalars['Float']>
+  fragranceAroma?: Maybe<Scalars['Float']>
+  flavor?: Maybe<Scalars['Float']>
+  aftertaste?: Maybe<Scalars['Float']>
+  acidity?: Maybe<Scalars['Float']>
+  body?: Maybe<Scalars['Float']>
+  uniformity?: Maybe<Scalars['Float']>
+  cleanCup?: Maybe<Scalars['Float']>
+  balance?: Maybe<Scalars['Float']>
+  sweetness?: Maybe<Scalars['Float']>
+  overall?: Maybe<Scalars['Float']>
+  taints?: Maybe<DefectScoreInput>
+  defects?: Maybe<DefectScoreInput>
 }
 
 export type WithIndex<TObject> = TObject & Record<string, any>
@@ -255,12 +301,15 @@ export type ResolversTypes = ResolversObject<{
   Coffee: ResolverTypeWrapper<Coffee>
   ScoreSheet: ResolverTypeWrapper<ScoreSheetDocument>
   Float: ResolverTypeWrapper<Scalars['Float']>
+  DefectScore: ResolverTypeWrapper<DefectScore>
   Mutation: ResolverTypeWrapper<{}>
   CreateCuppingSessionInput: CreateCuppingSessionInput
   UpdateCuppingSessionInput: UpdateCuppingSessionInput
   SessionCoffeeInput: SessionCoffeeInput
   CreateScoreSheetInput: CreateScoreSheetInput
+  DefectScoreInput: DefectScoreInput
   UpdateScoreSheetInput: UpdateScoreSheetInput
+  ScoreFloat: ResolverTypeWrapper<Scalars['ScoreFloat']>
 }>
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -282,12 +331,15 @@ export type ResolversParentTypes = ResolversObject<{
   Coffee: Coffee
   ScoreSheet: ScoreSheetDocument
   Float: Scalars['Float']
+  DefectScore: DefectScore
   Mutation: {}
   CreateCuppingSessionInput: CreateCuppingSessionInput
   UpdateCuppingSessionInput: UpdateCuppingSessionInput
   SessionCoffeeInput: SessionCoffeeInput
   CreateScoreSheetInput: CreateScoreSheetInput
+  DefectScoreInput: DefectScoreInput
   UpdateScoreSheetInput: UpdateScoreSheetInput
+  ScoreFloat: Scalars['ScoreFloat']
 }>
 
 export type QueryResolvers<
@@ -382,8 +434,28 @@ export type ScoreSheetResolvers<
   >
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
   totalScore?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>
+  fragranceAroma?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>
+  flavor?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>
+  aftertaste?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>
+  acidity?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>
+  body?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>
+  uniformity?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>
+  cleanCup?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>
+  balance?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>
+  sweetness?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>
+  overall?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>
+  taints?: Resolver<Maybe<ResolversTypes['DefectScore']>, ParentType, ContextType>
+  defects?: Resolver<Maybe<ResolversTypes['DefectScore']>, ParentType, ContextType>
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+}>
+
+export type DefectScoreResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['DefectScore'] = ResolversParentTypes['DefectScore']
+> = ResolversObject<{
+  numberOfCups?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  intensity?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>
 }>
 
 export type MutationResolvers<
@@ -428,6 +500,10 @@ export type MutationResolvers<
   >
 }>
 
+export interface ScoreFloatScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['ScoreFloat'], any> {
+  name: 'ScoreFloat'
+}
+
 export type Resolvers<ContextType = Context> = ResolversObject<{
   Query?: QueryResolvers<ContextType>
   CuppingSessionConnection?: CuppingSessionConnectionResolvers<ContextType>
@@ -437,7 +513,9 @@ export type Resolvers<ContextType = Context> = ResolversObject<{
   SessionCoffee?: SessionCoffeeResolvers<ContextType>
   Coffee?: CoffeeResolvers<ContextType>
   ScoreSheet?: ScoreSheetResolvers<ContextType>
+  DefectScore?: DefectScoreResolvers<ContextType>
   Mutation?: MutationResolvers<ContextType>
+  ScoreFloat?: GraphQLScalarType
 }>
 
 /**
