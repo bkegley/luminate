@@ -8,11 +8,11 @@ export interface CuppingSessionDocument extends DocumentWithTimestamps {
   sessionCoffees?: [SessionCoffeeDocument]
 }
 
-export interface ScoreSheetDocument {
+export interface ScoreSheetDocument extends mongoose.Document {
   totalScore: number
 }
 
-export interface SessionCoffeeDocument {
+export interface SessionCoffeeDocument extends mongoose.Document {
   sampleNumber: string
   coffee: string
   scoreSheets: Array<ScoreSheetDocument>
