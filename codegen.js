@@ -78,8 +78,9 @@ const serverGenerates = {
       useIndexSignature: true,
       federation: true,
       mappers: {
-        Cupping: '@luminate/mongo#CuppingSessionDocument',
-        CuppingCoffee: '@luminate/mongo#SessionCoffeeDocument',
+        CuppingSession: '@luminate/mongo#CuppingSessionDocument',
+        SessionCoffee: '@luminate/mongo#SessionCoffeeDocument',
+        ScoreSheet: '@luminate/mongo#ScoreSheetDocument',
       },
     },
   },

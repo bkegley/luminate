@@ -63,7 +63,6 @@ const typeDefs = gql`
 `
 
 const resolvers: Resolvers = {
-  // @ts-ignore
   Query: {
     listCuppingSessions: async (parent, args, {models, user}) => {
       const {CuppingSession} = models
@@ -75,7 +74,6 @@ const resolvers: Resolvers = {
       return cuppingSessions.load(id)
     },
   },
-  // @ts-ignore
   Mutation: {
     createCuppingSession: async (parent, {input}, {models, user}) => {
       const {CuppingSession} = models
@@ -96,7 +94,6 @@ const resolvers: Resolvers = {
       return cuppingSession
     },
   },
-  // @ts-ignore
   SessionCoffee: {
     coffee: parent => {
       return {__typename: 'Coffee', id: parent.coffee}

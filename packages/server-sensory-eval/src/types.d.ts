@@ -1,7 +1,8 @@
 import {GraphQLResolveInfo} from 'graphql'
-import {CuppingSessionDocument, SessionCoffeeDocument} from '@luminate/mongo'
+import {CuppingSessionDocument, SessionCoffeeDocument, ScoreSheetDocument} from '@luminate/mongo'
 import {Context} from './startServer'
 export type Maybe<T> = T | null
+export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
 export type RequireFields<T, K extends keyof T> = {[X in Exclude<keyof T, K>]?: T[X]} & {[P in K]-?: NonNullable<T[P]>}
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -139,6 +140,7 @@ export type ScoreSheet = {
 
 export type SessionCoffee = {
   __typename?: 'SessionCoffee'
+  id: Scalars['ID']
   sampleNumber: Scalars['ID']
   coffee: Coffee
   scoreSheets?: Maybe<Array<Maybe<ScoreSheet>>>
@@ -241,15 +243,17 @@ export type ResolversTypes = ResolversObject<{
   Int: ResolverTypeWrapper<Scalars['Int']>
   QueryInput: QueryInput
   OperatorEnum: OperatorEnum
-  CuppingSessionConnection: ResolverTypeWrapper<CuppingSessionConnection>
+  CuppingSessionConnection: ResolverTypeWrapper<
+    Omit<CuppingSessionConnection, 'edges'> & {edges: Array<ResolversTypes['CuppingSessionEdge']>}
+  >
   PageInfo: ResolverTypeWrapper<PageInfo>
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>
-  CuppingSessionEdge: ResolverTypeWrapper<CuppingSessionEdge>
-  CuppingSession: ResolverTypeWrapper<CuppingSession>
+  CuppingSessionEdge: ResolverTypeWrapper<Omit<CuppingSessionEdge, 'node'> & {node: ResolversTypes['CuppingSession']}>
+  CuppingSession: ResolverTypeWrapper<CuppingSessionDocument>
   ID: ResolverTypeWrapper<Scalars['ID']>
-  SessionCoffee: ResolverTypeWrapper<SessionCoffee>
+  SessionCoffee: ResolverTypeWrapper<SessionCoffeeDocument>
   Coffee: ResolverTypeWrapper<Coffee>
-  ScoreSheet: ResolverTypeWrapper<ScoreSheet>
+  ScoreSheet: ResolverTypeWrapper<ScoreSheetDocument>
   Float: ResolverTypeWrapper<Scalars['Float']>
   Mutation: ResolverTypeWrapper<{}>
   CreateCuppingSessionInput: CreateCuppingSessionInput
@@ -266,15 +270,17 @@ export type ResolversParentTypes = ResolversObject<{
   Int: Scalars['Int']
   QueryInput: QueryInput
   OperatorEnum: OperatorEnum
-  CuppingSessionConnection: CuppingSessionConnection
+  CuppingSessionConnection: Omit<CuppingSessionConnection, 'edges'> & {
+    edges: Array<ResolversParentTypes['CuppingSessionEdge']>
+  }
   PageInfo: PageInfo
   Boolean: Scalars['Boolean']
-  CuppingSessionEdge: CuppingSessionEdge
-  CuppingSession: CuppingSession
+  CuppingSessionEdge: Omit<CuppingSessionEdge, 'node'> & {node: ResolversParentTypes['CuppingSession']}
+  CuppingSession: CuppingSessionDocument
   ID: Scalars['ID']
-  SessionCoffee: SessionCoffee
+  SessionCoffee: SessionCoffeeDocument
   Coffee: Coffee
-  ScoreSheet: ScoreSheet
+  ScoreSheet: ScoreSheetDocument
   Float: Scalars['Float']
   Mutation: {}
   CreateCuppingSessionInput: CreateCuppingSessionInput
@@ -348,6 +354,7 @@ export type SessionCoffeeResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['SessionCoffee'] = ResolversParentTypes['SessionCoffee']
 > = ResolversObject<{
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
   sampleNumber?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
   coffee?: Resolver<ResolversTypes['Coffee'], ParentType, ContextType>
   scoreSheets?: Resolver<Maybe<Array<Maybe<ResolversTypes['ScoreSheet']>>>, ParentType, ContextType>
