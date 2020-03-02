@@ -79,12 +79,14 @@ export type MutationCreateScoreSheetArgs = {
 }
 
 export type MutationUpdateScoreSheetArgs = {
-  id: Scalars['ID']
+  scoreSheetId: Scalars['ID']
+  sessionCoffeeId: Scalars['ID']
   input: UpdateScoreSheetInput
 }
 
 export type MutationDeleteScoreSheetArgs = {
-  id: Scalars['ID']
+  scoreSheetId: Scalars['ID']
+  sessionCoffeeId: Scalars['ID']
 }
 
 export enum OperatorEnum {
@@ -409,13 +411,13 @@ export type MutationResolvers<
     Maybe<ResolversTypes['CuppingSession']>,
     ParentType,
     ContextType,
-    RequireFields<MutationUpdateScoreSheetArgs, 'id' | 'input'>
+    RequireFields<MutationUpdateScoreSheetArgs, 'scoreSheetId' | 'sessionCoffeeId' | 'input'>
   >
   deleteScoreSheet?: Resolver<
     Maybe<ResolversTypes['CuppingSession']>,
     ParentType,
     ContextType,
-    RequireFields<MutationDeleteScoreSheetArgs, 'id'>
+    RequireFields<MutationDeleteScoreSheetArgs, 'scoreSheetId' | 'sessionCoffeeId'>
   >
 }>
 

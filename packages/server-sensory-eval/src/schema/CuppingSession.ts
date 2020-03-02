@@ -14,6 +14,7 @@ const typeDefs = gql`
   }
 
   type SessionCoffee {
+    id: ID!
     sampleNumber: ID!
     coffee: Coffee!
     scoreSheets: [ScoreSheet]
