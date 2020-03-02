@@ -9,7 +9,23 @@ export interface CuppingSessionDocument extends DocumentWithTimestamps {
 }
 
 export interface ScoreSheetDocument extends mongoose.Document {
-  totalScore: number
+  fragranceAroma: number
+  flavor: number
+  aftertaste: number
+  acidity: number
+  body: number
+  uniformity: number
+  cleanCup: number
+  balance: number
+  sweetness: number
+  overall: number
+  taints: IDefectScore
+  defects: IDefectScore
+}
+
+interface IDefectScore {
+  numberOfCups: number
+  intensity: number
 }
 
 export interface SessionCoffeeDocument extends mongoose.Document {
@@ -22,8 +38,51 @@ export interface CuppingSessionModel extends WithAuthenticatedMethods<CuppingSes
 
 const ScoreSheet = new mongoose.Schema(
   {
-    totalScore: {
+    fragranceAroma: {
       type: Number,
+    },
+    flavor: {
+      type: Number,
+    },
+    aftertaste: {
+      type: Number,
+    },
+    acidity: {
+      type: Number,
+    },
+    body: {
+      type: Number,
+    },
+    uniformity: {
+      type: Number,
+    },
+    cleanCup: {
+      type: Number,
+    },
+    balance: {
+      type: Number,
+    },
+    sweetness: {
+      type: Number,
+    },
+    overall: {
+      type: Number,
+    },
+    taints: {
+      numberOfCups: {
+        type: Number,
+      },
+      intensity: {
+        type: Number,
+      },
+    },
+    defects: {
+      numberOfCups: {
+        type: Number,
+      },
+      intensity: {
+        type: Number,
+      },
     },
   },
   {

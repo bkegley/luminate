@@ -6,16 +6,60 @@ const typeDefs = gql`
   type ScoreSheet @key(fields: "id") {
     id: ID!
     totalScore: Float
+    fragranceAroma: Float
+    flavor: Float
+    aftertaste: Float
+    acidity: Float
+    body: Float
+    uniformity: Float
+    cleanCup: Float
+    balance: Float
+    sweetness: Float
+    overall: Float
+    taints: DefectScore
+    defects: DefectScore
     createdAt: String!
     updatedAt: String!
   }
 
+  type DefectScore {
+    numberOfCups: Int
+    intensity: Float
+  }
+
   input CreateScoreSheetInput {
-    totalScore: Float
+    fragranceAroma: Float
+    flavor: Float
+    aftertaste: Float
+    acidity: Float
+    body: Float
+    uniformity: Float
+    cleanCup: Float
+    balance: Float
+    sweetness: Float
+    overall: Float
+    taints: DefectScoreInput
+    defects: DefectScoreInput
   }
 
   input UpdateScoreSheetInput {
-    totalScore: Float
+    fragranceAroma: Float
+    flavor: Float
+    aftertaste: Float
+    acidity: Float
+    body: Float
+    uniformity: Float
+    cleanCup: Float
+    balance: Float
+    sweetness: Float
+    overall: Float
+    taints: DefectScoreInput
+    defects: DefectScoreInput
+  }
+
+  input DefectScoreInput {
+    numberOfCups: Int
+    intensity: Float
   }
 
   extend type Mutation {
@@ -63,6 +107,29 @@ const resolvers: Resolvers = {
         throw new ApolloError('Document not found')
       }
       return scoreSheet
+    },
+  },
+  ScoreSheet: {
+    totalScore: parent => {
+      const {
+        fragranceAroma,
+        flavor,
+        aftertaste,
+        acidity,
+        body,
+        uniformity,
+        cleanCup,
+        balance,
+        sweetness,
+        overall,
+        taints,
+        defects,
+      } = parent
+      const totalScore =
+        fragranceAroma + flavor + aftertaste + acidity + body + uniformity + cleanCup + balance + sweetness + overall
+      const totalDefects =
+        taints.numberOfCups || 0 * taints.intensity || 0 + defects.numberOfCups || 0 * defects.intensity || 0
+      return totalScore - totalDefects
     },
   },
 }
