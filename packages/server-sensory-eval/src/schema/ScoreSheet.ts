@@ -20,8 +20,8 @@ const typeDefs = gql`
 
   extend type Mutation {
     createScoreSheet(cuppingSessionId: ID!, sampleNumber: ID!, input: CreateScoreSheetInput!): CuppingSession
-    updateScoreSheet(id: ID!, input: UpdateScoreSheetInput!): CuppingSession
-    deleteScoreSheet(id: ID!): CuppingSession
+    updateScoreSheet(scoreSheetId: ID!, sessionCoffeeId: ID!, input: UpdateScoreSheetInput!): CuppingSession
+    deleteScoreSheet(scoreSheetId: ID!, sessionCoffeeId: ID!): CuppingSession
   }
 `
 
@@ -38,27 +38,32 @@ const resolvers: Resolvers = {
       )
       return cuppingSession
     },
-    updateScoreSheet: async (parent, {id, input}, {models, user}) => {
+    updateScoreSheet: async (parent, {scoreSheetId, sessionCoffeeId, input}, {models, user}) => {
       const {CuppingSession} = models
       const cuppingSession = await CuppingSession.findOneAndUpdateByUser(
         user,
-        {sessionCoffees: {$elemMatch: {'scoreSheets._id': id}}},
-        // {'sessionCoffees.scoreSheets._id': id},
-        {$set: {'sessionCoffees.scoreSheets.$$': {_id: id, ...input}}},
+        {sessionCoffees: {$elemMatch: {_id: sessionCoffeeId, 'scoreSheets._id': scoreSheetId}}},
+        {$set: {'sessionCoffees.$[outer].scoreSheets.$[inner]': {_id: scoreSheetId, ...input}}},
         {
           new: true,
+          // @ts-ignore
+          arrayFilters: [{'outer._id': sessionCoffeeId}, {'inner._id': scoreSheetId}],
         },
       )
       return cuppingSession
     },
-    // deleteScoreSheet: async (parent, {id}, {models, user}) => {
-    //   const {ScoreSheet} = models
-    //   const scoreSheet = await ScoreSheet.findByIdAndDeleteByUser(user, id, {})
-    //   if (!scoreSheet) {
-    //     throw new ApolloError('Document not found')
-    //   }
-    //   return scoreSheet
-    // },
+    deleteScoreSheet: async (parent, {sessionCoffeeId, scoreSheetId}, {models, user}) => {
+      const {CuppingSession} = models
+      const scoreSheet = await CuppingSession.findOneAndUpdateByUser(
+        user,
+        {'sessionCoffees._id': sessionCoffeeId},
+        {$pull: {'sessionCoffees.$.scoreSheets': {_id: scoreSheetId}}},
+      )
+      if (!scoreSheet) {
+        throw new ApolloError('Document not found')
+      }
+      return scoreSheet
+    },
   },
 }
 
