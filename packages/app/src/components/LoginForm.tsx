@@ -1,7 +1,6 @@
-/** @jsx jsx */
-import {jsx, Flex, Box, Button, Label, Input} from 'theme-ui'
+import React from 'react'
 import {navigate} from 'gatsby'
-import {useUser} from '@luminate/gatsby-theme-luminate/src'
+import {useUser, Button, Input} from '@luminate/gatsby-theme-luminate/src'
 import {Formik, Form, Field} from 'formik'
 
 const LoginForm = () => {
@@ -26,21 +25,25 @@ const LoginForm = () => {
       {() => {
         return (
           <Form>
-            <Flex sx={{flexDirection: 'column'}}>
-              <Box sx={{my: 2}}>
-                <Label htmlFor="loginUsername">Username</Label>
+            <div className="flex flex-col">
+              <div className="my-2">
+                <label className="block my-1" htmlFor="loginUsername">
+                  Username
+                </label>
                 <Field name="username" id="loginUsername" type="text" as={Input} />
-              </Box>
-              <Box sx={{my: 2}}>
-                <Label htmlFor="loginPassword">Password</Label>
+              </div>
+              <div className="my-2">
+                <label className="block my-1" htmlFor="loginPassword">
+                  Password
+                </label>
                 <Field name="password" id="loginPassword" type="password" as={Input} />
-              </Box>
-              <Box sx={{mt: 3}}>
-                <Button type="submit" sx={{width: '100%'}}>
+              </div>
+              <div className="mt-3">
+                <Button variant="primary" type="submit">
                   Login
                 </Button>
-              </Box>
-            </Flex>
+              </div>
+            </div>
           </Form>
         )
       }}

@@ -1,5 +1,42 @@
 /* purgecss start ignore */
 @tailwind base;
 @tailwind components;
+
+.btn {
+  @apply w-full rounded uppercase tracking-wide px-4 py-2;
+}
+
+.btn:hover {
+  @apply bg-gray-800 text-white;
+}
+
+.btn-primary {
+  @apply bg-primary-600;
+}
+
+.btn-secondary {
+  @apply bg-white text-gray-800 border-2 border-gray-800;
+}
+
+.btn-text {
+  @apply bg-transparent text-black;
+}
+
+.btn-danger {
+  @apply bg-red-600 text-white;
+}
+
+.btn-danger:hover {
+  @apply bg-red-600;
+}
+
+.input {
+  @apply w-full px-2 py-2 rounded border border-gray-500;
+}
+
+.input:focus {
+  @apply outline-none border-primary-600;
+}
+
 /* purgecss end ignore */
 @tailwind utilities;
