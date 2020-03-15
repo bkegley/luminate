@@ -7,6 +7,15 @@ services:
       dockerfile: packages/server-auth/Dockerfile
     image: server-auth
     container_name: server-auth
+    restart: always
+    links:
+      - db:db
     ports:
       - 3001:3001
+    environment:
+      - MONGO_URL=mongodb://db:27017/db
     command: yarn workspace @luminate/server-auth run start
+
+  db:
+    image: mongo:3.6.17-xenial
+    container_name: db
