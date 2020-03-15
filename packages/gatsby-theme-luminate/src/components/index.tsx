@@ -1,5 +1,6 @@
 import Button, {ButtonProps} from './Button'
 import Combobox, {ComboboxProps} from './Combobox'
+import Heading, {HeadingProps} from './Heading'
 import Input, {InputProps} from './Input'
 import Layout, {LayoutProps} from './Layout'
 import Menu, {MenuProps} from './Menu'
@@ -17,6 +18,8 @@ export {
   Combobox,
   ComboboxProps,
   Drawer,
+  Heading,
+  HeadingProps,
   Input,
   InputProps,
   Layout,
