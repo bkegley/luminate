@@ -3,7 +3,7 @@ import {models} from './models'
 import {ScopeOperations, ScopeResources} from '@luminate/graphql-utils'
 const {Role} = models
 
-const populateDb = async () => {
+const seedDatabase = async () => {
   await createMongoConnection(process.env.MONGO_URL)
 
   const scopes = Object.values(ScopeOperations)
@@ -13,7 +13,6 @@ const populateDb = async () => {
     .reduce((acc, arr) => acc.concat(arr), [])
   await Role.findOneAndUpdate({name: 'Owner'}, {scopes, permissionType: 'public'}, {upsert: true})
   console.log('Updated Owner role to have all scopes')
-  process.exit()
 }
 
-populateDb()
+export default seedDatabase

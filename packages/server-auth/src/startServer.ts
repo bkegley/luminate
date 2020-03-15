@@ -8,7 +8,7 @@ import express from 'express'
 const app = express()
 
 import {schemas, loaders as loadersObject, Loaders} from './schema'
-import {createMongoConnection, models} from '@luminate/mongo'
+import {createMongoConnection, models, seedDatabase} from '@luminate/mongo'
 import DataLoader from 'dataloader'
 import {LoaderContext, parseUserFromRequest, parseToken, Token} from '@luminate/graphql-utils'
 
@@ -24,6 +24,7 @@ export interface Context {
 
 const startServer = async () => {
   await createMongoConnection(process.env.MONGO_URL)
+  await seedDatabase()
 
   const server = new ApolloServer({
     schema: buildFederatedSchema(schemas),
