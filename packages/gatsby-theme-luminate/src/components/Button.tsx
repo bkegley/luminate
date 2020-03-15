@@ -2,12 +2,13 @@ import React from 'react'
 
 export interface ButtonProps {
   children: React.ReactNode
+  className?: string
   variant?: 'primary' | 'secondary' | 'text' | 'danger'
   [x: string]: any
 }
-const Button = ({children, variant = 'primary', ...remainingProps}: ButtonProps) => {
+const Button = ({children, className, variant = 'primary', ...remainingProps}: ButtonProps) => {
   return (
-    <button className={`btn btn-${variant}`} {...remainingProps}>
+    <button className={`btn btn-${variant} ${className ? className : ''}`} {...remainingProps}>
       {children}
     </button>
   )

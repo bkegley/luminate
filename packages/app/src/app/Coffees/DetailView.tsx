@@ -59,7 +59,7 @@ const CoffeeDetailView = ({match}: Props) => {
             <Box sx={{mb: 3}}>
               <Text variant="dataLabel">Country</Text>
               {data.getCoffee.country ? (
-                <StyledLink to={`/app/countries/${data.getCoffee.country?.id}`} variant="links.text">
+                <StyledLink to={`/app/countries/${data.getCoffee.country?.id}`} variant="text">
                   {data.getCoffee.country?.name}
                 </StyledLink>
               ) : (
@@ -69,7 +69,7 @@ const CoffeeDetailView = ({match}: Props) => {
             <Box>
               <Text variant="dataLabel">Region</Text>
               {data.getCoffee.region ? (
-                <StyledLink to={`/app/regions/${data.getCoffee.region?.id}`} variant="links.text">
+                <StyledLink to={`/app/regions/${data.getCoffee.region?.id}`} variant="text">
                   {data.getCoffee.region?.name}
                 </StyledLink>
               ) : (

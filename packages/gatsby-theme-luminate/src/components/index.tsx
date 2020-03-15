@@ -1,3 +1,4 @@
+import Avatar, {AvatarProps} from './Avatar'
 import Button, {ButtonProps} from './Button'
 import Combobox, {ComboboxProps} from './Combobox'
 import Heading, {HeadingProps} from './Heading'
@@ -13,6 +14,8 @@ import Tooltip, {TooltipProps} from './Tooltip'
 import Drawer from './Drawer'
 
 export {
+  Avatar,
+  AvatarProps,
   Button,
   ButtonProps,
   Combobox,

@@ -59,7 +59,7 @@ const RegionDetailView = ({match}: Props) => {
             <Box sx={{mb: 3}}>
               <Text variant="dataLabel">Country</Text>
               {data.getRegion.country ? (
-                <StyledLink to={`/app/countries/${data.getRegion.country?.id}`} variant="links.text">
+                <StyledLink to={`/app/countries/${data.getRegion.country?.id}`} variant="text">
                   {data.getRegion.country?.name}
                 </StyledLink>
               ) : (

@@ -6,16 +6,20 @@
   @apply w-full rounded uppercase tracking-wide px-4 py-2;
 }
 
-.btn:hover {
-  @apply bg-gray-800 text-white;
-}
-
 .btn-primary {
   @apply bg-primary-600;
 }
 
+.btn-primary:hover {
+  @apply bg-gray-800 text-white;
+}
+
 .btn-secondary {
   @apply bg-white text-gray-800 border-2 border-gray-800;
+}
+
+.btn-secondary:hover {
+  @apply bg-gray-800 text-white;
 }
 
 .btn-text {
@@ -36,6 +40,26 @@
 
 .input:focus {
   @apply outline-none border-primary-600;
+}
+
+.header-shadow {
+  box-shadow: 0 0.5rem 0.5rem -0.5rem rgba(0, 0, 0, 0.2);
+}
+
+.link-text {
+  @apply text-primary-600;
+}
+
+.link-text:hover {
+  @apply underline;
+}
+
+.link-nav {
+  @apply text-gray-500 uppercase tracking-wide;
+}
+
+.link-nav:hover {
+  @apply text-gray-800;
 }
 
 /* purgecss end ignore */
