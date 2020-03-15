@@ -15,7 +15,7 @@ const createMongoConnection = (
         console.log(`Connected to MongoDB at ${databaseUrl}`)
       },
       err => {
-        console.log(`Mongodb connection error: \n${err}`)
+        process.exit(1)
       },
     )
 }

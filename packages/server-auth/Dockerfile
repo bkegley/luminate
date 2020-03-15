@@ -19,12 +19,25 @@ RUN yarn workspace @luminate/server-auth run build
 
 FROM node:12-alpine3.11 AS run
 WORKDIR /usr/src/app
+# COPY package.json .
+# COPY yarn.lock .
+# COPY --from=build /usr/src/app/node_modules ./node_modules
+# COPY --from=build /usr/src/app/packages/graphql-utils ./node_modules/@luminate/grapqhl-utils
+# COPY --from=build /usr/src/app/packages/mongo ./node_modules/@luminate/mongo
+# COPY --from=build /usr/src/app/packages/server-auth ./packages/server-auth
+
+RUN apk --no-cache add --virtual builds-deps build-base python
+
 COPY package.json .
 COPY yarn.lock .
-COPY --from=build /usr/src/app/node_modules ./node_modules
-COPY --from=build /usr/src/app/packages/graphql-utils ./node_modules/@luminate/grapqhl-utils
-COPY --from=build /usr/src/app/packages/mongo ./node_modules/@luminate/mongo
-COPY --from=build /usr/src/app/packages/server-auth ./packages/server-auth
+COPY --from=build /usr/src/app/packages/graphql-utils/package.json ./packages/graphql-utils/package.json
+COPY --from=build /usr/src/app/packages/graphql-utils/dist ./packages/graphql-utils/dist
+COPY --from=build /usr/src/app/packages/mongo/package.json ./packages/mongo/package.json
+COPY --from=build /usr/src/app/packages/mongo/dist ./packages/mongo/dist
+COPY --from=build /usr/src/app/packages/server-auth/package.json ./packages/server-auth/package.json
+COPY --from=build /usr/src/app/packages/server-auth/dist ./packages/server-auth/dist
 
-# ENTRYPOINT [ "node", "dist/startServer.js" ]
+RUN yarn
+
+ENTRYPOINT [ "node", "packages/server-auth/dist/startServer.js" ]
 EXPOSE 3001
