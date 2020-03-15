@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  server-auth:
+    build:
+      context: .
+      dockerfile: packages/server-auth/Dockerfile
+    image: server-auth
+    container_name: server-auth
+    ports:
+      - 3001:3001
+    command: yarn workspace @luminate/server-auth run start

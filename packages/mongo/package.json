@@ -17,6 +17,7 @@
   },
   "devDependencies": {
     "@types/bcrypt": "^3.0.0",
-    "@types/mongoose": "^5.5.36"
+    "@types/mongoose": "^5.5.36",
+    "@types/node-fetch": "^2.5.5"
   }
 }
