@@ -47,7 +47,7 @@ const startServer = async () => {
   //configure cors
   const whitelist = [
     `http://localhost:${PORT}`,
-    'http://localhost:8000',
+    'http://localhost:8001',
     'https://luminate.coffee',
     'http://api.luminate.coffee',
     'http://staging.luminate.coffee',
@@ -117,6 +117,11 @@ const startServer = async () => {
             },
           }
         : false,
+  })
+
+  app.post('/startup', (req, res) => {
+    console.log('received a startup request')
+    gateway.load()
   })
 
   server.applyMiddleware({app, cors: corsOptions})
