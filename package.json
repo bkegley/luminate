@@ -30,6 +30,7 @@
     "@graphql-codegen/typescript-operations": "^1.10.0",
     "@graphql-codegen/typescript-react-apollo": "^1.10.0",
     "@graphql-codegen/typescript-resolvers": "^1.9.1",
+    "@types/lodash.merge": "^4.6.6",
     "dotenv": "^8.2.0",
     "elint": "^1.11.1",
     "eslint-config-prettier": "^6.7.0",
