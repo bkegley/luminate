@@ -62,7 +62,7 @@ const VarietyDetailView = ({match}: Props) => {
                 ? data.getVariety?.coffees.map(coffee => {
                     return (
                       <Box>
-                        <StyledLink to={`/app/regions/${coffee?.id}`} variant="links.text">
+                        <StyledLink to={`/app/regions/${coffee?.id}`} variant="text">
                           {coffee?.name}
                         </StyledLink>
                       </Box>

@@ -14,20 +14,20 @@ const Sidebar = () => {
         pt: 6,
       }}
     >
-      <StyledLink to="/app/coffees" variant="links.nav">
+      <StyledLink to="/app/coffees" variant="nav">
         <Book sx={{height: '1rem'}} />
         Coffees
       </StyledLink>
-      <StyledLink to="/app/countries" variant="links.nav">
+      <StyledLink to="/app/countries" variant="nav">
         Countries
       </StyledLink>
-      <StyledLink to="/app/regions" variant="links.nav">
+      <StyledLink to="/app/regions" variant="nav">
         Regions
       </StyledLink>
-      <StyledLink to="/app/farms" variant="links.nav">
+      <StyledLink to="/app/farms" variant="nav">
         Farms
       </StyledLink>
-      <StyledLink to="/app/varieties" variant="links.nav">
+      <StyledLink to="/app/varieties" variant="nav">
         Varieties
       </StyledLink>
     </Flex>
