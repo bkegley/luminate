@@ -12,7 +12,7 @@ WORKDIR /usr/src/app
 # build python for bcrypt
 RUN apk --no-cache add --virtual builds-deps build-base python
 
-COPY ./packages/server-auth ./packages/server-auth
+COPY ./packages/server-gateway ./packages/server-gateway
 COPY --from=mongo-utils /usr/src/app/packages/mongo ./packages/mongo
 COPY --from=graphql-utils /usr/src/app/packages/graphql-utils ./packages/graphql-utils
 COPY lerna.json .
@@ -22,7 +22,7 @@ COPY tsconfig.base.json .
 
 RUN yarn
 
-RUN yarn workspace @luminate/server-auth run build
+RUN yarn workspace @luminate/server-gateway run build
 
 FROM node:12-alpine3.11 AS run
 WORKDIR /usr/src/app
@@ -35,10 +35,10 @@ COPY --from=graphql-utils /usr/src/app/packages/graphql-utils/package.json ./pac
 COPY --from=graphql-utils /usr/src/app/packages/graphql-utils/dist ./packages/graphql-utils/dist
 COPY --from=mongo-utils /usr/src/app/packages/mongo/package.json ./packages/mongo/package.json
 COPY --from=mongo-utils /usr/src/app/packages/mongo/dist ./packages/mongo/dist
-COPY --from=build-server /usr/src/app/packages/server-auth/package.json ./packages/server-auth/package.json
-COPY --from=build-server /usr/src/app/packages/server-auth/dist ./packages/server-auth/dist
+COPY --from=build-server /usr/src/app/packages/server-gateway/package.json ./packages/server-gateway/package.json
+COPY --from=build-server /usr/src/app/packages/server-gateway/dist ./packages/server-gateway/dist
 
 RUN yarn
 
-ENTRYPOINT [ "node", "packages/server-auth/dist/startServer.js" ]
+ENTRYPOINT [ "node", "packages/server-gateway/dist/startServer.js" ]
 EXPOSE 3001
