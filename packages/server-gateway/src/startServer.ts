@@ -12,7 +12,7 @@ const app = express()
 
 app.use(cookieParser())
 
-const PORT = 3000
+const PORT = process.env.PORT || 3000
 const USER_AUTH_TOKEN = process.env.USER_AUTH_TOKEN || 'localsecrettoken'
 const DEPLOY_ENV = process.env.DEPLOY_ENV || 'development'
 
@@ -83,9 +83,21 @@ const startServer = async () => {
 
   const gateway = new ApolloGateway({
     serviceList: [
-      {name: 'auth', url: `${buildHostname(DEPLOY_ENV)}:3003/graphql`},
-      {name: 'encyclopedia', url: `${buildHostname(DEPLOY_ENV)}:3001/graphql`},
-      {name: 'sensory-eval', url: `${buildHostname(DEPLOY_ENV)}:3002/graphql`},
+      {
+        name: 'auth',
+        url: `http://server-auth${false ? buildHostname(DEPLOY_ENV) : ''}:${process.env.SERVER_AUTH_PORT ||
+          3001}/graphql`,
+      },
+      {
+        name: 'encyclopedia',
+        url: `http://server-encyclopedia${false ? buildHostname(DEPLOY_ENV) : ''}:${process.env
+          .SERVER_ENCYCLOPEDIA_PORT || 3002}/graphql`,
+      },
+      {
+        name: 'sensory-eval',
+        url: `http://server-sensory-eval${false ? buildHostname(DEPLOY_ENV) : ''}:${process.env
+          .SERVER_SENSORY_EVAL_PORT || 3003}/graphql`,
+      },
     ],
     buildService: ({url}) => {
       return new AuthenticatedDataSource({url})
@@ -117,11 +129,6 @@ const startServer = async () => {
             },
           }
         : false,
-  })
-
-  app.post('/startup', (req, res) => {
-    console.log('received a startup request')
-    gateway.load()
   })
 
   server.applyMiddleware({app, cors: corsOptions})

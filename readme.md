@@ -1,4 +1,15 @@
-## Getting started
+## Getting started: Docker
+
+Create a volume for persistent data:
+`docker volume create --name=mongo`
+
+Build images:
+`docker-compose build`
+
+Run application:
+`docker-compose up -d`
+
+## Getting started: Local
 
 Run the following commands in this order.
 

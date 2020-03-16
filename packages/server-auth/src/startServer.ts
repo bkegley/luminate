@@ -12,7 +12,7 @@ import {createMongoConnection, models, seedDatabase} from '@luminate/mongo'
 import DataLoader from 'dataloader'
 import {LoaderContext, parseUserFromRequest, parseToken, Token} from '@luminate/graphql-utils'
 
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 
 export interface Context {
   req: express.Request
