@@ -19,6 +19,21 @@ services:
     volumes:
       - mongo:/data/db
 
+  app:
+    build:
+      context: .
+      dockerfile: packages/app/Dockerfile
+    image: app
+    container_name: app
+    restart: always
+    links:
+      - server-gateway
+    ports:
+      - 8001:9000
+    environment:
+      - API_URL=http://server-gateway:3000/graphql
+    command: yarn workspace @luminate/app run serve --host "0.0.0.0"
+
   server-auth:
     build:
       context: .
