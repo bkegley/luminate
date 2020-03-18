@@ -1,5 +1,16 @@
 ## Getting started: Docker
 
+**Disclaimer: Not currently working**
+Having issues getting this up and running with multiple environments. Currently to get a local dev frontend environment with hot reloading run the following:
+
+```sh
+docker-compose \
+-f docker-compose.yml \
+-f docker-compose.prod.yml up -d && \
+docker-compose stop app && \
+yarn workspace @luminate/app run develop -p 8001
+```
+
 Create a volume for persistent data:
 `docker volume create --name=mongo`
 
