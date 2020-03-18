@@ -1,37 +1,37 @@
-/** @jsx jsx */
-import {jsx, Flex, Box, Heading, Button, Text} from 'theme-ui'
+import React from 'react'
+import {Heading, Button} from '@luminate/gatsby-theme-luminate/src'
 
 interface DeleteAlertProps {
   heading?: string
   text?: string
   onCancelClick?: () => void
   onConfirmClick?: () => void
-  variant?: 'default' | 'danger'
+  variant?: 'primary' | 'danger'
 }
 
-const DeleteAlert = ({heading, text, onCancelClick, onConfirmClick, variant = 'default'}: DeleteAlertProps) => {
+const DeleteAlert = ({heading, text, onCancelClick, onConfirmClick, variant = 'primary'}: DeleteAlertProps) => {
   return (
-    <Box>
+    <div>
       {heading ? <Heading>{heading}</Heading> : null}
-      {text ? <Text>{text}</Text> : null}
+      {text ? <p>{text}</p> : null}
 
-      <Flex sx={{justifyContent: 'flex-end', mt: 4, px: 3}}>
+      <div className="flex justify-end mt-4 px-3">
         {onConfirmClick ? (
-          <Box sx={{order: 1}}>
+          <div className="order-1">
             <Button onClick={onConfirmClick} variant={variant}>
               Confirm
             </Button>
-          </Box>
+          </div>
         ) : null}
         {onCancelClick ? (
-          <Box sx={{mr: onConfirmClick ? 2 : 0}}>
+          <div className={`mr-${onConfirmClick ? '2' : '0'}`}>
             <Button onClick={onCancelClick} variant="text">
               Cancel
             </Button>
-          </Box>
+          </div>
         ) : null}
-      </Flex>
-    </Box>
+      </div>
+    </div>
   )
 }
 

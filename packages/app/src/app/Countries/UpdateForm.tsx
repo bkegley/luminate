@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import {jsx, Flex, Box, Card, Field as ThemeField, Heading, Button} from 'theme-ui'
 import React from 'react'
-import {Modal} from '@luminate/gatsby-theme-luminate/src'
+import {Modal, useDialogState, DialogDisclosure} from '@luminate/gatsby-theme-luminate/src'
 import Alert from '../../components/Alert'
 import {
   useUpdateCountryMutation,
@@ -72,6 +72,8 @@ const CountryUpdateForm = ({
     },
   })
 
+  const deleteDialog = useDialogState()
+
   return (
     <Formik
       initialValues={{
@@ -90,6 +92,22 @@ const CountryUpdateForm = ({
       {() => {
         return (
           <Form>
+            <Modal dialog={deleteDialog} aria-label="Alert">
+              <Box
+                sx={{
+                  width: ['90vw', '75vw', '50vw'],
+                  maxWidth: '600px',
+                }}
+              >
+                <Alert
+                  heading="Are you sure?"
+                  text="This action cannot be undone."
+                  onCancelClick={deleteDialog.toggle}
+                  onConfirmClick={() => deleteCountry({variables: {id: country.id}})}
+                  variant="danger"
+                />
+              </Box>
+            </Modal>
             <Card variant={isModal ? 'blank' : 'primary'} sx={{p: 3, overflow: 'visible'}}>
               {title ? <Heading>{title}</Heading> : null}
               {!fields || fields.includes('name') ? (
@@ -103,33 +121,9 @@ const CountryUpdateForm = ({
                 <Button type="submit">Submit</Button>
               </Box>
               <Box sx={{mr: 2}}>
-                <Modal
-                  backdrop={true}
-                  disclosure={
-                    <Button type="button" variant="buttons.text">
-                      Delete
-                    </Button>
-                  }
-                >
-                  {dialog => {
-                    return (
-                      <Box
-                        sx={{
-                          width: ['90vw', '75vw', '50vw'],
-                          maxWidth: '600px',
-                        }}
-                      >
-                        <Alert
-                          heading="Are you sure?"
-                          text="This action cannot be undone."
-                          onCancelClick={dialog.toggle}
-                          onConfirmClick={() => deleteCountry({variables: {id: country.id}})}
-                          variant="danger"
-                        />
-                      </Box>
-                    )
-                  }}
-                </Modal>
+                <DialogDisclosure {...deleteDialog} as={Button} variant="text">
+                  Delete
+                </DialogDisclosure>
               </Box>
             </Flex>
           </Form>
