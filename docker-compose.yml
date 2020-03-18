@@ -25,14 +25,9 @@ services:
       dockerfile: packages/app/Dockerfile
     image: app
     container_name: app
-    restart: always
+    restart: unless-stopped
     links:
       - server-gateway
-    ports:
-      - 8001:9000
-    environment:
-      - API_URL=http://server-gateway:3000/graphql
-    command: yarn workspace @luminate/app run serve --host "0.0.0.0"
 
   server-auth:
     build:
@@ -40,20 +35,14 @@ services:
       dockerfile: packages/server-auth/Dockerfile
     image: server-auth
     container_name: server-auth
-    restart: always
+    restart: unless-stopped
     depends_on:
       - mongo-utils
       - graphql-utils
     links:
       - db:db
-    ports:
-      - 3001:3001
-    environment:
-      - PORT=3001
-      - MONGO_URL=mongodb://db:27017/db
     volumes:
       - mongo:/data/db
-    command: yarn workspace @luminate/server-auth run start
 
   server-encyclopedia:
     build:
@@ -61,20 +50,14 @@ services:
       dockerfile: packages/server-encyclopedia/Dockerfile
     image: server-encyclopedia
     container_name: server-encyclopedia
-    restart: always
+    restart: unless-stopped
     depends_on:
       - mongo-utils
       - graphql-utils
     links:
       - db:db
-    ports:
-      - 3002:3002
-    environment:
-      - PORT=3002
-      - MONGO_URL=mongodb://db:27017/db
     volumes:
       - mongo:/data/db
-    command: yarn workspace @luminate/server-encyclopedia run start
 
   server-sensory-eval:
     build:
@@ -82,20 +65,14 @@ services:
       dockerfile: packages/server-sensory-eval/Dockerfile
     image: server-sensory-eval
     container_name: server-sensory-eval
-    restart: always
+    restart: unless-stopped
     depends_on:
       - mongo-utils
       - graphql-utils
     links:
       - db:db
-    ports:
-      - 3003:3003
-    environment:
-      - PORT=3003
-      - MONGO_URL=mongodb://db:27017/db
     volumes:
       - mongo:/data/db
-    command: yarn workspace @luminate/server-sensory-eval run start
 
   server-gateway:
     build:
@@ -103,7 +80,7 @@ services:
       dockerfile: packages/server-gateway/Dockerfile
     image: server-gateway
     container_name: server-gateway
-    restart: always
+    restart: unless-stopped
     depends_on:
       - mongo-utils
       - graphql-utils
@@ -112,17 +89,8 @@ services:
       - server-auth
       - server-encyclopedia
       - server-sensory-eval
-    ports:
-      - 3000:3000
-    environment:
-      - PORT=3000
-      - SERVER_AUTH_PORT=3001
-      - SERVER_ENCYCLOPEDIA_PORT=3002
-      - SERVER_SENSORY_EVAL_PORT=3003
-      - MONGO_URL=mongodb://db:27017/db
     volumes:
       - mongo:/data/db
-    command: yarn workspace @luminate/server-gateway run start
 
 volumes:
   mongo:

@@ -27,5 +27,5 @@ COPY --from=build /usr/src/app/packages/gatsby-theme-luminate ./packages/gatsby-
 
 RUN yarn
 
-ENTRYPOINT [ "yarn", "workspace", "@luminate/app", "run", "serve", "--host", "0.0.0.0" ]
-EXPOSE 9000
+CMD [ "yarn", "workspace", "@luminate/app", "run", "serve", "--host", "0.0.0.0", "-p", "8000" ]
+EXPOSE 8000
