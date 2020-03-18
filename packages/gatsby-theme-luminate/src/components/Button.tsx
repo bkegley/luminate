@@ -3,7 +3,7 @@ import React from 'react'
 export interface ButtonProps {
   children: React.ReactNode
   className?: string
-  variant?: 'primary' | 'secondary' | 'text' | 'danger'
+  variant?: 'primary' | 'secondary' | 'outline' | 'text' | 'danger'
   [x: string]: any
 }
 const Button = ({children, className, variant = 'primary', ...remainingProps}: ButtonProps) => {

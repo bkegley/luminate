@@ -22,6 +22,14 @@
   @apply bg-gray-800 text-white;
 }
 
+.btn-outline {
+  @apply bg-transparent text-gray-800 border-2 border-gray-800;
+}
+
+.btn-outline:hover {
+  @apply text-primary-600 border-primary-600;
+}
+
 .btn-text {
   @apply bg-transparent text-black;
 }
