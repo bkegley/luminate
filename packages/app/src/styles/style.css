@@ -2,6 +2,14 @@
 @tailwind base;
 @tailwind components;
 
+.sidebar-width {
+  max-width: 240px;
+}
+
+.badge-primary {
+  @apply bg-primary-300 text-primary-600;
+}
+
 .btn {
   @apply w-full rounded uppercase tracking-wide px-4 py-2;
 }
@@ -75,6 +83,38 @@
 
 .link-nav:hover {
   @apply text-gray-800;
+}
+
+.tag {
+  @apply p-0 rounded;
+}
+
+.tag-default {
+  @apply bg-gray-200 text-gray-800;
+}
+
+.tag-primary {
+  @apply bg-primary-200 text-primary-600;
+}
+
+.tag-close {
+  @apply rounded-r rounded-l-none py-px px-2;
+}
+
+.tag-close-default {
+  @apply bg-gray-600;
+}
+
+.tag-close-default:hover {
+  @apply bg-gray-800 text-white;
+}
+
+.tag-close-primary {
+  @apply bg-primary-600 text-gray-200;
+}
+
+.tag-close-primary:hover {
+  @apply bg-primary-600 text-white;
 }
 
 /* purgecss end ignore */
