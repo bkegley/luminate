@@ -1,20 +1,17 @@
-/** @jsx jsx */
-import {jsx, Box, Heading} from 'theme-ui'
+import React from 'react'
 import RegisterForm from '../components/RegisterForm'
-import {Layout} from '@luminate/gatsby-theme-luminate/src'
+import {Layout, Heading} from '@luminate/gatsby-theme-luminate/src'
 import Header from '../components/RootHeader'
 
 const RegisterPage = () => {
   return (
     <Layout header={<Header />}>
-      <Box>
-        <Box sx={{mb: 4}}>
-          <Heading as="h1">Register</Heading>
-        </Box>
-        <Box>
-          <RegisterForm />
-        </Box>
-      </Box>
+      <div className="pt-20 px-4 mb-6">
+        <Heading as="h2">Register</Heading>
+      </div>
+      <div>
+        <RegisterForm />
+      </div>
     </Layout>
   )
 }

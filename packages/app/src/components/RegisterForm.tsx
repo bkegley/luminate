@@ -1,6 +1,6 @@
-/** @jsx jsx */
-import {jsx, Flex, Box, Field as ThemeField, Button, Card} from 'theme-ui'
+import React from 'react'
 import {useCreateAccountMutation} from '../graphql'
+import {Input, Card, Button} from '@luminate/gatsby-theme-luminate/src'
 import {Formik, Form, Field} from 'formik'
 import {navigate} from 'gatsby'
 
@@ -30,24 +30,33 @@ const RegisterForm = ({isModal}: RegisterFormProps) => {
       }}
     >
       <Form>
-        <Card variant={isModal ? 'blank' : 'primary'} sx={{p: 3}}>
-          <Box sx={{my: 2}}>
-            <Field name="name" type="text" label="Account Name" as={ThemeField} />
-          </Box>
-          <Box sx={{my: 2}}>
-            <Field name="username" type="text" label="Username" as={ThemeField} />
-          </Box>
-          <Box sx={{my: 2}}>
-            <Field name="password" type="password" label="Password" as={ThemeField} />
-          </Box>
+        <Card className="p-4 overflow-hidden" variant={isModal ? 'blank' : 'default'}>
+          <div className="mb-4">
+            <label className="block my-2" htmlFor="name">
+              Account Name
+            </label>
+            <Field name="name" id="name" type="text" label="Account Name" as={Input} />
+          </div>
+          <div className="my-4">
+            <label className="block my-2" htmlFor="username">
+              Username
+            </label>
+            <Field name="username" id="username" type="text" label="Username" as={Input} />
+          </div>
+          <div className="my-4">
+            <label className="block my-2" htmlFor="password">
+              Password
+            </label>
+            <Field name="password" id="password" type="password" label="Password" as={Input} />
+          </div>
         </Card>
-        <Flex sx={{justifyContent: 'flex-end', mt: 4, px: 3}}>
-          <Box>
+        <div className="flex justify-end mt-4 px-3">
+          <div>
             <Button type="submit" variant="primary">
               Submit
             </Button>
-          </Box>
-        </Flex>
+          </div>
+        </div>
       </Form>
     </Formik>
   )
