@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import {jsx, Flex, Box, Badge, Card, Field as ThemeField, Heading, Button, Close} from 'theme-ui'
 import React from 'react'
-import {Combobox, Modal, useDialogState} from '@luminate/gatsby-theme-luminate/src'
+import {Combobox, Modal, useDialogState, DialogDisclosure} from '@luminate/gatsby-theme-luminate/src'
 import Alert from '../../components/Alert'
 import {
   useUpdateCoffeeMutation,
@@ -45,7 +45,6 @@ const CoffeeUpdateForm = ({
   onDeleteSuccess,
   onDeleteError,
 }: CoffeeUpdateFormProps) => {
-  const createNewVarietyDialog = useDialogState()
   const history = useHistory()
   const {path} = useRouteMatch()
   const [updateCoffee, {data: updateData, error: updateError, loading: updateLoading}] = useUpdateCoffeeMutation({
@@ -98,6 +97,9 @@ const CoffeeUpdateForm = ({
     }
   })
 
+  const createNewVarietyDialog = useDialogState()
+  const deleteDialog = useDialogState()
+
   return (
     <Formik
       initialValues={{
@@ -135,12 +137,28 @@ const CoffeeUpdateForm = ({
 
         return (
           <React.Fragment>
-            <Modal dialog={createNewVarietyDialog}>
-              <div>
-                <h1>Hey ma!</h1>
-              </div>
-            </Modal>
             <Form>
+              <Modal dialog={createNewVarietyDialog}>
+                <div>
+                  <h1>Hey ma!</h1>
+                </div>
+              </Modal>
+              <Modal dialog={deleteDialog} aria-label="Alert">
+                <Box
+                  sx={{
+                    width: ['90vw', '75vw', '50vw'],
+                    maxWidth: '600px',
+                  }}
+                >
+                  <Alert
+                    heading="Are you sure?"
+                    text="This action cannot be undone."
+                    onCancelClick={deleteDialog.toggle}
+                    onConfirmClick={() => deleteCoffee({variables: {id: coffee.id}})}
+                    variant="danger"
+                  />
+                </Box>
+              </Modal>
               <Card variant={isModal ? 'blank' : 'primary'} sx={{p: 3, overflow: 'visible'}}>
                 {title ? <Heading>{title}</Heading> : null}
                 {!fields || fields.includes('name') ? (
@@ -228,33 +246,9 @@ const CoffeeUpdateForm = ({
                   <Button type="submit">Submit</Button>
                 </Box>
                 <Box sx={{mr: 2}}>
-                  <Modal
-                    backdrop={true}
-                    disclosure={
-                      <Button type="button" variant="buttons.text">
-                        Delete
-                      </Button>
-                    }
-                  >
-                    {dialog => {
-                      return (
-                        <Box
-                          sx={{
-                            width: ['90vw', '75vw', '50vw'],
-                            maxWidth: '600px',
-                          }}
-                        >
-                          <Alert
-                            heading="Are you sure?"
-                            text="This action cannot be undone."
-                            onCancelClick={dialog.toggle}
-                            onConfirmClick={() => deleteCoffee({variables: {id: coffee.id}})}
-                            variant="danger"
-                          />
-                        </Box>
-                      )
-                    }}
-                  </Modal>
+                  <DialogDisclosure {...deleteDialog} as={Button} variant="text">
+                    Delete
+                  </DialogDisclosure>
                 </Box>
               </Flex>
             </Form>
