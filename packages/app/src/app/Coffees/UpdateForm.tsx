@@ -138,7 +138,7 @@ const CoffeeUpdateForm = ({
         return (
           <React.Fragment>
             <Form>
-              <Modal dialog={createNewVarietyDialog}>
+              <Modal dialog={createNewVarietyDialog} className="bg-white p-3 rounded-md" top="100px" aria-label="Alert">
                 <div>
                   <h1>Hey ma!</h1>
                 </div>

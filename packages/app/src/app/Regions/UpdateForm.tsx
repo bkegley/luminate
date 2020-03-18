@@ -108,7 +108,7 @@ const RegionUpdateForm = ({
       {({setFieldValue, values}) => {
         return (
           <Form>
-            <Modal dialog={deleteDialog} aria-label="Alert">
+            <Modal dialog={deleteDialog} className="bg-white p-3 rounded-md" top="100px" aria-label="Alert">
               <Box
                 sx={{
                   width: ['90vw', '75vw', '50vw'],
