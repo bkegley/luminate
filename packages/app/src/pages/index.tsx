@@ -7,7 +7,7 @@ import Header from '../components/RootHeader'
 const IndexPage = () => {
   return (
     <Layout header={<Header />}>
-      <div>
+      <div className="pt-20 px-4 mb-6">
         <h3>Register?</h3>
         <Link to="/register">Go to register</Link>
       </div>

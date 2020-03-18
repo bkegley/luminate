@@ -1,5 +1,4 @@
-/** @jsx jsx */
-import {jsx, Box} from 'theme-ui'
+import React from 'react'
 import {useUser, Layout} from '@luminate/gatsby-theme-luminate/src'
 import {navigate} from 'gatsby'
 import {BrowserRouter} from 'react-router-dom'
@@ -20,9 +19,9 @@ const AppPage = () => {
   return (
     <BrowserRouter>
       <Layout header={<Header />} sidebar={<Sidebar />}>
-        <Box sx={{pt: 6, px: 4, mb: 6}}>
+        <div className="pt-24 px-4 mb-6">
           <App />
-        </Box>
+        </div>
       </Layout>
     </BrowserRouter>
   )

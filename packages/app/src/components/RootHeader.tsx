@@ -1,6 +1,5 @@
-/** @jsx jsx */
-import {jsx, Flex, Box, Heading, Button} from 'theme-ui'
-import {useUser, Modal, useDialogState, DialogDisclosure} from '@luminate/gatsby-theme-luminate/src'
+import React from 'react'
+import {useUser, Heading, Button, Modal, useDialogState, DialogDisclosure} from '@luminate/gatsby-theme-luminate/src'
 import {Link} from 'gatsby'
 import LoginForm from './LoginForm'
 
@@ -10,37 +9,23 @@ export const Header = ({}: HeaderProps) => {
   const {user, logout} = useUser()
   const loginDialog = useDialogState()
   return (
-    <Box sx={{position: 'fixed', width: '100%', top: 0}}>
-      <Modal dialog={loginDialog} aria-label="Login">
-        <Box
-          sx={{
-            width: ['90vw', '75vw', '50vw'],
-            maxWidth: '600px',
-          }}
-        >
+    <div className="fixed w-full top-0">
+      <Modal className="container mx-auto bg-white p-3 rounded-md" dialog={loginDialog} aria-label="Login">
+        <div className="">
           <LoginForm />
-        </Box>
+        </div>
       </Modal>
-      <Flex
-        sx={{
-          width: '100%',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          py: 2,
-          maxWidth: 'contentWidth',
-          mx: 'auto',
-        }}
-      >
-        <Box>
-          <Link to="/app" sx={{textDecoration: 'none'}}>
-            <Heading as="h3" sx={{color: 'primary'}}>
+      <div className="flex w-full items-center justify-between py-2 mx-auto container">
+        <div>
+          <Link to="/app" className="underline-none">
+            <Heading as="h3" className="text-primary-600">
               Luminate
             </Heading>
           </Link>
-        </Box>
-        <Flex sx={{alignItems: 'center'}}>
-          <Box sx={{mx: 2}}>{user ? <Link to="/app">Go to App</Link> : <Link to="/register">Register</Link>}</Box>
-          <Box sx={{ml: 2}}>
+        </div>
+        <div className="flex items-center">
+          <div className="mx-2">{user ? <Link to="/app">Go to App</Link> : <Link to="/register">Register</Link>}</div>
+          <div className="ml-2">
             {user ? (
               <Button type="button" onClick={() => logout()} variant="text">
                 Logout
@@ -50,10 +35,10 @@ export const Header = ({}: HeaderProps) => {
                 Login
               </DialogDisclosure>
             )}
-          </Box>
-        </Flex>
-      </Flex>
-    </Box>
+          </div>
+        </div>
+      </div>
+    </div>
   )
 }
 
