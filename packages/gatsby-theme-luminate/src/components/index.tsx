@@ -1,5 +1,6 @@
 import Avatar, {AvatarProps} from './Avatar'
 import Button, {ButtonProps} from './Button'
+import Card, {CardProps} from './Card'
 import Combobox, {ComboboxProps} from './Combobox'
 import Heading, {HeadingProps} from './Heading'
 import Input, {InputProps} from './Input'
@@ -18,6 +19,8 @@ export {
   AvatarProps,
   Button,
   ButtonProps,
+  Card,
+  CardProps,
   Combobox,
   ComboboxProps,
   Drawer,
