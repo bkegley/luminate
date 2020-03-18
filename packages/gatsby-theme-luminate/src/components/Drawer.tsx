@@ -49,7 +49,7 @@ const DrawerBackground = ({
   return (
     <Box
       sx={{
-        zIndex: 100,
+        zIndex: 45,
         position: 'fixed',
         overflow: 'auto',
         top: 0,
@@ -79,7 +79,7 @@ const DrawerWrapper = ({
     <Box
       sx={{
         ...sx,
-        zIndex: 100,
+        zIndex: 45,
         overflow: 'auto',
         position: 'fixed',
         ...getStylesForDrawerOpenFrom(from),
