@@ -1,21 +1,12 @@
-/** @jsx jsx */
-import {jsx, Flex, Box} from 'theme-ui'
-import {useLogout, StyledLink} from '@luminate/gatsby-theme-luminate/src'
+import React from 'react'
+import {StyledLink} from '@luminate/gatsby-theme-luminate/src'
 import {Book} from 'react-feather'
 
 const Sidebar = () => {
   return (
-    <Flex
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        position: 'fixed',
-        maxWidth: 'sidebar',
-        pt: 6,
-      }}
-    >
+    <div className="flex flex-col fixed pt-24 sidebar-width">
       <StyledLink to="/app/coffees" variant="nav">
-        <Book sx={{height: '1rem'}} />
+        <Book className="h-4" />
         Coffees
       </StyledLink>
       <StyledLink to="/app/countries" variant="nav">
@@ -30,7 +21,7 @@ const Sidebar = () => {
       <StyledLink to="/app/varieties" variant="nav">
         Varieties
       </StyledLink>
-    </Flex>
+    </div>
   )
 }
 
