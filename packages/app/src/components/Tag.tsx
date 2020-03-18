@@ -1,35 +1,23 @@
-/** @jsx jsx */
-import {jsx, Badge, Flex, Box, Close} from 'theme-ui'
+import React from 'react'
 
 interface TagProps {
   onCloseClick?: () => void
-  variant?: string
+  variant?: 'default' | 'primary'
   text: string
 }
 
-const Tag = ({text, onCloseClick, variant}: TagProps) => {
+const Tag = ({text, onCloseClick, variant = 'default'}: TagProps) => {
   return (
-    <Badge sx={{p: 0, bg: 'greys.2', color: 'secondary', variant}}>
-      <Flex sx={{alignItems: 'center'}}>
-        <Box sx={{ml: 2, mr: 1, textTransform: 'uppercase'}}>{text}</Box>
+    <div className={`tag tag-${variant}`}>
+      <div className="flex items-center">
+        <div className="ml-2 mr-1 text-sm uppercase tracking-wide">{text}</div>
         {onCloseClick ? (
-          <Close
-            type="button"
-            onClick={onCloseClick}
-            sx={{
-              borderRadius: 0,
-              borderTopRightRadius: 'small',
-              borderBottomRightRadius: 'small',
-              '&:hover': {
-                bg: 'secondary',
-                color: 'white',
-              },
-              variant,
-            }}
-          />
+          <div onClick={onCloseClick} className={`tag-close tag-close-${variant}`}>
+            X
+          </div>
         ) : null}
-      </Flex>
-    </Badge>
+      </div>
+    </div>
   )
 }
 
