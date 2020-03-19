@@ -1,8 +1,7 @@
-/** @jsx jsx */
-import {jsx, Flex, Box, Heading, Button, Card} from 'theme-ui'
+import React from 'react'
 import {useListRegionsTableQuery} from '../../graphql'
 import {Link, RouteComponentProps} from 'react-router-dom'
-import {Region, Tooltip} from '@luminate/gatsby-theme-luminate/src'
+import {Heading, Button, Card, Region, Tooltip} from '@luminate/gatsby-theme-luminate/src'
 import {formatDistanceToNow, format} from 'date-fns'
 
 interface Props extends RouteComponentProps {}
@@ -19,29 +18,27 @@ const ListRegionsView = ({match, history}: Props) => {
   }
 
   return (
-    <Flex sx={{flexDirection: 'column'}}>
-      <Flex sx={{alignItems: 'center', justifyContent: 'space-between', px: 4, mb: 4}}>
-        <Box>
-          <Heading as="h1">Region</Heading>
-        </Box>
-        <Box>
-          <Button as="a" onClick={() => history.push(`${url}/create`)}>
-            Create New
-          </Button>
-        </Box>
-      </Flex>
+    <div className="flex flex-col">
+      <div className="flex items-center justify-between px-4 mb-4">
+        <div>
+          <Heading>Region</Heading>
+        </div>
+        <div>
+          <Button onClick={() => history.push(`${url}/create`)}>Create New</Button>
+        </div>
+      </div>
       <Card>
         {data.listRegions.edges.map(({node}, index) => {
           return (
             <div key={node?.id}>
-              <Link to={`${url}/${node?.id}`} sx={{textDecoration: 'none', color: 'inherit'}}>
+              <Link to={`${url}/${node?.id}`}>
                 <RegionRow region={node} index={index} />
               </Link>
             </div>
           )
         })}
       </Card>
-    </Flex>
+    </div>
   )
 }
 
@@ -51,20 +48,20 @@ interface RegionRowProps {
 }
 const RegionRow = ({region, index}: RegionRowProps) => {
   return (
-    <Flex sx={{py: 3, px: 4, bg: index % 2 == 0 ? 'inherit' : 'greys.0', alignItems: 'center'}}>
-      <Box sx={{flex: 3}}>{region.name}</Box>
-      <Box sx={{flex: 2}}>{region.country?.name}</Box>
-      <Box sx={{flex: 1}}>
+    <div className={`flex items-center py-3 px-4 bg-${index % 2 === 0 ? 'transparent' : 'gray-100'}`}>
+      <div className="w-1/4">{region.name}</div>
+      <div className="w-1/4">{region.country?.name}</div>
+      <div className="w-1/4">
         <Tooltip text={format(parseInt(region.createdAt), 'EE, LLL do, yyyy')}>
           <span>{formatDistanceToNow(parseInt(region.createdAt), {addSuffix: true})}</span>
         </Tooltip>
-      </Box>
-      <Box sx={{flex: 1}}>
+      </div>
+      <div className="w-1/4">
         <Tooltip text={format(parseInt(region.updatedAt), 'EE, LLL do, yyyy')}>
           <span>{formatDistanceToNow(parseInt(region.updatedAt), {addSuffix: true})}</span>
         </Tooltip>
-      </Box>
-    </Flex>
+      </div>
+    </div>
   )
 }
 

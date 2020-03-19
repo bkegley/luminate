@@ -1,8 +1,7 @@
-/** @jsx jsx */
-import {jsx, Flex, Box, Heading, Button, Card} from 'theme-ui'
+import React from 'react'
+import {Heading, Button, Card, Farm, Tooltip} from '@luminate/gatsby-theme-luminate/src'
 import {useListFarmsTableQuery} from '../../graphql'
 import {Link, RouteComponentProps} from 'react-router-dom'
-import {Farm, Tooltip} from '@luminate/gatsby-theme-luminate/src'
 import {formatDistanceToNow, format} from 'date-fns'
 
 interface Props extends RouteComponentProps {}
@@ -19,29 +18,27 @@ const ListFarmsView = ({match, history}: Props) => {
   }
 
   return (
-    <Flex sx={{flexDirection: 'column'}}>
-      <Flex sx={{alignItems: 'center', justifyContent: 'space-between', px: 4, mb: 4}}>
-        <Box>
-          <Heading as="h1">Farm</Heading>
-        </Box>
-        <Box>
-          <Button as="a" onClick={() => history.push(`${url}/create`)}>
-            Create New
-          </Button>
-        </Box>
-      </Flex>
+    <div className="flex flex-col">
+      <div className="flex items-center justify-between px-4 mb-4">
+        <div>
+          <Heading>Farm</Heading>
+        </div>
+        <div>
+          <Button onClick={() => history.push(`${url}/create`)}>Create New</Button>
+        </div>
+      </div>
       <Card>
         {data.listFarms.edges.map(({node}, index) => {
           return (
             <div key={node?.id}>
-              <Link to={`${url}/${node?.id}`} sx={{textDecoration: 'none', color: 'inherit'}}>
+              <Link to={`${url}/${node?.id}`}>
                 <FarmRow farm={node} index={index} />
               </Link>
             </div>
           )
         })}
       </Card>
-    </Flex>
+    </div>
   )
 }
 
@@ -51,20 +48,20 @@ interface FarmRowProps {
 }
 const FarmRow = ({farm, index}: FarmRowProps) => {
   return (
-    <Flex sx={{py: 3, px: 4, bg: index % 2 == 0 ? 'inherit' : 'greys.0', alignItems: 'center'}}>
-      <Box sx={{flex: 3}}>{farm.name}</Box>
-      <Box sx={{flex: 2}}>{farm.country?.name}</Box>
-      <Box sx={{flex: 1}}>
+    <div className={`flex items-center bg-${index % 2 === 0 ? 'transparent' : 'gray-100'} py-3 px-4`}>
+      <div className="w-1/4">{farm.name}</div>
+      <div className="w-1/4">{farm.country?.name}</div>
+      <div className="w-1/4">
         <Tooltip text={format(parseInt(farm.createdAt), 'EE, LLL do, yyyy')}>
           <span>{formatDistanceToNow(parseInt(farm.createdAt), {addSuffix: true})}</span>
         </Tooltip>
-      </Box>
-      <Box sx={{flex: 1}}>
+      </div>
+      <div className="w-1/4">
         <Tooltip text={format(parseInt(farm.updatedAt), 'EE, LLL do, yyyy')}>
           <span>{formatDistanceToNow(parseInt(farm.updatedAt), {addSuffix: true})}</span>
         </Tooltip>
-      </Box>
-    </Flex>
+      </div>
+    </div>
   )
 }
 
