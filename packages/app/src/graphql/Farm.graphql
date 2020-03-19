@@ -64,8 +64,6 @@ fragment FarmFragment on Farm {
   farmZones {
     id
     name
-    createdAt
-    updatedAt
   }
   createdAt
   updatedAt

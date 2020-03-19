@@ -1,7 +1,14 @@
-/** @jsx jsx */
-import {jsx, Flex, Box, Card, Field as ThemeField, Heading, Button} from 'theme-ui'
 import React from 'react'
-import {Combobox, Modal, useDialogState, DialogDisclosure} from '@luminate/gatsby-theme-luminate/src'
+import {
+  Card,
+  Heading,
+  Button,
+  Input,
+  Combobox,
+  Modal,
+  useDialogState,
+  DialogDisclosure,
+} from '@luminate/gatsby-theme-luminate/src'
 import Alert from '../../components/Alert'
 import {
   useUpdateFarmMutation,
@@ -121,12 +128,7 @@ const FarmUpdateForm = ({
         return (
           <Form>
             <Modal dialog={deleteDialog} className="bg-white p-3 rounded-md" top="100px" aria-label="Alert">
-              <Box
-                sx={{
-                  width: ['90vw', '75vw', '50vw'],
-                  maxWidth: '600px',
-                }}
-              >
+              <div className="w-screen-11/12 md:w-screen-3/4 lg:w-screen-1/2">
                 <Alert
                   heading="Are you sure?"
                   text="This action cannot be undone."
@@ -134,17 +136,20 @@ const FarmUpdateForm = ({
                   onConfirmClick={() => deleteFarm({variables: {id: farm.id}})}
                   variant="danger"
                 />
-              </Box>
+              </div>
             </Modal>
-            <Card variant={isModal ? 'blank' : 'primary'} sx={{p: 3, overflow: 'visible'}}>
+            <Card className="p-3 overflow-visible" variant={isModal ? 'blank' : 'default'}>
               {title ? <Heading>{title}</Heading> : null}
               {!fields || fields.includes('name') ? (
-                <Box>
-                  <Field name="name" label="Name" as={ThemeField} />
-                </Box>
+                <div className="mb-2">
+                  <label className="block mb-1" htmlFor="name">
+                    Name
+                  </label>
+                  <Field name="name" id="name" as={Input} />
+                </div>
               ) : null}
               {!fields || fields.includes('country') ? (
-                <Box>
+                <div className="mb-2">
                   <Combobox
                     label="Country"
                     // @ts-ignore
@@ -164,10 +169,10 @@ const FarmUpdateForm = ({
                       setFieldValue('country', value.selectedItem?.value)
                     }}
                   />
-                </Box>
+                </div>
               ) : null}
               {!fields || fields.includes('region') ? (
-                <Box>
+                <div className="mb-2">
                   <Combobox
                     label="Region"
                     // @ts-ignore
@@ -177,17 +182,19 @@ const FarmUpdateForm = ({
                     loading={regionLoading}
                     onChange={value => setFieldValue('region', value.selectedItem?.value)}
                   />
-                </Box>
+                </div>
               ) : null}
             </Card>
-            <Flex sx={{justifyContent: 'flex-end', mt: 4, px: 3}}>
-              <Box sx={{order: 1}}>
+            <div className="flex justify-end mt-4 px-3">
+              <div className="order-1">
                 <Button type="submit">Submit</Button>
-              </Box>
-              <DialogDisclosure {...deleteDialog} as={Button} variant="text">
-                Delete
-              </DialogDisclosure>
-            </Flex>
+              </div>
+              <div className="mr-2">
+                <DialogDisclosure {...deleteDialog} as={Button} variant="text">
+                  Delete
+                </DialogDisclosure>
+              </div>
+            </div>
           </Form>
         )
       }}

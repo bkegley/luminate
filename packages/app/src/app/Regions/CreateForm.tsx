@@ -1,8 +1,6 @@
-/** @jsx jsx */
-import {jsx, Flex, Box, Card, Heading, Button, Field as ThemeField} from 'theme-ui'
 import React from 'react'
+import {Card, Heading, Button, Input, Combobox} from '@luminate/gatsby-theme-luminate/src'
 import {Formik, Form, Field} from 'formik'
-import {Combobox} from '@luminate/gatsby-theme-luminate/src'
 import {
   useCreateRegionMutation,
   useListCountriesQuery,
@@ -81,15 +79,18 @@ const RegionCreateForm = ({
       {({dirty, setFieldValue, values}) => {
         return (
           <Form>
-            <Card variant={isModal ? 'blank' : 'primary'} sx={{p: 3, overflow: 'visible'}}>
+            <Card className="p-3 overflow-visible" variant={isModal ? 'blank' : 'default'}>
               {title ? <Heading>{title}</Heading> : null}
               {!fields || fields.includes('name') ? (
-                <Box sx={{mb: 3}}>
-                  <Field name="name" label="Name" as={ThemeField} />
-                </Box>
+                <div className="mb-3">
+                  <label className="block mb-1" htmlFor="name">
+                    Name
+                  </label>
+                  <Field name="name" id="name" as={Input} />
+                </div>
               ) : null}
               {!fields || fields.includes('country') ? (
-                <Box sx={{mb: 3}}>
+                <div className="mb-3">
                   <Combobox
                     label="Country"
                     // @ts-ignore
@@ -101,23 +102,23 @@ const RegionCreateForm = ({
                       setFieldValue('country', value.selectedItem?.value)
                     }}
                   />
-                </Box>
+                </div>
               ) : null}
             </Card>
-            <Flex sx={{justifyContent: 'flex-end', mt: 4, px: 3, overflow: 'visible'}}>
-              <Box sx={{order: 1}}>
+            <div className="flex justify-end mt-4 px-3 overflow-visible">
+              <div className="order-1">
                 <Button type="submit" variant="primary">
                   Submit
                 </Button>
-              </Box>
+              </div>
               {onCancel ? (
-                <Box sx={{mr: 3}}>
+                <div className="mr-3">
                   <Button type="button" variant="text" onClick={() => onCancel(dirty)}>
                     Cancel
                   </Button>
-                </Box>
+                </div>
               ) : null}
-            </Flex>
+            </div>
           </Form>
         )
       }}

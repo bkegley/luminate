@@ -1,7 +1,14 @@
-/** @jsx jsx */
-import {jsx, Flex, Box, Badge, Card, Field as ThemeField, Heading, Button, Close} from 'theme-ui'
 import React from 'react'
-import {Combobox, Modal, useDialogState, DialogDisclosure} from '@luminate/gatsby-theme-luminate/src'
+import {
+  Combobox,
+  Modal,
+  useDialogState,
+  DialogDisclosure,
+  Card,
+  Input,
+  Heading,
+  Button,
+} from '@luminate/gatsby-theme-luminate/src'
 import Alert from '../../components/Alert'
 import {
   useUpdateCoffeeMutation,
@@ -136,123 +143,120 @@ const CoffeeUpdateForm = ({
           })
 
         return (
-          <React.Fragment>
-            <Form>
-              <Modal dialog={createNewVarietyDialog} className="bg-white p-3 rounded-md" top="100px" aria-label="Alert">
-                <div>
-                  <h1>Hey ma!</h1>
+          <Form>
+            <Modal dialog={createNewVarietyDialog} className="bg-white p-3 rounded-md" top="100px" aria-label="Alert">
+              <div>
+                <h1>Hey ma!</h1>
+              </div>
+            </Modal>
+            <Modal
+              className="bg-white p-3 rounded-md w-screen-5/6 md:w-screen-3/4 lg:w-screen-1/3"
+              top="100px"
+              dialog={deleteDialog}
+              aria-label="Alert"
+            >
+              <Alert
+                heading="Are you sure?"
+                text="This action cannot be undone."
+                onCancelClick={deleteDialog.toggle}
+                onConfirmClick={() => deleteCoffee({variables: {id: coffee.id}})}
+                variant="danger"
+              />
+            </Modal>
+            <Card className="p-3 overflow-visible" variant={isModal ? 'blank' : 'default'}>
+              {title ? <Heading>{title}</Heading> : null}
+              {!fields || fields.includes('name') ? (
+                <div className="mb-3">
+                  <label className="block mb-1" htmlFor="name">
+                    Name
+                  </label>
+                  <Field name="name" id="name" as={Input} />
                 </div>
-              </Modal>
-              <Modal dialog={deleteDialog} aria-label="Alert">
-                <Box
-                  sx={{
-                    width: ['90vw', '75vw', '50vw'],
-                    maxWidth: '600px',
-                  }}
-                >
-                  <Alert
-                    heading="Are you sure?"
-                    text="This action cannot be undone."
-                    onCancelClick={deleteDialog.toggle}
-                    onConfirmClick={() => deleteCoffee({variables: {id: coffee.id}})}
-                    variant="danger"
-                  />
-                </Box>
-              </Modal>
-              <Card variant={isModal ? 'blank' : 'primary'} sx={{p: 3, overflow: 'visible'}}>
-                {title ? <Heading>{title}</Heading> : null}
-                {!fields || fields.includes('name') ? (
-                  <Box>
-                    <Field name="name" label="Name" as={ThemeField} />
-                  </Box>
-                ) : null}
-                {!fields || fields.includes('country') ? (
-                  <Box>
-                    <Combobox
-                      label="Country"
-                      // @ts-ignore
-                      options={countryOptions}
-                      // @ts-ignore
-                      initialSelectedItem={countryOptions?.find(option => option.value === values.country)}
-                      loading={countryLoading}
-                      onChange={value => {
-                        if (value.selectedItem) {
-                          if (value.selectedItem.value !== values.country) {
-                            setFieldValue('region', '')
-                          }
-                          regionRefetch({
-                            query: [
-                              {field: 'country', operator: 'eq' as OperatorEnum, value: value.selectedItem.value},
-                            ],
-                          })
+              ) : null}
+              {!fields || fields.includes('country') ? (
+                <div className="mb-3">
+                  <Combobox
+                    label="Country"
+                    // @ts-ignore
+                    options={countryOptions}
+                    // @ts-ignore
+                    initialSelectedItem={countryOptions?.find(option => option.value === values.country)}
+                    loading={countryLoading}
+                    onChange={value => {
+                      if (value.selectedItem) {
+                        if (value.selectedItem.value !== values.country) {
+                          setFieldValue('region', '')
                         }
-                        setFieldValue('country', value.selectedItem?.value)
-                      }}
-                    />
-                  </Box>
-                ) : null}
-                {!fields || fields.includes('region') ? (
-                  <Box>
-                    <Combobox
-                      label="Region"
-                      // @ts-ignore
-                      options={regionOptions}
-                      // @ts-ignore
-                      initialSelectedItem={regionOptions?.find(option => option.value === values.region)}
-                      loading={regionLoading}
-                      onChange={value => setFieldValue('region', value.selectedItem?.value)}
-                    />
-                  </Box>
-                ) : null}
-                {!fields || fields.includes('varieties') ? (
-                  <Box>
-                    <Combobox
-                      label="Varieties"
-                      // @ts-ignore
-                      options={varietyOptions}
-                      // @ts-ignore
-                      initialSelectedItem={varietyOptions?.find(option => option.value === values.varieties)}
-                      loading={varietyLoading}
-                      onChange={value =>
-                        setFieldValue(
-                          'varieties',
-                          value.selectedItem ? values.varieties.concat(value.selectedItem) : values.varieties,
-                        )
+                        regionRefetch({
+                          query: [{field: 'country', operator: 'eq' as OperatorEnum, value: value.selectedItem.value}],
+                        })
                       }
-                      createNewDialog={createNewVarietyDialog}
-                    />
-                    <Flex sx={{flexWrap: 'wrap', px: 2}}>
-                      {values.varieties.map(variety => {
-                        return (
-                          <Box key={variety?.value} sx={{m: 1}}>
-                            <Tag
-                              text={variety?.name || ''}
-                              onCloseClick={() =>
-                                setFieldValue(
-                                  'varieties',
-                                  values.varieties.filter(valueVariety => valueVariety?.value !== variety?.value),
-                                )
-                              }
-                            />
-                          </Box>
-                        )
-                      })}
-                    </Flex>
-                  </Box>
-                ) : null}
-              </Card>
-              <Flex sx={{justifyContent: 'flex-end', mt: 4, px: 3}}>
-                <Box sx={{order: 1}}>
-                  <Button type="submit">Submit</Button>
-                </Box>
-                <Box sx={{mr: 2}}>
-                  <DialogDisclosure {...deleteDialog} as={Button} variant="text">
-                    Delete
-                  </DialogDisclosure>
-                </Box>
-              </Flex>
-            </Form>
-          </React.Fragment>
+                      setFieldValue('country', value.selectedItem?.value)
+                    }}
+                  />
+                </div>
+              ) : null}
+              {!fields || fields.includes('region') ? (
+                <div className="mb-3">
+                  <Combobox
+                    label="Region"
+                    // @ts-ignore
+                    options={regionOptions}
+                    // @ts-ignore
+                    initialSelectedItem={regionOptions?.find(option => option.value === values.region)}
+                    loading={regionLoading}
+                    onChange={value => setFieldValue('region', value.selectedItem?.value)}
+                  />
+                </div>
+              ) : null}
+              {!fields || fields.includes('varieties') ? (
+                <div className="mb-3">
+                  <Combobox
+                    label="Varieties"
+                    // @ts-ignore
+                    options={varietyOptions}
+                    // @ts-ignore
+                    initialSelectedItem={varietyOptions?.find(option => option.value === values.varieties)}
+                    loading={varietyLoading}
+                    onChange={value =>
+                      setFieldValue(
+                        'varieties',
+                        value.selectedItem ? values.varieties.concat(value.selectedItem) : values.varieties,
+                      )
+                    }
+                    createNewDialog={createNewVarietyDialog}
+                  />
+                  <div className="flex flex-wrap px-2">
+                    {values.varieties.map(variety => {
+                      return (
+                        <div key={variety?.value} className="m-1">
+                          <Tag
+                            text={variety?.name || ''}
+                            onCloseClick={() =>
+                              setFieldValue(
+                                'varieties',
+                                values.varieties.filter(valueVariety => valueVariety?.value !== variety?.value),
+                              )
+                            }
+                          />
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              ) : null}
+            </Card>
+            <div className="flex justify-end mt-4 px-3">
+              <div className="order-1">
+                <Button type="submit">Submit</Button>
+              </div>
+              <div className="mr-2">
+                <DialogDisclosure {...deleteDialog} as={Button} variant="text">
+                  Delete
+                </DialogDisclosure>
+              </div>
+            </div>
+          </Form>
         )
       }}
     </Formik>

@@ -1,8 +1,6 @@
-/** @jsx jsx */
 import React from 'react'
-import {jsx, Flex, Box, Card, Button, Heading, Text, Image} from 'theme-ui'
+import {Card, Button, Heading, Drawer, StyledLink} from '@luminate/gatsby-theme-luminate/src'
 import {useGetVarietyQuery} from '../../graphql'
-import {Drawer, StyledLink} from '@luminate/gatsby-theme-luminate/src'
 import {RouteComponentProps} from 'react-router-dom'
 import VarietyUpdateForm from './UpdateForm'
 
@@ -33,49 +31,49 @@ const VarietyDetailView = ({match}: Props) => {
   }
 
   return (
-    <Box>
-      <Flex sx={{justifyContent: 'space-between', mb: 4}}>
-        <Box>
-          <Heading as="h1">{data.getVariety?.name}</Heading>
-        </Box>
-        <Box>
+    <div>
+      <div className="flex justify-between mb-4">
+        <div>
+          <Heading>{data.getVariety?.name}</Heading>
+        </div>
+        <div>
           <Button onClick={toggleUpdateForm} variant="text">
             Edit Info
           </Button>
-        </Box>
-      </Flex>
-      <Flex sx={{mb: 4}}>
-        <Flex sx={{flexDirection: 'column', flex: 2, mr: 4}}>
-          <Card>
-            <Image src="https://picsum.photos/800/400" />
-            <Box sx={{p: 4}}>
-              <Text variant="dataLabel">Information Section</Text>
-              <Text>This is some information about the variety</Text>
-            </Box>
+        </div>
+      </div>
+      <div className="flex mb-4">
+        <div className="flex flex-col w-2/3 mr-4">
+          <Card className="overflow-hidden">
+            <img src="https://picsum.photos/800/400" />
+            <div className="p-4">
+              <p className="text-xs text-gray-500 uppercase tracking-wide">Information Section</p>
+              <p>This is some information about the variety</p>
+            </div>
           </Card>
-        </Flex>
-        <Flex sx={{flexDirection: 'column', flex: 1}}>
-          <Card sx={{p: 4, mb: 3, bg: 'greys.0'}}>
-            <Box>
-              <Text variant="dataLabel">Coffees</Text>
+        </div>
+        <div className="flex flex-col w-1/3">
+          <Card className="p-4 mb-3 bg-gray-100">
+            <div>
+              <p className="text-xs text-gray-500 uppercase tracking-wide">Coffees</p>
               {data.getVariety?.coffees
                 ? data.getVariety?.coffees.map(coffee => {
                     return (
-                      <Box>
-                        <StyledLink to={`/app/regions/${coffee?.id}`} variant="text">
+                      <div>
+                        <StyledLink to={`/app/coffees/${coffee?.id}`} variant="text">
                           {coffee?.name}
                         </StyledLink>
-                      </Box>
+                      </div>
                     )
                   })
                 : '-'}
-            </Box>
+            </div>
           </Card>
-        </Flex>
-      </Flex>
-      <Box>
-        <Heading sx={{mb: 3}}>Story</Heading>
-        <Text>
+        </div>
+      </div>
+      <div>
+        <Heading className="mb-3">Story</Heading>
+        <p>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis arcu lacus, condimentum quis nulla eget, aliquet
           iaculis mi. Nulla tincidunt velit vitae enim porttitor, ac dignissim lectus porta. Vivamus eu urna malesuada,
           sollicitudin nibh ac, condimentum ante. Aenean pharetra nisl et mi dictum fringilla. Phasellus a lorem arcu.
@@ -108,8 +106,8 @@ const VarietyDetailView = ({match}: Props) => {
           massa orci. Praesent facilisis nibh ligula, vitae dignissim metus auctor sit amet. Pellentesque sed dui
           fringilla erat pulvinar dignissim. Aenean dapibus, libero ac commodo varius, nisi nisi vulputate ante, in
           ultrices quam turpis at arcu.
-        </Text>
-      </Box>
+        </p>
+      </div>
       <Drawer
         from="right"
         onClickOutside={toggleUpdateForm}
@@ -117,11 +115,11 @@ const VarietyDetailView = ({match}: Props) => {
         bg="white"
         width={['90%', '75%', '50%']}
       >
-        <Box sx={{p: 4}}>
+        <div className="p-4">
           <VarietyUpdateForm variety={data.getVariety} isModal />
-        </Box>
+        </div>
       </Drawer>
-    </Box>
+    </div>
   )
 }
 

@@ -1,7 +1,5 @@
-/** @jsx jsx */
-import {jsx, Card, Heading} from 'theme-ui'
 import React from 'react'
-import {Select, useUser, Combobox} from '@luminate/gatsby-theme-luminate/src'
+import {Select, useUser, Card, Heading, Combobox} from '@luminate/gatsby-theme-luminate/src'
 import {useUserSearchQuery, useAddUserToAccountMutation} from '../../graphql'
 
 const AccountPage = () => {
@@ -18,8 +16,8 @@ const AccountPage = () => {
   const userOptions = users?.listUsers?.edges.map(({node}) => ({name: node?.username, value: node?.id}))
 
   return (
-    <Card sx={{p: 3}}>
-      <Heading>Account!</Heading>
+    <Card className="p-4">
+      <Heading as="h3">Account</Heading>
       <Select
         label="Account"
         options={accountOptions}

@@ -1,6 +1,5 @@
-/** @jsx jsx */
-import {jsx, Flex, Box, Card, Field as ThemeField, Heading, Button} from 'theme-ui'
 import React from 'react'
+import {Card, Input, Heading, Button} from '@luminate/gatsby-theme-luminate/src'
 import {Modal, useDialogState, DialogDisclosure} from '@luminate/gatsby-theme-luminate/src'
 import Alert from '../../components/Alert'
 import {
@@ -93,12 +92,7 @@ const CountryUpdateForm = ({
         return (
           <Form>
             <Modal dialog={deleteDialog} className="bg-white p-3 rounded-md" top="100px" aria-label="Alert">
-              <Box
-                sx={{
-                  width: ['90vw', '75vw', '50vw'],
-                  maxWidth: '600px',
-                }}
-              >
+              <div className="w-screen-11/12 md:w-screen-3/4 lg:w-screen-1/2">
                 <Alert
                   heading="Are you sure?"
                   text="This action cannot be undone."
@@ -106,26 +100,29 @@ const CountryUpdateForm = ({
                   onConfirmClick={() => deleteCountry({variables: {id: country.id}})}
                   variant="danger"
                 />
-              </Box>
+              </div>
             </Modal>
-            <Card variant={isModal ? 'blank' : 'primary'} sx={{p: 3, overflow: 'visible'}}>
+            <Card className="p-3 overflow-visible" variant={isModal ? 'blank' : 'default'}>
               {title ? <Heading>{title}</Heading> : null}
               {!fields || fields.includes('name') ? (
-                <Box>
-                  <Field name="name" label="Name" as={ThemeField} />
-                </Box>
+                <div>
+                  <label className="block mb-2" htmlFor="name">
+                    Name
+                  </label>
+                  <Field name="name" id="name" as={Input} />
+                </div>
               ) : null}
             </Card>
-            <Flex sx={{justifyContent: 'flex-end', mt: 4, px: 3}}>
-              <Box sx={{order: 1}}>
+            <div className="flex justify-end mt-4 px-3">
+              <div className="order-1">
                 <Button type="submit">Submit</Button>
-              </Box>
-              <Box sx={{mr: 2}}>
+              </div>
+              <div className="mr-2">
                 <DialogDisclosure {...deleteDialog} as={Button} variant="text">
                   Delete
                 </DialogDisclosure>
-              </Box>
-            </Flex>
+              </div>
+            </div>
           </Form>
         )
       }}

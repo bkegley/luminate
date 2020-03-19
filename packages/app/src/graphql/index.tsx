@@ -13,6 +13,8 @@ export type Scalars = {
   Boolean: boolean
   Int: number
   Float: number
+  /** Valid cupping score input */
+  ScoreFloat: any
   _FieldSet: any
 }
 
@@ -45,8 +47,20 @@ export type Coffee = {
   region?: Maybe<Region>
   varieties: Array<Variety>
   elevation?: Maybe<Scalars['String']>
+  components?: Maybe<Array<Maybe<CoffeeComponent>>>
+  notes?: Maybe<Array<Maybe<Note>>>
   createdAt: Scalars['String']
   updatedAt: Scalars['String']
+}
+
+export type CoffeeNotesArgs = {
+  fields?: Maybe<Array<Maybe<Scalars['String']>>>
+}
+
+export type CoffeeComponent = {
+  __typename: 'CoffeeComponent'
+  coffee: CoffeeSummary
+  percentage: Scalars['Float']
 }
 
 export type CoffeeConnection = {
@@ -59,6 +73,17 @@ export type CoffeeEdge = {
   __typename: 'CoffeeEdge'
   cursor: Scalars['String']
   node: Coffee
+}
+
+export type CoffeeSummary = {
+  __typename: 'CoffeeSummary'
+  id: Scalars['ID']
+  name: Scalars['String']
+}
+
+export type ComponentInput = {
+  coffee: Scalars['ID']
+  percentage: Scalars['Float']
 }
 
 export type Country = {
@@ -96,14 +121,20 @@ export type CreateCoffeeInput = {
   farmZone?: Maybe<Scalars['ID']>
   varieties?: Maybe<Array<Maybe<Scalars['ID']>>>
   elevation?: Maybe<Scalars['String']>
+  components?: Maybe<Array<Maybe<ComponentInput>>>
 }
 
 export type CreateCountryInput = {
   name: Scalars['String']
 }
 
-export type CreateCuppingInput = {
+export type CreateCuppingSessionInput = {
+  internalId?: Maybe<Scalars['ID']>
   description?: Maybe<Scalars['String']>
+}
+
+export type CreateDeviceInput = {
+  name: Scalars['String']
 }
 
 export type CreateFarmInput = {
@@ -114,7 +145,12 @@ export type CreateFarmInput = {
 
 export type CreateFarmZoneInput = {
   name: Scalars['String']
-  farm?: Maybe<Scalars['ID']>
+}
+
+export type CreateNoteInput = {
+  entityId: Scalars['ID']
+  content: Scalars['String']
+  field: Scalars['String']
 }
 
 export type CreateRegionInput = {
@@ -122,13 +158,24 @@ export type CreateRegionInput = {
   country?: Maybe<Scalars['ID']>
 }
 
-export type CreateRoastInput = {
-  name: Scalars['String']
-}
-
 export type CreateRoleInput = {
   name: Scalars['String']
   scopes?: Maybe<Array<Scalars['String']>>
+}
+
+export type CreateScoreSheetInput = {
+  fragranceAroma?: Maybe<Scalars['ScoreFloat']>
+  flavor?: Maybe<Scalars['ScoreFloat']>
+  aftertaste?: Maybe<Scalars['ScoreFloat']>
+  acidity?: Maybe<Scalars['ScoreFloat']>
+  body?: Maybe<Scalars['ScoreFloat']>
+  uniformity?: Maybe<Scalars['ScoreFloat']>
+  cleanCup?: Maybe<Scalars['ScoreFloat']>
+  balance?: Maybe<Scalars['ScoreFloat']>
+  sweetness?: Maybe<Scalars['ScoreFloat']>
+  overall?: Maybe<Scalars['ScoreFloat']>
+  taints?: Maybe<DefectScoreInput>
+  defects?: Maybe<DefectScoreInput>
 }
 
 export type CreateUserInput = {
@@ -143,36 +190,57 @@ export type CreateVarietyInput = {
   name: Scalars['String']
 }
 
-export type Cupping = {
-  __typename: 'Cupping'
+export type CuppingSession = {
+  __typename: 'CuppingSession'
   id: Scalars['ID']
+  internalId?: Maybe<Scalars['ID']>
   description?: Maybe<Scalars['String']>
-  coffees: Array<CuppingCoffee>
+  sessionCoffees?: Maybe<Array<Maybe<SessionCoffee>>>
   createdAt: Scalars['String']
   updatedAt: Scalars['String']
 }
 
-export type CuppingCoffee = {
-  __typename: 'CuppingCoffee'
-  sessionCoffeeId: Scalars['ID']
-  coffee: Coffee
-}
-
-export type CuppingCoffeeInput = {
-  sessionCoffeeId: Scalars['ID']
-  coffee?: Maybe<Scalars['ID']>
-}
-
-export type CuppingConnection = {
-  __typename: 'CuppingConnection'
+export type CuppingSessionConnection = {
+  __typename: 'CuppingSessionConnection'
   pageInfo: PageInfo
-  edges: Array<CuppingEdge>
+  edges: Array<CuppingSessionEdge>
 }
 
-export type CuppingEdge = {
-  __typename: 'CuppingEdge'
+export type CuppingSessionEdge = {
+  __typename: 'CuppingSessionEdge'
   cursor: Scalars['String']
-  node: Cupping
+  node: CuppingSession
+}
+
+export type DefectScore = {
+  __typename: 'DefectScore'
+  numberOfCups?: Maybe<Scalars['Int']>
+  intensity?: Maybe<Scalars['Float']>
+}
+
+export type DefectScoreInput = {
+  numberOfCups?: Maybe<Scalars['Int']>
+  intensity?: Maybe<Scalars['Float']>
+}
+
+export type Device = {
+  __typename: 'Device'
+  id: Scalars['ID']
+  name: Scalars['String']
+  createdAt: Scalars['String']
+  updatedAt: Scalars['String']
+}
+
+export type DeviceConnection = {
+  __typename: 'DeviceConnection'
+  pageInfo: PageInfo
+  edges: Array<DeviceEdge>
+}
+
+export type DeviceEdge = {
+  __typename: 'DeviceEdge'
+  cursor: Scalars['String']
+  node: Device
 }
 
 export type Farm = {
@@ -202,30 +270,10 @@ export type FarmZone = {
   __typename: 'FarmZone'
   id: Scalars['ID']
   name: Scalars['String']
-  country?: Maybe<Country>
-  region?: Maybe<Region>
-  farm?: Maybe<Farm>
-  createdAt: Scalars['String']
-  updatedAt: Scalars['String']
-}
-
-export type FarmZoneConnection = {
-  __typename: 'FarmZoneConnection'
-  pageInfo: PageInfo
-  edges: Array<FarmZoneEdge>
-}
-
-export type FarmZoneEdge = {
-  __typename: 'FarmZoneEdge'
-  cursor: Scalars['String']
-  node: FarmZone
 }
 
 export type Mutation = {
   __typename: 'Mutation'
-  createCupping?: Maybe<Cupping>
-  updateCupping?: Maybe<Cupping>
-  deleteCupping?: Maybe<Cupping>
   createAccount?: Maybe<Account>
   updateAccount?: Maybe<Account>
   deleteAccount?: Maybe<Account>
@@ -242,6 +290,9 @@ export type Mutation = {
   login?: Maybe<Scalars['Boolean']>
   logout: Scalars['Boolean']
   refreshToken?: Maybe<Scalars['Boolean']>
+  createNote?: Maybe<Note>
+  updateNote?: Maybe<Note>
+  deleteNote?: Maybe<Note>
   createCoffee?: Maybe<Coffee>
   updateCoffee?: Maybe<Coffee>
   deleteCoffee?: Maybe<Coffee>
@@ -249,35 +300,29 @@ export type Mutation = {
   createCountry?: Maybe<Country>
   updateCountry?: Maybe<Country>
   deleteCountry?: Maybe<Country>
+  createDevice?: Maybe<Device>
+  updateDevice?: Maybe<Device>
+  deleteDevice?: Maybe<Device>
+  updateDevicePermissionsForAccount?: Maybe<Scalars['Boolean']>
   createFarm?: Maybe<Farm>
   updateFarm?: Maybe<Farm>
   deleteFarm?: Maybe<Farm>
-  createFarmZone?: Maybe<FarmZone>
-  updateFarmZone?: Maybe<FarmZone>
-  deleteFarmZone?: Maybe<FarmZone>
+  createFarmZone?: Maybe<Farm>
+  updateFarmZone?: Maybe<Farm>
+  deleteFarmZone?: Maybe<Farm>
   createRegion?: Maybe<Region>
   updateRegion?: Maybe<Region>
   deleteRegion?: Maybe<Region>
-  createRoast?: Maybe<Roast>
-  updateRoast?: Maybe<Roast>
-  deleteRoast?: Maybe<Roast>
   createVariety?: Maybe<Variety>
   updateVariety?: Maybe<Variety>
   deleteVariety?: Maybe<Variety>
   makeVarietyPublic?: Maybe<Scalars['Boolean']>
-}
-
-export type MutationCreateCuppingArgs = {
-  input: CreateCuppingInput
-}
-
-export type MutationUpdateCuppingArgs = {
-  id: Scalars['ID']
-  input: UpdateCuppingInput
-}
-
-export type MutationDeleteCuppingArgs = {
-  id: Scalars['ID']
+  createCuppingSession?: Maybe<CuppingSession>
+  updateCuppingSession?: Maybe<CuppingSession>
+  deleteCuppingSession?: Maybe<CuppingSession>
+  createScoreSheet?: Maybe<CuppingSession>
+  updateScoreSheet?: Maybe<CuppingSession>
+  deleteScoreSheet?: Maybe<CuppingSession>
 }
 
 export type MutationCreateAccountArgs = {
@@ -343,6 +388,19 @@ export type MutationLoginArgs = {
   password: Scalars['String']
 }
 
+export type MutationCreateNoteArgs = {
+  input?: Maybe<CreateNoteInput>
+}
+
+export type MutationUpdateNoteArgs = {
+  id: Scalars['ID']
+  input?: Maybe<UpdateNoteInput>
+}
+
+export type MutationDeleteNoteArgs = {
+  id: Scalars['ID']
+}
+
 export type MutationCreateCoffeeArgs = {
   input: CreateCoffeeInput
 }
@@ -375,6 +433,25 @@ export type MutationDeleteCountryArgs = {
   id: Scalars['ID']
 }
 
+export type MutationCreateDeviceArgs = {
+  input: CreateDeviceInput
+}
+
+export type MutationUpdateDeviceArgs = {
+  id: Scalars['ID']
+  input: UpdateDeviceInput
+}
+
+export type MutationDeleteDeviceArgs = {
+  id: Scalars['ID']
+}
+
+export type MutationUpdateDevicePermissionsForAccountArgs = {
+  DeviceId: Scalars['ID']
+  accountId: Scalars['ID']
+  permissionTypes: Array<PermissionTypeEnum>
+}
+
 export type MutationCreateFarmArgs = {
   input: CreateFarmInput
 }
@@ -389,12 +466,13 @@ export type MutationDeleteFarmArgs = {
 }
 
 export type MutationCreateFarmZoneArgs = {
-  input: CreateFarmZoneInput
+  farmId: Scalars['ID']
+  input?: Maybe<CreateFarmZoneInput>
 }
 
 export type MutationUpdateFarmZoneArgs = {
   id: Scalars['ID']
-  input: UpdateFarmZoneInput
+  input?: Maybe<UpdateFarmZoneInput>
 }
 
 export type MutationDeleteFarmZoneArgs = {
@@ -414,19 +492,6 @@ export type MutationDeleteRegionArgs = {
   id: Scalars['ID']
 }
 
-export type MutationCreateRoastArgs = {
-  input: CreateRoastInput
-}
-
-export type MutationUpdateRoastArgs = {
-  id: Scalars['ID']
-  input: UpdateRoastInput
-}
-
-export type MutationDeleteRoastArgs = {
-  id: Scalars['ID']
-}
-
 export type MutationCreateVarietyArgs = {
   input: CreateVarietyInput
 }
@@ -442,6 +507,45 @@ export type MutationDeleteVarietyArgs = {
 
 export type MutationMakeVarietyPublicArgs = {
   id: Scalars['ID']
+}
+
+export type MutationCreateCuppingSessionArgs = {
+  input: CreateCuppingSessionInput
+}
+
+export type MutationUpdateCuppingSessionArgs = {
+  id: Scalars['ID']
+  input: UpdateCuppingSessionInput
+}
+
+export type MutationDeleteCuppingSessionArgs = {
+  id: Scalars['ID']
+}
+
+export type MutationCreateScoreSheetArgs = {
+  cuppingSessionId: Scalars['ID']
+  sampleNumber: Scalars['ID']
+  input: CreateScoreSheetInput
+}
+
+export type MutationUpdateScoreSheetArgs = {
+  scoreSheetId: Scalars['ID']
+  sessionCoffeeId: Scalars['ID']
+  input: UpdateScoreSheetInput
+}
+
+export type MutationDeleteScoreSheetArgs = {
+  scoreSheetId: Scalars['ID']
+  sessionCoffeeId: Scalars['ID']
+}
+
+export type Note = {
+  __typename: 'Note'
+  id: Scalars['ID']
+  content: Scalars['String']
+  field: Scalars['String']
+  createdAt?: Maybe<Scalars['String']>
+  updatedAt?: Maybe<Scalars['String']>
 }
 
 export enum OperatorEnum {
@@ -469,8 +573,6 @@ export enum PermissionTypeEnum {
 
 export type Query = {
   __typename: 'Query'
-  listCuppings: CuppingConnection
-  getCupping?: Maybe<Cupping>
   listAccounts: AccountConnection
   getAccount?: Maybe<Account>
   listRoles: RoleConnection
@@ -482,26 +584,16 @@ export type Query = {
   getCoffee?: Maybe<Coffee>
   listCountries: CountryConnection
   getCountry?: Maybe<Country>
+  listDevices: DeviceConnection
+  getDevice?: Maybe<Device>
   listFarms: FarmConnection
   getFarm?: Maybe<Farm>
-  listFarmZones: FarmZoneConnection
-  getFarmZone?: Maybe<FarmZone>
   listRegions: RegionConnection
   getRegion?: Maybe<Region>
-  listRoasts: RoastConnection
-  getRoast?: Maybe<Roast>
   listVarieties: VarietyConnection
   getVariety?: Maybe<Variety>
-}
-
-export type QueryListCuppingsArgs = {
-  cursor?: Maybe<Scalars['String']>
-  limit?: Maybe<Scalars['Int']>
-  query?: Maybe<Array<Maybe<QueryInput>>>
-}
-
-export type QueryGetCuppingArgs = {
-  id: Scalars['ID']
+  listCuppingSessions: CuppingSessionConnection
+  getCuppingSession?: Maybe<CuppingSession>
 }
 
 export type QueryListAccountsArgs = {
@@ -554,6 +646,16 @@ export type QueryGetCountryArgs = {
   id: Scalars['ID']
 }
 
+export type QueryListDevicesArgs = {
+  cursor?: Maybe<Scalars['String']>
+  limit?: Maybe<Scalars['Int']>
+  query?: Maybe<Array<Maybe<QueryInput>>>
+}
+
+export type QueryGetDeviceArgs = {
+  id: Scalars['ID']
+}
+
 export type QueryListFarmsArgs = {
   cursor?: Maybe<Scalars['String']>
   limit?: Maybe<Scalars['Int']>
@@ -561,16 +663,6 @@ export type QueryListFarmsArgs = {
 }
 
 export type QueryGetFarmArgs = {
-  id: Scalars['ID']
-}
-
-export type QueryListFarmZonesArgs = {
-  cursor?: Maybe<Scalars['String']>
-  limit?: Maybe<Scalars['Int']>
-  query?: Maybe<Array<Maybe<QueryInput>>>
-}
-
-export type QueryGetFarmZoneArgs = {
   id: Scalars['ID']
 }
 
@@ -584,16 +676,6 @@ export type QueryGetRegionArgs = {
   id: Scalars['ID']
 }
 
-export type QueryListRoastsArgs = {
-  cursor?: Maybe<Scalars['String']>
-  limit?: Maybe<Scalars['Int']>
-  query?: Maybe<Array<Maybe<QueryInput>>>
-}
-
-export type QueryGetRoastArgs = {
-  id: Scalars['ID']
-}
-
 export type QueryListVarietiesArgs = {
   cursor?: Maybe<Scalars['String']>
   limit?: Maybe<Scalars['Int']>
@@ -601,6 +683,16 @@ export type QueryListVarietiesArgs = {
 }
 
 export type QueryGetVarietyArgs = {
+  id: Scalars['ID']
+}
+
+export type QueryListCuppingSessionsArgs = {
+  cursor?: Maybe<Scalars['String']>
+  limit?: Maybe<Scalars['Int']>
+  query?: Maybe<Array<Maybe<QueryInput>>>
+}
+
+export type QueryGetCuppingSessionArgs = {
   id: Scalars['ID']
 }
 
@@ -632,26 +724,6 @@ export type RegionEdge = {
   node: Region
 }
 
-export type Roast = {
-  __typename: 'Roast'
-  id: Scalars['ID']
-  name: Scalars['String']
-  createdAt: Scalars['String']
-  updatedAt: Scalars['String']
-}
-
-export type RoastConnection = {
-  __typename: 'RoastConnection'
-  pageInfo: PageInfo
-  edges: Array<RoastEdge>
-}
-
-export type RoastEdge = {
-  __typename: 'RoastEdge'
-  cursor: Scalars['String']
-  node: Roast
-}
-
 export type Role = {
   __typename: 'Role'
   id: Scalars['ID']
@@ -673,6 +745,39 @@ export type RoleEdge = {
   node: Role
 }
 
+export type ScoreSheet = {
+  __typename: 'ScoreSheet'
+  id: Scalars['ID']
+  totalScore?: Maybe<Scalars['Float']>
+  fragranceAroma?: Maybe<Scalars['ScoreFloat']>
+  flavor?: Maybe<Scalars['ScoreFloat']>
+  aftertaste?: Maybe<Scalars['ScoreFloat']>
+  acidity?: Maybe<Scalars['ScoreFloat']>
+  body?: Maybe<Scalars['ScoreFloat']>
+  uniformity?: Maybe<Scalars['ScoreFloat']>
+  cleanCup?: Maybe<Scalars['ScoreFloat']>
+  balance?: Maybe<Scalars['ScoreFloat']>
+  sweetness?: Maybe<Scalars['ScoreFloat']>
+  overall?: Maybe<Scalars['ScoreFloat']>
+  taints?: Maybe<DefectScore>
+  defects?: Maybe<DefectScore>
+  createdAt: Scalars['String']
+  updatedAt: Scalars['String']
+}
+
+export type SessionCoffee = {
+  __typename: 'SessionCoffee'
+  id: Scalars['ID']
+  sampleNumber: Scalars['ID']
+  coffee: Coffee
+  scoreSheets?: Maybe<Array<Maybe<ScoreSheet>>>
+}
+
+export type SessionCoffeeInput = {
+  sampleNumber: Scalars['ID']
+  coffee?: Maybe<Scalars['ID']>
+}
+
 export type UpdateAccountInput = {
   name?: Maybe<Scalars['String']>
 }
@@ -685,15 +790,21 @@ export type UpdateCoffeeInput = {
   farmZone?: Maybe<Scalars['ID']>
   varieties?: Maybe<Array<Maybe<Scalars['ID']>>>
   elevation?: Maybe<Scalars['String']>
+  components?: Maybe<Array<Maybe<ComponentInput>>>
 }
 
 export type UpdateCountryInput = {
   name?: Maybe<Scalars['String']>
 }
 
-export type UpdateCuppingInput = {
+export type UpdateCuppingSessionInput = {
+  internalId?: Maybe<Scalars['ID']>
   description?: Maybe<Scalars['String']>
-  coffees?: Maybe<Array<Maybe<CuppingCoffeeInput>>>
+  sessionCoffees?: Maybe<Array<Maybe<SessionCoffeeInput>>>
+}
+
+export type UpdateDeviceInput = {
+  name?: Maybe<Scalars['String']>
 }
 
 export type UpdateFarmInput = {
@@ -703,8 +814,13 @@ export type UpdateFarmInput = {
 }
 
 export type UpdateFarmZoneInput = {
-  name?: Maybe<Scalars['String']>
-  farm?: Maybe<Scalars['ID']>
+  name: Scalars['String']
+}
+
+export type UpdateNoteInput = {
+  entityId?: Maybe<Scalars['ID']>
+  content?: Maybe<Scalars['String']>
+  field?: Maybe<Scalars['String']>
 }
 
 export type UpdatePasswordInput = {
@@ -717,13 +833,24 @@ export type UpdateRegionInput = {
   country?: Maybe<Scalars['ID']>
 }
 
-export type UpdateRoastInput = {
-  name?: Maybe<Scalars['String']>
-}
-
 export type UpdateRoleInput = {
   name?: Maybe<Scalars['String']>
   scopes?: Maybe<Array<Scalars['String']>>
+}
+
+export type UpdateScoreSheetInput = {
+  fragranceAroma?: Maybe<Scalars['ScoreFloat']>
+  flavor?: Maybe<Scalars['ScoreFloat']>
+  aftertaste?: Maybe<Scalars['ScoreFloat']>
+  acidity?: Maybe<Scalars['ScoreFloat']>
+  body?: Maybe<Scalars['ScoreFloat']>
+  uniformity?: Maybe<Scalars['ScoreFloat']>
+  cleanCup?: Maybe<Scalars['ScoreFloat']>
+  balance?: Maybe<Scalars['ScoreFloat']>
+  sweetness?: Maybe<Scalars['ScoreFloat']>
+  overall?: Maybe<Scalars['ScoreFloat']>
+  taints?: Maybe<DefectScoreInput>
+  defects?: Maybe<DefectScoreInput>
 }
 
 export type UpdateUserInput = {
@@ -974,7 +1101,7 @@ export type DeleteFarmMutation = {__typename: 'Mutation'} & {deleteFarm: Maybe<{
 export type FarmFragmentFragment = {__typename: 'Farm'} & Pick<Farm, 'id' | 'name' | 'createdAt' | 'updatedAt'> & {
     country: Maybe<{__typename: 'Country'} & Pick<Country, 'id' | 'name'>>
     region: Maybe<{__typename: 'Region'} & Pick<Region, 'id' | 'name'>>
-    farmZones: Array<{__typename: 'FarmZone'} & Pick<FarmZone, 'id' | 'name' | 'createdAt' | 'updatedAt'>>
+    farmZones: Array<{__typename: 'FarmZone'} & Pick<FarmZone, 'id' | 'name'>>
   }
 
 export type ListRegionsQueryVariables = {
@@ -1158,8 +1285,6 @@ export const FarmFragmentFragmentDoc = gql`
     farmZones {
       id
       name
-      createdAt
-      updatedAt
     }
     createdAt
     updatedAt

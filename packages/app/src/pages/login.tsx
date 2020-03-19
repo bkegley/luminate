@@ -17,9 +17,7 @@ const LoginPage = () => {
               </p>
               <div className="text-center">
                 <p>Don't have an account?</p>
-                <Link to="/register" sx={{color: 'inherit'}}>
-                  Get started!
-                </Link>
+                <Link to="/register">Get started!</Link>
               </div>
             </div>
             <div className="w-7/12 px-4 py-5">

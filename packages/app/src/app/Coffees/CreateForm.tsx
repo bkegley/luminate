@@ -1,8 +1,6 @@
-/** @jsx jsx */
-import {jsx, Flex, Box, Card, Heading, Button, Field as ThemeField} from 'theme-ui'
 import React from 'react'
 import {Formik, Form, Field} from 'formik'
-import {Combobox} from '@luminate/gatsby-theme-luminate/src'
+import {Combobox, Heading, Card, Button, Input} from '@luminate/gatsby-theme-luminate/src'
 import {
   useCreateCoffeeMutation,
   useListCountriesQuery,
@@ -93,15 +91,18 @@ const CoffeeCreateForm = ({
       {({dirty, setFieldValue, values}) => {
         return (
           <Form>
-            <Card variant={isModal ? 'blank' : 'primary'} sx={{p: 3, overflow: 'visible'}}>
+            <Card variant={isModal ? 'blank' : 'default'} className="p-3 overflow-visible">
               {title ? <Heading>{title}</Heading> : null}
               {!fields || fields.includes('name') ? (
-                <Box sx={{mb: 3}}>
-                  <Field name="name" label="Name" as={ThemeField} />
-                </Box>
+                <div className="mb-3">
+                  <label className="block mb-2" htmlFor="name">
+                    Name
+                  </label>
+                  <Field name="name" id="name" as={Input} />
+                </div>
               ) : null}
               {!fields || fields.includes('country') ? (
-                <Box sx={{mb: 3}}>
+                <div className="mb-3">
                   <Combobox
                     label="Country"
                     // @ts-ignore
@@ -121,10 +122,10 @@ const CoffeeCreateForm = ({
                       setFieldValue('country', value.selectedItem?.value)
                     }}
                   />
-                </Box>
+                </div>
               ) : null}
               {!fields || fields.includes('region') ? (
-                <Box sx={{mb: 3}}>
+                <div className="mb-3">
                   <Combobox
                     label="Region"
                     // @ts-ignore
@@ -134,23 +135,23 @@ const CoffeeCreateForm = ({
                     loading={regionLoading}
                     onChange={value => setFieldValue('region', value.selectedItem?.value)}
                   />
-                </Box>
+                </div>
               ) : null}
             </Card>
-            <Flex sx={{justifyContent: 'flex-end', mt: 4, px: 3}}>
-              <Box sx={{order: 1}}>
+            <div className="flex justify-end mt-4 px-3">
+              <div className="order-1">
                 <Button type="submit" variant="primary">
                   Submit
                 </Button>
-              </Box>
+              </div>
               {onCancel ? (
-                <Box sx={{mr: 3}}>
+                <div className="mr-3">
                   <Button type="button" variant="text" onClick={() => onCancel(dirty)}>
                     Cancel
                   </Button>
-                </Box>
+                </div>
               ) : null}
-            </Flex>
+            </div>
           </Form>
         )
       }}
