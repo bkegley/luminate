@@ -1,5 +1,4 @@
-/** @jsx jsx */
-import {jsx} from 'theme-ui'
+import React from 'react'
 import {Link, LinkProps, useRouteMatch} from 'react-router-dom'
 
 export interface StyledLinkProps extends LinkProps {

@@ -1,5 +1,4 @@
-/** @jsx jsx */
-import {jsx} from 'theme-ui'
+import React from 'react'
 import {Switch, Route} from 'react-router-dom'
 import CreateRole from './CreateRole'
 import ListRoles from './ListRoles'

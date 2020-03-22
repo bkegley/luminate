@@ -30,6 +30,7 @@
     "react-dom": "^16.12.0"
   },
   "devDependencies": {
+    "@types/lodash.debounce": "^4.0.6",
     "@types/theme-ui": "^0.3.0"
   }
 }

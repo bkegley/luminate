@@ -1,9 +1,6 @@
-/** @jsx jsx */
-import {jsx} from 'theme-ui'
 import React from 'react'
 import {useCombobox, UseComboboxState} from 'downshift'
-import defaultStyles, {IStyles} from './styles'
-import {Box, Button, Label, Input, Spinner} from 'theme-ui'
+import {Input, Button, Spinner} from './index'
 import DownArrow from './DownArrow'
 import debounce from 'lodash.debounce'
 import {DialogDisclosure, DialogStateReturn} from 'reakit'
@@ -23,7 +20,6 @@ export interface ComboboxProps {
   createNewDialog?: DialogStateReturn
   options?: IItem[]
   loading?: boolean
-  styles?: IStyles
 }
 
 const Combobox = ({
@@ -35,7 +31,6 @@ const Combobox = ({
   onInputChangeTimeout = 700,
   onChange,
   loading,
-  styles = defaultStyles,
   createNewDialog,
 }: ComboboxProps) => {
   const itemToString = (option: IItem | null) => (option ? option.name : '')
@@ -125,29 +120,37 @@ const Combobox = ({
   }, [initialSelectedItem])
 
   return (
-    <Box sx={styles.root}>
-      <Box {...getComboboxProps()}>
-        <Label sx={styles.label} {...getLabelProps()}>
+    <div className="relative">
+      <div {...getComboboxProps()}>
+        <label className="block mb-1" {...getLabelProps()}>
           {label}
-        </Label>
-        <Box sx={{...styles.field, padding: 0}}>
-          <Input sx={{border: 'none', width: '100%'}} {...getInputProps()} />
-          <Button
-            type="button"
-            sx={{border: 'none', bg: 'inherit', color: 'inherit', '&:hover': {bg: 'inherit', color: 'inherit'}}}
-            {...getToggleButtonProps()}
-          >
-            <DownArrow />
-          </Button>
-        </Box>
-      </Box>
+        </label>
+        <div
+          className={`input p-0 flex items-center justify-between w-full ${isOpen ? 'border-b-0 rounded-b-none' : ''}`}
+        >
+          <Input className="border-none flex-1 focus:border-primary-600" {...getInputProps()} />
+          <div>
+            <Button
+              type="button"
+              className="border-none bg-transparent hover:bg-transparent hover:text-gray-800"
+              {...getToggleButtonProps()}
+            >
+              <DownArrow />
+            </Button>
+          </div>
+        </div>
+      </div>
       {isOpen ? (
-        <ul sx={styles.menu} {...getMenuProps()}>
+        <ul
+          className="absolute z-50 w-full m-0 p-0 overflow-y-auto bg-white list-none left-0 right-0 input border-t-0 rounded-t-none shadow-sm rounded-md"
+          style={{maxHeight: '250px'}}
+          {...getMenuProps()}
+        >
           {children}
           {loading ? (
-            <Box sx={{textAlign: 'center', py: 4}}>
-              <Spinner strokeWidth={2} />
-            </Box>
+            <div className="text-center py-4">
+              <Spinner />
+            </div>
           ) : (
             inputOptions.map((option, index) => {
               if (option.value === '__createNew') {
@@ -157,12 +160,9 @@ const Combobox = ({
                     {...createNewDialog}
                     as="li"
                     key={`${option.value}-${index}`}
-                    sx={Object.assign(
-                      {},
-                      styles.item,
-                      highlightedIndex === index ? styles.highlighted : null,
-                      selectedItem?.value === option.value ? styles.selected : null,
-                    )}
+                    className={`py-2 px-3 ${highlightedIndex === index ? 'bg-gray-100' : ''} ${
+                      selectedItem?.value === option.value ? 'text-primary-600' : ''
+                    }`}
                     {...remainingProps}
                   >
                     {option.name}
@@ -172,12 +172,9 @@ const Combobox = ({
               return (
                 <li
                   key={`${option.value}-${index}`}
-                  sx={Object.assign(
-                    {},
-                    styles.item,
-                    highlightedIndex === index ? styles.highlighted : null,
-                    selectedItem?.value === option.value ? styles.selected : null,
-                  )}
+                  className={`py-2 px-3 ${highlightedIndex === index ? 'bg-gray-100' : ''} ${
+                    selectedItem?.value === option.value ? 'text-primary-600' : ''
+                  }`}
                   {...getItemProps({item: option, index})}
                 >
                   {option.name}
@@ -187,7 +184,7 @@ const Combobox = ({
           )}
         </ul>
       ) : null}
-    </Box>
+    </div>
   )
 }
 

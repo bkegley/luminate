@@ -1,7 +1,5 @@
-/** @jsx jsx */
-import {jsx} from 'theme-ui'
 import React from 'react'
-import {useMenuState, Menu as BaseMenu, MenuItem, MenuButton, MenuStateReturn} from 'reakit/Menu'
+import {useMenuState, Menu as BaseMenu, DialogBackdrop, MenuButton, MenuStateReturn} from 'reakit'
 
 export interface MenuProps {
   children: (menu: MenuStateReturn) => React.ReactNode
@@ -19,6 +17,7 @@ const Menu = ({button, items, children, ...props}: MenuProps) => {
       <BaseMenu {...menu} {...props}>
         {children(menu)}
       </BaseMenu>
+      {menu.visible ? <div onClick={() => menu.hide()} className="fixed inset-0 bg-gray-600 opacity-50" /> : null}
     </React.Fragment>
   )
 }

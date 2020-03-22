@@ -1,10 +1,9 @@
-/** @jsx jsx */
-import {jsx} from 'theme-ui'
+import React from 'react'
 import {Link} from 'react-router-dom'
 
 const Sidebar = () => {
   return (
-    <div sx={{display: 'flex', flexDirection: 'column'}}>
+    <div className="flex flex-col">
       <h3>Sidebar</h3>
       <Link to="/app/users">Users</Link>
       <Link to="/app/roles">Roles</Link>

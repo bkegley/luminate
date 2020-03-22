@@ -1,0 +1,119 @@
+.badge-primary {
+  @apply bg-primary-300 text-primary-600;
+}
+
+.btn {
+  @apply w-full rounded uppercase tracking-wide px-4 py-2;
+}
+
+.btn-primary {
+  @apply bg-primary-600;
+}
+
+.btn-primary:hover {
+  @apply bg-gray-800 text-white;
+}
+
+.btn-secondary {
+  @apply bg-white text-gray-800 border-2 border-gray-800;
+}
+
+.btn-secondary:hover {
+  @apply bg-gray-800 text-white;
+}
+
+.btn-outline {
+  @apply bg-transparent text-gray-800 border-2 border-gray-800;
+}
+
+.btn-outline:hover {
+  @apply text-primary-600 border-primary-600;
+}
+
+.btn-text {
+  @apply bg-transparent text-black;
+}
+
+.btn-danger {
+  @apply bg-red-600 text-white;
+}
+
+.btn-danger:hover {
+  @apply bg-red-600;
+}
+
+.card {
+}
+
+.card-default {
+  @apply bg-white rounded-md shadow-md;
+}
+
+.input {
+  @apply w-full px-2 py-2 rounded border border-gray-500;
+}
+
+.input:focus {
+  @apply outline-none border-primary-600;
+}
+
+.link-text {
+  @apply text-primary-600;
+}
+
+.link-text:hover {
+  @apply underline;
+}
+
+.link-nav {
+  @apply text-gray-500 uppercase tracking-wide;
+}
+
+.link-nav:hover {
+  @apply text-gray-800;
+}
+
+.spinner {
+  animation: loader 750ms infinite linear;
+}
+
+@keyframes loader {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.tag {
+  @apply p-0 rounded;
+}
+
+.tag-default {
+  @apply bg-gray-200 text-gray-800;
+}
+
+.tag-primary {
+  @apply bg-primary-200 text-primary-600;
+}
+
+.tag-close {
+  @apply rounded-r rounded-l-none py-px px-2;
+}
+
+.tag-close-default {
+  @apply bg-gray-600;
+}
+
+.tag-close-default:hover {
+  @apply bg-gray-800 text-white;
+}
+
+.tag-close-primary {
+  @apply bg-primary-600 text-gray-200;
+}
+
+.tag-close-primary:hover {
+  @apply bg-primary-600 text-white;
+}
