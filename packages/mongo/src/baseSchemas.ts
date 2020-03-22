@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import mongoose, {Schema} from 'mongoose'
 import {Token} from '@luminate/graphql-utils'
 
 export const BasePublicSchema = new mongoose.Schema({
