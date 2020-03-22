@@ -12,4 +12,5 @@ COPY yarn.lock .
 COPY tsconfig.base.json .
 
 RUN yarn
+RUN yarn workspace @luminate/graphql-utils run generate-scopes
 RUN yarn workspace @luminate/graphql-utils run build
