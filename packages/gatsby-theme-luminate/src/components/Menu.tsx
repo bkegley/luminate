@@ -17,7 +17,6 @@ const Menu = ({button, items, children, ...props}: MenuProps) => {
       <BaseMenu {...menu} {...props}>
         {children(menu)}
       </BaseMenu>
-      {menu.visible ? <div onClick={() => menu.hide()} className="fixed inset-0 bg-gray-600 opacity-50" /> : null}
     </React.Fragment>
   )
 }
