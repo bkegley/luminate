@@ -1,5 +1,6 @@
 import React from 'react'
-import {Layout, Card, Heading} from '@luminate/gatsby-theme-luminate/src'
+import {Card, Heading} from '@luminate/gatsby-theme-luminate/src'
+import Layout from '../components/Layout'
 import Header from '../components/RootHeader'
 import LoginForm from '../components/LoginForm'
 import {Link} from 'gatsby'

@@ -1,5 +1,4 @@
-/** @jsx jsx */
-import {jsx} from 'theme-ui'
+import React from 'react'
 import {Switch, Route} from 'react-router-dom'
 import CreateUser from './CreateUser'
 import ListUsers from './ListUsers'

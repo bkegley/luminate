@@ -1,5 +1,5 @@
-/** @jsx jsx */
-import {jsx, Flex, Box, Button, Card, Heading, Field as ThemeField} from 'theme-ui'
+import React from 'react'
+import {Button, Card, Heading, Input} from '@luminate/gatsby-theme-luminate/src'
 import {Formik, Form, Field} from 'formik'
 import {useGetUserQuery, useUpdateUserMutation, useDeleteUserMutation} from '../../graphql'
 import {RouteChildrenProps, useHistory} from 'react-router-dom'
@@ -28,10 +28,10 @@ const UpdateUser = ({match}: Props) => {
   if (error || loading) return null
 
   return (
-    <Box>
-      <Box sx={{my: 4}}>
-        <Heading as="h1">{data?.getUser?.username}</Heading>
-      </Box>
+    <div>
+      <div className="my-4">
+        <Heading>{data?.getUser?.username}</Heading>
+      </div>
       <Card>
         <Formik
           initialValues={{
@@ -50,28 +50,34 @@ const UpdateUser = ({match}: Props) => {
           {() => {
             return (
               <Form>
-                <Box sx={{my: 2}}>
-                  <Field name="firstName" type="text" label="First Name" as={ThemeField} />
-                </Box>
-                <Box sx={{my: 2}}>
-                  <Field name="lastName" type="text" label="Last Name" as={ThemeField} />
-                </Box>
-                <Flex sx={{justifyContent: 'flex-end', my: 2}}>
-                  <Box sx={{order: 1}}>
+                <div className="my-2">
+                  <label htmlFor="firstName" className="block my-1">
+                    First Name
+                  </label>
+                  <Field name="firstName" type="text" id="firstName" as={Input} />
+                </div>
+                <div className="my-2">
+                  <label htmlFor="lastName" className="block my-1">
+                    Last Name
+                  </label>
+                  <Field name="lastName" type="text" id="lastName" as={Input} />
+                </div>
+                <div className="flex justify-end my-2">
+                  <div className="order-1">
                     <Button type="submit">Submit</Button>
-                  </Box>
-                  <Box>
+                  </div>
+                  <div>
                     <Button type="button" variant="danger" onClick={handleDeleteClick}>
                       Delete
                     </Button>
-                  </Box>
-                </Flex>
+                  </div>
+                </div>
               </Form>
             )
           }}
         </Formik>
       </Card>
-    </Box>
+    </div>
   )
 }
 

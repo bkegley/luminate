@@ -1,6 +1,4 @@
-/** @jsx jsx */
-
-import {jsx} from 'theme-ui'
+import React from 'react'
 import {useListUsersQuery} from '../../graphql'
 import {Link} from 'react-router-dom'
 

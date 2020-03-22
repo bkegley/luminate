@@ -21,15 +21,15 @@ const Header = ({}: HeaderProps) => {
   return (
     <div className="fixed  w-full z-10 bg-gray-200">
       <div className="flex items-center container mx-auto px-4 lg:px-6">
-        <div className="flex-grow w-1/4">
-          <StyledLink to="/app">
+        <div className="flex-grow w-1/6">
+          <StyledLink to="/app" className="hover:no-underline">
             <Heading as="h3" className="text-primary-600">
               Luminate
             </Heading>
           </StyledLink>
         </div>
 
-        <div className="flex flex-row flex-grow items-center px-4 header-shadow py-2 w-3/4">
+        <div className="flex flex-row flex-grow items-center px-4 header-shadow py-2 w-5/6">
           <div className="w-5/6 text-center">
             <Input className="max-w-sm w-full" />
           </div>

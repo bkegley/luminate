@@ -1,10 +1,7 @@
-/** @jsx jsx */
-import {jsx} from 'theme-ui'
 import React from 'react'
 import {useSelect, UseComboboxState} from 'downshift'
-import {Box, Label, Button} from '@theme-ui/components'
+import {Button} from './index'
 import DownArrow from './DownArrow'
-import defaultStyles, {IStyles} from './styles'
 
 interface IItem {
   name: string
@@ -16,10 +13,9 @@ export interface SelectProps {
   onChange?: (values: Partial<UseComboboxState<IItem>>) => void
   options: IItem[]
   initialSelectedItem?: IItem
-  styles?: IStyles
 }
 
-const Select = ({onChange, options, initialSelectedItem, label, styles = defaultStyles}: SelectProps) => {
+const Select = ({onChange, options, initialSelectedItem, label}: SelectProps) => {
   const itemToString = (option: IItem | null) => (option ? option.name : '')
 
   const {
@@ -42,26 +38,31 @@ const Select = ({onChange, options, initialSelectedItem, label, styles = default
   })
 
   return (
-    <Box sx={styles.root}>
-      <Label sx={styles.label} {...getLabelProps()}>
+    <div className="relative">
+      <label className="block mb-1" {...getLabelProps()}>
         {label}
-      </Label>
-      <Button type="button" sx={styles.field} {...getToggleButtonProps()}>
+      </label>
+      <button
+        className={`input flex items-center justify-between w-full ${isOpen ? 'border-b-0 rounded-b-none' : ''}`}
+        type="button"
+        {...getToggleButtonProps()}
+      >
         <span>{selectedItem ? itemToString(selectedItem) : itemToString(options[0])}</span>
         <DownArrow />
-      </Button>
+      </button>
       {isOpen ? (
-        <ul sx={styles.menu} {...getMenuProps()}>
+        <ul
+          className="absolute z-50 w-full m-0 p-0 overflow-y-auto bg-white list-none left-0 right-0 input border-t-0 rounded-t-none shadow-sm rounded-md"
+          style={{maxHeight: '250px'}}
+          {...getMenuProps()}
+        >
           {options.map((option, index) => {
             return (
               <li
                 key={`${option.value}-${index}`}
-                sx={Object.assign(
-                  {},
-                  styles.item,
-                  highlightedIndex === index ? styles.highlighted : null,
-                  selectedItem?.value === option.value ? styles.selected : null,
-                )}
+                className={`py-2 px-3 ${highlightedIndex === index ? 'bg-gray-100' : ''} ${
+                  selectedItem?.value === option.value ? 'text-primary-600' : ''
+                }`}
                 {...getItemProps({item: option, index})}
               >
                 {option.name}
@@ -70,7 +71,7 @@ const Select = ({onChange, options, initialSelectedItem, label, styles = default
           })}
         </ul>
       ) : null}
-    </Box>
+    </div>
   )
 }
 

@@ -1,7 +1,6 @@
-/** @jsx jsx */
-import {jsx} from 'theme-ui'
+import React from 'react'
 import {Link} from 'gatsby'
-import {Layout} from '@luminate/gatsby-theme-luminate/src'
+import Layout from '../components/Layout'
 import Header from '../components/RootHeader'
 
 const IndexPage = () => {
