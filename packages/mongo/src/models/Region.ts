@@ -1,14 +1,12 @@
 import mongoose from 'mongoose'
-import {DocumentWithTimestamps} from '@luminate/graphql-utils'
 import extendSchema from '../extendSchema'
-import {BaseAuthenticatedSchema, AuthenticatedEntity, WithAuthenticatedMethods} from '../baseSchemas'
+import {BaseAuthenticatedSchema} from '../abstract/schemas'
+import {BaseDocument} from '../abstract/documents'
 
-export interface RegionDocument extends DocumentWithTimestamps {
+export interface RegionDocument extends BaseDocument {
   name: string
   country?: mongoose.Types.ObjectId
 }
-
-export interface RegionModel extends WithAuthenticatedMethods<RegionDocument> {}
 
 const Region = extendSchema(
   BaseAuthenticatedSchema,
@@ -27,6 +25,4 @@ const Region = extendSchema(
   },
 )
 
-Region.loadClass(AuthenticatedEntity)
-
-export default mongoose.model<RegionDocument, RegionModel>('region', Region)
+export const RegionModel = mongoose.model<RegionDocument>('region', Region)
