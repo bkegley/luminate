@@ -1,9 +1,9 @@
 import mongoose from 'mongoose'
-import {DocumentWithTimestamps} from '@luminate/graphql-utils'
 import extendSchema from '../extendSchema'
-import {BaseAuthenticatedSchema, AuthenticatedEntity, WithAuthenticatedMethods} from '../baseSchemas'
+import {AuthenticatedDocument} from '../abstract/documents'
+import {BaseAuthenticatedSchema} from '../abstract/schemas'
 
-export interface CuppingSessionDocument extends DocumentWithTimestamps {
+export interface CuppingSessionDocument extends AuthenticatedDocument {
   description: string
   sessionCoffees?: [SessionCoffeeDocument]
 }
@@ -34,61 +34,54 @@ export interface SessionCoffeeDocument extends mongoose.Document {
   scoreSheets: Array<ScoreSheetDocument>
 }
 
-export interface CuppingSessionModel extends WithAuthenticatedMethods<CuppingSessionDocument> {}
-
-const ScoreSheet = new mongoose.Schema(
-  {
-    fragranceAroma: {
+const ScoreSheet = new mongoose.Schema({
+  fragranceAroma: {
+    type: Number,
+  },
+  flavor: {
+    type: Number,
+  },
+  aftertaste: {
+    type: Number,
+  },
+  acidity: {
+    type: Number,
+  },
+  body: {
+    type: Number,
+  },
+  uniformity: {
+    type: Number,
+  },
+  cleanCup: {
+    type: Number,
+  },
+  balance: {
+    type: Number,
+  },
+  sweetness: {
+    type: Number,
+  },
+  overall: {
+    type: Number,
+  },
+  taints: {
+    numberOfCups: {
       type: Number,
     },
-    flavor: {
+    intensity: {
       type: Number,
-    },
-    aftertaste: {
-      type: Number,
-    },
-    acidity: {
-      type: Number,
-    },
-    body: {
-      type: Number,
-    },
-    uniformity: {
-      type: Number,
-    },
-    cleanCup: {
-      type: Number,
-    },
-    balance: {
-      type: Number,
-    },
-    sweetness: {
-      type: Number,
-    },
-    overall: {
-      type: Number,
-    },
-    taints: {
-      numberOfCups: {
-        type: Number,
-      },
-      intensity: {
-        type: Number,
-      },
-    },
-    defects: {
-      numberOfCups: {
-        type: Number,
-      },
-      intensity: {
-        type: Number,
-      },
     },
   },
-  {
-    timestamps: true,
+  defects: {
+    numberOfCups: {
+      type: Number,
+    },
+    intensity: {
+      type: Number,
+    },
   },
-)
+})
 
 const CuppingSession = extendSchema(
   BaseAuthenticatedSchema,
@@ -117,6 +110,4 @@ const CuppingSession = extendSchema(
   {timestamps: true},
 )
 
-CuppingSession.loadClass(AuthenticatedEntity)
-
-export default mongoose.model<CuppingSessionDocument, CuppingSessionModel>('cuppingSession', CuppingSession)
+export const CuppingSessionModel = mongoose.model<CuppingSessionDocument>('cuppingSession', CuppingSession)
