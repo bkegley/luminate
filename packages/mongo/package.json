@@ -11,7 +11,6 @@
     "seed-database": "node ./dist/seedDatabase.js"
   },
   "dependencies": {
-    "@luminate/graphql-utils": "*",
     "bcrypt": "^3.0.7",
     "mongoose": "^5.8.1"
   },

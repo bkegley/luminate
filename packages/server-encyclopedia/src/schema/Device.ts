@@ -31,7 +31,7 @@ const typeDefs = gql`
   }
 
   extend type Query {
-    listDevices(cursor: String, limit: Int, query: [QueryInput]): DeviceConnection!
+    listDevices(cursor: String, limit: Int, query: [QueryInput!]): DeviceConnection!
     getDevice(id: ID!): Device
   }
 

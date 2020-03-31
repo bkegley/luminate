@@ -66,7 +66,7 @@ const typeDefs = gql`
   }
 
   extend type Query {
-    listCoffees(cursor: String, limit: Int, query: [QueryInput]): CoffeeConnection!
+    listCoffees(cursor: String, limit: Int, query: [QueryInput!]): CoffeeConnection!
     getCoffee(id: ID!): Coffee
   }
 

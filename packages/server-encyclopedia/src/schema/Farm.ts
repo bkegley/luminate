@@ -50,7 +50,7 @@ const typeDefs = gql`
   }
 
   extend type Query {
-    listFarms(cursor: String, limit: Int, query: [QueryInput]): FarmConnection!
+    listFarms(cursor: String, limit: Int, query: [QueryInput!]): FarmConnection!
     getFarm(id: ID!): Farm
   }
 

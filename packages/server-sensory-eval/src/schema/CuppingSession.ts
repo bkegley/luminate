@@ -1,5 +1,5 @@
 import {gql, ApolloError} from 'apollo-server-express'
-import {createConnectionResults, LoaderFn} from '@luminate/graphql-utils'
+import {LoaderFn} from '@luminate/graphql-utils'
 import {Resolvers} from '../types'
 import {CuppingSessionDocument} from '@luminate/mongo'
 
@@ -51,7 +51,7 @@ const typeDefs = gql`
   }
 
   extend type Query {
-    listCuppingSessions(cursor: String, limit: Int, query: [QueryInput]): CuppingSessionConnection!
+    listCuppingSessions(cursor: String, limit: Int, query: [QueryInput!]): CuppingSessionConnection!
     getCuppingSession(id: ID!): CuppingSession
   }
 
@@ -64,34 +64,24 @@ const typeDefs = gql`
 
 const resolvers: Resolvers = {
   Query: {
-    listCuppingSessions: async (parent, args, {models, user}) => {
-      const {CuppingSession} = models
-      const results = await createConnectionResults({user, args, model: CuppingSession})
-      return results
+    listCuppingSessions: async (parent, args, {services}) => {
+      return services.cuppingSession.listCuppingSessions(args)
     },
-    getCuppingSession: async (parent, {id}, {loaders}, info) => {
-      const {cuppingSessions} = loaders
-      return cuppingSessions.load(id)
+    getCuppingSession: async (parent, {id}, {services}, info) => {
+      return services.cuppingSession.getCuppingSessionById(id)
+      // const {cuppingSessions} = loaders
+      // return cuppingSessions.load(id)
     },
   },
   Mutation: {
-    createCuppingSession: async (parent, {input}, {models, user}) => {
-      const {CuppingSession} = models
-      const cuppingSession = await CuppingSession.createByUser(user, input)
-      return cuppingSession
+    createCuppingSession: async (parent, {input}, {services}) => {
+      return services.cuppingSession.createCuppingSession(input)
     },
-    updateCuppingSession: async (parent, {id, input}, {models, user}) => {
-      const {CuppingSession} = models
-      const cuppingSession = await CuppingSession.findByIdAndUpdateByUser(user, id, input, {new: true})
-      return cuppingSession
+    updateCuppingSession: async (parent, {id, input}, {services}) => {
+      return services.cuppingSession.updateCuppingSessionById(id, input)
     },
-    deleteCuppingSession: async (parent, {id}, {models, user}) => {
-      const {CuppingSession} = models
-      const cuppingSession = await CuppingSession.findByIdAndDeleteByUser(user, id, {})
-      if (!cuppingSession) {
-        throw new ApolloError('Document not found')
-      }
-      return cuppingSession
+    deleteCuppingSession: async (parent, {id}, {services}) => {
+      return services.cuppingSession.deleteCuppingSessionById(id)
     },
   },
   SessionCoffee: {
@@ -102,19 +92,19 @@ const resolvers: Resolvers = {
 }
 
 export interface CuppingSessionLoaders {
-  cuppingSessions: LoaderFn<CuppingSessionDocument>
+  // cuppingSessions: LoaderFn<CuppingSessionDocument>
 }
 
 export const loaders: CuppingSessionLoaders = {
-  cuppingSessions: async (ids, models, user) => {
-    const {CuppingSession} = models
-    const cuppingSessions = await CuppingSession.findByUser(user, {_id: ids})
-    return ids.map(id => {
-      const cuppingSession = cuppingSessions.find(cuppingSession => cuppingSession._id.toString() === id.toString())
-      if (!cuppingSession) return null
-      return cuppingSession
-    })
-  },
+  // cuppingSessions: async (ids, models, user) => {
+  //   const {CuppingSession} = models
+  //   const cuppingSessions = await CuppingSession.findByUser(user, {_id: ids})
+  //   return ids.map(id => {
+  //     const cuppingSession = cuppingSessions.find(cuppingSession => cuppingSession._id.toString() === id.toString())
+  //     if (!cuppingSession) return null
+  //     return cuppingSession
+  //   })
+  // },
 }
 
 export const schema = {typeDefs, resolvers}

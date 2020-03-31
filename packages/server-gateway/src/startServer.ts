@@ -85,18 +85,21 @@ const startServer = async () => {
     serviceList: [
       {
         name: 'auth',
-        url: `http://server-auth${false ? buildHostname(DEPLOY_ENV) : ''}:${process.env.SERVER_AUTH_PORT ||
-          3001}/graphql`,
+        url: 'http://localhost:3001/graphql',
+        // url: `http://server-auth${false ? buildHostname(DEPLOY_ENV) : ''}:${process.env.SERVER_AUTH_PORT ||
+        //   3001}/graphql`,
       },
-      {
-        name: 'encyclopedia',
-        url: `http://server-encyclopedia${false ? buildHostname(DEPLOY_ENV) : ''}:${process.env
-          .SERVER_ENCYCLOPEDIA_PORT || 3002}/graphql`,
-      },
+      // {
+      //   name: 'encyclopedia',
+      //   url: 'http://localhost:3002/graphql',
+      //   // url: `http://server-encyclopedia${false ? buildHostname(DEPLOY_ENV) : ''}:${process.env
+      //   //   .SERVER_ENCYCLOPEDIA_PORT || 3002}/graphql`,
+      // },
       {
         name: 'sensory-eval',
-        url: `http://server-sensory-eval${false ? buildHostname(DEPLOY_ENV) : ''}:${process.env
-          .SERVER_SENSORY_EVAL_PORT || 3003}/graphql`,
+        url: 'http://localhost:3003/graphql',
+        // url: `http://server-sensory-eval${false ? buildHostname(DEPLOY_ENV) : ''}:${process.env
+        //   .SERVER_SENSORY_EVAL_PORT || 3003}/graphql`,
       },
     ],
     buildService: ({url}) => {

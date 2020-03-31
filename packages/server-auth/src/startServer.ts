@@ -8,9 +8,9 @@ import express from 'express'
 const app = express()
 
 import {schemas, loaders as loadersObject, Loaders} from './schema'
-import {createMongoConnection, models, seedDatabase} from '@luminate/mongo'
+import {createMongoConnection, models, seedDatabase, services} from '@luminate/mongo'
 import DataLoader from 'dataloader'
-import {LoaderContext, parseUserFromRequest, parseToken, Token} from '@luminate/graphql-utils'
+import {LoaderContext, parseUserFromRequest, parseToken, Token, ContextBuilder} from '@luminate/graphql-utils'
 
 const PORT = process.env.PORT || 3001
 
@@ -20,6 +20,11 @@ export interface Context {
   models: typeof models
   loaders: LoaderContext<Loaders>
   user: Token | null
+  services: {
+    account: services.AccountService
+    role: services.RoleService
+    user: services.UserService
+  }
 }
 
 const startServer = async () => {
@@ -29,6 +34,12 @@ const startServer = async () => {
   const server = new ApolloServer({
     schema: buildFederatedSchema(schemas),
     context: ({req, res}): Context => {
+      const contextBuilder = new ContextBuilder(req)
+      const {services} = contextBuilder
+        .withAccount()
+        .withRole()
+        .withUser()
+        .build()
       const user = parseUserFromRequest(req)
       const loaders = Object.keys(loadersObject).reduce((acc, loaderName) => {
         return {
@@ -44,6 +55,7 @@ const startServer = async () => {
         models,
         loaders,
         user,
+        services,
       }
     },
     introspection: true,

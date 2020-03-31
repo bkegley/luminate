@@ -1,6 +1,5 @@
 import {gql, ApolloError} from 'apollo-server-express'
 import {GraphQLScalarType, Kind} from 'graphql'
-import {createConnectionResults, LoaderFn} from '@luminate/graphql-utils'
 import {Resolvers} from '../types'
 
 const typeDefs = gql`
@@ -66,50 +65,23 @@ const typeDefs = gql`
   }
 
   extend type Mutation {
-    createScoreSheet(cuppingSessionId: ID!, sampleNumber: ID!, input: CreateScoreSheetInput!): CuppingSession
+    createScoreSheet(sessionCoffeeId: ID!, input: CreateScoreSheetInput!): CuppingSession
     updateScoreSheet(scoreSheetId: ID!, sessionCoffeeId: ID!, input: UpdateScoreSheetInput!): CuppingSession
-    deleteScoreSheet(scoreSheetId: ID!, sessionCoffeeId: ID!): CuppingSession
+    deleteScoreSheet(id: ID!): CuppingSession
   }
 `
 
 const resolvers: Resolvers = {
   // @ts-ignore
   Mutation: {
-    createScoreSheet: async (parent, {cuppingSessionId, sampleNumber, input}, {models, user}) => {
-      const {CuppingSession} = models
-      const cuppingSession = await CuppingSession.findOneAndUpdateByUser(
-        user,
-        {_id: cuppingSessionId, 'sessionCoffees.sampleNumber': sampleNumber},
-        {$push: {'sessionCoffees.$.scoreSheets': input}},
-        {new: true},
-      )
-      return cuppingSession
+    createScoreSheet: async (parent, {sessionCoffeeId, input}, {services}) => {
+      return services.cuppingSession.createScoreSheet({sessionCoffeeId, input})
     },
-    updateScoreSheet: async (parent, {scoreSheetId, sessionCoffeeId, input}, {models, user}) => {
-      const {CuppingSession} = models
-      const cuppingSession = await CuppingSession.findOneAndUpdateByUser(
-        user,
-        {sessionCoffees: {$elemMatch: {_id: sessionCoffeeId, 'scoreSheets._id': scoreSheetId}}},
-        {$set: {'sessionCoffees.$[outer].scoreSheets.$[inner]': {_id: scoreSheetId, ...input}}},
-        {
-          new: true,
-          // @ts-ignore
-          arrayFilters: [{'outer._id': sessionCoffeeId}, {'inner._id': scoreSheetId}],
-        },
-      )
-      return cuppingSession
+    updateScoreSheet: async (parent, {scoreSheetId, sessionCoffeeId, input}, {services}) => {
+      return services.cuppingSession.updateScoreSheet({scoreSheetId, sessionCoffeeId, input})
     },
-    deleteScoreSheet: async (parent, {sessionCoffeeId, scoreSheetId}, {models, user}) => {
-      const {CuppingSession} = models
-      const scoreSheet = await CuppingSession.findOneAndUpdateByUser(
-        user,
-        {'sessionCoffees._id': sessionCoffeeId},
-        {$pull: {'sessionCoffees.$.scoreSheets': {_id: scoreSheetId}}},
-      )
-      if (!scoreSheet) {
-        throw new ApolloError('Document not found')
-      }
-      return scoreSheet
+    deleteScoreSheet: async (parent, {id}, {services}) => {
+      return services.cuppingSession.deleteScoreSheetById(id)
     },
   },
   ScoreSheet: {

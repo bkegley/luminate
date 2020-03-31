@@ -32,7 +32,7 @@ const typeDefs = gql`
   }
 
   extend type Query {
-    listVarieties(cursor: String, limit: Int, query: [QueryInput]): VarietyConnection!
+    listVarieties(cursor: String, limit: Int, query: [QueryInput!]): VarietyConnection!
     getVariety(id: ID!): Variety
   }
 

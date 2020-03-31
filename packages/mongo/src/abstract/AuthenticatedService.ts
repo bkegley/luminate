@@ -1,67 +1,98 @@
+import mongoose from 'mongoose'
 import {BaseService} from './BaseService'
-import {Token} from '@luminate/graphql-utils'
+import {Token} from './types'
 import {BaseDocument} from './documents'
 import {IListDocumentsArgs} from './types'
 
 export class AuthenticatedService<T extends BaseDocument> extends BaseService<T> {
-  protected static user: Token | null = null
+  protected user: Token | null = null
 
-  public static loadUser(user: Token | null) {
-    AuthenticatedService.user = user
+  public loadUser(user: Token | null) {
+    this.user = user
   }
 
-  protected readConditionsForUser = {
-    $or: [
-      {permissionType: 'public'},
-      {
-        $or: [
-          {
-            readAccess: {
-              $elemMatch: {
-                $in: [AuthenticatedService.user?.account?.id].filter(Boolean),
-              },
+  protected getReadConditionsForUser() {
+    return {
+      $or: [
+        {permissionType: 'public'},
+        {
+          readAccess: {
+            $elemMatch: {
+              $in: [this.user?.account?.id].filter(Boolean),
             },
           },
-          {
-            adminAccess: {
-              $elemMatch: {
-                $in: [AuthenticatedService.user?.account?.id].filter(Boolean),
-              },
+        },
+        {
+          adminAccess: {
+            $elemMatch: {
+              $in: [this.user?.account?.id].filter(Boolean),
             },
           },
-        ],
-      },
-    ],
+        },
+      ],
+    }
   }
 
-  protected writeConditionsForUser = {
-    $or: [
-      {
-        writeAccess: {
-          $elemMatch: {
-            $in: [AuthenticatedService.user?.account?.id].filter(Boolean),
+  protected getWriteConditionsForUser() {
+    return {
+      $or: [
+        {
+          writeAccess: {
+            $elemMatch: {
+              $in: [this.user?.account?.id].filter(Boolean),
+            },
           },
         },
-      },
-      {
-        adminAccess: {
-          $elemMatch: {
-            $in: [AuthenticatedService.user?.account?.id].filter(Boolean),
+        {
+          adminAccess: {
+            $elemMatch: {
+              $in: [this.user?.account?.id].filter(Boolean),
+            },
           },
         },
-      },
-    ],
+      ],
+    }
   }
 
-  protected getAdminConditionsForUser = {
-    adminAccess: {
-      $elemMatch: {
-        $in: [AuthenticatedService.user?.account?.id].filter(Boolean),
+  protected getAdminConditionsForUser() {
+    return {
+      adminAccess: {
+        $elemMatch: {
+          $in: [this.user?.account?.id].filter(Boolean),
+        },
       },
-    },
+    }
   }
 
-  protected buildConnectionConditions(args: IListDocumentsArgs) {
-    return super.buildConnectionConditions({...args, ...this.readConditionsForUser})
+  protected buildConnectionQuery(args: IListDocumentsArgs) {
+    return super.buildConnectionQuery({...args, ...this.getReadConditionsForUser()})
+  }
+
+  protected getById(id: string) {
+    return this.model.findOne({_id: id, ...this.getReadConditionsForUser()})
+  }
+
+  protected async create(input: any) {
+    const defaults = {
+      createdByUser: this.user?.jti,
+      createdByAccount: this.user?.account?.id,
+      readAccess: [this.user?.account?.id].filter(Boolean),
+      writeAccess: [this.user?.account?.id].filter(Boolean),
+      adminAccess: [this.user?.account?.id].filter(Boolean),
+    }
+    return super.create({...defaults, ...input})
+  }
+
+  protected updateOne(conditions: any, input: any, options?: mongoose.QueryFindOneAndUpdateOptions) {
+    return super.updateOne({...conditions, ...this.getReadConditionsForUser()}, input, options)
+  }
+
+  protected updateById(id: string, input: any, options?: mongoose.QueryFindOneAndUpdateOptions) {
+    return this.updateOne({_id: id}, input, options)
+  }
+
+  // TODO: delete should remove user's account permissions from the entity instead of deleting
+  protected delete(id: string) {
+    return this.model.findOneAndDelete({_id: id, ...this.getWriteConditionsForUser()})
   }
 }

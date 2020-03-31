@@ -1,11 +1,7 @@
-export interface IQueryInput {
-  field: string
-  value?: string
-  operator?: string
-}
+import {IListDocumentsArgs} from '../abstract/types'
 
 export class QueryInput {
-  public static getQueryValue(queries?: Array<IQueryInput>) {
+  public static getQueryValue(queries?: IListDocumentsArgs['query']) {
     if (!queries) return null
     return queries.map(query => {
       switch (query.operator) {

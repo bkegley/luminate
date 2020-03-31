@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {gql, ApolloError} from 'apollo-server-express'
 import {createConnectionResults, createToken, parseToken, LoaderFn} from '@luminate/graphql-utils'
 import {Resolvers} from '../types'
@@ -35,7 +36,7 @@ const typeDefs = gql`
   }
 
   extend type Query {
-    listAccounts(cursor: String, limit: Int, query: [QueryInput]): AccountConnection!
+    listAccounts(cursor: String, limit: Int, query: [QueryInput!]): AccountConnection!
     getAccount(id: ID!): Account
   }
 
@@ -50,10 +51,8 @@ const typeDefs = gql`
 
 const resolvers: Resolvers = {
   Query: {
-    listAccounts: async (parent, args, {models, user}) => {
-      const {Account} = models
-      const results = await createConnectionResults({user, args, model: Account})
-      return results
+    listAccounts: async (parent, args, {models, user, services}) => {
+      return services.account.listAccounts(args)
     },
     getAccount: async (parent, {id}, {loaders}, info) => {
       const {accounts} = loaders

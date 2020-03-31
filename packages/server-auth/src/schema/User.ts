@@ -1,3 +1,4 @@
+//@ts-nocheck
 import {gql, ApolloError} from 'apollo-server-express'
 import {
   createConnectionResults,
@@ -62,7 +63,7 @@ const typeDefs = gql`
   }
 
   extend type Query {
-    listUsers(cursor: String, limit: Int, query: [QueryInput]): UserConnection!
+    listUsers(cursor: String, limit: Int, query: [QueryInput!]): UserConnection!
     getUser(id: ID!): User
     me: User
   }

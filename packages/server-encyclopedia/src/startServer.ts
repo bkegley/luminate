@@ -37,10 +37,15 @@ const startServer = async () => {
         }
       }, Object.assign(Object.keys(loadersObject)))
 
+      const {Region} = models
+
       return {
         req,
         res,
-        models,
+        models: {
+          ...models,
+          Region: Region.loadUser(user),
+        },
         loaders,
         user,
       }

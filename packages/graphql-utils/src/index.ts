@@ -3,6 +3,8 @@ import mongoose from 'mongoose'
 import {models as dbModels} from '@luminate/mongo'
 import {Token} from './auth'
 
+export * from './ContextBuilder'
+
 export type LoaderFn<T> = (
   ids: string[],
   models: typeof dbModels,
@@ -15,7 +17,6 @@ export type LoaderContext<L> = {
   [K in keyof L]: Dataloader<string | mongoose.Types.ObjectId, ExtractGraphQLType<L[K]>>
 }
 
-export {createConnectionResults, DocumentWithTimestamps} from './createConnectionResults'
 export {createCursorHash, parseCursorHash} from './cursor'
 export {parseArgs, queryInputMap} from './parseArgs'
 export * from './auth'

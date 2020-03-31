@@ -7,19 +7,16 @@ import {buildFederatedSchema} from '@apollo/federation'
 import express from 'express'
 const app = express()
 
-import {schemas, loaders as loadersObject, Loaders} from './schema'
-import {createMongoConnection, models} from '@luminate/mongo'
-import DataLoader from 'dataloader'
-import {LoaderContext, parseUserFromRequest, Token} from '@luminate/graphql-utils'
+import {schemas} from './schema'
+import {createMongoConnection, CuppingSessionService} from '@luminate/mongo'
+import {ContextBuilder} from '@luminate/graphql-utils'
 
 const PORT = process.env.PORT || 3003
 
 export interface Context {
-  req: express.Request
-  res: express.Response
-  models: typeof models
-  loaders: LoaderContext<Loaders>
-  user: Token | null
+  services: {
+    cuppingSession: CuppingSessionService
+  }
 }
 
 const startServer = async () => {
@@ -27,22 +24,12 @@ const startServer = async () => {
 
   const server = new ApolloServer({
     schema: buildFederatedSchema(schemas),
-    context: ({req, res}) => {
-      const user = parseUserFromRequest(req)
-      const loaders: Loaders = Object.keys(loadersObject).reduce((acc, loaderName) => {
-        return {
-          ...acc,
-          //@ts-ignore
-          [loaderName]: new DataLoader(ids => loadersObject[loaderName](ids, models, user)),
-        }
-      }, Object.assign(Object.keys(loadersObject)))
+    context: ({req}) => {
+      const contextBuilder = new ContextBuilder(req)
+      const {services} = contextBuilder.withCuppingSession().build()
 
       return {
-        req,
-        res,
-        models,
-        loaders,
-        user,
+        services,
       }
     },
     introspection: true,

@@ -169,7 +169,7 @@ export type Query = {
 export type QueryListAccountsArgs = {
   cursor?: Maybe<Scalars['String']>
   limit?: Maybe<Scalars['Int']>
-  query?: Maybe<Array<Maybe<QueryInput>>>
+  query?: Maybe<Array<QueryInput>>
 }
 
 export type QueryGetAccountArgs = {
@@ -179,7 +179,7 @@ export type QueryGetAccountArgs = {
 export type QueryListRolesArgs = {
   cursor?: Maybe<Scalars['String']>
   limit?: Maybe<Scalars['Int']>
-  query?: Maybe<Array<Maybe<QueryInput>>>
+  query?: Maybe<Array<QueryInput>>
 }
 
 export type QueryGetRoleArgs = {
@@ -189,7 +189,7 @@ export type QueryGetRoleArgs = {
 export type QueryListUsersArgs = {
   cursor?: Maybe<Scalars['String']>
   limit?: Maybe<Scalars['Int']>
-  query?: Maybe<Array<Maybe<QueryInput>>>
+  query?: Maybe<Array<QueryInput>>
 }
 
 export type QueryGetUserArgs = {

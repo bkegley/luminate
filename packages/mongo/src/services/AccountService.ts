@@ -17,7 +17,14 @@ export class AccountService extends AuthenticatedService<AccountDocument> {
 
   // public getConnection() {}
 
+  // TODO: should return logged in account and all other available accounts
   public listAccounts(args: IListDocumentsArgs) {
     return this.getConnectionResults(args)
+  }
+
+  protected getReadConditionsForUser(): any {
+    const conditions = super.getReadConditionsForUser()
+    conditions.$or.push({_id: this.user?.account?.id} as any)
+    return conditions
   }
 }

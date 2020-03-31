@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import {gql, ApolloError} from 'apollo-server-express'
 import {createConnectionResults, LoaderFn} from '@luminate/graphql-utils'
 import {Resolvers, Country} from '../types'
@@ -31,7 +33,7 @@ const typeDefs = gql`
   }
 
   extend type Query {
-    listCountries(cursor: String, limit: Int, query: [QueryInput]): CountryConnection!
+    listCountries(cursor: String, limit: Int, query: [QueryInput!]): CountryConnection!
     getCountry(id: ID!): Country
   }
 
