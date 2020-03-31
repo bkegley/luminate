@@ -1,12 +1,12 @@
-export type Maybe<T> = T | null
+export type Maybe<T> = T | null;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: string
-  String: string
-  Boolean: boolean
-  Int: number
-  Float: number
-}
+  ID: string,
+  String: string,
+  Boolean: boolean,
+  Int: number,
+  Float: number,
+};
 
 export enum OperatorEnum {
   Eq = 'eq',
@@ -16,18 +16,18 @@ export enum OperatorEnum {
   Lt = 'lt',
   Lte = 'lte',
   Contains = 'contains',
-  ContainsSensitive = 'containsSensitive',
+  ContainsSensitive = 'containsSensitive'
 }
 
 export type PageInfo = {
-  __typename?: 'PageInfo'
-  hasNextPage?: Maybe<Scalars['Boolean']>
-  prevCursor?: Maybe<Scalars['String']>
-  nextCursor?: Maybe<Scalars['String']>
-}
+   __typename?: 'PageInfo',
+  hasNextPage?: Maybe<Scalars['Boolean']>,
+  prevCursor?: Maybe<Scalars['String']>,
+  nextCursor?: Maybe<Scalars['String']>,
+};
 
 export type QueryInput = {
-  field: Scalars['String']
-  value?: Maybe<Scalars['String']>
-  operator?: Maybe<OperatorEnum>
-}
+  field: Scalars['String'],
+  value?: Maybe<Scalars['String']>,
+  operator?: Maybe<OperatorEnum>,
+};

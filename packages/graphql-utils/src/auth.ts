@@ -6,18 +6,18 @@ import {RoleDocument} from '@luminate/mongo'
 import {scopes} from './scopes'
 
 interface TokenInput {
-  jti: string | mongoose.Types.ObjectId
+  jti: string
   sub: string
   account?: {
-    id: string | mongoose.Types.ObjectId
+    id: string
     name: string
   }
   accounts?: {
-    id: string | mongoose.Types.ObjectId
+    id: string
     name: string
   }[]
   roles?: {
-    id: string | mongoose.Types.ObjectId
+    id: string
     name: string
   }[]
   scopes?: string[]

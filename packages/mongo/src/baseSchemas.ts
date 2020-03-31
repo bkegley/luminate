@@ -1,5 +1,5 @@
 import mongoose, {Schema} from 'mongoose'
-import {Token} from '@luminate/graphql-utils'
+import {Token} from './abstract/types'
 
 export const BasePublicSchema = new mongoose.Schema({
   permissionType: {

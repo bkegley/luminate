@@ -1,3 +1,4 @@
+//@ts-nocheck
 import {gql, ApolloError} from 'apollo-server-express'
 import {createConnectionResults, LoaderFn, hasScopes} from '@luminate/graphql-utils'
 import {Resolvers} from '../types'
@@ -32,7 +33,7 @@ const typeDefs = gql`
   }
 
   extend type Query {
-    listRoles(cursor: String, limit: Int, query: [QueryInput]): RoleConnection!
+    listRoles(cursor: String, limit: Int, query: [QueryInput!]): RoleConnection!
     getRole(id: ID!): Role
   }
 

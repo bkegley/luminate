@@ -13,7 +13,7 @@ export class BaseService<T extends BaseDocument> {
 
   protected limit = 25
 
-  protected buildConnectionConditions(args: IListDocumentsArgs): [any, null, any] {
+  protected buildConnectionQuery(args: IListDocumentsArgs): [any, null, any] {
     const {cursor, limit, query, ...remainingArgs} = args
 
     return [
@@ -31,7 +31,7 @@ export class BaseService<T extends BaseDocument> {
   }
 
   protected async getConnectionResults(args: IListDocumentsArgs) {
-    const documentsPlusOne = await this.model.find(...this.buildConnectionConditions(args))
+    const documentsPlusOne = await this.model.find(...this.buildConnectionQuery(args))
     if (!documentsPlusOne.length) {
       return {
         pageInfo: {
@@ -60,5 +60,26 @@ export class BaseService<T extends BaseDocument> {
         }
       }),
     }
+  }
+
+  protected getById(id: string) {
+    return this.model.findById(id)
+  }
+
+  protected async create(input: any) {
+    const newEntity = await new this.model(input).save()
+    return newEntity
+  }
+
+  protected updateOne(conditions: any, input: any, options?: mongoose.QueryFindOneAndUpdateOptions) {
+    return this.model.findOneAndUpdate(conditions, input, options || {new: true})
+  }
+
+  protected updateById(id: string, input: any, options?: mongoose.QueryFindOneAndUpdateOptions) {
+    return this.model.findByIdAndUpdate(id, input, options || {new: true})
+  }
+
+  protected delete(id: string) {
+    return this.model.findByIdAndDelete(id)
   }
 }

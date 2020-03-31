@@ -1,16 +1,13 @@
-import mongoose from 'mongoose'
-
 export interface QueryInput {
   field: string
-  value?: string
-  operator?: string
+  value?: string | null | undefined
+  operator?: string | null | undefined
 }
-export type TQueryInput = Array<QueryInput>
 
 export interface IListDocumentsArgs {
   cursor?: string | null | undefined
   limit?: number | null | undefined
-  query?: TQueryInput
+  query?: Array<QueryInput> | null | undefined
   [x: string]: any
 }
 
@@ -32,18 +29,18 @@ export interface IConnectionResults<T> {
 }
 
 interface TokenInput {
-  jti: string | mongoose.Types.ObjectId
+  jti: string
   sub: string
   account?: {
-    id: string | mongoose.Types.ObjectId
+    id: string
     name: string
   }
   accounts?: {
-    id: string | mongoose.Types.ObjectId
+    id: string
     name: string
   }[]
   roles?: {
-    id: string | mongoose.Types.ObjectId
+    id: string
     name: string
   }[]
   scopes?: string[]

@@ -385,7 +385,7 @@ export type Query = {
 export type QueryListCoffeesArgs = {
   cursor?: Maybe<Scalars['String']>
   limit?: Maybe<Scalars['Int']>
-  query?: Maybe<Array<Maybe<QueryInput>>>
+  query?: Maybe<Array<QueryInput>>
 }
 
 export type QueryGetCoffeeArgs = {
@@ -395,7 +395,7 @@ export type QueryGetCoffeeArgs = {
 export type QueryListCountriesArgs = {
   cursor?: Maybe<Scalars['String']>
   limit?: Maybe<Scalars['Int']>
-  query?: Maybe<Array<Maybe<QueryInput>>>
+  query?: Maybe<Array<QueryInput>>
 }
 
 export type QueryGetCountryArgs = {
@@ -405,7 +405,7 @@ export type QueryGetCountryArgs = {
 export type QueryListDevicesArgs = {
   cursor?: Maybe<Scalars['String']>
   limit?: Maybe<Scalars['Int']>
-  query?: Maybe<Array<Maybe<QueryInput>>>
+  query?: Maybe<Array<QueryInput>>
 }
 
 export type QueryGetDeviceArgs = {
@@ -415,7 +415,7 @@ export type QueryGetDeviceArgs = {
 export type QueryListFarmsArgs = {
   cursor?: Maybe<Scalars['String']>
   limit?: Maybe<Scalars['Int']>
-  query?: Maybe<Array<Maybe<QueryInput>>>
+  query?: Maybe<Array<QueryInput>>
 }
 
 export type QueryGetFarmArgs = {
@@ -425,7 +425,7 @@ export type QueryGetFarmArgs = {
 export type QueryListRegionsArgs = {
   cursor?: Maybe<Scalars['String']>
   limit?: Maybe<Scalars['Int']>
-  query?: Maybe<Array<Maybe<QueryInput>>>
+  query?: Maybe<Array<QueryInput>>
 }
 
 export type QueryGetRegionArgs = {
@@ -435,7 +435,7 @@ export type QueryGetRegionArgs = {
 export type QueryListVarietiesArgs = {
   cursor?: Maybe<Scalars['String']>
   limit?: Maybe<Scalars['Int']>
-  query?: Maybe<Array<Maybe<QueryInput>>>
+  query?: Maybe<Array<QueryInput>>
 }
 
 export type QueryGetVarietyArgs = {

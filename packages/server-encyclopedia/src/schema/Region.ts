@@ -1,7 +1,10 @@
+// @ts-nocheck
+
 import {gql, ApolloError} from 'apollo-server-express'
 import {createConnectionResults, LoaderFn} from '@luminate/graphql-utils'
 import {Resolvers} from '../types'
 import {RegionDocument, FarmDocument} from '@luminate/mongo'
+import {RegionService} from '@luminate/mongo'
 
 const typeDefs = gql`
   type Region {
@@ -34,7 +37,7 @@ const typeDefs = gql`
   }
 
   extend type Query {
-    listRegions(cursor: String, limit: Int, query: [QueryInput]): RegionConnection!
+    listRegions(cursor: String, limit: Int, query: [QueryInput!]): RegionConnection!
     getRegion(id: ID!): Region
   }
 
@@ -48,10 +51,15 @@ const typeDefs = gql`
 const resolvers: Resolvers = {
   Query: {
     listRegions: async (parent, args, {models, user}) => {
-      const {Region} = models
+      // const {Region} = models
+      // const results = Region.listRegions(args)
+      if ((RegionService as any).loadUser) {
+        RegionService.loadUser(user)
+      }
 
-      const results = await createConnectionResults({user, args, model: Region})
-      return results
+      const repo = new RegionService()
+
+      return repo.listRegions(args)
     },
     getRegion: async (parent, {id}, {loaders}, info) => {
       const {regions} = loaders
