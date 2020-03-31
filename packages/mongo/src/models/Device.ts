@@ -1,14 +1,11 @@
 import mongoose from 'mongoose'
-import {DocumentWithTimestamps} from '@luminate/graphql-utils'
 import extendSchema from '../extendSchema'
-import {BaseAuthenticatedSchema, AuthenticatedEntity, WithAuthenticatedMethods} from '../baseSchemas'
+import {AuthenticatedDocument} from '../abstract/documents'
+import {BaseAuthenticatedSchema} from '../abstract/schemas'
 
-export interface DeviceDocument extends DocumentWithTimestamps {
+export interface DeviceDocument extends AuthenticatedDocument {
   name: string
-  visibleTo: Array<mongoose.Types.ObjectId>
 }
-
-export interface DeviceModel extends WithAuthenticatedMethods<DeviceDocument> {}
 
 const Device = extendSchema(
   BaseAuthenticatedSchema,
@@ -23,6 +20,4 @@ const Device = extendSchema(
   },
 )
 
-Device.loadClass(AuthenticatedEntity)
-
-export default mongoose.model<DeviceDocument, DeviceModel>('device', Device)
+export const DeviceModel = mongoose.model<DeviceDocument>('device', Device)

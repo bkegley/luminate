@@ -1,15 +1,13 @@
 import mongoose from 'mongoose'
-import {DocumentWithTimestamps} from '@luminate/graphql-utils'
 import extendSchema from '../extendSchema'
-import {BaseAuthenticatedSchema, AuthenticatedEntity, WithAuthenticatedMethods} from '../baseSchemas'
+import {AuthenticatedDocument} from '../abstract/documents'
+import {BaseAuthenticatedSchema} from '../abstract/schemas'
 
-export interface NoteDocument extends DocumentWithTimestamps {
+export interface NoteDocument extends AuthenticatedDocument {
   entityId: mongoose.Types.ObjectId
   content: string
   field: string
 }
-
-export interface NoteModel extends WithAuthenticatedMethods<NoteDocument> {}
 
 const Note = extendSchema(
   BaseAuthenticatedSchema,
@@ -30,6 +28,4 @@ const Note = extendSchema(
   {timestamps: true},
 )
 
-Note.loadClass(AuthenticatedEntity)
-
-export default mongoose.model<NoteDocument, NoteModel>('note', Note)
+export const NoteModel = mongoose.model<NoteDocument>('note', Note)

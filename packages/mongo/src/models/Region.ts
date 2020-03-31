@@ -1,9 +1,9 @@
 import mongoose from 'mongoose'
 import extendSchema from '../extendSchema'
 import {BaseAuthenticatedSchema} from '../abstract/schemas'
-import {BaseDocument} from '../abstract/documents'
+import {AuthenticatedDocument} from '../abstract/documents'
 
-export interface RegionDocument extends BaseDocument {
+export interface RegionDocument extends AuthenticatedDocument {
   name: string
   country?: mongoose.Types.ObjectId
 }
