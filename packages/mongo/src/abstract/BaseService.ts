@@ -30,7 +30,7 @@ export class BaseService<T extends BaseDocument> {
     ]
   }
 
-  protected async getConnectionResults(args: IListDocumentsArgs) {
+  public async getConnectionResults(args: IListDocumentsArgs) {
     const documentsPlusOne = await this.model.find(...this.buildConnectionQuery(args))
     if (!documentsPlusOne.length) {
       return {
@@ -62,24 +62,24 @@ export class BaseService<T extends BaseDocument> {
     }
   }
 
-  protected getById(id: string) {
+  public getById(id: string) {
     return this.model.findById(id)
   }
 
-  protected async create(input: any) {
+  public async create(input: any) {
     const newEntity = await new this.model(input).save()
     return newEntity
   }
 
-  protected updateOne(conditions: any, input: any, options?: mongoose.QueryFindOneAndUpdateOptions) {
+  public updateOne(conditions: any, input: any, options?: mongoose.QueryFindOneAndUpdateOptions) {
     return this.model.findOneAndUpdate(conditions, input, options || {new: true})
   }
 
-  protected updateById(id: string, input: any, options?: mongoose.QueryFindOneAndUpdateOptions) {
+  public updateById(id: string, input: any, options?: mongoose.QueryFindOneAndUpdateOptions) {
     return this.model.findByIdAndUpdate(id, input, options || {new: true})
   }
 
-  protected delete(id: string) {
+  public deleteById(id: string) {
     return this.model.findByIdAndDelete(id)
   }
 }

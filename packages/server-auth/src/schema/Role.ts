@@ -1,8 +1,8 @@
-//@ts-nocheck
 import {gql, ApolloError} from 'apollo-server-express'
-import {createConnectionResults, LoaderFn, hasScopes} from '@luminate/graphql-utils'
 import {Resolvers} from '../types'
 import {RoleDocument} from '@luminate/mongo'
+import {RoleService} from '@luminate/mongo/src/services'
+import {LoaderFn} from '@luminate/graphql-utils'
 
 const typeDefs = gql`
   type Role {
@@ -46,56 +46,33 @@ const typeDefs = gql`
 
 const resolvers: Resolvers = {
   Query: {
-    listRoles: async (parent, args, {models, user}) => {
-      if (!hasScopes(user, ['read:role'])) {
-        throw new Error('You do not have permission')
-      }
-      const {Role} = models
-      const results = await createConnectionResults({user, args, model: Role})
-      return results
+    listRoles: async (parent, args, {services}) => {
+      return services.role.getConnectionResults(args)
     },
-    getRole: async (parent, {id}, {loaders}, info) => {
-      const {roles} = loaders
-      return roles.load(id)
+    getRole: async (parent, {id}, {services}, info) => {
+      return services.role.getById(id)
     },
   },
   Mutation: {
-    createRole: async (parent, {input}, {models, user}) => {
-      const {Role} = models
-      const role = await Role.createByUser(user, {...input, type: ['role']})
-      return role
+    createRole: async (parent, {input}, {services}) => {
+      return services.role.create(input)
     },
-    updateRole: async (parent, {id, input}, {models, user}) => {
-      const {Role} = models
-      const role = await Role.findByIdAndUpdateByUser(user, id, input, {new: true})
-      return role
+    updateRole: async (parent, {id, input}, {services}) => {
+      return services.role.updateById(id, input)
     },
-    deleteRole: async (parent, {id}, {models, user}) => {
-      const {Role} = models
-      const role = await Role.findByIdAndDeleteByUser(user, id, {})
-      if (!role) {
-        throw new ApolloError('Document not found')
-      }
-      return role
+    deleteRole: async (parent, {id}, {services}) => {
+      return services.role.deleteById(id)
     },
   },
 }
 
 export interface RoleLoaders {
-  roles: LoaderFn<RoleDocument>
+  roles: LoaderFn<RoleDocument, {role: RoleService}>
 }
 
 export const loaders: RoleLoaders = {
-  roles: async (ids, models, user) => {
-    const {Role} = models
-    const roles = await Role.findByUser(user, {_id: ids})
-    return ids
-      .map(id => {
-        const role = roles.find(role => role._id.toString() === id.toString())
-        if (!role) return null
-        return role
-      })
-      .filter(Boolean)
+  roles: (ids, services) => {
+    return services.role.findRoles({_id: ids})
   },
 }
 

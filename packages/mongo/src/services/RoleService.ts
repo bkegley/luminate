@@ -1,5 +1,4 @@
 import {RoleModel, RoleDocument} from '../models/Role'
-import {IListDocumentsArgs} from '../abstract/types'
 import {AuthenticatedService} from '../abstract/AuthenticatedService'
 
 export class RoleService extends AuthenticatedService<RoleDocument> {
@@ -7,17 +6,15 @@ export class RoleService extends AuthenticatedService<RoleDocument> {
     super(RoleModel)
   }
 
-  // public find(conditions) {
-  //   return
-  // }
+  public findRoles(conditions: any) {
+    return this.model.find(conditions)
+  }
 
-  // public findOne(conditions) {}
+  public listCurrentRoles() {
+    return this.user?.roles
+  }
 
-  // public findById(id) {}
-
-  // public getConnection() {}
-
-  public listRoles(args: IListDocumentsArgs) {
-    return this.getConnectionResults(args)
+  public listCurrentScopes() {
+    return this.user?.scopes
   }
 }

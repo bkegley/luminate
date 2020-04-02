@@ -1,8 +1,6 @@
-// @ts-nocheck
-
 import {gql, ApolloError} from 'apollo-server-express'
-import {createConnectionResults, LoaderFn} from '@luminate/graphql-utils'
-import {Resolvers, Country} from '../types'
+import {LoaderFn} from '@luminate/graphql-utils'
+import {Resolvers} from '../types'
 import {CountryDocument, RegionDocument} from '@luminate/mongo'
 
 const typeDefs = gql`
@@ -46,68 +44,55 @@ const typeDefs = gql`
 
 const resolvers: Resolvers = {
   Query: {
-    listCountries: async (parent, args, {models, user}) => {
-      const {Country} = models
-      const results = await createConnectionResults({user, args, model: Country})
-      return results
+    listCountries: async (parent, args, {services}) => {
+      return services.country.getConnectionResults(args)
     },
-    getCountry: async (parent, {id}, {models, loaders}, info) => {
-      const {countries} = loaders
-      return countries.load(id)
+    getCountry: async (parent, {id}, {services}, info) => {
+      return services.country.getById(id)
     },
   },
   Mutation: {
-    createCountry: async (parent, {input}, {models, user}) => {
-      const {Country} = models
-      const country = await Country.createByUser(user, input)
-      return country
+    createCountry: async (parent, {input}, {services}) => {
+      return services.country.create(input)
     },
-    updateCountry: async (parent, {id, input}, {models, user}) => {
-      const {Country} = models
-      const country = await Country.findByIdAndUpdateByUser(user, id, input, {new: true})
-      return country
+    updateCountry: async (parent, {id, input}, {services}) => {
+      return services.country.updateById(id, input)
     },
-    deleteCountry: async (parent, {id}, {models, user}) => {
-      const {Country} = models
-      const country = await Country.findByIdAndDeleteByUser(user, id, {})
-      if (!country) {
-        throw new ApolloError('Document not found')
-      }
-      return country
+    deleteCountry: async (parent, {id}, {services}) => {
+      return services.country.deleteById(id)
     },
   },
   Country: {
-    regions: async (parent, args, {loaders}) => {
-      const {regionsOfCountry} = loaders
-      return regionsOfCountry.load(parent.id)
+    regions: async (parent, args, {services}) => {
+      return services.region.findRegions({country: parent.id})
     },
   },
 }
 
 export interface CountryLoaders {
-  countries: LoaderFn<CountryDocument>
-  regionsOfCountry: LoaderFn<RegionDocument[]>
+  // countries: LoaderFn<CountryDocument>
+  // regionsOfCountry: LoaderFn<RegionDocument[]>
 }
 
 export const loaders: CountryLoaders = {
-  countries: async (ids, models, user) => {
-    const {Country} = models
-    const countries = await Country.findByUser(user, {_id: ids})
-    return ids
-      .map(id => {
-        const country = countries.find(country => country._id.toString() === id.toString())
-        if (!country) return null
-        return country
-      })
-      .filter(Boolean)
-  },
-  regionsOfCountry: async (ids, models, user) => {
-    const {Region} = models
-    const regions = await Region.findByUser(user, {country: ids})
-    return ids.map(id => {
-      return regions.filter(region => region.country && region.country.toString() === id)
-    })
-  },
+  // countries: async (ids, models, user) => {
+  //   const {Country} = models
+  //   const countries = await Country.findByUser(user, {_id: ids})
+  //   return ids
+  //     .map(id => {
+  //       const country = countries.find(country => country._id.toString() === id.toString())
+  //       if (!country) return null
+  //       return country
+  //     })
+  //     .filter(Boolean)
+  // },
+  // regionsOfCountry: async (ids, models, user) => {
+  //   const {Region} = models
+  //   const regions = await Region.findByUser(user, {country: ids})
+  //   return ids.map(id => {
+  //     return regions.filter(region => region.country && region.country.toString() === id)
+  //   })
+  // },
 }
 
 export const schema = {typeDefs, resolvers}

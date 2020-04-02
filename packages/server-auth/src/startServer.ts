@@ -8,7 +8,7 @@ import express from 'express'
 const app = express()
 
 import {schemas, loaders as loadersObject, Loaders} from './schema'
-import {createMongoConnection, models, seedDatabase, services} from '@luminate/mongo'
+import {createMongoConnection, models, seedDatabase, AccountService, RoleService, UserService} from '@luminate/mongo'
 import DataLoader from 'dataloader'
 import {LoaderContext, parseUserFromRequest, parseToken, Token, ContextBuilder} from '@luminate/graphql-utils'
 
@@ -21,9 +21,9 @@ export interface Context {
   loaders: LoaderContext<Loaders>
   user: Token | null
   services: {
-    account: services.AccountService
-    role: services.RoleService
-    user: services.UserService
+    account: AccountService
+    role: RoleService
+    user: UserService
   }
 }
 
@@ -35,19 +35,14 @@ const startServer = async () => {
     schema: buildFederatedSchema(schemas),
     context: ({req, res}): Context => {
       const contextBuilder = new ContextBuilder(req)
-      const {services} = contextBuilder
+      const {services, loaders} = contextBuilder
+        .withDataLoader(loadersObject)
         .withAccount()
         .withRole()
         .withUser()
         .build()
+
       const user = parseUserFromRequest(req)
-      const loaders = Object.keys(loadersObject).reduce((acc, loaderName) => {
-        return {
-          ...acc,
-          //@ts-ignore
-          [loaderName]: new DataLoader(ids => loadersObject[loaderName](ids, models, user)),
-        }
-      }, Object.assign(Object.keys(loadersObject)))
 
       return {
         req,

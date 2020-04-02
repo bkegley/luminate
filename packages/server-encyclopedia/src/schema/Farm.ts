@@ -1,7 +1,5 @@
-import {gql, ApolloError} from 'apollo-server-express'
-import {createConnectionResults, LoaderFn} from '@luminate/graphql-utils'
+import {gql} from 'apollo-server-express'
 import {Resolvers} from '../types'
-import {FarmDocument} from '@luminate/mongo'
 
 const typeDefs = gql`
   type Farm {
@@ -66,91 +64,61 @@ const typeDefs = gql`
 
 const resolvers: Resolvers = {
   Query: {
-    listFarms: async (parent, args, {models, user}) => {
-      const {Farm} = models
-      const results = await createConnectionResults({user, args, model: Farm})
-      return results
+    listFarms: async (parent, args, {services}) => {
+      return services.farm.getConnectionResults(args)
     },
-    getFarm: async (parent, {id}, {loaders}, info) => {
-      const {farms} = loaders
-      return farms.load(id)
+    getFarm: async (parent, {id}, {services}, info) => {
+      return services.farm.getById(id)
     },
   },
   Mutation: {
-    createFarm: async (parent, {input}, {models, user}) => {
-      const {Farm} = models
-      const farm = await Farm.createByUser(user, input)
-      return farm
+    createFarm: async (parent, {input}, {services}) => {
+      return services.farm.create(input)
     },
-    updateFarm: async (parent, {id, input}, {models, user}) => {
-      const {Farm} = models
-      const farm = await Farm.findByIdAndUpdateByUser(user, id, input, {new: true})
-      return farm
+    updateFarm: async (parent, {id, input}, {services}) => {
+      return services.farm.updateById(id, input)
     },
-    deleteFarm: async (parent, {id}, {models, user}) => {
-      const {Farm} = models
-      const farm = await Farm.findByIdAndDeleteByUser(user, id, {})
-      if (!farm) {
-        throw new ApolloError('Document not found')
-      }
-      return farm
+    deleteFarm: async (parent, {id}, {services}) => {
+      return services.farm.deleteById(id)
     },
-    createFarmZone: async (parent, {farmId, input}, {user, models}) => {
-      const {Farm} = models
-      const farm = await Farm.findByIdAndUpdateByUser(user, farmId, {$push: {farmZones: input}}, {new: true})
-      return farm
+    createFarmZone: async (parent, {farmId, input}, {services}) => {
+      return services.farm.createFarmZone(farmId, input)
     },
-    updateFarmZone: async (parent, {id, input}, {user, models}) => {
-      const {Farm} = models
-      const farm = await Farm.findOneAndUpdateByUser(
-        user,
-        {'farmZones._id': id},
-        {$set: {'farmZones.$': {_id: id, ...input}}},
-        {new: true},
-      )
-      return farm
+    updateFarmZone: async (parent, {id, input}, {services}) => {
+      return services.farm.updateFarmZoneById(id, input)
     },
-    deleteFarmZone: async (parent, {id}, {user, models}) => {
-      const {Farm} = models
-      const farm = await Farm.findOneAndUpdateByUser(
-        user,
-        {'farmZones._id': id},
-        {$pull: {farmZones: {_id: id}}},
-        {new: true},
-      )
-      return farm
+    deleteFarmZone: async (parent, {id}, {services}) => {
+      return services.farm.deleteFarmZoneById(id)
     },
   },
   Farm: {
-    country: async (parent, args, {loaders}) => {
-      const {countries} = loaders
+    country: async (parent, args, {services}) => {
       if (!parent.country) return null
-      return countries.load(parent.country)
+      return services.country.getById(parent.country)
     },
-    region: async (parent, args, {loaders}) => {
-      const {regions} = loaders
+    region: async (parent, args, {services}) => {
       if (!parent.region) return null
-      return regions.load(parent.region)
+      return services.region.getById(parent.region)
     },
   },
 }
 
 export interface FarmLoaders {
-  farms: LoaderFn<FarmDocument>
+  // farms: LoaderFn<FarmDocument>
 }
 
 export const loaders: FarmLoaders = {
-  farms: async (ids, models, user) => {
-    const {Farm} = models
-    const farms = await Farm.findByUser(user, {_id: ids})
-    return ids
-      .map(id => {
-        const farm = farms.find((farm: any) => farm._id.toString() === id.toString())
-        if (!farm) return null
-        return farm
-      })
-      .filter(Boolean)
-  },
+  // farms: async (ids, models, user) => {
+  //   const {Farm} = models
+  //   const farms = await Farm.findByUser(user, {_id: ids})
+  //   return ids
+  //     .map(id => {
+  //       const farm = farms.find((farm: any) => farm._id.toString() === id.toString())
+  //       if (!farm) return null
+  //       return farm
+  //     })
+  //     .filter(Boolean)
+  // },
 }
 
 export const schema = {typeDefs, resolvers}

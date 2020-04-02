@@ -1,5 +1,4 @@
 import {CuppingSessionModel, CuppingSessionDocument} from '../models/CuppingSession'
-import {IListDocumentsArgs} from '../abstract/types'
 import {AuthenticatedService} from '../abstract/AuthenticatedService'
 
 export class CuppingSessionService extends AuthenticatedService<CuppingSessionDocument> {
@@ -7,24 +6,8 @@ export class CuppingSessionService extends AuthenticatedService<CuppingSessionDo
     super(CuppingSessionModel)
   }
 
-  public getCuppingSessionById(id: string) {
-    return this.getById(id)
-  }
-
-  public listCuppingSessions(args: IListDocumentsArgs) {
-    return this.getConnectionResults(args)
-  }
-
-  public createCuppingSession(input: any) {
-    return this.create(input)
-  }
-
-  public updateCuppingSessionById(id: string, input: any) {
-    return this.updateById(id, input)
-  }
-
-  public deleteCuppingSessionById(id: string) {
-    return this.delete(id)
+  public findCuppingSessions(conditions: any) {
+    return this.model.find(conditions)
   }
 
   public createScoreSheet({sessionCoffeeId, input}: {sessionCoffeeId: string; input: any}) {

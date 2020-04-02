@@ -4,9 +4,6 @@ export * from './models'
 
 export {createMongoConnection, seedDatabase}
 
-export * from './services/CuppingSessionService'
-
-import * as services from './services'
-export {services}
+export * from './services'
 
 export * from './abstract/types'

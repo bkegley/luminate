@@ -68,11 +68,11 @@ export class AuthenticatedService<T extends BaseDocument> extends BaseService<T>
     return super.buildConnectionQuery({...args, ...this.getReadConditionsForUser()})
   }
 
-  protected getById(id: string) {
+  public getById(id: string) {
     return this.model.findOne({_id: id, ...this.getReadConditionsForUser()})
   }
 
-  protected async create(input: any) {
+  public async create(input: any) {
     const defaults = {
       createdByUser: this.user?.jti,
       createdByAccount: this.user?.account?.id,
@@ -83,16 +83,16 @@ export class AuthenticatedService<T extends BaseDocument> extends BaseService<T>
     return super.create({...defaults, ...input})
   }
 
-  protected updateOne(conditions: any, input: any, options?: mongoose.QueryFindOneAndUpdateOptions) {
+  public updateOne(conditions: any, input: any, options?: mongoose.QueryFindOneAndUpdateOptions) {
     return super.updateOne({...conditions, ...this.getReadConditionsForUser()}, input, options)
   }
 
-  protected updateById(id: string, input: any, options?: mongoose.QueryFindOneAndUpdateOptions) {
+  public updateById(id: string, input: any, options?: mongoose.QueryFindOneAndUpdateOptions) {
     return this.updateOne({_id: id}, input, options)
   }
 
   // TODO: delete should remove user's account permissions from the entity instead of deleting
-  protected delete(id: string) {
+  public deleteById(id: string) {
     return this.model.findOneAndDelete({_id: id, ...this.getWriteConditionsForUser()})
   }
 }
