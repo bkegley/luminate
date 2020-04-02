@@ -1,5 +1,4 @@
 import {FarmModel, FarmDocument} from '../models/Farm'
-import {IListDocumentsArgs} from '../abstract/types'
 import {AuthenticatedService} from '../abstract/AuthenticatedService'
 
 export class FarmService extends AuthenticatedService<FarmDocument> {
@@ -7,17 +6,19 @@ export class FarmService extends AuthenticatedService<FarmDocument> {
     super(FarmModel)
   }
 
-  // public find(conditions) {
-  //   return
-  // }
+  public findFarms(conditions: any) {
+    return this.model.find(conditions)
+  }
 
-  // public findOne(conditions) {}
+  public createFarmZone(farmId: string, input: any) {
+    return this.updateById(farmId, {$push: {farmZones: input}})
+  }
 
-  // public findById(id) {}
+  public updateFarmZoneById(id: string, input: any) {
+    return this.updateOne({'farmZones._id': id}, {$set: {'farmZones.$': {_id: id, ...input}}})
+  }
 
-  // public getConnection() {}
-
-  public listFarms(args: IListDocumentsArgs) {
-    return this.getConnectionResults(args)
+  public deleteFarmZoneById(id: string) {
+    return this.updateOne({'farmZones._id': id}, {$pull: {farmZones: {_id: id}}})
   }
 }

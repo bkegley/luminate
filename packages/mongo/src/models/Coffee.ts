@@ -5,13 +5,13 @@ import {BaseAuthenticatedSchema} from '../abstract/schemas'
 
 export interface CoffeeDocument extends AuthenticatedDocument {
   name: string
-  country?: mongoose.Types.ObjectId
-  region?: mongoose.Types.ObjectId
-  farm?: mongoose.Types.ObjectId
-  farmZone?: mongoose.Types.ObjectId
-  varieties?: Array<mongoose.Types.ObjectId>
+  country?: string
+  region?: string
+  farm?: string
+  farmZone?: string
+  varieties?: string[]
   elevation: string
-  components: Array<{coffee: mongoose.Types.ObjectId; percentage: number}>
+  components: Array<{coffee: string; percentage: number}>
 }
 
 const Coffee = extendSchema(

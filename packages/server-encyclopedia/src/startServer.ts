@@ -9,8 +9,16 @@ const app = express()
 
 import {schemas, loaders as loadersObject, Loaders} from './schema'
 import {createMongoConnection, models} from '@luminate/mongo'
-import DataLoader from 'dataloader'
-import {LoaderContext, parseUserFromRequest, Token} from '@luminate/graphql-utils'
+import {LoaderContext, parseUserFromRequest, Token, ContextBuilder} from '@luminate/graphql-utils'
+import {
+  CoffeeService,
+  CountryService,
+  DeviceService,
+  FarmService,
+  NoteService,
+  RegionService,
+  VarietyService,
+} from '@luminate/mongo'
 
 const PORT = process.env.PORT || 3002
 
@@ -20,6 +28,15 @@ export interface Context {
   models: typeof models
   loaders: LoaderContext<Loaders>
   user: Token | null
+  services: {
+    coffee: CoffeeService
+    country: CountryService
+    device: DeviceService
+    farm: FarmService
+    note: NoteService
+    region: RegionService
+    variety: VarietyService
+  }
 }
 
 const startServer = async () => {
@@ -28,24 +45,24 @@ const startServer = async () => {
   const server = new ApolloServer({
     schema: buildFederatedSchema(schemas),
     context: ({req, res}) => {
-      const user = parseUserFromRequest(req)
-      const loaders: Loaders = Object.keys(loadersObject).reduce((acc, loaderName) => {
-        return {
-          ...acc,
-          //@ts-ignore
-          [loaderName]: new DataLoader(ids => loadersObject[loaderName](ids, models, user)),
-        }
-      }, Object.assign(Object.keys(loadersObject)))
+      const contextBuilder = new ContextBuilder(req)
+      const {services, loaders} = contextBuilder
+        .withDataLoader(loadersObject)
+        .withCoffee()
+        .withCountry()
+        .withFarm()
+        .withNote()
+        .withRegion()
+        .withVariety()
+        .build()
 
-      const {Region} = models
+      const user = parseUserFromRequest(req)
 
       return {
         req,
         res,
-        models: {
-          ...models,
-          Region: Region.loadUser(user),
-        },
+        models,
+        services,
         loaders,
         user,
       }

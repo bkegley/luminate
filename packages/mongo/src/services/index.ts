@@ -1,4 +1,5 @@
 export * from './AccountService'
+export * from './CoffeeService'
 export * from './CountryService'
 export * from './CuppingSessionService'
 export * from './DeviceService'

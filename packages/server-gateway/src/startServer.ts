@@ -89,12 +89,12 @@ const startServer = async () => {
         // url: `http://server-auth${false ? buildHostname(DEPLOY_ENV) : ''}:${process.env.SERVER_AUTH_PORT ||
         //   3001}/graphql`,
       },
-      // {
-      //   name: 'encyclopedia',
-      //   url: 'http://localhost:3002/graphql',
-      //   // url: `http://server-encyclopedia${false ? buildHostname(DEPLOY_ENV) : ''}:${process.env
-      //   //   .SERVER_ENCYCLOPEDIA_PORT || 3002}/graphql`,
-      // },
+      {
+        name: 'encyclopedia',
+        url: 'http://localhost:3002/graphql',
+        //   // url: `http://server-encyclopedia${false ? buildHostname(DEPLOY_ENV) : ''}:${process.env
+        //   //   .SERVER_ENCYCLOPEDIA_PORT || 3002}/graphql`,
+      },
       {
         name: 'sensory-eval',
         url: 'http://localhost:3003/graphql',

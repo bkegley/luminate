@@ -5,7 +5,7 @@ import {AuthenticatedDocument} from '../abstract/documents'
 
 export interface RegionDocument extends AuthenticatedDocument {
   name: string
-  country?: mongoose.Types.ObjectId
+  country?: string
 }
 
 const Region = extendSchema(

@@ -1,10 +1,8 @@
-// @ts-nocheck
-import {gql, ApolloError} from 'apollo-server-express'
-import {createConnectionResults, createToken, parseToken, LoaderFn} from '@luminate/graphql-utils'
+import {gql} from 'apollo-server-express'
 import {Resolvers} from '../types'
-import {AccountDocument, UserDocument} from '@luminate/mongo'
-
-const USER_AUTH_TOKEN = process.env.USER_AUTH_TOKEN || 'localsecrettoken'
+import {AccountDocument} from '@luminate/mongo'
+import {LoaderFn} from '@luminate/graphql-utils'
+import {AccountService} from '@luminate/mongo/src/services'
 
 const typeDefs = gql`
   type Account {
@@ -45,138 +43,46 @@ const typeDefs = gql`
     updateAccount(id: ID!, input: UpdateAccountInput!): Account
     deleteAccount(id: ID!): Account
     addUserToAccount(accountId: ID!, userId: ID!): Boolean
-    switchAccount(accountId: ID!): Boolean
   }
 `
 
 const resolvers: Resolvers = {
   Query: {
     listAccounts: async (parent, args, {models, user, services}) => {
-      return services.account.listAccounts(args)
+      return services.account.getConnectionResults(args)
     },
-    getAccount: async (parent, {id}, {loaders}, info) => {
-      const {accounts} = loaders
-      return accounts.load(id)
+    getAccount: async (parent, {id}, {services}, info) => {
+      return services.account.getById(id)
     },
   },
   Mutation: {
-    createAccount: async (parent, {input}, {models}) => {
-      const {Account, User, Role} = models
-      const {name, username, password} = input
-      const account = await Account.create({name, type: ['account']})
-
-      const ownerRole = await Role.findOne({name: 'Owner'})
-
-      if (!ownerRole) {
-        await Account.findByIdAndDelete(account._id)
-        return null
-      }
-
-      const user = await User.create({
-        username,
-        password,
-        roles: [
-          {
-            account: account._id,
-            roles: [ownerRole?._id].filter(Boolean),
-          },
-        ],
-        accounts: [account._id],
-        readAccess: [account._id],
-        writeAccess: [account._id],
-        adminAccess: [account._id],
-        type: ['user'],
-      }).catch(async () => {
-        await Account.findByIdAndDelete(account._id)
-        return null
-      })
-
-      if (!user) {
-        return null
-      }
-
-      return account
+    createAccount: async (parent, {input}, {services}) => {
+      return services.account.create(input)
     },
-    updateAccount: async (parent, {id, input}, {models, user}) => {
-      const {Account} = models
-      const account = await Account.findByIdAndUpdateByUser(user, id, input, {new: true})
-      return account
+    updateAccount: async (parent, {id, input}, {services}) => {
+      return services.account.updateById(id, input)
     },
-    deleteAccount: async (parent, {id}, {models, user}) => {
-      const {Account} = models
-      const account = await Account.findByIdAndDeleteByUser(user, id, {})
-      if (!account) {
-        throw new ApolloError('Document not found')
-      }
-      return account
+    deleteAccount: async (parent, {id}, {services}) => {
+      return services.account.deleteById(id)
     },
-    addUserToAccount: async (parent, {accountId, userId}, {models, user}) => {
-      // TODO: add adminAccess privies on user
-      const {User} = models
-      const updatedUser = await User.findOneAndUpdate(
-        {_id: userId, 'roles.account': {$ne: accountId}},
-        {
-          $addToSet: {accounts: accountId},
-          $push: {
-            roles: {account: accountId},
-          },
-        },
-        {new: true},
-      )
-      return !!updatedUser
-    },
-    switchAccount: async (parent, {accountId}, {models, user, res, req}) => {
-      if (!user) return false
-
-      const {User} = models
-
-      interface PopulatedUser extends Omit<UserDocument, 'accounts'> {
-        accounts: AccountDocument[] | undefined
-      }
-
-      const foundUser = ((await User.findById(user.jti).populate({
-        path: 'accounts',
-      })) as unknown) as PopulatedUser | null
-      if (!foundUser) return false
-
-      const newAccount = foundUser.accounts?.find(account => account._id.toString() === accountId.toString())
-
-      if (newAccount) {
-        const existingToken = parseToken(req.cookies.id, USER_AUTH_TOKEN)
-        const {account, iat, exp, ...remainingToken} = existingToken
-        const token = createToken(
-          res,
-          {...remainingToken, account: {id: newAccount._id, name: newAccount.name}},
-          USER_AUTH_TOKEN,
-        )
-
-        return !!token
-      }
-      return false
+    addUserToAccount: async (parent, {accountId, userId}, {services}) => {
+      return services.account.addUserToAccount(accountId, userId)
     },
   },
   Account: {
-    users: async (parent, args, {models, user}) => {
-      const {User} = models
-      const users = await User.find({accounts: parent.id})
-      return users
+    users: async (parent, args, {services}) => {
+      return services.user.findUsers({accounts: parent.id})
     },
   },
 }
 
 export interface AccountLoaders {
-  accounts: LoaderFn<AccountDocument>
+  accounts: LoaderFn<AccountDocument, {account: AccountService}>
 }
 
 export const loaders: AccountLoaders = {
-  accounts: async (ids, models, user) => {
-    const {Account} = models
-    const accounts = await Account.findByUser(user, {_id: ids})
-    return ids.map(id => {
-      const account = accounts.find(account => account._id.toString() === id.toString())
-      if (!account) return null
-      return account
-    })
+  accounts: (ids, services) => {
+    return services.account.findAccounts({_id: ids})
   },
 }
 

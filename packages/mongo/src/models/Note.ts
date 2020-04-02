@@ -4,7 +4,7 @@ import {AuthenticatedDocument} from '../abstract/documents'
 import {BaseAuthenticatedSchema} from '../abstract/schemas'
 
 export interface NoteDocument extends AuthenticatedDocument {
-  entityId: mongoose.Types.ObjectId
+  entityId: string
   content: string
   field: string
 }

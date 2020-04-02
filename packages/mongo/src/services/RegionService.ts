@@ -1,5 +1,4 @@
 import {RegionModel, RegionDocument} from '../models/Region'
-import {IListDocumentsArgs} from '../abstract/types'
 import {AuthenticatedService} from '../abstract/AuthenticatedService'
 
 export class RegionService extends AuthenticatedService<RegionDocument> {
@@ -7,17 +6,7 @@ export class RegionService extends AuthenticatedService<RegionDocument> {
     super(RegionModel)
   }
 
-  // public find(conditions) {
-  //   return
-  // }
-
-  // public findOne(conditions) {}
-
-  // public findById(id) {}
-
-  // public getConnection() {}
-
-  public listRegions(args: IListDocumentsArgs) {
-    return this.getConnectionResults(args)
+  public findRegions(conditions: any) {
+    return this.model.find(conditions)
   }
 }

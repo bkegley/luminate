@@ -1,22 +1,8 @@
-//@ts-nocheck
-import {gql, ApolloError} from 'apollo-server-express'
-import {
-  createConnectionResults,
-  LoaderFn,
-  createToken,
-  parseToken,
-  parseArgs,
-  parseCursorHash,
-  createCursorHash,
-  hasScopes,
-  removeToken,
-  Token,
-} from '@luminate/graphql-utils'
-import bcrypt from 'bcrypt'
+import {gql} from 'apollo-server-express'
+import {LoaderFn} from '@luminate/graphql-utils'
 import {Resolvers} from '../types'
-import {UserDocument, RoleDocument, AccountDocument} from '@luminate/mongo'
-
-const USER_AUTH_TOKEN = process.env.USER_AUTH_TOKEN || 'localsecrettoken'
+import {UserDocument} from '@luminate/mongo'
+import {UserService} from '@luminate/mongo/src/services'
 
 const typeDefs = gql`
   type User {
@@ -73,204 +59,103 @@ const typeDefs = gql`
     updateUser(id: ID!, input: UpdateUserInput!): User
     deleteUser(id: ID!): User
     updatePassword(id: ID!, input: UpdatePasswordInput!): Boolean!
-    updateUserRoles(userId: ID!, roles: [ID!]!): User
     login(username: String!, password: String!): Boolean
     logout: Boolean!
+    switchAccount(accountId: ID!): Boolean
     refreshToken: Boolean
   }
 `
 
 const resolvers: Resolvers = {
   Query: {
-    listUsers: async (parent, args, {models, user}) => {
-      const {User} = models
-      const results = await createConnectionResults({user, args, model: User})
-      return results
+    listUsers: async (parent, args, {services}) => {
+      return services.user.getConnectionResults(args)
     },
-    getUser: async (parent, {id}, {loaders}, info) => {
-      const {users} = loaders
-      return users.load(id)
+    getUser: async (parent, {id}, {services}, info) => {
+      return services.user.getById(id)
     },
-    me: async (parent, args, {user, models}) => {
-      if (!user) return null
-      const {User} = models
-      const hydratedUser = await User.findById(user.jti)
-      return hydratedUser
+    me: async (parent, args, {services}) => {
+      return services.user.getMe()
     },
   },
   Mutation: {
-    createUser: async (parent, {input}, {models, user}) => {
-      const {User} = models
-      const newUser = await User.createByUser(user, {...input, type: ['user']})
-      return newUser
+    createUser: async (parent, {input}, {services}) => {
+      return services.user.create(input)
     },
-    updateUser: async (parent, {id, input}, {models, user}) => {
-      if (!user || !hasScopes(user, ['admin:user'])) {
-        throw new Error('Not allowed')
-      }
-      const {User} = models
-      const {roles, ...remainingInput} = input
-
-      const data = Object.assign(remainingInput, roles ? {$set: {[`roles.$.roles`]: roles}} : null)
-
-      const updatedUser = await User.findOneAndUpdateByUser(user, {_id: id, 'roles.account': user.account?.id}, data, {
-        new: true,
+    updateUser: async (parent, {id, input}, {services}) => {
+      return services.user.updateById(id, input)
+    },
+    deleteUser: async (parent, {id}, {services}) => {
+      return services.user.deleteUserById(id)
+    },
+    updatePassword: async (parent, {id, input}, {services}) => {
+      return services.user.updatePassword(id, input)
+    },
+    login: async (parent, {username, password}, {services, res}) => {
+      const token = await services.user.createLoginToken({username, password})
+      if (!token) return false
+      res.cookie('id', token, {
+        httpOnly: false,
+        secure: process.env.NODE_ENV === 'production',
       })
-      return updatedUser
-    },
-    deleteUser: async (parent, {id}, {models}) => {
-      const {User} = models
-      const user = await User.findByIdAndDelete(id)
-      if (!user) {
-        throw new ApolloError('Document not found')
-      }
-      return user
-    },
-    updatePassword: async (parent, {id, input}, {models, user}) => {
-      const {User} = models
-      const foundUser = await User.findByIdByUser(user, id)
-
-      if (!foundUser || !foundUser.password) return false
-
-      const currentPasswordMatches = await bcrypt.compare(input.currentPassword, foundUser.password)
-
-      // if (currentPasswordMatches) {
-      //   // must save password this way in order to trigger pre-save hook for hashing
-      //   user.password = input.newPassword
-      //   user.save()
-      //   return true
-      // }
-
-      return false
-    },
-    updateUserRoles: async (parent, {userId, roles}, {models, user}) => {
-      const {User} = models
-
-      const updatedUser = await User.findByIdAndUpdateByUser(
-        user,
-        userId,
-        {$set: {'roles.$.roles': roles}},
-        {new: true},
-      )
-      return updatedUser
-    },
-    login: async (parent, {username, password}, {models, res}) => {
-      const {User} = models
-
-      interface PopulatedUser extends Omit<UserDocument, 'accounts' | 'roles'> {
-        accounts: AccountDocument[] | undefined
-        roles:
-          | Array<{
-              account: string
-              roles: RoleDocument[] | undefined
-            }>
-          | undefined
-      }
-
-      const user = ((await User.findOne({username})
-        .populate({path: 'accounts'})
-        .populate({
-          path: 'roles.roles',
-        })) as unknown) as PopulatedUser
-
-      if (!user) return false
-
-      const passwordMatches = await bcrypt.compare(password, user.password)
-
-      if (!passwordMatches) return false
-
-      const accounts = user.accounts?.map(account => ({id: account._id.toString() as string, name: account.name}))
-      const accountId = user.defaultAccount ? user.defaultAccount.toString() : accounts ? accounts[0].id : undefined
-
-      const account = accounts?.find(account => account.id === accountId)
-
-      const {roles: userDocRoles} = user
-      const accountRoles = (userDocRoles
-        ?.filter(role => account && role.account.toString() === account.id)
-        .map(role => role.roles)
-        .flat() as unknown) as RoleDocument[] | undefined
-
-      const roles = accountRoles?.map(role => ({id: role._id.toString() as string, name: role.name}))
-
-      const scopes =
-        accountRoles?.reduce((acc, role) => {
-          const scopes = role.scopes
-          const newScopes = scopes?.filter(scope => !acc.find(existingScope => existingScope === scope))
-          return acc.concat(newScopes || [])
-        }, [] as string[]) || []
-
-      const input = {
-        jti: user._id.toString() as string,
-        sub: user.username,
-        account: account
-          ? {
-              id: account.id,
-              name: account.name,
-            }
-          : undefined,
-        accounts,
-        roles,
-        scopes,
-      }
-
-      const token = createToken(res, input, USER_AUTH_TOKEN)
-
-      return !!token
-    },
-    logout: (parent, args, {res}) => {
-      removeToken(res)
       return true
     },
-    refreshToken: (parent, args, {res, user}) => {
-      if (!user) {
-        removeToken(res)
+    logout: (parent, args, {res}) => {
+      res.cookie('id', '', {
+        expires: new Date(0),
+      })
+      return true
+    },
+    refreshToken: (parent, args, {res, services}) => {
+      const token = services.user.refreshToken()
+      if (!token) {
+        res.cookie('id', '', {
+          expires: new Date(0),
+        })
         return false
       }
-      const {iat, exp, ...remainingToken} = user
-      try {
-        createToken(res, remainingToken, USER_AUTH_TOKEN)
-        return true
-      } catch {
-        removeToken(res)
-        return false
-      }
+
+      res.cookie('id', token, {
+        httpOnly: false,
+        secure: process.env.NODE_ENV === 'production',
+      })
+      return true
+    },
+
+    switchAccount: async (parent, {accountId}, {res, services}) => {
+      const token = await services.user.switchAccount(accountId)
+      if (!token) return false
+      res.cookie('id', token, {
+        httpOnly: false,
+        secure: process.env.NODE_ENV === 'production',
+      })
+      return true
     },
   },
+  // @ts-ignore
   User: {
-    account: (parent, args, {user, loaders}) => {
-      if (!user || !user.account) return null
-      const {accounts} = loaders
-      return accounts.load(user.account.id)
+    account: (parent, args, {services, loaders}) => {
+      return services.account.getCurrentAccount()
     },
-    accounts: async (parent, args, {loaders, user}) => {
-      if (!user || !user.accounts) return []
-      const {accounts} = loaders
-      return await (await Promise.all(user.accounts.map(account => accounts.load(account.id)))).filter(Boolean)
+    accounts: async (parent, args, {services}) => {
+      return services.account.listUserAccounts()
     },
-    roles: async (parent, args, {loaders, user}) => {
-      if (!user || !user.roles) return []
-      const {roles} = loaders
-      return (await Promise.all(user.roles.map(role => roles.load(role.id)))).filter(Boolean)
+    roles: async (parent, args, {services}) => {
+      return services.role.listCurrentRoles()
     },
-    scopes: async (parent, args, {user}) => {
-      return user?.scopes || []
+    scopes: async (parent, args, {services}) => {
+      return services.role.listCurrentScopes()
     },
   },
 }
 
 export interface UserLoaders {
-  users: LoaderFn<UserDocument>
+  users: LoaderFn<UserDocument, {user: UserService}>
 }
 
 export const loaders: UserLoaders = {
-  users: async (ids, models, user) => {
-    const {User} = models
-    const users = await User.findByUser(user, {_id: ids})
-    return ids.map(id => {
-      const user = users.find(user => user._id.toString() === id.toString())
-      if (!user) return null
-      return user
-    })
+  users: (ids, services) => {
+    return services.user.findUsers({_id: ids})
   },
 }
 

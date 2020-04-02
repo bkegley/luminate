@@ -5,8 +5,8 @@ import {BaseAuthenticatedSchema} from '../abstract/schemas'
 
 export interface FarmDocument extends AuthenticatedDocument {
   name: string
-  country?: mongoose.Types.ObjectId
-  region?: mongoose.Types.ObjectId
+  country?: string
+  region?: string
 }
 
 const FarmZone = new mongoose.Schema({

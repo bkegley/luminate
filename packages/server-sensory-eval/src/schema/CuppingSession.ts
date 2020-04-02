@@ -65,23 +65,23 @@ const typeDefs = gql`
 const resolvers: Resolvers = {
   Query: {
     listCuppingSessions: async (parent, args, {services}) => {
-      return services.cuppingSession.listCuppingSessions(args)
+      return services.cuppingSession.getConnectionResults(args)
     },
     getCuppingSession: async (parent, {id}, {services}, info) => {
-      return services.cuppingSession.getCuppingSessionById(id)
+      return services.cuppingSession.getById(id)
       // const {cuppingSessions} = loaders
       // return cuppingSessions.load(id)
     },
   },
   Mutation: {
     createCuppingSession: async (parent, {input}, {services}) => {
-      return services.cuppingSession.createCuppingSession(input)
+      return services.cuppingSession.create(input)
     },
     updateCuppingSession: async (parent, {id, input}, {services}) => {
-      return services.cuppingSession.updateCuppingSessionById(id, input)
+      return services.cuppingSession.updateById(id, input)
     },
     deleteCuppingSession: async (parent, {id}, {services}) => {
-      return services.cuppingSession.deleteCuppingSessionById(id)
+      return services.cuppingSession.deleteById(id)
     },
   },
   SessionCoffee: {

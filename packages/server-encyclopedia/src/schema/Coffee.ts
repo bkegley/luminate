@@ -1,8 +1,7 @@
-import mongoose from 'mongoose'
-import {gql, ApolloError, ForbiddenError} from 'apollo-server-express'
-import {createConnectionResults, LoaderFn, hasScopes} from '@luminate/graphql-utils'
+import {gql} from 'apollo-server-express'
+import {LoaderFn} from '@luminate/graphql-utils'
 import {Resolvers} from '../types'
-import {CoffeeDocument, VarietyDocument} from '@luminate/mongo'
+import {CoffeeDocument} from '@luminate/mongo'
 
 const typeDefs = gql`
   type Coffee @key(fields: "id") {
@@ -85,95 +84,90 @@ const typeDefs = gql`
 
 const resolvers: Resolvers = {
   Query: {
-    listCoffees: async (parent, args, {models, user}) => {
-      const isAuthorized = hasScopes(user, ['read:coffee'])
-      if (!isAuthorized) throw new Error('Not authorized!')
-      const {Coffee} = models
-      const results = await createConnectionResults({user, args, model: Coffee})
-      return results
+    listCoffees: async (parent, args, {services}) => {
+      return services.coffee.getConnectionResults(args)
     },
-    getCoffee: async (parent, {id}, {loaders}, info) => {
-      const {coffees} = loaders
-      return coffees.load(id)
+    getCoffee: async (parent, {id}, {services}) => {
+      return services.coffee.getById(id)
     },
   },
   Mutation: {
-    createCoffee: async (parent, {input}, {models, user}) => {
-      const {Coffee} = models
-      const coffee = await Coffee.createByUser(user, input)
-      return coffee
+    createCoffee: async (parent, {input}, {services}) => {
+      return services.coffee.create(input)
     },
-    updateCoffee: async (parent, {id, input}, {models, user}) => {
-      const {Coffee} = models
-      const coffee = await Coffee.findByIdAndUpdateByUser(user, id, input, {new: true})
-      if (!coffee) {
-        throw new ForbiddenError('Not authorized!')
-      }
-      return coffee
+    updateCoffee: async (parent, {id, input}, {services}) => {
+      return services.coffee.updateById(id, input)
     },
-    deleteCoffee: async (parent, {id}, {models, user}) => {
-      const {Coffee} = models
-      const coffee = await Coffee.findByIdAndDeleteByUser(user, id, {})
-      if (!coffee) {
-        throw new ApolloError('Document not found')
-      }
-      return coffee
+    deleteCoffee: async (parent, {id}, {services}) => {
+      return services.coffee.deleteById(id)
     },
     updateCoffeePermissionsForAccount: async (parent, {coffeeId, accountId, permissionTypes}, {models, user}) => {
-      const {Coffee} = models
-      const coffee = await Coffee.updateEntityPermissionsForAccountByUser(user, coffeeId, accountId, permissionTypes)
-      return !!coffee
+      // TODO: fix this
+      return false
+      // const {Coffee} = models
+      // const coffee = await Coffee.updateEntityPermissionsForAccountByUser(user, coffeeId, accountId, permissionTypes)
+      // return !!coffee
     },
   },
   Coffee: {
-    __resolveReference: (object, {loaders}) => {
-      const {coffees} = loaders
-      return coffees.load(object.id)
+    __resolveReference: async (object, {services}) => {
+      return services.coffee.getById(object.id)
+      // const {coffees} = loaders
+      // return coffees.load(object.id)
     },
-    country: async (parent, args, {loaders, user}) => {
-      const {countries} = loaders
+    country: async (parent, args, {services}) => {
       if (!parent.country) return null
-      return countries.load(parent.country)
+      return services.country.getById(parent.country)
+      // return countries.load(parent.country)
     },
-    notes: async (parent, {fields}, {loaders}) => {
-      const {notesOfEntity} = loaders
-      const notes = await notesOfEntity.load(parent._id)
+    notes: async (parent, {fields}, {services}) => {
+      const notes = await services.note.findNotes({entityId: parent.id})
       return fields ? notes.filter(note => fields.includes(note.field)) : notes
+      // const {notesOfEntity} = loaders
+      // const notes = await notesOfEntity.load(parent._id)
+      // return fields ? notes.filter(note => fields.includes(note.field)) : notes
     },
-    region: async (parent, args, {loaders}) => {
-      const {regions} = loaders
+    region: async (parent, args, {services}) => {
       if (!parent.region) return null
-      return regions.load(parent.region)
+      return services.region.getById(parent.region)
+      // const {regions} = loaders
+      // return regions.load(parent.region)
     },
-    varieties: async (parent, args, {models, loaders}) => {
-      const {varieties} = loaders
+    varieties: async (parent, args, {services}) => {
       if (!parent.varieties) return []
-      return (await Promise.all(parent.varieties.map(id => varieties.load(id)))).filter(Boolean)
+      return services.variety.findVarieties({_id: parent.varieties})
+      // const {varieties} = loaders
+      // return (await Promise.all(parent.varieties.map(id => varieties.load(id)))).filter(Boolean)
     },
   },
   CoffeeComponent: {
-    coffee: async (parent, args, {loaders}) => {
-      const {coffees} = loaders
-      const coffee = coffees.load((parent.coffee as unknown) as string)
-      return coffee
+    coffee: async (parent, args, {services}) => {
+      const summaryCoffee = await services.coffee.getById(parent.coffee.id)
+      return {
+        ...parent.coffee,
+        coffee: summaryCoffee,
+      }
+      // const {coffees} = loaders
+      // const coffee = coffees.load((parent.coffee as unknown) as string)
+      // return coffee
     },
   },
 }
 
 export interface CoffeeLoaders {
-  coffees: LoaderFn<CoffeeDocument>
+  // coffees: LoaderFn<CoffeeDocument>
 }
 
 export const loaders: CoffeeLoaders = {
-  coffees: async (ids, models, user) => {
-    const {Coffee} = models
-    const coffees = await Coffee.findByUser(user, {_id: ids})
-    return ids.map(id => {
-      const coffee = coffees.find(coffee => coffee._id.toString() === id.toString())
-      if (!coffee) return null
-      return coffee
-    })
-  },
+  // coffees: async (ids, models, user) => {
+  //   const {Coffee} = models
+  //   const coffees = await Coffee.findByUser(user, {_id: ids})
+  //   return ids.map(id => {
+  //     const coffee = coffees.find(coffee => coffee._id.toString() === id.toString())
+  //     if (!coffee) return null
+  //     return coffee
+  //   })
+  // },
 }
 
 export const schema = {typeDefs, resolvers}

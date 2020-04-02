@@ -1,20 +1,13 @@
-import {BatchLoadFn, default as Dataloader} from 'dataloader'
-import mongoose from 'mongoose'
-import {models as dbModels} from '@luminate/mongo'
-import {Token} from './auth'
+import {BatchLoadFn, default as DataLoader} from 'dataloader'
 
 export * from './ContextBuilder'
 
-export type LoaderFn<T> = (
-  ids: string[],
-  models: typeof dbModels,
-  user: Token | null,
-) => ReturnType<BatchLoadFn<string, T | null | undefined>>
+export type LoaderFn<T, V> = (ids: string[], services: V) => ReturnType<BatchLoadFn<string, T | null | undefined>>
 
-type ExtractGraphQLType<L> = L extends LoaderFn<infer T> ? T : never
+type ExtractGraphQLType<L> = L extends LoaderFn<infer T, any> ? T : never
 
 export type LoaderContext<L> = {
-  [K in keyof L]: Dataloader<string | mongoose.Types.ObjectId, ExtractGraphQLType<L[K]>>
+  [K in keyof L]: DataLoader<string, ExtractGraphQLType<L[K]>>
 }
 
 export {createCursorHash, parseCursorHash} from './cursor'
