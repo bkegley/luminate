@@ -26,7 +26,6 @@ Run the following commands in this order.
 
 - `yarn`
 - `yarn build:utils`
-- `yarn workspace @luminate/graphql-utils run generate-tokens`
 
   ### In 1 terminal
 

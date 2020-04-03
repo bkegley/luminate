@@ -5,7 +5,7 @@ require('dotenv').config({
 import {ApolloServer, CorsOptions} from 'apollo-server-express'
 import {ApolloGateway, RemoteGraphQLDataSource} from '@apollo/gateway'
 import {createMongoConnection} from '@luminate/mongo'
-import {parseToken, Token} from '@luminate/graphql-utils'
+import {parseTokenFromRequest, Token} from '@luminate/graphql-utils'
 import cookieParser from 'cookie-parser'
 import express from 'express'
 const app = express()
@@ -113,11 +113,10 @@ const startServer = async () => {
     context: async ({req, res}) => {
       let user = null
       try {
-        user = parseToken(req.cookies?.id, USER_AUTH_TOKEN)
+        user = parseTokenFromRequest(req, USER_AUTH_TOKEN)
       } catch {}
 
       return {
-        req,
         res,
         user,
       }

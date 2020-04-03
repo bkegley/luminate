@@ -14,10 +14,9 @@ import {
   Token,
 } from '@luminate/mongo'
 import {parseUserFromRequest} from './auth'
-import DataLoader from 'dataloader'
 
 export class ContextBuilder {
-  private context: any = {services: {}, loaders: {}}
+  private context: any = {services: {}, user: null}
 
   private user: Token | null = null
 
@@ -26,22 +25,7 @@ export class ContextBuilder {
   }
 
   public build() {
-    if (this.loaders !== null) {
-      this.context.loaders = Object.keys(this.loaders).reduce((acc, loaderName) => {
-        return {
-          ...acc,
-          [loaderName]: new DataLoader(ids => this.loaders[loaderName](ids, this.context.services)),
-        }
-      }, Object.assign(Object.keys(this.loaders)))
-    }
     return this.context
-  }
-
-  private loaders: any = null
-
-  public withDataLoader(loaders: any) {
-    this.loaders = loaders
-    return this
   }
 
   public withAccount() {

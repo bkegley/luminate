@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import {ScopeOperations, ScopeResources} from './scopeEnums'
+import {ScopeOperations, ScopeResources} from '../abstract/scopeEnums'
 
 const scopes = Object.keys(ScopeOperations).reduce((acc, operationKey) => {
   return Object.assign(
@@ -14,4 +14,4 @@ const scopes = Object.keys(ScopeOperations).reduce((acc, operationKey) => {
   )
 }, {})
 
-fs.writeFileSync(path.join(__dirname, 'scopes.ts'), `export const scopes = ${JSON.stringify(scopes)}`)
+fs.writeFileSync(path.join(__dirname, '../scopes.ts'), `export const scopes = ${JSON.stringify(scopes)}`)

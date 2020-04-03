@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-import extendSchema from '../extendSchema'
+import extendSchema from '../utils/extendSchema'
 import bcrypt from 'bcrypt'
 const saltRounds = 10
 import {AuthenticatedDocument} from '../abstract/documents'

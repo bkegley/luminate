@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-import extendSchema from '../extendSchema'
+import extendSchema from '../utils/extendSchema'
 import {AuthenticatedDocument} from '../abstract/documents'
 import {BaseAuthenticatedSchema} from '../abstract/schemas'
 
