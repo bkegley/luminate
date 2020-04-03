@@ -1,10 +1,22 @@
 import {FarmModel, FarmDocument} from '../models/Farm'
 import {AuthenticatedService} from '../abstract/AuthenticatedService'
+import DataLoader from 'dataloader'
+
+interface Loaders {
+  byFarmId?: DataLoader<string, FarmDocument | null>
+}
 
 export class FarmService extends AuthenticatedService<FarmDocument> {
   constructor() {
     super(FarmModel)
+
+    this.loaders.byFarmId = new DataLoader<string, FarmDocument | null>(async ids => {
+      const farms = await this.model.find({_id: ids, ...this.getReadConditionsForUser()})
+      return ids.map(id => farms.find(farm => farm._id.toString() === id.toString()) || null)
+    })
   }
+
+  private loaders: Loaders = {}
 
   public findFarms(conditions: any) {
     return this.model.find(conditions)

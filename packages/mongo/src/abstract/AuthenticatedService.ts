@@ -68,8 +68,9 @@ export class AuthenticatedService<T extends BaseDocument> extends BaseService<T>
     return super.buildConnectionQuery({...args, ...this.getReadConditionsForUser()})
   }
 
-  public getById(id: string) {
-    return this.model.findOne({_id: id, ...this.getReadConditionsForUser()})
+  public async getById(id: string) {
+    const document = await this.model.findOne({_id: id, ...this.getReadConditionsForUser()})
+    return document
   }
 
   public async create(input: any) {

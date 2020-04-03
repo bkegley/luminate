@@ -2,10 +2,26 @@ import {AccountModel, AccountDocument} from '../models/Account'
 import {AuthenticatedService} from '../abstract/AuthenticatedService'
 import {RoleModel} from '../models/Role'
 import {UserModel} from '../models/Person'
+import DataLoader from 'dataloader'
+
+interface Loaders {
+  byAccountId?: DataLoader<string, AccountDocument | null>
+}
 
 export class AccountService extends AuthenticatedService<AccountDocument> {
   constructor() {
     super(AccountModel)
+
+    this.loaders.byAccountId = new DataLoader<string, AccountDocument | null>(async ids => {
+      const accounts = await this.model.find({_id: ids, ...this.getReadConditionsForUser()})
+      return ids.map(id => accounts.find(account => account._id.toString() === id.toString()) || null)
+    })
+  }
+
+  private loaders: Loaders = {}
+
+  public async getById(id: string) {
+    return this.loaders.byAccountId?.load(id) || null
   }
 
   protected getReadConditionsForUser(): any {

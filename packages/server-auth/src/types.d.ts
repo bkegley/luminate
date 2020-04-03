@@ -60,7 +60,6 @@ export type Mutation = {
   updateAccount?: Maybe<Account>
   deleteAccount?: Maybe<Account>
   addUserToAccount?: Maybe<Scalars['Boolean']>
-  switchAccount?: Maybe<Scalars['Boolean']>
   createRole?: Maybe<Role>
   updateRole?: Maybe<Role>
   deleteRole?: Maybe<Role>
@@ -68,9 +67,9 @@ export type Mutation = {
   updateUser?: Maybe<User>
   deleteUser?: Maybe<User>
   updatePassword: Scalars['Boolean']
-  updateUserRoles?: Maybe<User>
   login?: Maybe<Scalars['Boolean']>
   logout: Scalars['Boolean']
+  switchAccount?: Maybe<Scalars['Boolean']>
   refreshToken?: Maybe<Scalars['Boolean']>
 }
 
@@ -90,10 +89,6 @@ export type MutationDeleteAccountArgs = {
 export type MutationAddUserToAccountArgs = {
   accountId: Scalars['ID']
   userId: Scalars['ID']
-}
-
-export type MutationSwitchAccountArgs = {
-  accountId: Scalars['ID']
 }
 
 export type MutationCreateRoleArgs = {
@@ -127,14 +122,13 @@ export type MutationUpdatePasswordArgs = {
   input: UpdatePasswordInput
 }
 
-export type MutationUpdateUserRolesArgs = {
-  userId: Scalars['ID']
-  roles: Array<Scalars['ID']>
-}
-
 export type MutationLoginArgs = {
   username: Scalars['String']
   password: Scalars['String']
+}
+
+export type MutationSwitchAccountArgs = {
+  accountId: Scalars['ID']
 }
 
 export enum OperatorEnum {
@@ -540,12 +534,6 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationAddUserToAccountArgs, 'accountId' | 'userId'>
   >
-  switchAccount?: Resolver<
-    Maybe<ResolversTypes['Boolean']>,
-    ParentType,
-    ContextType,
-    RequireFields<MutationSwitchAccountArgs, 'accountId'>
-  >
   createRole?: Resolver<
     Maybe<ResolversTypes['Role']>,
     ParentType,
@@ -588,12 +576,6 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationUpdatePasswordArgs, 'id' | 'input'>
   >
-  updateUserRoles?: Resolver<
-    Maybe<ResolversTypes['User']>,
-    ParentType,
-    ContextType,
-    RequireFields<MutationUpdateUserRolesArgs, 'userId' | 'roles'>
-  >
   login?: Resolver<
     Maybe<ResolversTypes['Boolean']>,
     ParentType,
@@ -601,6 +583,12 @@ export type MutationResolvers<
     RequireFields<MutationLoginArgs, 'username' | 'password'>
   >
   logout?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>
+  switchAccount?: Resolver<
+    Maybe<ResolversTypes['Boolean']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationSwitchAccountArgs, 'accountId'>
+  >
   refreshToken?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>
 }>
 
