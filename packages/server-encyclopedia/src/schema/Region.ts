@@ -69,35 +69,9 @@ const resolvers: Resolvers = {
       return services.country.getById(parent.country)
     },
     farms: async (parent, args, {services}) => {
-      return services.farm.findFarms({region: parent.id})
+      return services.farm.listByRegionId(parent.id)
     },
   },
-}
-
-export interface RegionLoaders {
-  // regions: LoaderFn<RegionDocument>
-  // farmsOfRegion: LoaderFn<FarmDocument[]>
-}
-
-export const loaders: RegionLoaders = {
-  // regions: async (ids, models, user) => {
-  //   const {Region} = models
-  //   const regions = await Region.findByUser(user, {_id: ids})
-  //   return ids
-  //     .map(id => {
-  //       const region = regions.find((region: any) => region._id.toString() === id.toString())
-  //       if (!region) return null
-  //       return region
-  //     })
-  //     .filter(Boolean)
-  // },
-  // farmsOfRegion: async (ids, models, user) => {
-  //   const {Farm} = models
-  //   const farms = await Farm.findByUser(user, {region: ids})
-  //   return ids.map(id => {
-  //     return farms.filter((farm: any) => farm.region.toString() === id.toString())
-  //   })
-  // },
 }
 
 export const schema = {typeDefs, resolvers}

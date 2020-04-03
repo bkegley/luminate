@@ -1,8 +1,5 @@
 import {gql} from 'apollo-server-express'
 import {Resolvers} from '../types'
-import {AccountDocument} from '@luminate/mongo'
-import {LoaderFn} from '@luminate/graphql-utils'
-import {AccountService} from '@luminate/mongo/src/services'
 
 const typeDefs = gql`
   type Account {
@@ -48,7 +45,7 @@ const typeDefs = gql`
 
 const resolvers: Resolvers = {
   Query: {
-    listAccounts: async (parent, args, {models, user, services}) => {
+    listAccounts: async (parent, args, {services}) => {
       return services.account.getConnectionResults(args)
     },
     getAccount: async (parent, {id}, {services}, info) => {
@@ -71,18 +68,8 @@ const resolvers: Resolvers = {
   },
   Account: {
     users: async (parent, args, {services}) => {
-      return services.user.findUsers({accounts: parent.id})
+      return services.user.listByAccount(parent.id)
     },
-  },
-}
-
-export interface AccountLoaders {
-  accounts: LoaderFn<AccountDocument, {account: AccountService}>
-}
-
-export const loaders: AccountLoaders = {
-  accounts: (ids, services) => {
-    return services.account.findAccounts({_id: ids})
   },
 }
 

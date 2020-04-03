@@ -22,11 +22,14 @@ export class RoleService extends AuthenticatedService<RoleDocument> {
     return this.model.find(conditions)
   }
 
-  public listCurrentRoles() {
-    return this.user?.roles
+  public async listCurrentRoles() {
+    if (!this.user?.roles) return []
+    return (await Promise.all(this.user.roles.map(role => this.loaders.byRoleId?.load(role.id) || null))).filter(
+      Boolean,
+    ) as RoleDocument[]
   }
 
   public listCurrentScopes() {
-    return this.user?.scopes
+    return this.user?.scopes || []
   }
 }

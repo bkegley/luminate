@@ -11,6 +11,7 @@ const USER_AUTH_TOKEN = process.env.USER_AUTH_TOKEN || 'localsecrettoken'
 
 interface Loaders {
   byUserId?: DataLoader<string, UserDocument | null>
+  byAccountId?: DataLoader<string, UserDocument[] | null>
 }
 
 export class UserService extends AuthenticatedService<UserDocument> {
@@ -21,6 +22,13 @@ export class UserService extends AuthenticatedService<UserDocument> {
       const users = await this.model.find({_id: ids, ...this.getReadConditionsForUser()})
       return ids.map(id => users.find(user => user._id.toString() === id.toString()) || null)
     })
+
+    this.loaders.byAccountId = new DataLoader<string, UserDocument[] | null>(async ids => {
+      const users = await this.model.find({accounts: {$in: ids}, ...this.getReadConditionsForUser()})
+      return ids.map(id =>
+        users.filter(user => user.accounts?.find(accountId => accountId.toString() === id.toString())),
+      )
+    })
   }
 
   private loaders: Loaders = {}
@@ -28,6 +36,7 @@ export class UserService extends AuthenticatedService<UserDocument> {
   protected getReadConditionsForUser(): any {
     const conditions = super.getReadConditionsForUser()
     conditions.$or.push({_id: this.user?.jti} as any)
+    conditions.$or.push({accounts: {$in: this.user?.accounts?.map(account => account.id) || []}} as any)
     return conditions
   }
 
@@ -51,10 +60,6 @@ export class UserService extends AuthenticatedService<UserDocument> {
     const data = Object.assign(remainingInput, roles ? {$set: {[`roles.$.roles`]: roles}} : null)
 
     return super.updateOne({_id: id, 'roles.account': this.user?.account?.id}, data)
-  }
-
-  public deleteUserById(id: string) {
-    return this.deleteById(id)
   }
 
   public async updatePassword(id: string, input: {currentPassword: string; newPassword: string}) {
@@ -190,7 +195,7 @@ export class UserService extends AuthenticatedService<UserDocument> {
     return jwt.sign(input, USER_AUTH_TOKEN, {expiresIn: '10m'})
   }
 
-  public listUsersByAccount(accountId: string) {
-    return this.model.find({accounts: accountId})
+  public listByAccount(accountId: string) {
+    return this.loaders.byAccountId?.load(accountId) || null
   }
 }

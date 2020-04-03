@@ -7,19 +7,14 @@ import {buildFederatedSchema} from '@apollo/federation'
 import express from 'express'
 const app = express()
 
-import {schemas, loaders as loadersObject, Loaders} from './schema'
+import {schemas} from './schema'
 import {createMongoConnection, models, seedDatabase, AccountService, RoleService, UserService} from '@luminate/mongo'
-import DataLoader from 'dataloader'
 import {LoaderContext, parseUserFromRequest, parseToken, Token, ContextBuilder} from '@luminate/graphql-utils'
 
 const PORT = process.env.PORT || 3001
 
 export interface Context {
-  req: express.Request
   res: express.Response
-  models: typeof models
-  loaders: LoaderContext<Loaders>
-  user: Token | null
   services: {
     account: AccountService
     role: RoleService
@@ -35,21 +30,14 @@ const startServer = async () => {
     schema: buildFederatedSchema(schemas),
     context: ({req, res}): Context => {
       const contextBuilder = new ContextBuilder(req)
-      const {services, loaders} = contextBuilder
-        .withDataLoader(loadersObject)
+      const {services} = contextBuilder
         .withAccount()
         .withRole()
         .withUser()
         .build()
 
-      const user = parseUserFromRequest(req)
-
       return {
-        req,
         res,
-        models,
-        loaders,
-        user,
         services,
       }
     },

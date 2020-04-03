@@ -1,7 +1,6 @@
 import {gql} from 'apollo-server-express'
-import {LoaderFn} from '@luminate/graphql-utils'
 import {Resolvers} from '../types'
-import {CoffeeDocument} from '@luminate/mongo'
+import {VarietyDocument} from '@luminate/mongo'
 
 const typeDefs = gql`
   type Coffee @key(fields: "id") {
@@ -101,7 +100,7 @@ const resolvers: Resolvers = {
     deleteCoffee: async (parent, {id}, {services}) => {
       return services.coffee.deleteById(id)
     },
-    updateCoffeePermissionsForAccount: async (parent, {coffeeId, accountId, permissionTypes}, {models, user}) => {
+    updateCoffeePermissionsForAccount: async (parent, {coffeeId, accountId, permissionTypes}, {services}) => {
       // TODO: fix this
       return false
       // const {Coffee} = models
@@ -112,32 +111,24 @@ const resolvers: Resolvers = {
   Coffee: {
     __resolveReference: async (object, {services}) => {
       return services.coffee.getById(object.id)
-      // const {coffees} = loaders
-      // return coffees.load(object.id)
     },
     country: async (parent, args, {services}) => {
       if (!parent.country) return null
       return services.country.getById(parent.country)
-      // return countries.load(parent.country)
     },
     notes: async (parent, {fields}, {services}) => {
-      const notes = await services.note.findNotes({entityId: parent.id})
-      return fields ? notes.filter(note => fields.includes(note.field)) : notes
-      // const {notesOfEntity} = loaders
-      // const notes = await notesOfEntity.load(parent._id)
-      // return fields ? notes.filter(note => fields.includes(note.field)) : notes
+      const notes = await services.note.listByEntityId(parent.id)
+      return fields ? (notes ? notes.filter(note => fields.includes(note.field)) : []) : notes ? notes : []
     },
     region: async (parent, args, {services}) => {
       if (!parent.region) return null
       return services.region.getById(parent.region)
-      // const {regions} = loaders
-      // return regions.load(parent.region)
     },
     varieties: async (parent, args, {services}) => {
       if (!parent.varieties) return []
-      return services.variety.findVarieties({_id: parent.varieties})
-      // const {varieties} = loaders
-      // return (await Promise.all(parent.varieties.map(id => varieties.load(id)))).filter(Boolean)
+      return (await Promise.all(parent.varieties.map(id => services.variety.getById(id)))).filter(
+        Boolean,
+      ) as VarietyDocument[]
     },
   },
   CoffeeComponent: {
@@ -147,27 +138,8 @@ const resolvers: Resolvers = {
         ...parent.coffee,
         coffee: summaryCoffee,
       }
-      // const {coffees} = loaders
-      // const coffee = coffees.load((parent.coffee as unknown) as string)
-      // return coffee
     },
   },
-}
-
-export interface CoffeeLoaders {
-  // coffees: LoaderFn<CoffeeDocument>
-}
-
-export const loaders: CoffeeLoaders = {
-  // coffees: async (ids, models, user) => {
-  //   const {Coffee} = models
-  //   const coffees = await Coffee.findByUser(user, {_id: ids})
-  //   return ids.map(id => {
-  //     const coffee = coffees.find(coffee => coffee._id.toString() === id.toString())
-  //     if (!coffee) return null
-  //     return coffee
-  //   })
-  // },
 }
 
 export const schema = {typeDefs, resolvers}

@@ -4,6 +4,7 @@ import DataLoader from 'dataloader'
 
 interface Loaders {
   byCoffeeId?: DataLoader<string, CoffeeDocument | null>
+  listByVarietyId?: DataLoader<string, CoffeeDocument[] | null>
 }
 
 export class CoffeeService extends AuthenticatedService<CoffeeDocument> {
@@ -13,6 +14,14 @@ export class CoffeeService extends AuthenticatedService<CoffeeDocument> {
     this.loaders.byCoffeeId = new DataLoader<string, CoffeeDocument | null>(async ids => {
       const coffees = await this.model.find({_id: ids, ...this.getReadConditionsForUser()})
       return ids.map(id => coffees.find(coffee => coffee._id.toString() === id.toString()) || null)
+    })
+
+    this.loaders.listByVarietyId = new DataLoader<string, CoffeeDocument[] | null>(async ids => {
+      const coffees = await this.model.find({varieties: ids, ...this.getReadConditionsForUser()})
+      return ids.map(
+        id =>
+          coffees.filter(coffee => coffee.varieties?.map(varietyId => varietyId.toString() === id.toString())) || null,
+      )
     })
   }
 
@@ -24,5 +33,9 @@ export class CoffeeService extends AuthenticatedService<CoffeeDocument> {
 
   public async getById(id: string) {
     return this.loaders.byCoffeeId?.load(id) || null
+  }
+
+  public listByVarietyId(varietyId: string) {
+    return this.loaders.listByVarietyId?.load(varietyId) || null
   }
 }
