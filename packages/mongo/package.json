@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "bcrypt": "^3.0.7",
+    "dataloader": "^2.0.0",
     "mongoose": "^5.8.1"
   },
   "devDependencies": {

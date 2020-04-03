@@ -5,13 +5,25 @@ import {UserModel, UserDocument} from '../models/Person'
 import {AccountDocument} from '../models/Account'
 import {RoleDocument} from '../models/Role'
 import {AuthenticatedService} from '../abstract/AuthenticatedService'
+import DataLoader from 'dataloader'
 
 const USER_AUTH_TOKEN = process.env.USER_AUTH_TOKEN || 'localsecrettoken'
+
+interface Loaders {
+  byUserId?: DataLoader<string, UserDocument | null>
+}
 
 export class UserService extends AuthenticatedService<UserDocument> {
   constructor() {
     super(UserModel)
+
+    this.loaders.byUserId = new DataLoader<string, UserDocument | null>(async ids => {
+      const users = await this.model.find({_id: ids, ...this.getReadConditionsForUser()})
+      return ids.map(id => users.find(user => user._id.toString() === id.toString()) || null)
+    })
   }
+
+  private loaders: Loaders = {}
 
   protected getReadConditionsForUser(): any {
     const conditions = super.getReadConditionsForUser()

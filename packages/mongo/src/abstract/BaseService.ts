@@ -62,10 +62,6 @@ export class BaseService<T extends BaseDocument> {
     }
   }
 
-  public getById(id: string) {
-    return this.model.findById(id)
-  }
-
   public async create(input: any) {
     const newEntity = await new this.model(input).save()
     return newEntity

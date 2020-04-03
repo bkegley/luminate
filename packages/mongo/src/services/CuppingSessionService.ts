@@ -1,9 +1,27 @@
 import {CuppingSessionModel, CuppingSessionDocument} from '../models/CuppingSession'
 import {AuthenticatedService} from '../abstract/AuthenticatedService'
+import DataLoader from 'dataloader'
+
+interface Loaders {
+  byCuppingSessionId?: DataLoader<string, CuppingSessionDocument | null>
+}
 
 export class CuppingSessionService extends AuthenticatedService<CuppingSessionDocument> {
   constructor() {
     super(CuppingSessionModel)
+
+    this.loaders.byCuppingSessionId = new DataLoader<string, CuppingSessionDocument | null>(async ids => {
+      const cuppingSessions = await this.model.find({_id: ids, ...this.getReadConditionsForUser()})
+      return ids.map(
+        id => cuppingSessions.find(cuppingSession => cuppingSession._id.toString() === id.toString()) || null,
+      )
+    })
+  }
+
+  private loaders: Loaders = {}
+
+  public async getById(id: string) {
+    return this.loaders.byCuppingSessionId?.load(id) || null
   }
 
   public findCuppingSessions(conditions: any) {

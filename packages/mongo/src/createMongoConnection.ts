@@ -5,6 +5,7 @@ const createMongoConnection = (
     `mongodb://localhost:27017/${process.env.NODE_ENV !== 'production' ? `${process.env.NODE_ENV}-` : ''}${process.env
       .DB_NAME || 'luminate-server'}`,
 ) => {
+  mongoose.set('debug', true)
   mongoose.set('useFindAndModify', false)
   mongoose
     .connect(databaseUrl, {
