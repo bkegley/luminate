@@ -20,27 +20,30 @@ export class AccountService extends AuthenticatedService<AccountDocument> {
 
   private loaders: Loaders = {}
 
-  public async getById(id: string) {
-    return this.loaders.byAccountId?.load(id) || null
-  }
-
   protected getReadConditionsForUser(): any {
     const conditions = super.getReadConditionsForUser()
-    conditions.$or.push({_id: this.user?.account?.id} as any)
+    conditions.$or.push({_id: {$in: this.user?.accounts?.map(account => account.id) || []}} as any)
     return conditions
+  }
+
+  public async getById(id: string) {
+    return this.loaders.byAccountId?.load(id) || null
   }
 
   public findAccounts(conditions?: any) {
     return this.model.find(conditions)
   }
 
-  public listUserAccounts() {
-    return this.user?.accounts
+  public async listUserAccounts() {
+    if (!this.user?.accounts) return []
+    return (
+      await Promise.all(this.user.accounts.map(account => this.loaders.byAccountId?.load(account.id) || null))
+    ).filter(Boolean) as AccountDocument[]
   }
 
   public getCurrentAccount() {
     if (!this.user?.account) return null
-    return this.getById(this.user.account.id)
+    return this.loaders.byAccountId?.load(this.user.account.id) || null
   }
 
   public async create(input: any) {

@@ -1,8 +1,5 @@
 import {gql} from 'apollo-server-express'
-import {LoaderFn} from '@luminate/graphql-utils'
 import {Resolvers} from '../types'
-import {UserDocument} from '@luminate/mongo'
-import {UserService} from '@luminate/mongo/src/services'
 
 const typeDefs = gql`
   type User {
@@ -71,7 +68,7 @@ const resolvers: Resolvers = {
     listUsers: async (parent, args, {services}) => {
       return services.user.getConnectionResults(args)
     },
-    getUser: async (parent, {id}, {services}, info) => {
+    getUser: async (parent, {id}, {services}) => {
       return services.user.getById(id)
     },
     me: async (parent, args, {services}) => {
@@ -86,7 +83,7 @@ const resolvers: Resolvers = {
       return services.user.updateById(id, input)
     },
     deleteUser: async (parent, {id}, {services}) => {
-      return services.user.deleteUserById(id)
+      return services.user.deleteById(id)
     },
     updatePassword: async (parent, {id, input}, {services}) => {
       return services.user.updatePassword(id, input)
@@ -132,9 +129,8 @@ const resolvers: Resolvers = {
       return true
     },
   },
-  // @ts-ignore
   User: {
-    account: (parent, args, {services, loaders}) => {
+    account: (parent, args, {services}) => {
       return services.account.getCurrentAccount()
     },
     accounts: async (parent, args, {services}) => {
@@ -146,16 +142,6 @@ const resolvers: Resolvers = {
     scopes: async (parent, args, {services}) => {
       return services.role.listCurrentScopes()
     },
-  },
-}
-
-export interface UserLoaders {
-  users: LoaderFn<UserDocument, {user: UserService}>
-}
-
-export const loaders: UserLoaders = {
-  users: (ids, services) => {
-    return services.user.findUsers({_id: ids})
   },
 }
 

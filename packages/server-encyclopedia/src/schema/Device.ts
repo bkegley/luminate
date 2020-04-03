@@ -1,6 +1,5 @@
 import {gql} from 'apollo-server-express'
 import {Resolvers} from '../types'
-import {DeviceDocument} from '@luminate/mongo'
 
 const typeDefs = gql`
   type Device {
@@ -61,22 +60,6 @@ const resolvers: Resolvers = {
       return services.device.deleteById(id)
     },
   },
-}
-
-export interface DeviceLoaders {
-  // devices: LoaderFn<DeviceDocument>
-}
-
-export const loaders: DeviceLoaders = {
-  // devices: async (ids, models, user) => {
-  //   const {Device} = models
-  //   const devices = await Device.findByUser(user, {_id: ids})
-  //   return ids.map(id => {
-  //     const device = devices.find(device => device._id.toString() === id.toString())
-  //     if (!device) return null
-  //     return device
-  //   })
-  // },
 }
 
 export const schema = {typeDefs, resolvers}

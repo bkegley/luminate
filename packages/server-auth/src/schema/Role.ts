@@ -1,8 +1,5 @@
-import {gql, ApolloError} from 'apollo-server-express'
+import {gql} from 'apollo-server-express'
 import {Resolvers} from '../types'
-import {RoleDocument} from '@luminate/mongo'
-import {RoleService} from '@luminate/mongo/src/services'
-import {LoaderFn} from '@luminate/graphql-utils'
 
 const typeDefs = gql`
   type Role {
@@ -49,7 +46,7 @@ const resolvers: Resolvers = {
     listRoles: async (parent, args, {services}) => {
       return services.role.getConnectionResults(args)
     },
-    getRole: async (parent, {id}, {services}, info) => {
+    getRole: async (parent, {id}, {services}) => {
       return services.role.getById(id)
     },
   },
@@ -63,16 +60,6 @@ const resolvers: Resolvers = {
     deleteRole: async (parent, {id}, {services}) => {
       return services.role.deleteById(id)
     },
-  },
-}
-
-export interface RoleLoaders {
-  roles: LoaderFn<RoleDocument, {role: RoleService}>
-}
-
-export const loaders: RoleLoaders = {
-  roles: (ids, services) => {
-    return services.role.findRoles({_id: ids})
   },
 }
 

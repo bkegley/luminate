@@ -61,7 +61,7 @@ const resolvers: Resolvers = {
     deleteVariety: async (parent, {id}, {services}) => {
       return services.variety.deleteById(id)
     },
-    makeVarietyPublic: async (parent, {id}, {models, user}) => {
+    makeVarietyPublic: async (parent, {id}, {services}) => {
       // TODO: implement this
       return false
       // const {Variety} = models
@@ -71,25 +71,9 @@ const resolvers: Resolvers = {
   },
   Variety: {
     coffees: async (parent, args, {services}) => {
-      return services.coffee.findCoffees({varieties: parent.id})
+      return services.coffee.listByVarietyId(parent.id)
     },
   },
-}
-
-export interface VarietyLoaders {
-  // varieties: LoaderFn<VarietyDocument>
-}
-
-export const loaders: VarietyLoaders = {
-  // varieties: async (ids, models, user) => {
-  //   const {Variety} = models
-  //   const varieties = await Variety.findByUser(user, {_id: ids})
-  //   return ids.map(id => {
-  //     const variety = varieties.find((variety: any) => variety._id.toString() === id.toString())
-  //     if (!variety) return null
-  //     return variety
-  //   })
-  // },
 }
 
 export const schema = {typeDefs, resolvers}

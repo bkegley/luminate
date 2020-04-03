@@ -103,22 +103,4 @@ const resolvers: Resolvers = {
   },
 }
 
-export interface FarmLoaders {
-  // farms: LoaderFn<FarmDocument>
-}
-
-export const loaders: FarmLoaders = {
-  // farms: async (ids, models, user) => {
-  //   const {Farm} = models
-  //   const farms = await Farm.findByUser(user, {_id: ids})
-  //   return ids
-  //     .map(id => {
-  //       const farm = farms.find((farm: any) => farm._id.toString() === id.toString())
-  //       if (!farm) return null
-  //       return farm
-  //     })
-  //     .filter(Boolean)
-  // },
-}
-
 export const schema = {typeDefs, resolvers}

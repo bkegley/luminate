@@ -2,15 +2,15 @@ import path from 'path'
 require('dotenv').config({
   path: path.join(process.cwd(), '../..', '.env'),
 })
-import {ApolloServer, CorsOptions} from 'apollo-server-express'
+import {ApolloServer} from 'apollo-server-express'
 import {buildFederatedSchema} from '@apollo/federation'
 import express from 'express'
 const app = express()
 
-import {schemas, loaders as loadersObject, Loaders} from './schema'
-import {createMongoConnection, models} from '@luminate/mongo'
-import {LoaderContext, parseUserFromRequest, Token, ContextBuilder} from '@luminate/graphql-utils'
+import {schemas} from './schema'
+import {ContextBuilder} from '@luminate/graphql-utils'
 import {
+  createMongoConnection,
   CoffeeService,
   CountryService,
   DeviceService,
@@ -23,11 +23,6 @@ import {
 const PORT = process.env.PORT || 3002
 
 export interface Context {
-  req: express.Request
-  res: express.Response
-  models: typeof models
-  loaders: LoaderContext<Loaders>
-  user: Token | null
   services: {
     coffee: CoffeeService
     country: CountryService
@@ -44,10 +39,9 @@ const startServer = async () => {
 
   const server = new ApolloServer({
     schema: buildFederatedSchema(schemas),
-    context: ({req, res}) => {
+    context: ({req}) => {
       const contextBuilder = new ContextBuilder(req)
-      const {services, loaders} = contextBuilder
-        .withDataLoader(loadersObject)
+      const {services} = contextBuilder
         .withCoffee()
         .withCountry()
         .withFarm()
@@ -56,15 +50,8 @@ const startServer = async () => {
         .withVariety()
         .build()
 
-      const user = parseUserFromRequest(req)
-
       return {
-        req,
-        res,
-        models,
         services,
-        loaders,
-        user,
       }
     },
     introspection: true,

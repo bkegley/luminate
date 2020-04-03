@@ -28,8 +28,8 @@ export class RegionService extends AuthenticatedService<RegionDocument> {
     return this.loaders.byRegionId?.load(id) || null
   }
 
-  public async getByCountryId(id: string) {
-    return this.loaders.byCountryId?.load(id) || null
+  public async listByCountryId(id: string) {
+    return this.loaders.byCountryId?.load(id) || []
   }
 
   public findRegions(conditions: any) {

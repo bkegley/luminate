@@ -62,7 +62,7 @@ const resolvers: Resolvers = {
   },
   Country: {
     regions: async (parent, args, {services}) => {
-      return services.region.getByCountryId(parent.id)
+      return services.region.listByCountryId(parent.id)
     },
   },
 }
