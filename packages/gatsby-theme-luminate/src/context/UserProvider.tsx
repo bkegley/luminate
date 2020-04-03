@@ -1,6 +1,28 @@
 import React from 'react'
 import {useLoginMutation, useLogoutMutation, useSwitchAccountMutation, useRefreshTokenMutation} from '../graphql'
-import {Token} from '@luminate/graphql-utils'
+
+interface TokenInput {
+  jti: string
+  sub: string
+  account?: {
+    id: string
+    name: string
+  }
+  accounts?: {
+    id: string
+    name: string
+  }[]
+  roles?: {
+    id: string
+    name: string
+  }[]
+  scopes?: string[]
+}
+
+export interface Token extends TokenInput {
+  iat: number
+  exp: number
+}
 
 interface IUserContext {
   user: Token | null

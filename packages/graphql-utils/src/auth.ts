@@ -1,9 +1,7 @@
-import mongoose from 'mongoose'
 import {AuthenticationError, ForbiddenError} from 'apollo-server-express'
-import jwt from 'jsonwebtoken'
 import express from 'express'
-import {RoleDocument} from '@luminate/mongo'
-import {scopes} from './scopes'
+import jwt from 'jsonwebtoken'
+import {RoleDocument, scopes} from '@luminate/mongo'
 
 interface TokenInput {
   jti: string
@@ -28,33 +26,33 @@ export interface Token extends TokenInput {
   exp: number
 }
 
-const createToken = (res: express.Response, input: TokenInput, secret: string) => {
-  const token = jwt.sign(input, secret, {expiresIn: '10m'})
-  res.cookie('id', token, {
-    httpOnly: false,
-    secure: process.env.NODE_ENV === 'production',
-  })
-  return token
-}
+// const createToken = (res: express.Response, input: TokenInput, secret: string) => {
+//   const token = jwt.sign(input, secret, {expiresIn: '10m'})
+//   res.cookie('id', token, {
+//     httpOnly: false,
+//     secure: process.env.NODE_ENV === 'production',
+//   })
+//   return token
+// }
 
-const removeToken = (res: express.Response): void => {
-  res.cookie('id', '', {
-    expires: new Date(0),
-  })
-}
+// const removeToken = (res: express.Response): void => {
+//   res.cookie('id', '', {
+//     expires: new Date(0),
+//   })
+// }
 
-const parseToken = (token: string, secret: string) => {
-  const data = jwt.verify(token, secret)
+export const parseTokenFromRequest = (req: express.Request, secret: string) => {
+  const data = jwt.verify(req.cookies.id, secret)
   return data as Token
 }
 
-const parseUserFromRequest = (request: express.Request): Token | null => {
+export const parseUserFromRequest = (request: express.Request): Token | null => {
   const authHeader = (request.headers['x-auth-user'] as string) || null
   const user = authHeader ? JSON.parse(Buffer.from(authHeader, 'base64').toString('utf-8')) : null
   return user
 }
 
-const hasRole = (user: Token | null, roleName: string) => {
+export const hasRole = (user: Token | null, roleName: string) => {
   return new Promise((resolve, reject) => {
     if (!user) {
       reject(new AuthenticationError('Please authenticate'))
@@ -72,7 +70,7 @@ const hasRole = (user: Token | null, roleName: string) => {
 
 type ValidScopes = keyof typeof scopes
 
-const hasScopes = (user: Token | null, requiredScopes: ValidScopes[]) => {
+export const hasScopes = (user: Token | null, requiredScopes: ValidScopes[]) => {
   return new Promise((resolve, reject) => {
     if (!user) {
       reject(new AuthenticationError('Please authenticate'))
@@ -88,5 +86,3 @@ const hasScopes = (user: Token | null, requiredScopes: ValidScopes[]) => {
     resolve()
   })
 }
-
-export {createToken, removeToken, hasRole, hasScopes, parseToken, parseUserFromRequest}

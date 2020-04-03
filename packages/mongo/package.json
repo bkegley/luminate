@@ -8,7 +8,8 @@
   "scripts": {
     "develop": "rimraf ./dist && tsc -w",
     "build": "rimraf ./dist && tsc",
-    "seed-database": "node ./dist/seedDatabase.js"
+    "prebuild": "yarn generate-scopes",
+    "generate-scopes": "ts-node src/utils/generateScopeTypes.ts"
   },
   "dependencies": {
     "bcrypt": "^3.0.7",
@@ -18,6 +19,7 @@
   "devDependencies": {
     "@types/bcrypt": "^3.0.0",
     "@types/mongoose": "^5.5.36",
-    "@types/node-fetch": "^2.5.5"
+    "@types/node-fetch": "^2.5.5",
+    "ts-node": "^8.8.1"
   }
 }

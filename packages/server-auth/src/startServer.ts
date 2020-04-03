@@ -8,8 +8,8 @@ import express from 'express'
 const app = express()
 
 import {schemas} from './schema'
-import {createMongoConnection, models, seedDatabase, AccountService, RoleService, UserService} from '@luminate/mongo'
-import {LoaderContext, parseUserFromRequest, parseToken, Token, ContextBuilder} from '@luminate/graphql-utils'
+import {createMongoConnection, seedDatabase, AccountService, RoleService, UserService} from '@luminate/mongo'
+import {ContextBuilder} from '@luminate/graphql-utils'
 
 const PORT = process.env.PORT || 3001
 

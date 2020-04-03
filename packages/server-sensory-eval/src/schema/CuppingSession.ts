@@ -1,7 +1,5 @@
-import {gql, ApolloError} from 'apollo-server-express'
-import {LoaderFn} from '@luminate/graphql-utils'
+import {gql} from 'apollo-server-express'
 import {Resolvers} from '../types'
-import {CuppingSessionDocument} from '@luminate/mongo'
 
 const typeDefs = gql`
   type CuppingSession @key(fields: "id") {
