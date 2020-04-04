@@ -3,6 +3,20 @@ import {BaseService} from './BaseService'
 import {Token} from './types'
 import {BaseDocument} from './documents'
 import {IListDocumentsArgs} from './types'
+import merge from 'lodash.merge'
+
+interface PermissionMap {
+  read: string
+  write: string
+  admin: string
+  [x: string]: string
+}
+
+const permissionKeysToPermissionsMap: PermissionMap = {
+  read: 'readAccess',
+  write: 'writeAccess',
+  admin: 'adminAccess',
+}
 
 export class AuthenticatedService<T extends BaseDocument> extends BaseService<T> {
   protected user: Token | null = null
@@ -95,5 +109,26 @@ export class AuthenticatedService<T extends BaseDocument> extends BaseService<T>
   // TODO: delete should remove user's account permissions from the entity instead of deleting
   public deleteById(id: string) {
     return this.model.findOneAndDelete({_id: id, ...this.getWriteConditionsForUser()})
+  }
+
+  public updateEntityPermissionsForAccount({
+    entityId,
+    accountId,
+    permissions,
+  }: {
+    entityId: string
+    accountId: string
+    permissions: Array<'read' | 'write' | 'admin'>
+  }) {
+    let permissionsObject = {}
+    Object.keys(permissionKeysToPermissionsMap)
+      .map(permission =>
+        (permissions as string[]).includes(permission)
+          ? {$addToSet: {[permissionKeysToPermissionsMap[permission]]: mongoose.Types.ObjectId(accountId)}}
+          : {$pull: {[permissionKeysToPermissionsMap[permission]]: mongoose.Types.ObjectId(accountId)}},
+      )
+      .forEach(object => (permissionsObject = merge(permissionsObject, object)))
+
+    return this.model.findOneAndUpdate({_id: entityId, ...this.getAdminConditionsForUser()}, permissionsObject)
   }
 }

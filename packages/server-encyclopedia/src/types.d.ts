@@ -364,6 +364,7 @@ export type PageInfo = {
 export enum PermissionTypeEnum {
   Read = 'read',
   Write = 'write',
+  Admin = 'admin',
 }
 
 export type Query = {

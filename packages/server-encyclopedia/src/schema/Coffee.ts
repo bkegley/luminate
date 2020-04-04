@@ -71,6 +71,7 @@ const typeDefs = gql`
   enum PermissionTypeEnum {
     read
     write
+    admin
   }
 
   extend type Mutation {
@@ -101,11 +102,12 @@ const resolvers: Resolvers = {
       return services.coffee.deleteById(id)
     },
     updateCoffeePermissionsForAccount: async (parent, {coffeeId, accountId, permissionTypes}, {services}) => {
-      // TODO: fix this
-      return false
-      // const {Coffee} = models
-      // const coffee = await Coffee.updateEntityPermissionsForAccountByUser(user, coffeeId, accountId, permissionTypes)
-      // return !!coffee
+      const coffee = await services.coffee.updateEntityPermissionsForAccount({
+        entityId: coffeeId,
+        accountId,
+        permissions: permissionTypes,
+      })
+      return !!coffee
     },
   },
   Coffee: {
