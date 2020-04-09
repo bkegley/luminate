@@ -16,12 +16,21 @@ export class BaseService<T extends BaseDocument> {
   protected buildConnectionQuery(args: IListDocumentsArgs): [any, null, any] {
     const {cursor, limit, query, ...remainingArgs} = args
 
+    const mappedQueryInput = QueryInput.getQueryValue(query)
+
     return [
-      Object.assign(remainingArgs, QueryInput.getQueryValue(query), {
-        updatedAt: {
-          $lte: Cursor.parseCursor(cursor || Cursor.createCursor(new Date())),
-        },
-      }),
+      mappedQueryInput?.length
+        ? Object.assign(remainingArgs, ...mappedQueryInput, {
+            updatedAt: {
+              $lte: Cursor.parseCursor(cursor || Cursor.createCursor(new Date())),
+            },
+          })
+        : {
+            ...remainingArgs,
+            updatedAt: {
+              $lte: Cursor.parseCursor(cursor || Cursor.createCursor(new Date())),
+            },
+          },
       null,
       {
         sort: '-updatedAt',
