@@ -1,9 +1,11 @@
 import React from 'react'
+import {useApolloClient} from '@apollo/react-hooks'
 import {Select, useUser, Card, Heading, Combobox} from '@luminate/gatsby-theme-luminate/src'
 import {useUserSearchQuery, useAddUserToAccountMutation} from '../../graphql'
 
 const AccountPage = () => {
   const {user, switchAccount} = useUser()
+  const client = useApolloClient()
   const {data: users, loading, error, refetch} = useUserSearchQuery({variables: {searchText: ''}})
   const [
     addUserToAccount,
@@ -24,7 +26,9 @@ const AccountPage = () => {
         initialSelectedItem={activeAccount}
         onChange={value => {
           if (value.selectedItem) {
-            switchAccount({variables: {accountId: value.selectedItem.value.toString()}})
+            switchAccount({variables: {accountId: value.selectedItem.value.toString()}}).then(() => {
+              client.clearStore()
+            })
           }
         }}
       />

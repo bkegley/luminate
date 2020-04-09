@@ -278,7 +278,6 @@ export type Mutation = {
   updateAccount?: Maybe<Account>
   deleteAccount?: Maybe<Account>
   addUserToAccount?: Maybe<Scalars['Boolean']>
-  switchAccount?: Maybe<Scalars['Boolean']>
   createRole?: Maybe<Role>
   updateRole?: Maybe<Role>
   deleteRole?: Maybe<Role>
@@ -286,9 +285,9 @@ export type Mutation = {
   updateUser?: Maybe<User>
   deleteUser?: Maybe<User>
   updatePassword: Scalars['Boolean']
-  updateUserRoles?: Maybe<User>
   login?: Maybe<Scalars['Boolean']>
   logout: Scalars['Boolean']
+  switchAccount?: Maybe<Scalars['Boolean']>
   refreshToken?: Maybe<Scalars['Boolean']>
   createNote?: Maybe<Note>
   updateNote?: Maybe<Note>
@@ -343,10 +342,6 @@ export type MutationAddUserToAccountArgs = {
   userId: Scalars['ID']
 }
 
-export type MutationSwitchAccountArgs = {
-  accountId: Scalars['ID']
-}
-
 export type MutationCreateRoleArgs = {
   input: CreateRoleInput
 }
@@ -378,14 +373,13 @@ export type MutationUpdatePasswordArgs = {
   input: UpdatePasswordInput
 }
 
-export type MutationUpdateUserRolesArgs = {
-  userId: Scalars['ID']
-  roles: Array<Scalars['ID']>
-}
-
 export type MutationLoginArgs = {
   username: Scalars['String']
   password: Scalars['String']
+}
+
+export type MutationSwitchAccountArgs = {
+  accountId: Scalars['ID']
 }
 
 export type MutationCreateNoteArgs = {
@@ -523,8 +517,7 @@ export type MutationDeleteCuppingSessionArgs = {
 }
 
 export type MutationCreateScoreSheetArgs = {
-  cuppingSessionId: Scalars['ID']
-  sampleNumber: Scalars['ID']
+  sessionCoffeeId: Scalars['ID']
   input: CreateScoreSheetInput
 }
 
@@ -535,8 +528,7 @@ export type MutationUpdateScoreSheetArgs = {
 }
 
 export type MutationDeleteScoreSheetArgs = {
-  scoreSheetId: Scalars['ID']
-  sessionCoffeeId: Scalars['ID']
+  id: Scalars['ID']
 }
 
 export type Note = {
@@ -599,7 +591,7 @@ export type Query = {
 export type QueryListAccountsArgs = {
   cursor?: Maybe<Scalars['String']>
   limit?: Maybe<Scalars['Int']>
-  query?: Maybe<Array<Maybe<QueryInput>>>
+  query?: Maybe<Array<QueryInput>>
 }
 
 export type QueryGetAccountArgs = {
@@ -609,7 +601,7 @@ export type QueryGetAccountArgs = {
 export type QueryListRolesArgs = {
   cursor?: Maybe<Scalars['String']>
   limit?: Maybe<Scalars['Int']>
-  query?: Maybe<Array<Maybe<QueryInput>>>
+  query?: Maybe<Array<QueryInput>>
 }
 
 export type QueryGetRoleArgs = {
@@ -619,7 +611,7 @@ export type QueryGetRoleArgs = {
 export type QueryListUsersArgs = {
   cursor?: Maybe<Scalars['String']>
   limit?: Maybe<Scalars['Int']>
-  query?: Maybe<Array<Maybe<QueryInput>>>
+  query?: Maybe<Array<QueryInput>>
 }
 
 export type QueryGetUserArgs = {
@@ -629,7 +621,7 @@ export type QueryGetUserArgs = {
 export type QueryListCoffeesArgs = {
   cursor?: Maybe<Scalars['String']>
   limit?: Maybe<Scalars['Int']>
-  query?: Maybe<Array<Maybe<QueryInput>>>
+  query?: Maybe<Array<QueryInput>>
 }
 
 export type QueryGetCoffeeArgs = {
@@ -639,7 +631,7 @@ export type QueryGetCoffeeArgs = {
 export type QueryListCountriesArgs = {
   cursor?: Maybe<Scalars['String']>
   limit?: Maybe<Scalars['Int']>
-  query?: Maybe<Array<Maybe<QueryInput>>>
+  query?: Maybe<Array<QueryInput>>
 }
 
 export type QueryGetCountryArgs = {
@@ -649,7 +641,7 @@ export type QueryGetCountryArgs = {
 export type QueryListDevicesArgs = {
   cursor?: Maybe<Scalars['String']>
   limit?: Maybe<Scalars['Int']>
-  query?: Maybe<Array<Maybe<QueryInput>>>
+  query?: Maybe<Array<QueryInput>>
 }
 
 export type QueryGetDeviceArgs = {
@@ -659,7 +651,7 @@ export type QueryGetDeviceArgs = {
 export type QueryListFarmsArgs = {
   cursor?: Maybe<Scalars['String']>
   limit?: Maybe<Scalars['Int']>
-  query?: Maybe<Array<Maybe<QueryInput>>>
+  query?: Maybe<Array<QueryInput>>
 }
 
 export type QueryGetFarmArgs = {
@@ -669,7 +661,7 @@ export type QueryGetFarmArgs = {
 export type QueryListRegionsArgs = {
   cursor?: Maybe<Scalars['String']>
   limit?: Maybe<Scalars['Int']>
-  query?: Maybe<Array<Maybe<QueryInput>>>
+  query?: Maybe<Array<QueryInput>>
 }
 
 export type QueryGetRegionArgs = {
@@ -679,7 +671,7 @@ export type QueryGetRegionArgs = {
 export type QueryListVarietiesArgs = {
   cursor?: Maybe<Scalars['String']>
   limit?: Maybe<Scalars['Int']>
-  query?: Maybe<Array<Maybe<QueryInput>>>
+  query?: Maybe<Array<QueryInput>>
 }
 
 export type QueryGetVarietyArgs = {
@@ -689,7 +681,7 @@ export type QueryGetVarietyArgs = {
 export type QueryListCuppingSessionsArgs = {
   cursor?: Maybe<Scalars['String']>
   limit?: Maybe<Scalars['Int']>
-  query?: Maybe<Array<Maybe<QueryInput>>>
+  query?: Maybe<Array<QueryInput>>
 }
 
 export type QueryGetCuppingSessionArgs = {
@@ -1107,7 +1099,7 @@ export type FarmFragmentFragment = {__typename: 'Farm'} & Pick<Farm, 'id' | 'nam
 export type ListRegionsQueryVariables = {
   cursor?: Maybe<Scalars['String']>
   limit?: Maybe<Scalars['Int']>
-  query?: Maybe<Array<Maybe<QueryInput>>>
+  query?: Maybe<Array<QueryInput>>
 }
 
 export type ListRegionsQuery = {__typename: 'Query'} & {
@@ -1178,6 +1170,12 @@ export type UserSearchQuery = {__typename: 'Query'} & {
     edges: Array<{__typename: 'UserEdge'} & {node: {__typename: 'User'} & Pick<User, 'id' | 'username'>}>
   }
 }
+
+export type SwitchAccountMutationVariables = {
+  accountId: Scalars['ID']
+}
+
+export type SwitchAccountMutation = {__typename: 'Mutation'} & Pick<Mutation, 'switchAccount'>
 
 export type ListVarietiesQueryVariables = {}
 
@@ -2182,7 +2180,7 @@ export type DeleteFarmMutationOptions = ApolloReactCommon.BaseMutationOptions<
   DeleteFarmMutationVariables
 >
 export const ListRegionsDocument = gql`
-  query ListRegions($cursor: String, $limit: Int, $query: [QueryInput]) {
+  query ListRegions($cursor: String, $limit: Int, $query: [QueryInput!]) {
     listRegions(cursor: $cursor, limit: $limit, query: $query) {
       edges {
         node {
@@ -2493,6 +2491,47 @@ export function useUserSearchLazyQuery(
 export type UserSearchQueryHookResult = ReturnType<typeof useUserSearchQuery>
 export type UserSearchLazyQueryHookResult = ReturnType<typeof useUserSearchLazyQuery>
 export type UserSearchQueryResult = ApolloReactCommon.QueryResult<UserSearchQuery, UserSearchQueryVariables>
+export const SwitchAccountDocument = gql`
+  mutation SwitchAccount($accountId: ID!) {
+    switchAccount(accountId: $accountId)
+  }
+`
+export type SwitchAccountMutationFn = ApolloReactCommon.MutationFunction<
+  SwitchAccountMutation,
+  SwitchAccountMutationVariables
+>
+
+/**
+ * __useSwitchAccountMutation__
+ *
+ * To run a mutation, you first call `useSwitchAccountMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSwitchAccountMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [switchAccountMutation, { data, loading, error }] = useSwitchAccountMutation({
+ *   variables: {
+ *      accountId: // value for 'accountId'
+ *   },
+ * });
+ */
+export function useSwitchAccountMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<SwitchAccountMutation, SwitchAccountMutationVariables>,
+) {
+  return ApolloReactHooks.useMutation<SwitchAccountMutation, SwitchAccountMutationVariables>(
+    SwitchAccountDocument,
+    baseOptions,
+  )
+}
+export type SwitchAccountMutationHookResult = ReturnType<typeof useSwitchAccountMutation>
+export type SwitchAccountMutationResult = ApolloReactCommon.MutationResult<SwitchAccountMutation>
+export type SwitchAccountMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  SwitchAccountMutation,
+  SwitchAccountMutationVariables
+>
 export const ListVarietiesDocument = gql`
   query ListVarieties {
     listVarieties {
