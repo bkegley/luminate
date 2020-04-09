@@ -26,6 +26,9 @@ import {
 import {Formik, Form, Field} from 'formik'
 import {useHistory, useRouteMatch} from 'react-router-dom'
 import Tag from '../../components/Tag'
+import CreateCountryForm from '../Countries/CreateForm'
+import CreateRegionForm from '../Regions/CreateForm'
+import CreateVarietyForm from '../Varieties/CreateForm'
 
 interface CoffeeUpdateFormProps {
   coffee: Coffee
@@ -84,7 +87,12 @@ const CoffeeUpdateForm = ({
     },
   })
 
-  const {data: countryData, error: countryError, loading: countryLoading} = useListCountriesQuery()
+  const {
+    data: countryData,
+    error: countryError,
+    loading: countryLoading,
+    refetch: countryRefetch,
+  } = useListCountriesQuery()
   const {data: regionData, error: regionError, loading: regionLoading, refetch: regionRefetch} = useListRegionsQuery({
     variables: {query: [{field: 'country', operator: 'eq' as OperatorEnum, value: coffee.country?.id}]},
   })
@@ -104,6 +112,8 @@ const CoffeeUpdateForm = ({
     }
   })
 
+  const createNewCountryDialog = useDialogState()
+  const createNewRegionDialog = useDialogState()
   const createNewVarietyDialog = useDialogState()
   const deleteDialog = useDialogState()
 
@@ -144,9 +154,44 @@ const CoffeeUpdateForm = ({
 
         return (
           <Form>
+            <Modal dialog={createNewCountryDialog} className="bg-white p-3 rounded-md" top="100px" aria-label="Alert">
+              <div>
+                <CreateCountryForm
+                  isModal
+                  onCreateSuccess={async res => {
+                    // TODO: this could refactor to a getGeographyQuery {getCountry.... getRegion($countryId: ID!)...}
+                    await Promise.all([
+                      countryRefetch(),
+                      regionRefetch({
+                        query: [{field: 'country', operator: 'eq' as OperatorEnum, value: res.createCountry?.id}],
+                      }),
+                    ])
+                    setFieldValue('country', res.createCountry?.id)
+                    setFieldValue('region', '')
+                    createNewCountryDialog.toggle()
+                  }}
+                />
+              </div>
+            </Modal>
+            <Modal dialog={createNewRegionDialog} className="bg-white p-3 rounded-md" top="100px" aria-label="Alert">
+              <div>
+                <CreateRegionForm
+                  isModal
+                  initialValues={{country: values.country}}
+                  fields={['name']}
+                  onCreateSuccess={res => {
+                    setFieldValue('region', res.createRegion?.id)
+                    regionRefetch({
+                      query: [{field: 'country', operator: 'eq' as OperatorEnum, value: values.country}],
+                    })
+                    createNewRegionDialog.toggle()
+                  }}
+                />
+              </div>
+            </Modal>
             <Modal dialog={createNewVarietyDialog} className="bg-white p-3 rounded-md" top="100px" aria-label="Alert">
               <div>
-                <h1>Hey ma!</h1>
+                <CreateVarietyForm isModal />
               </div>
             </Modal>
             <Modal
@@ -193,6 +238,7 @@ const CoffeeUpdateForm = ({
                       }
                       setFieldValue('country', value.selectedItem?.value)
                     }}
+                    createNewDialog={createNewCountryDialog}
                   />
                 </div>
               ) : null}
@@ -206,6 +252,7 @@ const CoffeeUpdateForm = ({
                     initialSelectedItem={regionOptions?.find(option => option.value === values.region)}
                     loading={regionLoading}
                     onChange={value => setFieldValue('region', value.selectedItem?.value)}
+                    createNewDialog={createNewRegionDialog}
                   />
                 </div>
               ) : null}

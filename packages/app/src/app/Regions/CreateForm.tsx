@@ -1,5 +1,5 @@
 import React from 'react'
-import {Card, Heading, Button, Input, Combobox} from '@luminate/gatsby-theme-luminate/src'
+import {Card, Heading, Button, Input, Combobox, Modal, useDialogState} from '@luminate/gatsby-theme-luminate/src'
 import {Formik, Form, Field} from 'formik'
 import {
   useCreateRegionMutation,
@@ -9,6 +9,7 @@ import {
   CreateRegionInput,
 } from '../../graphql'
 import {useHistory} from 'react-router-dom'
+import CreateCountryForm from '../Countries/CreateForm'
 
 interface RegionCreateFormProps {
   title?: React.ReactNode
@@ -57,6 +58,8 @@ const RegionCreateForm = ({
     }
   })
 
+  const createNewCountryDialog = useDialogState()
+
   return (
     <Formik
       initialValues={{
@@ -75,10 +78,22 @@ const RegionCreateForm = ({
         })
         setSubmitting(false)
       }}
+      enableReinitialize
     >
       {({dirty, setFieldValue, values}) => {
         return (
           <Form>
+            <Modal dialog={createNewCountryDialog} className="bg-white p-3 rounded-md" top="100px" aria-label="Alert">
+              <div>
+                <CreateCountryForm
+                  isModal
+                  onCreateSuccess={res => {
+                    setFieldValue('country', res.createCountry?.id)
+                    createNewCountryDialog.toggle()
+                  }}
+                />
+              </div>
+            </Modal>
             <Card className="p-3 overflow-visible" variant={isModal ? 'blank' : 'default'}>
               {title ? <Heading>{title}</Heading> : null}
               {!fields || fields.includes('name') ? (
@@ -101,6 +116,7 @@ const RegionCreateForm = ({
                     onChange={value => {
                       setFieldValue('country', value.selectedItem?.value)
                     }}
+                    createNewDialog={createNewCountryDialog}
                   />
                 </div>
               ) : null}

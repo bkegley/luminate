@@ -15,15 +15,14 @@ import {
   useDeleteRegionMutation,
   ListRegionsDocument,
   useListCountriesQuery,
-  useListRegionsQuery,
   Region,
-  OperatorEnum,
   UpdateRegionMutation,
   DeleteRegionMutation,
   UpdateRegionInput,
 } from '../../graphql'
 import {Formik, Form, Field} from 'formik'
 import {useHistory, useRouteMatch} from 'react-router-dom'
+import CreateCountryForm from '../Countries/CreateForm'
 
 interface RegionUpdateFormProps {
   region: Region
@@ -91,6 +90,7 @@ const RegionUpdateForm = ({
     }
   })
 
+  const createNewCountryDialog = useDialogState()
   const deleteDialog = useDialogState()
 
   return (
@@ -115,6 +115,17 @@ const RegionUpdateForm = ({
       {({setFieldValue, values}) => {
         return (
           <Form>
+            <Modal dialog={createNewCountryDialog} className="bg-white p-3 rounded-md" top="100px" aria-label="Alert">
+              <div>
+                <CreateCountryForm
+                  isModal
+                  onCreateSuccess={res => {
+                    setFieldValue('country', res.createCountry?.id)
+                    createNewCountryDialog.toggle()
+                  }}
+                />
+              </div>
+            </Modal>
             <Modal dialog={deleteDialog} className="bg-white p-3 rounded-md" top="100px" aria-label="Alert">
               <div className="w-screen-11/12 md:w-screen-3/4 lg:w-screen-1/2">
                 <Alert
@@ -148,6 +159,7 @@ const RegionUpdateForm = ({
                     onChange={value => {
                       setFieldValue('country', value.selectedItem?.value)
                     }}
+                    createNewDialog={createNewCountryDialog}
                   />
                 </div>
               ) : null}
