@@ -1,8 +1,7 @@
 import React from 'react'
 import {useGetCoffeeQuery} from '../../graphql'
-import {Drawer, StyledLink, Card, Button, Heading} from '@luminate/gatsby-theme-luminate/src'
+import {StyledLink, Card, Heading} from '@luminate/gatsby-theme-luminate/src'
 import {RouteComponentProps} from 'react-router-dom'
-import CoffeeUpdateForm from './UpdateForm'
 
 interface Params {
   id: string
@@ -11,8 +10,6 @@ interface Params {
 interface Props extends RouteComponentProps<Params> {}
 
 const CoffeeDetailView = ({match}: Props) => {
-  const [showUpdateCoffee, setShowUpdateCoffee] = React.useState(false)
-  const toggleUpdateForm = () => setShowUpdateCoffee(old => !old)
   const {
     params: {id},
   } = match
@@ -32,14 +29,12 @@ const CoffeeDetailView = ({match}: Props) => {
 
   return (
     <div>
-      <div className="flex justify-between mb-4">
-        <div>
+      <div className="flex items-center mb-4">
+        <div className="mr-4">
           <Heading>{data.getCoffee?.name}</Heading>
         </div>
-        <div>
-          <Button onClick={toggleUpdateForm} variant="text">
-            Edit Info
-          </Button>
+        <div className="text-sm">
+          <StyledLink to={`${match.url}/edit`}>Edit Info</StyledLink>
         </div>
       </div>
       <div className="flex mb-4">
@@ -111,17 +106,6 @@ const CoffeeDetailView = ({match}: Props) => {
         facilisis nibh ligula, vitae dignissim metus auctor sit amet. Pellentesque sed dui fringilla erat pulvinar
         dignissim. Aenean dapibus, libero ac commodo varius, nisi nisi vulputate ante, in ultrices quam turpis at arcu.
       </div>
-      <Drawer
-        from="right"
-        onClickOutside={toggleUpdateForm}
-        open={showUpdateCoffee}
-        bg="white"
-        width={['90%', '75%', '50%']}
-      >
-        <div className="p-4">
-          <CoffeeUpdateForm coffee={data.getCoffee} isModal />
-        </div>
-      </Drawer>
     </div>
   )
 }

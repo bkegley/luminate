@@ -1,9 +1,8 @@
 import React from 'react'
-import {Card, Button, Heading} from '@luminate/gatsby-theme-luminate/src'
+import {Card, Heading} from '@luminate/gatsby-theme-luminate/src'
 import {useGetCountryQuery} from '../../graphql'
-import {Drawer, StyledLink} from '@luminate/gatsby-theme-luminate/src'
+import {StyledLink} from '@luminate/gatsby-theme-luminate/src'
 import {RouteComponentProps} from 'react-router-dom'
-import CountryUpdateForm from './UpdateForm'
 
 interface Params {
   id: string
@@ -12,8 +11,6 @@ interface Params {
 interface Props extends RouteComponentProps<Params> {}
 
 const CountryDetailView = ({match}: Props) => {
-  const [showUpdateCountry, setShowUpdateCountry] = React.useState(false)
-  const toggleUpdateForm = () => setShowUpdateCountry(old => !old)
   const {
     params: {id},
   } = match
@@ -33,14 +30,12 @@ const CountryDetailView = ({match}: Props) => {
 
   return (
     <div>
-      <div className="flex justify-between mb-4">
-        <div>
+      <div className="flex items-center mb-4">
+        <div className="mr-4">
           <Heading>{data.getCountry?.name}</Heading>
         </div>
-        <div>
-          <Button onClick={toggleUpdateForm} variant="text">
-            Edit Info
-          </Button>
+        <div className="text-sm">
+          <StyledLink to={`${match.url}/edit`}>Edit Info</StyledLink>
         </div>
       </div>
       <div className="flex mb-4">
@@ -109,17 +104,6 @@ const CountryDetailView = ({match}: Props) => {
           ultrices quam turpis at arcu.
         </p>
       </div>
-      <Drawer
-        from="right"
-        onClickOutside={toggleUpdateForm}
-        open={showUpdateCountry}
-        bg="white"
-        width={['90%', '75%', '50%']}
-      >
-        <div className="p-4">
-          <CountryUpdateForm country={data.getCountry} isModal />
-        </div>
-      </Drawer>
     </div>
   )
 }

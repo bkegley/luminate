@@ -1,4 +1,4 @@
-query ListRegions($cursor: String, $limit: Int, $query: [QueryInput]) {
+query ListRegions($cursor: String, $limit: Int, $query: [QueryInput!]) {
   listRegions(cursor: $cursor, limit: $limit, query: $query) {
     edges {
       node {
