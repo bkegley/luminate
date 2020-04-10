@@ -7,7 +7,7 @@ services:
     environment:
       - API_URL=http://server-gateway:3000/graphql
     volumes:
-      - ./packages/app:/usr/src/app/packages/app
+      - ./packages/frontend/app:/usr/src/app/packages/frontend/app
     command: yarn workspace @luminate/app run develop --host "0.0.0.0"
 
   server-auth:

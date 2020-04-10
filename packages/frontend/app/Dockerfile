@@ -4,8 +4,8 @@ WORKDIR /usr/src/app
 # build python for bcrypt
 RUN apk --no-cache add --virtual builds-deps build-base python
 
-COPY ./packages/app ./packages/app
-COPY ./packages/gatsby-theme-luminate ./packages/gatsby-theme-luminate
+COPY ./packages/frontend/app ./packages/frontend/app
+COPY ./packages/frontend/gatsby-theme-luminate ./packages/frontend/gatsby-theme-luminate
 COPY lerna.json .
 COPY package.json .
 COPY yarn.lock .
@@ -22,8 +22,8 @@ WORKDIR /usr/src/app
 RUN apk --no-cache add --virtual builds-deps build-base python
 
 COPY package.json .
-COPY --from=build /usr/src/app/packages/app ./packages/app
-COPY --from=build /usr/src/app/packages/gatsby-theme-luminate ./packages/gatsby-theme-luminate
+COPY --from=build /usr/src/app/packages/frontend/app ./packages/frontend/app
+COPY --from=build /usr/src/app/packages/frontend/gatsby-theme-luminate ./packages/frontend/gatsby-theme-luminate
 
 RUN yarn
 
