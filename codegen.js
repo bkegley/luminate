@@ -16,20 +16,20 @@ const clientMutationSuccessAdd = {
 }
 
 const clientGenerates = {
-  'packages/admin/src/graphql/index.tsx': {
-    documents: 'packages/admin/src/graphql/**/*.graphql',
+  'packages/frontend/admin/src/graphql/index.tsx': {
+    documents: 'packages/frontend/admin/src/graphql/**/*.graphql',
     schema: 'http://localhost:3000/graphql',
     plugins: ['typescript', 'typescript-operations', 'typescript-react-apollo', clientMutationSuccessAdd],
     config: baseClientConfig,
   },
-  'packages/app/src/graphql/index.tsx': {
-    documents: 'packages/app/src/graphql/**/*.graphql',
+  'packages/frontend/app/src/graphql/index.tsx': {
+    documents: 'packages/frontend/app/src/graphql/**/*.graphql',
     schema: 'http://localhost:3000/graphql',
     plugins: ['typescript', 'typescript-operations', 'typescript-react-apollo', clientMutationSuccessAdd],
     config: baseClientConfig,
   },
-  'packages/gatsby-theme-luminate/src/graphql/index.tsx': {
-    documents: 'packages/gatsby-theme-luminate/src/graphql/**/*.graphql',
+  'packages/frontend/gatsby-theme-luminate/src/graphql/index.tsx': {
+    documents: 'packages/frontend/gatsby-theme-luminate/src/graphql/**/*.graphql',
     schema: 'http://localhost:3000/graphql',
     plugins: ['typescript', 'typescript-operations', 'typescript-react-apollo', clientMutationSuccessAdd],
     config: baseClientConfig,
@@ -37,11 +37,11 @@ const clientGenerates = {
 }
 
 const serverGenerates = {
-  'packages/graphql-utils/src/types.ts': {
+  'packages/backend/graphql-utils/src/types.ts': {
     plugins: ['typescript'],
   },
-  'packages/server-auth/src/types.d.ts': {
-    schema: ['./packages/server-auth/src/schema/**/!(index.ts)*.ts'],
+  'packages/backend/server-auth/src/types.d.ts': {
+    schema: ['./packages/backend/server-auth/src/schema/**/!(index.ts)*.ts'],
     plugins: ['typescript', 'typescript-resolvers'],
     config: {
       contextType: './startServer#Context',
@@ -53,8 +53,8 @@ const serverGenerates = {
       },
     },
   },
-  'packages/server-encyclopedia/src/types.d.ts': {
-    schema: ['./packages/server-encyclopedia/src/schema/**/!(index.ts)*.ts'],
+  'packages/backend/server-encyclopedia/src/types.d.ts': {
+    schema: ['./packages/backend/server-encyclopedia/src/schema/**/!(index.ts)*.ts'],
     plugins: ['typescript', 'typescript-resolvers'],
     config: {
       contextType: './startServer#Context',
@@ -70,8 +70,8 @@ const serverGenerates = {
       },
     },
   },
-  'packages/server-sensory-eval/src/types.d.ts': {
-    schema: ['./packages/server-sensory-eval/src/schema/**/!(index.ts)*.ts'],
+  'packages/backend/server-sensory-eval/src/types.d.ts': {
+    schema: ['./packages/backend/server-sensory-eval/src/schema/**/!(index.ts)*.ts'],
     plugins: ['typescript', 'typescript-resolvers'],
     config: {
       contextType: './startServer#Context',
@@ -87,7 +87,7 @@ const serverGenerates = {
 }
 
 module.exports = {
-  schema: ['./packages/graphql-utils/src/schema/**/*.ts'],
+  schema: ['./packages/backend//graphql-utils/src/schema/**/*.ts'],
   generates: Object.assign(
     {},
     process.argv.find(arg => arg === '--client') ? clientGenerates : null,

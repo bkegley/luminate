@@ -4,13 +4,13 @@ services:
   mongo-utils:
     build:
       context: .
-      dockerfile: packages/mongo/Dockerfile
+      dockerfile: packages/backend/mongo/Dockerfile
     image: mongo-utils
 
   graphql-utils:
     build:
       context: .
-      dockerfile: packages/graphql-utils/Dockerfile
+      dockerfile: packages/backend/graphql-utils/Dockerfile
     image: graphql-utils
 
   db:
@@ -22,7 +22,7 @@ services:
   app:
     build:
       context: .
-      dockerfile: packages/app/Dockerfile
+      dockerfile: packages/frotend/app/Dockerfile
     image: app
     container_name: app
     restart: unless-stopped
@@ -32,7 +32,7 @@ services:
   server-auth:
     build:
       context: .
-      dockerfile: packages/server-auth/Dockerfile
+      dockerfile: packages/backend/server-auth/Dockerfile
     image: server-auth
     container_name: server-auth
     restart: unless-stopped
@@ -47,7 +47,7 @@ services:
   server-encyclopedia:
     build:
       context: .
-      dockerfile: packages/server-encyclopedia/Dockerfile
+      dockerfile: packages/backend/server-encyclopedia/Dockerfile
     image: server-encyclopedia
     container_name: server-encyclopedia
     restart: unless-stopped
@@ -62,7 +62,7 @@ services:
   server-sensory-eval:
     build:
       context: .
-      dockerfile: packages/server-sensory-eval/Dockerfile
+      dockerfile: packages/backend/server-sensory-eval/Dockerfile
     image: server-sensory-eval
     container_name: server-sensory-eval
     restart: unless-stopped
@@ -77,7 +77,7 @@ services:
   server-gateway:
     build:
       context: .
-      dockerfile: packages/server-gateway/Dockerfile
+      dockerfile: packages/backend/server-gateway/Dockerfile
     image: server-gateway
     container_name: server-gateway
     restart: unless-stopped

@@ -2,10 +2,10 @@
   "extends": "./tsconfig.base.json",
   "files": [],
   "references": [
-    {"path": "packages/graphql-utils"},
-    {"path": "packages/mongo"},
-    {"path": "packages/server-auth"},
-    {"path": "packages/server-gateway"},
-    {"path": "packages/server-encyclopedia"}
+    {"path": "packages/backend/graphql-utils"},
+    {"path": "packages/backend/mongo"},
+    {"path": "packages/backend/server-auth"},
+    {"path": "packages/backend/server-gateway"},
+    {"path": "packages/backend/server-encyclopedia"}
   ]
 }
