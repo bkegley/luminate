@@ -1,7 +1,3 @@
-const defaultTheme = require('tailwindcss/defaultTheme')
-
-defaultTheme.width
-
 module.exports = {
   theme: {
     extend: {
@@ -58,6 +54,34 @@ module.exports = {
         'screen-9/12': '75vw',
         'screen-10/12': '83.333333vw',
         'screen-11/12': '91.666667vw',
+      },
+      height: {
+        'screen-1/2': '50vh',
+        'screen-1/3': '33.333333vh',
+        'screen-2/3': '66.666667vh',
+        'screen-1/4': '25vh',
+        'screen-2/4': '50vh',
+        'screen-3/4': '75vh',
+        'screen-1/5': '20vh',
+        'screen-2/5': '40vh',
+        'screen-3/5': '60vh',
+        'screen-4/5': '80vh',
+        'screen-1/6': '16.666667vh',
+        'screen-2/6': '33.333333vh',
+        'screen-3/6': '50vh',
+        'screen-4/6': '66.666667vh',
+        'screen-5/6': '83.333333vh',
+        'screen-1/12': '8.333333vh',
+        'screen-2/12': '16.666667vh',
+        'screen-3/12': '25vh',
+        'screen-4/12': '33.333333vh',
+        'screen-5/12': '41.666667vh',
+        'screen-6/12': '50vh',
+        'screen-7/12': '58.333333vh',
+        'screen-8/12': '66.666667vh',
+        'screen-9/12': '75vh',
+        'screen-10/12': '83.333333vh',
+        'screen-11/12': '91.666667vh',
       },
     },
   },

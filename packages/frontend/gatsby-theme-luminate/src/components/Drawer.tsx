@@ -1,93 +1,48 @@
-/** @jsx jsx */
-import {jsx, Flex, Box, Close, SxStyleProp} from 'theme-ui'
 import React from 'react'
 import {animated, useTransition} from 'react-spring'
 
 type From = 'top' | 'right' | 'bottom' | 'left'
 const getStylesForDrawerOpenFrom = (from: From) => {
+  let classString = ''
   switch (from) {
     case 'top': {
-      return {
-        width: '100%',
-        maxHeight: '90%',
-        top: 0,
-        left: 0,
-      }
+      classString = 'w-full max-h-screen-11/12 top-0 left-0'
+      break
     }
     case 'right': {
-      return {
-        height: '100%',
-        maxWidth: '90%',
-        top: 0,
-        right: 0,
-      }
+      classString = 'h-full max-w-screen-11/12 top-0 right-0'
+      break
     }
     case 'bottom': {
-      return {
-        width: '100%',
-        maxHeight: '90%',
-        bottom: 0,
-        left: 0,
-      }
+      classString = 'w-full max-h-screen-11/12 bottom-0 left-0'
+      break
     }
     case 'left': {
-      return {
-        height: '100%',
-        maxWidth: '90%',
-        top: 0,
-        left: 0,
-      }
+      classString = 'h-full max-w-screen-11/12 top-0 left-0'
+      break
     }
   }
+  return classString
 }
-const DrawerBackground = ({
-  ...props
-}: {
-  style?: React.CSSProperties
-  onClick: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
-}) => {
-  return (
-    <Box
-      sx={{
-        zIndex: 45,
-        position: 'fixed',
-        overflow: 'auto',
-        top: 0,
-        left: 0,
-        height: '100%',
-        width: '100%',
-        opacity: 0.5,
-        bg: 'black',
-      }}
-      {...props}
-    />
-  )
+
+const DrawerBackground = (props: any) => {
+  return <div className="fixed overflow-auto z-50 top-0 left-0 h-full w-full opacity-50 bg-black" {...props} />
 }
 
 const DrawerWrapper = ({
   from,
   children,
-  sx,
   ...props
 }: {
   from: From
   children: React.ReactNode
-  sx?: SxStyleProp
-  style?: React.CSSProperties
+  className: string
+  style: {[x: string]: any}
 }) => {
   return (
-    <Box
-      sx={{
-        ...sx,
-        zIndex: 45,
-        overflow: 'auto',
-        position: 'fixed',
-        ...getStylesForDrawerOpenFrom(from),
-      }}
-      {...props}
-    >
+    <div className={`z-50 overflow-auto fixed ${getStylesForDrawerOpenFrom(from)}`} {...props}>
       {children}
-    </Box>
+    </div>
   )
 }
 
@@ -141,14 +96,7 @@ interface DrawerProps {
   width?: string | string[]
 }
 
-const Drawer = ({
-  children,
-  onClickOutside,
-  bg = 'white',
-  width = ['90%', '75%', 'fit-content'],
-  from,
-  open,
-}: DrawerProps) => {
+const Drawer = ({children, onClickOutside, from, open}: DrawerProps) => {
   const handleKeyDown = (e: KeyboardEvent) => {
     if (e.code === 'Escape' && open) {
       onClickOutside(e)
@@ -176,25 +124,20 @@ const Drawer = ({
       {drawerTransitions.map(({item, key, props: animatedProps}) => {
         return (
           item && (
-            <AnimatedDrawerWrapper from={from} sx={{bg, width}} style={animatedProps} key={key}>
-              <Flex
-                sx={{
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <Box
-                  sx={{
-                    alignSelf: `flex-${from === 'right' ? 'start' : 'end'}`,
-                    p: 2,
-                    cursor: 'pointer',
-                  }}
-                >
-                  <Close onClick={onClickOutside} />
-                </Box>
-                <Box sx={{width: '100%'}}>{children}</Box>
-              </Flex>
+            <AnimatedDrawerWrapper
+              from={from}
+              className="sm:w-11/12 md:w-1/2 lg:w-full bg-white"
+              style={animatedProps}
+              key={key}
+            >
+              <div className="flex flex-col items-center justify-center">
+                <div className={`self-${from === 'right' ? 'start' : 'end'} p-2 cursor-pointer`}>
+                  <button className="border-none p-0 m-0 bg-transparent text-lg" onClick={onClickOutside}>
+                    x
+                  </button>
+                </div>
+                <div className="w-full">{children}</div>
+              </div>
             </AnimatedDrawerWrapper>
           )
         )
