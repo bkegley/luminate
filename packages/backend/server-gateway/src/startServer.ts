@@ -55,6 +55,7 @@ const startServer = async () => {
     'https://api.luminate.coffee',
     'https://staging.luminate.coffee',
     'https://staging.api.luminate.coffee',
+    'http://localhost:9001',
   ]
 
   const corsOptions: CorsOptions = {

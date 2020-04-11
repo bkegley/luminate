@@ -1,7 +1,3 @@
-const defaultTheme = require('tailwindcss/defaultTheme')
-
-defaultTheme.width
-
 module.exports = {
   theme: {
     extend: {
