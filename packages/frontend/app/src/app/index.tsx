@@ -4,6 +4,7 @@ import Home from './Home'
 import Account from './Account'
 import Coffees from './Coffees'
 import Countries from './Countries'
+import CuppingSessions from './CuppingSessions'
 import Farms from './Farms'
 import Regions from './Regions'
 import Varieties from './Varieties'
@@ -31,6 +32,9 @@ const AppRouter = () => {
       </Route>
       <Route path="/app/varieties">
         <Varieties />
+      </Route>
+      <Route path="/app/cupping-sessions">
+        <CuppingSessions />
       </Route>
     </Switch>
   )

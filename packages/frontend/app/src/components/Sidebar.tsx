@@ -21,6 +21,9 @@ const Sidebar = () => {
       <StyledLink to="/app/varieties" variant="nav">
         Varieties
       </StyledLink>
+      <StyledLink to="/app/cupping-sessions" variant="nav">
+        Cupping Sessions
+      </StyledLink>
     </div>
   )
 }
