@@ -1,0 +1,87 @@
+query ListCuppingSessions($cursor: String, $limit: Int, $query: [QueryInput!]) {
+  listCuppingSessions(cursor: $cursor, limit: $limit, query: $query) {
+    edges {
+      node {
+        id
+        description
+        internalId
+        createdAt
+        updatedAt
+      }
+    }
+  }
+}
+
+query GetCuppingSession($id: ID!) {
+  getCuppingSession(id: $id) {
+    ...CupppingSessionFragment
+  }
+}
+
+mutation CreateCuppingSession($input: CreateCuppingSessionInput!) {
+  createCuppingSession(input: $input) {
+    ...CupppingSessionFragment
+  }
+}
+
+mutation UpdateCuppingSession($id: ID!, $input: UpdateCuppingSessionInput!) {
+  updateCuppingSession(id: $id, input: $input) {
+    ...CupppingSessionFragment
+  }
+}
+
+mutation DeleteCuppingSession($id: ID!) {
+  deleteCuppingSession(id: $id) {
+    ...CupppingSessionFragment
+  }
+}
+
+fragment CupppingSessionFragment on CuppingSession {
+  id
+  description
+  internalId
+  sessionCoffees {
+    id
+    sampleNumber
+    coffee {
+      id
+      name
+    }
+  }
+  createdAt
+  updatedAt
+}
+
+fragment CuppingSessionWithScoreSheetsFragment on CuppingSession {
+  ...CupppingSessionFragment
+  sessionCoffees {
+    scoreSheets {
+      ...ScoreSheetFragment
+    }
+  }
+}
+
+fragment ScoreSheetFragment on ScoreSheet {
+  id
+  totalScore
+  fragranceAroma
+  flavor
+  aftertaste
+  acidity
+  body
+  uniformity
+  cleanCup
+  balance
+  sweetness
+  overall
+  taints {
+    numberOfCups
+    intensity
+  }
+  defects {
+    numberOfCups
+    intensity
+  }
+  createdAt
+  updatedAt
+}

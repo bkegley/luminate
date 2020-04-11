@@ -561,6 +561,7 @@ export type PageInfo = {
 export enum PermissionTypeEnum {
   Read = 'read',
   Write = 'write',
+  Admin = 'admin',
 }
 
 export type Query = {
@@ -1039,6 +1040,106 @@ export type CountryFragmentFragment = {__typename: 'Country'} & Pick<
   'id' | 'name' | 'createdAt' | 'updatedAt'
 > & {regions: Maybe<Array<Maybe<{__typename: 'Region'} & Pick<Region, 'id' | 'name'>>>>}
 
+export type ListCuppingSessionsQueryVariables = {
+  cursor?: Maybe<Scalars['String']>
+  limit?: Maybe<Scalars['Int']>
+  query?: Maybe<Array<QueryInput>>
+}
+
+export type ListCuppingSessionsQuery = {__typename: 'Query'} & {
+  listCuppingSessions: {__typename: 'CuppingSessionConnection'} & {
+    edges: Array<
+      {__typename: 'CuppingSessionEdge'} & {
+        node: {__typename: 'CuppingSession'} & Pick<
+          CuppingSession,
+          'id' | 'description' | 'internalId' | 'createdAt' | 'updatedAt'
+        >
+      }
+    >
+  }
+}
+
+export type GetCuppingSessionQueryVariables = {
+  id: Scalars['ID']
+}
+
+export type GetCuppingSessionQuery = {__typename: 'Query'} & {
+  getCuppingSession: Maybe<{__typename: 'CuppingSession'} & CupppingSessionFragmentFragment>
+}
+
+export type CreateCuppingSessionMutationVariables = {
+  input: CreateCuppingSessionInput
+}
+
+export type CreateCuppingSessionMutation = {__typename: 'Mutation'} & {
+  createCuppingSession: Maybe<{__typename: 'CuppingSession'} & CupppingSessionFragmentFragment>
+}
+
+export type UpdateCuppingSessionMutationVariables = {
+  id: Scalars['ID']
+  input: UpdateCuppingSessionInput
+}
+
+export type UpdateCuppingSessionMutation = {__typename: 'Mutation'} & {
+  updateCuppingSession: Maybe<{__typename: 'CuppingSession'} & CupppingSessionFragmentFragment>
+}
+
+export type DeleteCuppingSessionMutationVariables = {
+  id: Scalars['ID']
+}
+
+export type DeleteCuppingSessionMutation = {__typename: 'Mutation'} & {
+  deleteCuppingSession: Maybe<{__typename: 'CuppingSession'} & CupppingSessionFragmentFragment>
+}
+
+export type CupppingSessionFragmentFragment = {__typename: 'CuppingSession'} & Pick<
+  CuppingSession,
+  'id' | 'description' | 'internalId' | 'createdAt' | 'updatedAt'
+> & {
+    sessionCoffees: Maybe<
+      Array<
+        Maybe<
+          {__typename: 'SessionCoffee'} & Pick<SessionCoffee, 'id' | 'sampleNumber'> & {
+              coffee: {__typename: 'Coffee'} & Pick<Coffee, 'id' | 'name'>
+            }
+        >
+      >
+    >
+  }
+
+export type CuppingSessionWithScoreSheetsFragmentFragment = {__typename: 'CuppingSession'} & {
+  sessionCoffees: Maybe<
+    Array<
+      Maybe<
+        {__typename: 'SessionCoffee'} & {
+          scoreSheets: Maybe<Array<Maybe<{__typename: 'ScoreSheet'} & ScoreSheetFragmentFragment>>>
+        }
+      >
+    >
+  >
+} & CupppingSessionFragmentFragment
+
+export type ScoreSheetFragmentFragment = {__typename: 'ScoreSheet'} & Pick<
+  ScoreSheet,
+  | 'id'
+  | 'totalScore'
+  | 'fragranceAroma'
+  | 'flavor'
+  | 'aftertaste'
+  | 'acidity'
+  | 'body'
+  | 'uniformity'
+  | 'cleanCup'
+  | 'balance'
+  | 'sweetness'
+  | 'overall'
+  | 'createdAt'
+  | 'updatedAt'
+> & {
+    taints: Maybe<{__typename: 'DefectScore'} & Pick<DefectScore, 'numberOfCups' | 'intensity'>>
+    defects: Maybe<{__typename: 'DefectScore'} & Pick<DefectScore, 'numberOfCups' | 'intensity'>>
+  }
+
 export type ListFarmsQueryVariables = {}
 
 export type ListFarmsQuery = {__typename: 'Query'} & {
@@ -1171,12 +1272,6 @@ export type UserSearchQuery = {__typename: 'Query'} & {
   }
 }
 
-export type SwitchAccountMutationVariables = {
-  accountId: Scalars['ID']
-}
-
-export type SwitchAccountMutation = {__typename: 'Mutation'} & Pick<Mutation, 'switchAccount'>
-
 export type ListVarietiesQueryVariables = {}
 
 export type ListVarietiesQuery = {__typename: 'Query'} & {
@@ -1267,6 +1362,61 @@ export const CountryFragmentFragmentDoc = gql`
     createdAt
     updatedAt
   }
+`
+export const CupppingSessionFragmentFragmentDoc = gql`
+  fragment CupppingSessionFragment on CuppingSession {
+    id
+    description
+    internalId
+    sessionCoffees {
+      id
+      sampleNumber
+      coffee {
+        id
+        name
+      }
+    }
+    createdAt
+    updatedAt
+  }
+`
+export const ScoreSheetFragmentFragmentDoc = gql`
+  fragment ScoreSheetFragment on ScoreSheet {
+    id
+    totalScore
+    fragranceAroma
+    flavor
+    aftertaste
+    acidity
+    body
+    uniformity
+    cleanCup
+    balance
+    sweetness
+    overall
+    taints {
+      numberOfCups
+      intensity
+    }
+    defects {
+      numberOfCups
+      intensity
+    }
+    createdAt
+    updatedAt
+  }
+`
+export const CuppingSessionWithScoreSheetsFragmentFragmentDoc = gql`
+  fragment CuppingSessionWithScoreSheetsFragment on CuppingSession {
+    ...CupppingSessionFragment
+    sessionCoffees {
+      scoreSheets {
+        ...ScoreSheetFragment
+      }
+    }
+  }
+  ${CupppingSessionFragmentFragmentDoc}
+  ${ScoreSheetFragmentFragmentDoc}
 `
 export const FarmFragmentFragmentDoc = gql`
   fragment FarmFragment on Farm {
@@ -1935,6 +2085,251 @@ export type DeleteCountryMutationOptions = ApolloReactCommon.BaseMutationOptions
   DeleteCountryMutation,
   DeleteCountryMutationVariables
 >
+export const ListCuppingSessionsDocument = gql`
+  query ListCuppingSessions($cursor: String, $limit: Int, $query: [QueryInput!]) {
+    listCuppingSessions(cursor: $cursor, limit: $limit, query: $query) {
+      edges {
+        node {
+          id
+          description
+          internalId
+          createdAt
+          updatedAt
+        }
+      }
+    }
+  }
+`
+
+/**
+ * __useListCuppingSessionsQuery__
+ *
+ * To run a query within a React component, call `useListCuppingSessionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListCuppingSessionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useListCuppingSessionsQuery({
+ *   variables: {
+ *      cursor: // value for 'cursor'
+ *      limit: // value for 'limit'
+ *      query: // value for 'query'
+ *   },
+ * });
+ */
+export function useListCuppingSessionsQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<ListCuppingSessionsQuery, ListCuppingSessionsQueryVariables>,
+) {
+  return ApolloReactHooks.useQuery<ListCuppingSessionsQuery, ListCuppingSessionsQueryVariables>(
+    ListCuppingSessionsDocument,
+    baseOptions,
+  )
+}
+export function useListCuppingSessionsLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ListCuppingSessionsQuery, ListCuppingSessionsQueryVariables>,
+) {
+  return ApolloReactHooks.useLazyQuery<ListCuppingSessionsQuery, ListCuppingSessionsQueryVariables>(
+    ListCuppingSessionsDocument,
+    baseOptions,
+  )
+}
+export type ListCuppingSessionsQueryHookResult = ReturnType<typeof useListCuppingSessionsQuery>
+export type ListCuppingSessionsLazyQueryHookResult = ReturnType<typeof useListCuppingSessionsLazyQuery>
+export type ListCuppingSessionsQueryResult = ApolloReactCommon.QueryResult<
+  ListCuppingSessionsQuery,
+  ListCuppingSessionsQueryVariables
+>
+export const GetCuppingSessionDocument = gql`
+  query GetCuppingSession($id: ID!) {
+    getCuppingSession(id: $id) {
+      ...CupppingSessionFragment
+    }
+  }
+  ${CupppingSessionFragmentFragmentDoc}
+`
+
+/**
+ * __useGetCuppingSessionQuery__
+ *
+ * To run a query within a React component, call `useGetCuppingSessionQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCuppingSessionQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCuppingSessionQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetCuppingSessionQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<GetCuppingSessionQuery, GetCuppingSessionQueryVariables>,
+) {
+  return ApolloReactHooks.useQuery<GetCuppingSessionQuery, GetCuppingSessionQueryVariables>(
+    GetCuppingSessionDocument,
+    baseOptions,
+  )
+}
+export function useGetCuppingSessionLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetCuppingSessionQuery, GetCuppingSessionQueryVariables>,
+) {
+  return ApolloReactHooks.useLazyQuery<GetCuppingSessionQuery, GetCuppingSessionQueryVariables>(
+    GetCuppingSessionDocument,
+    baseOptions,
+  )
+}
+export type GetCuppingSessionQueryHookResult = ReturnType<typeof useGetCuppingSessionQuery>
+export type GetCuppingSessionLazyQueryHookResult = ReturnType<typeof useGetCuppingSessionLazyQuery>
+export type GetCuppingSessionQueryResult = ApolloReactCommon.QueryResult<
+  GetCuppingSessionQuery,
+  GetCuppingSessionQueryVariables
+>
+export const CreateCuppingSessionDocument = gql`
+  mutation CreateCuppingSession($input: CreateCuppingSessionInput!) {
+    createCuppingSession(input: $input) {
+      ...CupppingSessionFragment
+    }
+  }
+  ${CupppingSessionFragmentFragmentDoc}
+`
+export type CreateCuppingSessionMutationFn = ApolloReactCommon.MutationFunction<
+  CreateCuppingSessionMutation,
+  CreateCuppingSessionMutationVariables
+>
+
+/**
+ * __useCreateCuppingSessionMutation__
+ *
+ * To run a mutation, you first call `useCreateCuppingSessionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCuppingSessionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCuppingSessionMutation, { data, loading, error }] = useCreateCuppingSessionMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateCuppingSessionMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    CreateCuppingSessionMutation,
+    CreateCuppingSessionMutationVariables
+  >,
+) {
+  return ApolloReactHooks.useMutation<CreateCuppingSessionMutation, CreateCuppingSessionMutationVariables>(
+    CreateCuppingSessionDocument,
+    baseOptions,
+  )
+}
+export type CreateCuppingSessionMutationHookResult = ReturnType<typeof useCreateCuppingSessionMutation>
+export type CreateCuppingSessionMutationResult = ApolloReactCommon.MutationResult<CreateCuppingSessionMutation>
+export type CreateCuppingSessionMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  CreateCuppingSessionMutation,
+  CreateCuppingSessionMutationVariables
+>
+export const UpdateCuppingSessionDocument = gql`
+  mutation UpdateCuppingSession($id: ID!, $input: UpdateCuppingSessionInput!) {
+    updateCuppingSession(id: $id, input: $input) {
+      ...CupppingSessionFragment
+    }
+  }
+  ${CupppingSessionFragmentFragmentDoc}
+`
+export type UpdateCuppingSessionMutationFn = ApolloReactCommon.MutationFunction<
+  UpdateCuppingSessionMutation,
+  UpdateCuppingSessionMutationVariables
+>
+
+/**
+ * __useUpdateCuppingSessionMutation__
+ *
+ * To run a mutation, you first call `useUpdateCuppingSessionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCuppingSessionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCuppingSessionMutation, { data, loading, error }] = useUpdateCuppingSessionMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateCuppingSessionMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    UpdateCuppingSessionMutation,
+    UpdateCuppingSessionMutationVariables
+  >,
+) {
+  return ApolloReactHooks.useMutation<UpdateCuppingSessionMutation, UpdateCuppingSessionMutationVariables>(
+    UpdateCuppingSessionDocument,
+    baseOptions,
+  )
+}
+export type UpdateCuppingSessionMutationHookResult = ReturnType<typeof useUpdateCuppingSessionMutation>
+export type UpdateCuppingSessionMutationResult = ApolloReactCommon.MutationResult<UpdateCuppingSessionMutation>
+export type UpdateCuppingSessionMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  UpdateCuppingSessionMutation,
+  UpdateCuppingSessionMutationVariables
+>
+export const DeleteCuppingSessionDocument = gql`
+  mutation DeleteCuppingSession($id: ID!) {
+    deleteCuppingSession(id: $id) {
+      ...CupppingSessionFragment
+    }
+  }
+  ${CupppingSessionFragmentFragmentDoc}
+`
+export type DeleteCuppingSessionMutationFn = ApolloReactCommon.MutationFunction<
+  DeleteCuppingSessionMutation,
+  DeleteCuppingSessionMutationVariables
+>
+
+/**
+ * __useDeleteCuppingSessionMutation__
+ *
+ * To run a mutation, you first call `useDeleteCuppingSessionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteCuppingSessionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteCuppingSessionMutation, { data, loading, error }] = useDeleteCuppingSessionMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteCuppingSessionMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    DeleteCuppingSessionMutation,
+    DeleteCuppingSessionMutationVariables
+  >,
+) {
+  return ApolloReactHooks.useMutation<DeleteCuppingSessionMutation, DeleteCuppingSessionMutationVariables>(
+    DeleteCuppingSessionDocument,
+    baseOptions,
+  )
+}
+export type DeleteCuppingSessionMutationHookResult = ReturnType<typeof useDeleteCuppingSessionMutation>
+export type DeleteCuppingSessionMutationResult = ApolloReactCommon.MutationResult<DeleteCuppingSessionMutation>
+export type DeleteCuppingSessionMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  DeleteCuppingSessionMutation,
+  DeleteCuppingSessionMutationVariables
+>
 export const ListFarmsDocument = gql`
   query ListFarms {
     listFarms {
@@ -2491,47 +2886,6 @@ export function useUserSearchLazyQuery(
 export type UserSearchQueryHookResult = ReturnType<typeof useUserSearchQuery>
 export type UserSearchLazyQueryHookResult = ReturnType<typeof useUserSearchLazyQuery>
 export type UserSearchQueryResult = ApolloReactCommon.QueryResult<UserSearchQuery, UserSearchQueryVariables>
-export const SwitchAccountDocument = gql`
-  mutation SwitchAccount($accountId: ID!) {
-    switchAccount(accountId: $accountId)
-  }
-`
-export type SwitchAccountMutationFn = ApolloReactCommon.MutationFunction<
-  SwitchAccountMutation,
-  SwitchAccountMutationVariables
->
-
-/**
- * __useSwitchAccountMutation__
- *
- * To run a mutation, you first call `useSwitchAccountMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useSwitchAccountMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [switchAccountMutation, { data, loading, error }] = useSwitchAccountMutation({
- *   variables: {
- *      accountId: // value for 'accountId'
- *   },
- * });
- */
-export function useSwitchAccountMutation(
-  baseOptions?: ApolloReactHooks.MutationHookOptions<SwitchAccountMutation, SwitchAccountMutationVariables>,
-) {
-  return ApolloReactHooks.useMutation<SwitchAccountMutation, SwitchAccountMutationVariables>(
-    SwitchAccountDocument,
-    baseOptions,
-  )
-}
-export type SwitchAccountMutationHookResult = ReturnType<typeof useSwitchAccountMutation>
-export type SwitchAccountMutationResult = ApolloReactCommon.MutationResult<SwitchAccountMutation>
-export type SwitchAccountMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  SwitchAccountMutation,
-  SwitchAccountMutationVariables
->
 export const ListVarietiesDocument = gql`
   query ListVarieties {
     listVarieties {
