@@ -1,0 +1,22 @@
+{
+  "name": "@luminate/marketing",
+  "version": "0.0.1",
+  "main": "index.js",
+  "author": "Bryan Kegley <hi@bryankegley.me>",
+  "license": "MIT",
+  "scripts": {
+    "develop": "gatsby develop",
+    "clean": "gatsby clean",
+    "build": "gatsby build",
+    "serve": "gatsby serve"
+  },
+  "dependencies": {
+    "@luminate/gatsby-theme-luminate": "*",
+    "gatsby": "^2.18.17",
+    "gatsby-plugin-postcss": "^2.1.21",
+    "gatsby-plugin-purgecss": "^4.0.1",
+    "gatsby-plugin-typescript": "^2.1.23",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0"
+  }
+}

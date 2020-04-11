@@ -7,7 +7,7 @@
 }
 
 .btn-primary {
-  @apply bg-primary-600;
+  @apply bg-primary-300;
 }
 
 .btn-primary:hover {

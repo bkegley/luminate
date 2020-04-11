@@ -1,0 +1,7 @@
+/* purgecss start ignore */
+@tailwind base;
+@tailwind components;
+@import '~@luminate/gatsby-theme-luminate/src/styles/theme.css';
+
+/* purgecss end ignore */
+@tailwind utilities;
