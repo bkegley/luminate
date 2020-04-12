@@ -12,8 +12,9 @@ interface IItem {
 
 export interface ComboboxProps {
   children?: React.ReactNode
+  id?: string
   initialSelectedItem?: IItem
-  label: React.ReactNode
+  // label: React.ReactNode
   onInputChange?: (inputValue: string | undefined) => void
   onInputChangeTimeout?: number
   onChange?: (values: Partial<UseComboboxState<IItem>>) => void
@@ -24,9 +25,10 @@ export interface ComboboxProps {
 
 const Combobox = ({
   children,
+  id,
   initialSelectedItem,
   options,
-  label,
+  // label,
   onInputChange,
   onInputChangeTimeout = 700,
   onChange,
@@ -67,6 +69,9 @@ const Combobox = ({
     setInputValue,
   } = useCombobox({
     initialSelectedItem,
+    inputId: id || undefined,
+    labelId: id || undefined,
+    menuId: id || undefined,
     items: inputOptions,
     onInputValueChange: ({inputValue}) => {
       if (inputValue) {
@@ -122,11 +127,13 @@ const Combobox = ({
   return (
     <div className="relative">
       <div {...getComboboxProps()}>
-        <label className="block mb-1" {...getLabelProps()}>
+        {/* <label className="block mb-1" {...getLabelProps()}>
           {label}
-        </label>
+        </label> */}
         <div
-          className={`input p-0 flex items-center justify-between w-full ${isOpen ? 'border-b-0 rounded-b-none' : ''}`}
+          className={`input p-0 flex items-center justify-between w-full bg-white ${
+            isOpen ? 'border-b-0 rounded-b-none' : ''
+          }`}
         >
           <Input className="border-none flex-1 focus:border-primary-600" {...getInputProps()} />
           <div>

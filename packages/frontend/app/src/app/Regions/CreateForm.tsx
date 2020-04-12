@@ -106,11 +106,12 @@ const RegionCreateForm = ({
               ) : null}
               {!fields || fields.includes('country') ? (
                 <div className="mb-3">
+                  <label className="block mb-1" htmlFor="country">
+                    Country
+                  </label>
                   <Combobox
-                    label="Country"
-                    // @ts-ignore
+                    id="country"
                     options={countryOptions}
-                    // @ts-ignore
                     initialSelectedItem={countryOptions?.find(option => option.value === values.country)}
                     loading={countryLoading}
                     onChange={value => {
