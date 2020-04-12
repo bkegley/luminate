@@ -20,8 +20,11 @@ const AccountPage = () => {
   return (
     <Card className="p-4">
       <Heading as="h3">Account</Heading>
+      <label className="block mb-1" htmlFor="account">
+        Account
+      </label>
       <Select
-        label="Account"
+        id="account"
         options={accountOptions}
         initialSelectedItem={activeAccount}
         onChange={value => {
@@ -33,13 +36,15 @@ const AccountPage = () => {
         }}
       />
       <div>
+        <label className="block mb-1" htmlFor="users">
+          Users
+        </label>
         <Combobox
-          label="Users"
+          id="users"
           options={userOptions}
           loading={loading}
           onInputChange={value => refetch({searchText: value})}
           onChange={value => {
-            console.log({data, value})
             if (value.selectedItem) {
               addUserToAccount({variables: {accountId: user?.account?.id, userId: value.selectedItem.value}})
             }

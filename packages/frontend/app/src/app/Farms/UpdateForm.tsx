@@ -194,11 +194,12 @@ const FarmUpdateForm = ({
               ) : null}
               {!fields || fields.includes('country') ? (
                 <div className="mb-2">
+                  <label className="block mb-1" htmlFor="country">
+                    Country`
+                  </label>
                   <Combobox
-                    label="Country"
-                    // @ts-ignore
+                    id="country"
                     options={countryOptions}
-                    // @ts-ignore
                     initialSelectedItem={countryOptions?.find(option => option.value === values.country)}
                     loading={countryLoading}
                     onChange={value => {
@@ -218,11 +219,12 @@ const FarmUpdateForm = ({
               ) : null}
               {!fields || fields.includes('region') ? (
                 <div className="mb-2">
+                  <label className="block mb-1" htmlFor="region">
+                    Region
+                  </label>
                   <Combobox
-                    label="Region"
-                    // @ts-ignore
+                    id="region"
                     options={regionOptions}
-                    // @ts-ignore
                     initialSelectedItem={regionOptions?.find(option => option.value === values.region)}
                     loading={regionLoading}
                     onChange={value => setFieldValue('region', value.selectedItem?.value)}

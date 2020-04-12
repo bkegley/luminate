@@ -79,9 +79,7 @@ const AddSessionCoffees = ({cuppingSession}: AddSessionCoffeesProps) => {
                               </div>
                               <div className="w-5/12">
                                 <Combobox
-                                  //   label="Coffee"
                                   options={coffeeOptions}
-                                  // @ts-ignore
                                   initialSelectedItem={coffeeOptions?.find(option => option.value === session.coffee)}
                                   loading={coffeeLoading}
                                   onChange={value => {

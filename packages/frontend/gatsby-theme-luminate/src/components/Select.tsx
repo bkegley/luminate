@@ -1,6 +1,5 @@
 import React from 'react'
 import {useSelect, UseComboboxState} from 'downshift'
-import {Button} from './index'
 import DownArrow from './DownArrow'
 
 interface IItem {
@@ -9,26 +8,20 @@ interface IItem {
 }
 
 export interface SelectProps {
-  label: React.ReactNode
   onChange?: (values: Partial<UseComboboxState<IItem>>) => void
-  options: IItem[]
+  options?: IItem[]
   initialSelectedItem?: IItem
+  id?: string
 }
 
-const Select = ({onChange, options, initialSelectedItem, label}: SelectProps) => {
+const Select = ({onChange, options = [], initialSelectedItem, id}: SelectProps) => {
   const itemToString = (option: IItem | null) => (option ? option.name : '')
 
-  const {
-    isOpen,
-    selectedItem,
-    getToggleButtonProps,
-    getLabelProps,
-    getMenuProps,
-    highlightedIndex,
-    getItemProps,
-  } = useSelect({
+  const {isOpen, selectedItem, getToggleButtonProps, getMenuProps, highlightedIndex, getItemProps} = useSelect({
     items: options,
     itemToString,
+    labelId: id || undefined,
+    menuId: id || undefined,
     initialSelectedItem,
     onSelectedItemChange: changes => {
       if (onChange) {
@@ -39,9 +32,6 @@ const Select = ({onChange, options, initialSelectedItem, label}: SelectProps) =>
 
   return (
     <div className="relative">
-      <label className="block mb-1" {...getLabelProps()}>
-        {label}
-      </label>
       <button
         className={`input flex items-center justify-between w-full ${isOpen ? 'border-b-0 rounded-b-none' : ''}`}
         type="button"
