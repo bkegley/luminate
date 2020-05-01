@@ -40,8 +40,8 @@ export class UserService extends AuthenticatedService<UserDocument> {
     return conditions
   }
 
-  public findUsers(conditions: any) {
-    return this.model.find(conditions)
+  public findUsers(conditions?: {[x: string]: any}) {
+    return this.model.find({...conditions, ...this.getReadConditionsForUser()})
   }
 
   public getMe() {

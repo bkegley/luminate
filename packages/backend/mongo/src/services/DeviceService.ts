@@ -18,7 +18,7 @@ export class DeviceService extends AuthenticatedService<DeviceDocument> {
 
   private loaders: Loaders = {}
 
-  public findDevices(conditions: any) {
-    return this.model.find(conditions)
+  public findDevices(conditions?: {[x: string]: any}) {
+    return this.model.find({...conditions, ...this.getReadConditionsForUser()})
   }
 }

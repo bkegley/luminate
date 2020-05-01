@@ -27,8 +27,8 @@ export class CoffeeService extends AuthenticatedService<CoffeeDocument> {
 
   private loaders: Loaders = {}
 
-  public findCoffees(conditions: any) {
-    return this.model.find(conditions)
+  public findCoffees(conditions?: {[x: string]: any}) {
+    return this.model.find({...conditions, ...this.getReadConditionsForUser()})
   }
 
   public async getById(id: string) {
