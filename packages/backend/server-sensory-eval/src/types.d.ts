@@ -26,6 +26,7 @@ export type CreateCuppingSessionInput = {
 }
 
 export type CreateScoreSheetInput = {
+  userId?: Maybe<Scalars['ID']>
   fragranceAroma?: Maybe<Scalars['ScoreFloat']>
   flavor?: Maybe<Scalars['ScoreFloat']>
   aftertaste?: Maybe<Scalars['ScoreFloat']>
@@ -45,6 +46,7 @@ export type CuppingSession = {
   id: Scalars['ID']
   internalId?: Maybe<Scalars['ID']>
   description?: Maybe<Scalars['String']>
+  locked?: Maybe<Scalars['Boolean']>
   sessionCoffees?: Maybe<Array<Maybe<SessionCoffee>>>
   createdAt: Scalars['String']
   updatedAt: Scalars['String']
@@ -78,6 +80,8 @@ export type Mutation = {
   createCuppingSession?: Maybe<CuppingSession>
   updateCuppingSession?: Maybe<CuppingSession>
   deleteCuppingSession?: Maybe<CuppingSession>
+  updateCuppingSessionCoffees?: Maybe<CuppingSession>
+  lockCuppingSession?: Maybe<CuppingSession>
   createScoreSheet?: Maybe<CuppingSession>
   updateScoreSheet?: Maybe<CuppingSession>
   deleteScoreSheet?: Maybe<CuppingSession>
@@ -93,6 +97,15 @@ export type MutationUpdateCuppingSessionArgs = {
 }
 
 export type MutationDeleteCuppingSessionArgs = {
+  id: Scalars['ID']
+}
+
+export type MutationUpdateCuppingSessionCoffeesArgs = {
+  id: Scalars['ID']
+  sessionCoffees: Array<SessionCoffeeInput>
+}
+
+export type MutationLockCuppingSessionArgs = {
   id: Scalars['ID']
 }
 
@@ -181,16 +194,16 @@ export type SessionCoffee = {
 
 export type SessionCoffeeInput = {
   sampleNumber: Scalars['ID']
-  coffee?: Maybe<Scalars['ID']>
+  coffee: Scalars['ID']
 }
 
 export type UpdateCuppingSessionInput = {
   internalId?: Maybe<Scalars['ID']>
   description?: Maybe<Scalars['String']>
-  sessionCoffees?: Maybe<Array<Maybe<SessionCoffeeInput>>>
 }
 
 export type UpdateScoreSheetInput = {
+  userId?: Maybe<Scalars['ID']>
   fragranceAroma?: Maybe<Scalars['ScoreFloat']>
   flavor?: Maybe<Scalars['ScoreFloat']>
   aftertaste?: Maybe<Scalars['ScoreFloat']>
@@ -395,6 +408,7 @@ export type CuppingSessionResolvers<
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
   internalId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  locked?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>
   sessionCoffees?: Resolver<Maybe<Array<Maybe<ResolversTypes['SessionCoffee']>>>, ParentType, ContextType>
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>
@@ -481,6 +495,18 @@ export type MutationResolvers<
     ParentType,
     ContextType,
     RequireFields<MutationDeleteCuppingSessionArgs, 'id'>
+  >
+  updateCuppingSessionCoffees?: Resolver<
+    Maybe<ResolversTypes['CuppingSession']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationUpdateCuppingSessionCoffeesArgs, 'id' | 'sessionCoffees'>
+  >
+  lockCuppingSession?: Resolver<
+    Maybe<ResolversTypes['CuppingSession']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationLockCuppingSessionArgs, 'id'>
   >
   createScoreSheet?: Resolver<
     Maybe<ResolversTypes['CuppingSession']>,
