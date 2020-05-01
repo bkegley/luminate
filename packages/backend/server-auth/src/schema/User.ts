@@ -2,7 +2,31 @@ import {gql} from 'apollo-server-express'
 import {Resolvers} from '../types'
 
 const typeDefs = gql`
-  type User {
+  interface UserInterface {
+    id: ID!
+    username: String!
+    firstName: String
+    lastName: String
+    accounts: [Account!]!
+    roles: [Role!]!
+    scopes: [String!]!
+    createdAt: String!
+    updatedAt: String!
+  }
+
+  type User implements UserInterface {
+    id: ID!
+    username: String!
+    firstName: String
+    lastName: String
+    accounts: [Account!]!
+    roles: [Role!]!
+    scopes: [String!]!
+    createdAt: String!
+    updatedAt: String!
+  }
+
+  type Me implements UserInterface {
     id: ID!
     username: String!
     firstName: String
@@ -48,7 +72,7 @@ const typeDefs = gql`
   extend type Query {
     listUsers(cursor: String, limit: Int, query: [QueryInput!]): UserConnection!
     getUser(id: ID!): User
-    me: User
+    me: Me
   }
 
   extend type Mutation {
@@ -129,12 +153,23 @@ const resolvers: Resolvers = {
       return true
     },
   },
-  User: {
+  Me: {
     account: (parent, args, {services}) => {
       return services.account.getCurrentAccount()
     },
     accounts: async (parent, args, {services}) => {
-      return services.account.listUserAccounts()
+      return services.account.findAccounts({_id: parent.accounts})
+    },
+    roles: async (parent, args, {services}) => {
+      return services.role.listCurrentRoles()
+    },
+    scopes: async (parent, args, {services}) => {
+      return services.role.listCurrentScopes()
+    },
+  },
+  User: {
+    accounts: async (parent, args, {services}) => {
+      return services.account.findAccounts({_id: parent.accounts})
     },
     roles: async (parent, args, {services}) => {
       return services.role.listCurrentRoles()

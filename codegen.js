@@ -50,6 +50,7 @@ const serverGenerates = {
       mappers: {
         Role: '@luminate/mongo#RoleDocument',
         User: '@luminate/mongo#UserDocument',
+        Me: '@luminate/mongo#UserDocument',
       },
     },
   },
