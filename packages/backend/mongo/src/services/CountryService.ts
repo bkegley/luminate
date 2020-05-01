@@ -17,8 +17,8 @@ export class CountryService extends AuthenticatedService<CountryDocument> {
 
   private loaders: Loaders = {}
 
-  public findCountries(conditions: any) {
-    return this.model.find(conditions)
+  public findCountries(conditions?: {[x: string]: any}) {
+    return this.model.find({...conditions, ...this.getReadConditionsForUser()})
   }
 
   public async getById(id: string) {

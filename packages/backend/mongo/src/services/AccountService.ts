@@ -30,8 +30,8 @@ export class AccountService extends AuthenticatedService<AccountDocument> {
     return this.loaders.byAccountId?.load(id) || null
   }
 
-  public findAccounts(conditions?: any) {
-    return this.model.find(conditions)
+  public findAccounts(conditions?: {[x: string]: any}) {
+    return this.model.find({...conditions, ...this.getReadConditionsForUser()})
   }
 
   public async listUserAccounts() {

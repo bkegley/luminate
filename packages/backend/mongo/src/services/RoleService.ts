@@ -18,8 +18,8 @@ export class RoleService extends AuthenticatedService<RoleDocument> {
 
   private loaders: Loaders = {}
 
-  public findRoles(conditions: any) {
-    return this.model.find(conditions)
+  public findRoles(conditions?: {[x: string]: any}) {
+    return this.model.find({...conditions, ...this.getReadConditionsForUser()})
   }
 
   public async listCurrentRoles() {

@@ -18,7 +18,7 @@ export class VarietyService extends AuthenticatedService<VarietyDocument> {
 
   private loaders: Loaders = {}
 
-  public findVarieties(conditions: any) {
-    return this.model.find(conditions)
+  public findVarieties(conditions?: {[x: string]: any}) {
+    return this.model.find({...conditions, ...this.getReadConditionsForUser()})
   }
 }

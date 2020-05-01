@@ -28,8 +28,8 @@ export class FarmService extends AuthenticatedService<FarmDocument> {
     return this.loaders.listByRegionId?.load(regionId) || null
   }
 
-  public findFarms(conditions: any) {
-    return this.model.find(conditions)
+  public findFarms(conditions?: {[x: string]: any}) {
+    return this.model.find({...conditions, ...this.getReadConditionsForUser()})
   }
 
   public createFarmZone(farmId: string, input: any) {

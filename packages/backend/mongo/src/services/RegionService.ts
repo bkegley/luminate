@@ -32,7 +32,7 @@ export class RegionService extends AuthenticatedService<RegionDocument> {
     return this.loaders.byCountryId?.load(id) || []
   }
 
-  public findRegions(conditions: any) {
-    return this.model.find(conditions)
+  public findRegions(conditions?: {[x: string]: any}) {
+    return this.model.find({...conditions, ...this.getReadConditionsForUser()})
   }
 }

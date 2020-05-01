@@ -18,7 +18,7 @@ export class PersonService extends AuthenticatedService<PersonDocument> {
 
   private loaders: Loaders = {}
 
-  public findPeople(conditions: any) {
-    return this.model.find(conditions)
+  public findPeople(conditions?: {[x: string]: any}) {
+    return this.model.find({...conditions, ...this.getReadConditionsForUser()})
   }
 }

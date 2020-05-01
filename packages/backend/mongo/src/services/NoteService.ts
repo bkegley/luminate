@@ -28,7 +28,7 @@ export class NoteService extends AuthenticatedService<NoteDocument> {
     return this.loaders.byEntityId?.load(entityId) || []
   }
 
-  public findNotes(conditions: any) {
-    return this.model.find(conditions)
+  public findNotes(conditions?: {[x: string]: any}) {
+    return this.model.find({...conditions, ...this.getReadConditionsForUser()})
   }
 }
