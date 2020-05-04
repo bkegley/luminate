@@ -17,14 +17,14 @@ export const Header = ({}: HeaderProps) => {
       </Modal>
       <div className="flex w-full items-center justify-between py-2 mx-auto container">
         <div>
-          <Link to="/app" className="underline-none">
+          <Link to="/" className="underline-none">
             <Heading as="h3" className="text-primary-600">
               Luminate
             </Heading>
           </Link>
         </div>
         <div className="flex items-center">
-          <div className="mx-2">{user ? <Link to="/app">Go to App</Link> : <Link to="/register">Register</Link>}</div>
+          <div className="mx-2">{user ? <Link to="/">Go to App</Link> : <Link to="/register">Register</Link>}</div>
           <div className="ml-2">
             {user ? (
               <Button type="button" onClick={() => logout()} variant="text">

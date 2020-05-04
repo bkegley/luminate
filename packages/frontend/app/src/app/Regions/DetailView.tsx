@@ -52,7 +52,7 @@ const RegionDetailView = ({match}: Props) => {
             <div className="mb-3">
               <p className="text-xs text-gray-500 uppercase tracking-wide">Country</p>
               {data.getRegion.country ? (
-                <StyledLink to={`/app/countries/${data.getRegion.country?.id}`} variant="text">
+                <StyledLink to={`/countries/${data.getRegion.country?.id}`} variant="text">
                   {data.getRegion.country?.name}
                 </StyledLink>
               ) : (

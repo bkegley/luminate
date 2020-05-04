@@ -32,7 +32,7 @@ const CountryCreateForm = ({
       if (onCreateSuccess) {
         onCreateSuccess(data)
       } else {
-        history.push(`/app/countries/${data.createCountry?.id}`)
+        history.push(`/countries/${data.createCountry?.id}`)
       }
     },
     onError: err => {

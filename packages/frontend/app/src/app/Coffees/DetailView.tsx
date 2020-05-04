@@ -52,7 +52,7 @@ const CoffeeDetailView = ({match}: Props) => {
             <div className="mb-3">
               <p className="text-xs text-gray-500 uppercase tracking-wide">Country</p>
               {data.getCoffee.country ? (
-                <StyledLink to={`/app/countries/${data.getCoffee.country?.id}`} variant="text">
+                <StyledLink to={`/countries/${data.getCoffee.country?.id}`} variant="text">
                   {data.getCoffee.country?.name}
                 </StyledLink>
               ) : (
@@ -62,7 +62,7 @@ const CoffeeDetailView = ({match}: Props) => {
             <div className="mb-3">
               <p className="text-xs text-gray-500 uppercase tracking-wide">Region</p>
               {data.getCoffee.region ? (
-                <StyledLink to={`/app/regions/${data.getCoffee.region?.id}`} variant="text">
+                <StyledLink to={`/regions/${data.getCoffee.region?.id}`} variant="text">
                   {data.getCoffee.region?.name}
                 </StyledLink>
               ) : (

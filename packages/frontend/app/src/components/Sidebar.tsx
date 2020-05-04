@@ -5,23 +5,23 @@ import {Book} from 'react-feather'
 const Sidebar = () => {
   return (
     <div className="flex flex-col fixed pt-24 sidebar-width">
-      <StyledLink to="/app/coffees" variant="nav">
+      <StyledLink to="/coffees" variant="nav">
         <Book className="h-4" />
         Coffees
       </StyledLink>
-      <StyledLink to="/app/countries" variant="nav">
+      <StyledLink to="/countries" variant="nav">
         Countries
       </StyledLink>
-      <StyledLink to="/app/regions" variant="nav">
+      <StyledLink to="/regions" variant="nav">
         Regions
       </StyledLink>
-      <StyledLink to="/app/farms" variant="nav">
+      <StyledLink to="/farms" variant="nav">
         Farms
       </StyledLink>
-      <StyledLink to="/app/varieties" variant="nav">
+      <StyledLink to="/varieties" variant="nav">
         Varieties
       </StyledLink>
-      <StyledLink to="/app/cupping-sessions" variant="nav">
+      <StyledLink to="/cupping-sessions" variant="nav">
         Cupping Sessions
       </StyledLink>
     </div>

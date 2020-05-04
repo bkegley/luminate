@@ -8,7 +8,7 @@ const CoffeeCreatePage = () => {
   return (
     <div>
       <Heading className="mb-4">Create Coffee</Heading>
-      <CoffeeCreateForm onCancel={() => history.push('/app/coffees')} />
+      <CoffeeCreateForm onCancel={() => history.push('/coffees')} />
     </div>
   )
 }

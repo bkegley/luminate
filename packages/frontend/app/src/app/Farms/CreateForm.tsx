@@ -42,7 +42,7 @@ const FarmCreateForm = ({
       if (onCreateSuccess) {
         onCreateSuccess(data)
       } else {
-        history.push(`/app/farms/${data.createFarm?.id}`)
+        history.push(`/farms/${data.createFarm?.id}`)
       }
     },
     onError: err => {

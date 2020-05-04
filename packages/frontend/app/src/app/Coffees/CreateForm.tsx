@@ -42,7 +42,7 @@ const CoffeeCreateForm = ({
       if (onCreateSuccess) {
         onCreateSuccess(data)
       } else {
-        history.push(`/app/coffees/${data.createCoffee?.id}`)
+        history.push(`/coffees/${data.createCoffee?.id}`)
       }
     },
     onError: err => {

@@ -56,7 +56,7 @@ const CountryDetailView = ({match}: Props) => {
                 ? data.getCountry.regions.map(region => {
                     return (
                       <div>
-                        <StyledLink to={`/app/regions/${region?.id}`} variant="text">
+                        <StyledLink to={`/regions/${region?.id}`} variant="text">
                           {region?.name}
                         </StyledLink>
                       </div>

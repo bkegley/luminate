@@ -39,7 +39,7 @@ const RegionCreateForm = ({
       if (onCreateSuccess) {
         onCreateSuccess(data)
       } else {
-        history.push(`/app/regions/${data.createRegion?.id}`)
+        history.push(`/regions/${data.createRegion?.id}`)
       }
     },
     onError: err => {
