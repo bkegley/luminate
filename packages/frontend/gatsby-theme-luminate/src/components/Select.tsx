@@ -17,11 +17,14 @@ export interface SelectProps {
 const Select = ({onChange, options = [], initialSelectedItem, id}: SelectProps) => {
   const itemToString = (option: IItem | null) => (option ? option.name : '')
 
+  console.log({id})
+
   const {isOpen, selectedItem, getToggleButtonProps, getMenuProps, highlightedIndex, getItemProps} = useSelect({
     items: options,
     itemToString,
     labelId: id || undefined,
     menuId: id || undefined,
+    toggleButtonId: id || undefined,
     initialSelectedItem,
     onSelectedItemChange: changes => {
       if (onChange) {

@@ -82,8 +82,8 @@ export type Mutation = {
   deleteCuppingSession?: Maybe<CuppingSession>
   updateCuppingSessionCoffees?: Maybe<CuppingSession>
   lockCuppingSession?: Maybe<CuppingSession>
-  createScoreSheet?: Maybe<CuppingSession>
-  updateScoreSheet?: Maybe<CuppingSession>
+  createScoreSheet?: Maybe<ScoreSheet>
+  updateScoreSheet?: Maybe<ScoreSheet>
   deleteScoreSheet?: Maybe<CuppingSession>
 }
 
@@ -146,6 +146,9 @@ export type Query = {
   __typename?: 'Query'
   listCuppingSessions: CuppingSessionConnection
   getCuppingSession?: Maybe<CuppingSession>
+  getCuppingSessionCoffee?: Maybe<SessionCoffee>
+  listScoreSheets?: Maybe<Array<Maybe<ScoreSheet>>>
+  getScoreSheet?: Maybe<ScoreSheet>
 }
 
 export type QueryListCuppingSessionsArgs = {
@@ -156,6 +159,19 @@ export type QueryListCuppingSessionsArgs = {
 
 export type QueryGetCuppingSessionArgs = {
   id: Scalars['ID']
+}
+
+export type QueryGetCuppingSessionCoffeeArgs = {
+  id: Scalars['ID']
+}
+
+export type QueryListScoreSheetsArgs = {
+  sessionCoffeeId: Scalars['ID']
+}
+
+export type QueryGetScoreSheetArgs = {
+  sessionCoffeeId: Scalars['ID']
+  scoreSheetId: Scalars['ID']
 }
 
 export type QueryInput = {
@@ -189,6 +205,7 @@ export type SessionCoffee = {
   id: Scalars['ID']
   sampleNumber: Scalars['ID']
   coffee: Coffee
+  averageScore?: Maybe<Scalars['Int']>
   scoreSheets?: Maybe<Array<Maybe<ScoreSheet>>>
 }
 
@@ -369,6 +386,24 @@ export type QueryResolvers<
     ContextType,
     RequireFields<QueryGetCuppingSessionArgs, 'id'>
   >
+  getCuppingSessionCoffee?: Resolver<
+    Maybe<ResolversTypes['SessionCoffee']>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryGetCuppingSessionCoffeeArgs, 'id'>
+  >
+  listScoreSheets?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes['ScoreSheet']>>>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryListScoreSheetsArgs, 'sessionCoffeeId'>
+  >
+  getScoreSheet?: Resolver<
+    Maybe<ResolversTypes['ScoreSheet']>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryGetScoreSheetArgs, 'sessionCoffeeId' | 'scoreSheetId'>
+  >
 }>
 
 export type CuppingSessionConnectionResolvers<
@@ -421,6 +456,7 @@ export type SessionCoffeeResolvers<
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
   sampleNumber?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
   coffee?: Resolver<ResolversTypes['Coffee'], ParentType, ContextType>
+  averageScore?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
   scoreSheets?: Resolver<Maybe<Array<Maybe<ResolversTypes['ScoreSheet']>>>, ParentType, ContextType>
 }>
 
@@ -509,13 +545,13 @@ export type MutationResolvers<
     RequireFields<MutationLockCuppingSessionArgs, 'id'>
   >
   createScoreSheet?: Resolver<
-    Maybe<ResolversTypes['CuppingSession']>,
+    Maybe<ResolversTypes['ScoreSheet']>,
     ParentType,
     ContextType,
     RequireFields<MutationCreateScoreSheetArgs, 'sessionCoffeeId' | 'input'>
   >
   updateScoreSheet?: Resolver<
-    Maybe<ResolversTypes['CuppingSession']>,
+    Maybe<ResolversTypes['ScoreSheet']>,
     ParentType,
     ContextType,
     RequireFields<MutationUpdateScoreSheetArgs, 'scoreSheetId' | 'sessionCoffeeId' | 'input'>

@@ -50,7 +50,7 @@
 }
 
 .input {
-  @apply w-full px-2 py-2 rounded border border-gray-500;
+  @apply w-full bg-white px-2 py-2 rounded border border-gray-500;
 }
 
 .input:focus {

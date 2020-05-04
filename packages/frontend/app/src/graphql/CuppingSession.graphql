@@ -5,6 +5,7 @@ query ListCuppingSessions($cursor: String, $limit: Int, $query: [QueryInput!]) {
         id
         description
         internalId
+        locked
         createdAt
         updatedAt
       }
@@ -15,6 +16,24 @@ query ListCuppingSessions($cursor: String, $limit: Int, $query: [QueryInput!]) {
 query GetCuppingSession($id: ID!) {
   getCuppingSession(id: $id) {
     ...CupppingSessionFragment
+  }
+}
+
+query GetCuppingSessionWithScoreSheets($id: ID!) {
+  getCuppingSession(id: $id) {
+    ...CuppingSessionWithScoreSheetsFragment
+  }
+}
+
+query GetCuppingSessionCoffee($id: ID!) {
+  getCuppingSessionCoffee(id: $id) {
+    ...SessionCoffeeWithScoreSheetsFragment
+  }
+}
+
+query GetScoreSheet($sessionCoffeeId: ID!, $scoreSheetId: ID!) {
+  getScoreSheet(sessionCoffeeId: $sessionCoffeeId, scoreSheetId: $scoreSheetId) {
+    ...ScoreSheetFragment
   }
 }
 
@@ -30,9 +49,33 @@ mutation UpdateCuppingSession($id: ID!, $input: UpdateCuppingSessionInput!) {
   }
 }
 
+mutation UpdateCuppingSessionCoffees($id: ID!, $sessionCoffees: [SessionCoffeeInput!]!) {
+  updateCuppingSessionCoffees(id: $id, sessionCoffees: $sessionCoffees) {
+    ...CupppingSessionFragment
+  }
+}
+
+mutation LockCuppingSession($id: ID!) {
+  lockCuppingSession(id: $id) {
+    ...CupppingSessionFragment
+  }
+}
+
 mutation DeleteCuppingSession($id: ID!) {
   deleteCuppingSession(id: $id) {
     ...CupppingSessionFragment
+  }
+}
+
+mutation CreateScoreSheet($sessionCoffeeId: ID!, $input: CreateScoreSheetInput!) {
+  createScoreSheet(sessionCoffeeId: $sessionCoffeeId, input: $input) {
+    ...ScoreSheetFragment
+  }
+}
+
+mutation UpdateScoreSheet($scoreSheetId: ID!, $sessionCoffeeId: ID!, $input: UpdateScoreSheetInput!) {
+  updateScoreSheet(scoreSheetId: $scoreSheetId, sessionCoffeeId: $sessionCoffeeId, input: $input) {
+    ...ScoreSheetFragment
   }
 }
 
@@ -40,24 +83,44 @@ fragment CupppingSessionFragment on CuppingSession {
   id
   description
   internalId
+  locked
   sessionCoffees {
-    id
-    sampleNumber
-    coffee {
-      id
-      name
-    }
+    ...SessionCoffeeFragment
+  }
+  createdAt
+  updatedAt
+}
+fragment CuppingSessionWithScoreSheetsFragment on CuppingSession {
+  id
+  description
+  internalId
+  locked
+  sessionCoffees {
+    ...SessionCoffeeWithScoreSheetsFragment
   }
   createdAt
   updatedAt
 }
 
-fragment CuppingSessionWithScoreSheetsFragment on CuppingSession {
-  ...CupppingSessionFragment
-  sessionCoffees {
-    scoreSheets {
-      ...ScoreSheetFragment
-    }
+fragment SessionCoffeeWithScoreSheetsFragment on SessionCoffee {
+  id
+  sampleNumber
+  coffee {
+    id
+    name
+  }
+  averageScore
+  scoreSheets {
+    ...ScoreSheetFragment
+  }
+}
+
+fragment SessionCoffeeFragment on SessionCoffee {
+  id
+  sampleNumber
+  coffee {
+    id
+    name
   }
 }
 
@@ -82,6 +145,4 @@ fragment ScoreSheetFragment on ScoreSheet {
     numberOfCups
     intensity
   }
-  createdAt
-  updatedAt
 }

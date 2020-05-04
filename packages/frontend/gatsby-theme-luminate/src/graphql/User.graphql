@@ -16,7 +16,7 @@ mutation logout {
   logout
 }
 
-fragment UserFragment on User {
+fragment UserFragment on Me {
   id
   username
   firstName
