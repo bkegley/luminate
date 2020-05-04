@@ -10,10 +10,6 @@ import Regions from './Regions'
 import Varieties from './Varieties'
 
 const AppRouter = () => {
-  const route = useRouteMatch()
-  console.log({route})
-  const location = useLocation()
-  console.log({location})
   return (
     <Switch>
       <Route exact path="/">

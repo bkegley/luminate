@@ -3,8 +3,16 @@
 @tailwind components;
 @import '~@luminate/gatsby-theme-luminate/src/styles/theme.css';
 
-.sidebar-width {
-  max-width: 240px;
+.sidebar-nav {
+  transition: 0.5s;
+}
+
+.sidebar-open {
+  margin-left: 20rem;
+}
+
+.main {
+  transition: margin-left 0.5s;
 }
 
 .header-shadow {
