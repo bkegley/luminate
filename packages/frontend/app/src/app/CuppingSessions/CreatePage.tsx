@@ -8,7 +8,7 @@ const CuppingSessionCreatePage = () => {
   return (
     <div>
       <Heading className="mb-4">Create Cupping Session</Heading>
-      <CuppingSessionCreateForm onCancel={() => history.push('/app/coffees')} />
+      <CuppingSessionCreateForm onCancel={() => history.push('/coffees')} />
     </div>
   )
 }

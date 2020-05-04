@@ -40,7 +40,7 @@ const CuppingSessionCreateForm = ({
       if (onCreateSuccess) {
         onCreateSuccess(data)
       } else {
-        history.push(`/app/cupping-sessions/${data.createCuppingSession?.id}`)
+        history.push(`/cupping-sessions/${data.createCuppingSession?.id}`)
       }
     },
     onError: err => {

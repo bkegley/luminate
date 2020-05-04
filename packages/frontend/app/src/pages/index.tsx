@@ -1,16 +1,30 @@
 import React from 'react'
-import {Link} from 'gatsby'
+import {useUser} from '@luminate/gatsby-theme-luminate/src'
+import {navigate} from 'gatsby'
+import {BrowserRouter} from 'react-router-dom'
 import Layout from '../components/Layout'
-import Header from '../components/RootHeader'
+import Sidebar from '../components/Sidebar'
+import Header from '../components/AppHeader'
+import App from '../app'
 
 const IndexPage = () => {
+  const {user} = useUser()
+
+  if (!user) {
+    if (typeof window !== 'undefined') {
+      navigate('/login')
+    }
+    return null
+  }
+
   return (
-    <Layout header={<Header />}>
-      <div className="pt-20 px-4 mb-6">
-        <h3>Register?</h3>
-        <Link to="/register">Go to register</Link>
-      </div>
-    </Layout>
+    <BrowserRouter>
+      <Layout header={<Header />} sidebar={<Sidebar />}>
+        <div className="pt-24 px-4 mb-6">
+          <App />
+        </div>
+      </Layout>
+    </BrowserRouter>
   )
 }
 

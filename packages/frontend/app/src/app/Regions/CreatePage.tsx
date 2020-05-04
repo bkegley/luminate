@@ -8,7 +8,7 @@ const RegionCreatePage = () => {
   return (
     <div>
       <Heading className="mb-4">Create Region</Heading>
-      <RegionCreateForm onCancel={() => history.push('/app/regions')} />
+      <RegionCreateForm onCancel={() => history.push('/regions')} />
     </div>
   )
 }

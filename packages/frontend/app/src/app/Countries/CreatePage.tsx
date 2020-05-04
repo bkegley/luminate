@@ -8,7 +8,7 @@ const CountryCreatePage = () => {
   return (
     <div>
       <Heading className="mb-4">Create Country</Heading>
-      <CountryCreateForm onCancel={() => history.push('/app/countries')} />
+      <CountryCreateForm onCancel={() => history.push('/countries')} />
     </div>
   )
 }

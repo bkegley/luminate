@@ -32,7 +32,7 @@ const VarietyCreateForm = ({
       if (onCreateSuccess) {
         onCreateSuccess(data)
       } else {
-        history.push(`/app/varieties/${data.createVariety?.id}`)
+        history.push(`/varieties/${data.createVariety?.id}`)
       }
     },
     onError: err => {

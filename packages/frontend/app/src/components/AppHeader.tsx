@@ -22,7 +22,7 @@ const Header = ({}: HeaderProps) => {
     <div className="fixed  w-full z-10 bg-gray-200">
       <div className="flex items-center container mx-auto px-4 lg:px-6">
         <div className="flex-grow w-1/6">
-          <StyledLink to="/app" className="hover:no-underline">
+          <StyledLink to="/" className="hover:no-underline">
             <Heading as="h3" className="text-primary-600">
               Luminate
             </Heading>
@@ -42,7 +42,7 @@ const Header = ({}: HeaderProps) => {
                 return (
                   <>
                     <div className="my-1 mx-3 text-size-xs">
-                      <StyledLink {...menu} to="/app/account" className="text-sm" variant="nav">
+                      <StyledLink {...menu} to="/account" className="text-sm" variant="nav">
                         Account
                       </StyledLink>
                     </div>

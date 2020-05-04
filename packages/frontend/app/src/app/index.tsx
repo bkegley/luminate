@@ -1,5 +1,5 @@
 import React from 'react'
-import {Switch, Route} from 'react-router-dom'
+import {Switch, Route, useRouteMatch, useLocation} from 'react-router-dom'
 import Home from './Home'
 import Account from './Account'
 import Coffees from './Coffees'
@@ -10,30 +10,34 @@ import Regions from './Regions'
 import Varieties from './Varieties'
 
 const AppRouter = () => {
+  const route = useRouteMatch()
+  console.log({route})
+  const location = useLocation()
+  console.log({location})
   return (
     <Switch>
-      <Route exact path="/app">
+      <Route exact path="/">
         <Home />
       </Route>
-      <Route path="/app/account">
+      <Route path="/account">
         <Account />
       </Route>
-      <Route path="/app/coffees">
+      <Route path="/coffees">
         <Coffees />
       </Route>
-      <Route path="/app/countries">
+      <Route path="/countries">
         <Countries />
       </Route>
-      <Route path="/app/regions">
+      <Route path="/regions">
         <Regions />
       </Route>
-      <Route path="/app/farms">
+      <Route path="/farms">
         <Farms />
       </Route>
-      <Route path="/app/varieties">
+      <Route path="/varieties">
         <Varieties />
       </Route>
-      <Route path="/app/cupping-sessions">
+      <Route path="/cupping-sessions">
         <CuppingSessions />
       </Route>
     </Switch>

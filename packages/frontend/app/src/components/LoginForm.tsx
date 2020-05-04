@@ -8,7 +8,7 @@ const LoginForm = () => {
 
   if (user) {
     if (typeof window !== 'undefined') {
-      navigate('/app')
+      navigate('/')
     }
     return null
   }

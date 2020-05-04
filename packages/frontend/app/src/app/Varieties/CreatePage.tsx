@@ -8,7 +8,7 @@ const VarietyCreatePage = () => {
   return (
     <div>
       <Heading className="mb-4">Create Variety</Heading>
-      <VarietyCreateForm onCancel={() => history.push('/app/varieties')} />
+      <VarietyCreateForm onCancel={() => history.push('/varieties')} />
     </div>
   )
 }
