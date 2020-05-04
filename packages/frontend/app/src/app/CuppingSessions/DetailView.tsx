@@ -2,7 +2,8 @@ import React from 'react'
 import {useGetCuppingSessionQuery} from '../../graphql'
 import {StyledLink, Card, Heading} from '@luminate/gatsby-theme-luminate/src'
 import {RouteComponentProps} from 'react-router-dom'
-import AddSessionCoffees from './AddSessionCoffees'
+import UnlockedCuppingSessionList from './UnlockedCuppingSessionList'
+import LockedCuppingSessionList from './LockedCuppingSessionList'
 
 interface Params {
   id: string
@@ -62,7 +63,11 @@ const CuppingSessionDetailView = ({match}: Props) => {
         </div>
       </div>
       <div>
-        <AddSessionCoffees cuppingSession={data.getCuppingSession} />
+        {data.getCuppingSession.locked ? (
+          <LockedCuppingSessionList cuppingSessionId={data.getCuppingSession.id} />
+        ) : (
+          <UnlockedCuppingSessionList cuppingSession={data.getCuppingSession} />
+        )}
       </div>
     </div>
   )

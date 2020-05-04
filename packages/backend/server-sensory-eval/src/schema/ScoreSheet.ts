@@ -30,6 +30,7 @@ const typeDefs = gql`
   scalar ScoreFloat
 
   input CreateScoreSheetInput {
+    userId: ID
     fragranceAroma: ScoreFloat
     flavor: ScoreFloat
     aftertaste: ScoreFloat
@@ -45,6 +46,7 @@ const typeDefs = gql`
   }
 
   input UpdateScoreSheetInput {
+    userId: ID
     fragranceAroma: ScoreFloat
     flavor: ScoreFloat
     aftertaste: ScoreFloat
@@ -64,15 +66,27 @@ const typeDefs = gql`
     intensity: Float
   }
 
+  extend type Query {
+    listScoreSheets(sessionCoffeeId: ID!): [ScoreSheet]
+    getScoreSheet(sessionCoffeeId: ID!, scoreSheetId: ID!): ScoreSheet
+  }
+
   extend type Mutation {
-    createScoreSheet(sessionCoffeeId: ID!, input: CreateScoreSheetInput!): CuppingSession
-    updateScoreSheet(scoreSheetId: ID!, sessionCoffeeId: ID!, input: UpdateScoreSheetInput!): CuppingSession
+    createScoreSheet(sessionCoffeeId: ID!, input: CreateScoreSheetInput!): ScoreSheet
+    updateScoreSheet(scoreSheetId: ID!, sessionCoffeeId: ID!, input: UpdateScoreSheetInput!): ScoreSheet
     deleteScoreSheet(id: ID!): CuppingSession
   }
 `
 
 const resolvers: Resolvers = {
-  // @ts-ignore
+  Query: {
+    listScoreSheets: async (parent, {sessionCoffeeId}, {services}) => {
+      return services.cuppingSession.listScoreSheetsBySessionCoffee(sessionCoffeeId)
+    },
+    getScoreSheet: async (parent, {sessionCoffeeId, scoreSheetId}, {services}) => {
+      return services.cuppingSession.getScoreSheet(sessionCoffeeId, scoreSheetId)
+    },
+  },
   Mutation: {
     createScoreSheet: async (parent, {sessionCoffeeId, input}, {services}) => {
       return services.cuppingSession.createScoreSheet({sessionCoffeeId, input})

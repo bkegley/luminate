@@ -164,6 +164,7 @@ export type CreateRoleInput = {
 }
 
 export type CreateScoreSheetInput = {
+  userId?: Maybe<Scalars['ID']>
   fragranceAroma?: Maybe<Scalars['ScoreFloat']>
   flavor?: Maybe<Scalars['ScoreFloat']>
   aftertaste?: Maybe<Scalars['ScoreFloat']>
@@ -195,6 +196,7 @@ export type CuppingSession = {
   id: Scalars['ID']
   internalId?: Maybe<Scalars['ID']>
   description?: Maybe<Scalars['String']>
+  locked?: Maybe<Scalars['Boolean']>
   sessionCoffees?: Maybe<Array<Maybe<SessionCoffee>>>
   createdAt: Scalars['String']
   updatedAt: Scalars['String']
@@ -272,6 +274,20 @@ export type FarmZone = {
   name: Scalars['String']
 }
 
+export type Me = UserInterface & {
+  __typename: 'Me'
+  id: Scalars['ID']
+  username: Scalars['String']
+  firstName?: Maybe<Scalars['String']>
+  lastName?: Maybe<Scalars['String']>
+  account?: Maybe<Account>
+  accounts: Array<Account>
+  roles: Array<Role>
+  scopes: Array<Scalars['String']>
+  createdAt: Scalars['String']
+  updatedAt: Scalars['String']
+}
+
 export type Mutation = {
   __typename: 'Mutation'
   createAccount?: Maybe<Account>
@@ -319,8 +335,10 @@ export type Mutation = {
   createCuppingSession?: Maybe<CuppingSession>
   updateCuppingSession?: Maybe<CuppingSession>
   deleteCuppingSession?: Maybe<CuppingSession>
-  createScoreSheet?: Maybe<CuppingSession>
-  updateScoreSheet?: Maybe<CuppingSession>
+  updateCuppingSessionCoffees?: Maybe<CuppingSession>
+  lockCuppingSession?: Maybe<CuppingSession>
+  createScoreSheet?: Maybe<ScoreSheet>
+  updateScoreSheet?: Maybe<ScoreSheet>
   deleteScoreSheet?: Maybe<CuppingSession>
 }
 
@@ -516,6 +534,15 @@ export type MutationDeleteCuppingSessionArgs = {
   id: Scalars['ID']
 }
 
+export type MutationUpdateCuppingSessionCoffeesArgs = {
+  id: Scalars['ID']
+  sessionCoffees: Array<SessionCoffeeInput>
+}
+
+export type MutationLockCuppingSessionArgs = {
+  id: Scalars['ID']
+}
+
 export type MutationCreateScoreSheetArgs = {
   sessionCoffeeId: Scalars['ID']
   input: CreateScoreSheetInput
@@ -572,7 +599,7 @@ export type Query = {
   getRole?: Maybe<Role>
   listUsers: UserConnection
   getUser?: Maybe<User>
-  me?: Maybe<User>
+  me?: Maybe<Me>
   listCoffees: CoffeeConnection
   getCoffee?: Maybe<Coffee>
   listCountries: CountryConnection
@@ -587,6 +614,9 @@ export type Query = {
   getVariety?: Maybe<Variety>
   listCuppingSessions: CuppingSessionConnection
   getCuppingSession?: Maybe<CuppingSession>
+  getCuppingSessionCoffee?: Maybe<SessionCoffee>
+  listScoreSheets?: Maybe<Array<Maybe<ScoreSheet>>>
+  getScoreSheet?: Maybe<ScoreSheet>
 }
 
 export type QueryListAccountsArgs = {
@@ -689,6 +719,19 @@ export type QueryGetCuppingSessionArgs = {
   id: Scalars['ID']
 }
 
+export type QueryGetCuppingSessionCoffeeArgs = {
+  id: Scalars['ID']
+}
+
+export type QueryListScoreSheetsArgs = {
+  sessionCoffeeId: Scalars['ID']
+}
+
+export type QueryGetScoreSheetArgs = {
+  sessionCoffeeId: Scalars['ID']
+  scoreSheetId: Scalars['ID']
+}
+
 export type QueryInput = {
   field: Scalars['String']
   value?: Maybe<Scalars['String']>
@@ -763,12 +806,13 @@ export type SessionCoffee = {
   id: Scalars['ID']
   sampleNumber: Scalars['ID']
   coffee: Coffee
+  averageScore?: Maybe<Scalars['Int']>
   scoreSheets?: Maybe<Array<Maybe<ScoreSheet>>>
 }
 
 export type SessionCoffeeInput = {
   sampleNumber: Scalars['ID']
-  coffee?: Maybe<Scalars['ID']>
+  coffee: Scalars['ID']
 }
 
 export type UpdateAccountInput = {
@@ -793,7 +837,6 @@ export type UpdateCountryInput = {
 export type UpdateCuppingSessionInput = {
   internalId?: Maybe<Scalars['ID']>
   description?: Maybe<Scalars['String']>
-  sessionCoffees?: Maybe<Array<Maybe<SessionCoffeeInput>>>
 }
 
 export type UpdateDeviceInput = {
@@ -832,6 +875,7 @@ export type UpdateRoleInput = {
 }
 
 export type UpdateScoreSheetInput = {
+  userId?: Maybe<Scalars['ID']>
   fragranceAroma?: Maybe<Scalars['ScoreFloat']>
   flavor?: Maybe<Scalars['ScoreFloat']>
   aftertaste?: Maybe<Scalars['ScoreFloat']>
@@ -857,13 +901,12 @@ export type UpdateVarietyInput = {
   name?: Maybe<Scalars['String']>
 }
 
-export type User = {
+export type User = UserInterface & {
   __typename: 'User'
   id: Scalars['ID']
   username: Scalars['String']
   firstName?: Maybe<Scalars['String']>
   lastName?: Maybe<Scalars['String']>
-  account?: Maybe<Account>
   accounts: Array<Account>
   roles: Array<Role>
   scopes: Array<Scalars['String']>
@@ -881,6 +924,18 @@ export type UserEdge = {
   __typename: 'UserEdge'
   cursor: Scalars['String']
   node: User
+}
+
+export type UserInterface = {
+  id: Scalars['ID']
+  username: Scalars['String']
+  firstName?: Maybe<Scalars['String']>
+  lastName?: Maybe<Scalars['String']>
+  accounts: Array<Account>
+  roles: Array<Role>
+  scopes: Array<Scalars['String']>
+  createdAt: Scalars['String']
+  updatedAt: Scalars['String']
 }
 
 export type Variety = {
@@ -1052,7 +1107,7 @@ export type ListCuppingSessionsQuery = {__typename: 'Query'} & {
       {__typename: 'CuppingSessionEdge'} & {
         node: {__typename: 'CuppingSession'} & Pick<
           CuppingSession,
-          'id' | 'description' | 'internalId' | 'createdAt' | 'updatedAt'
+          'id' | 'description' | 'internalId' | 'locked' | 'createdAt' | 'updatedAt'
         >
       }
     >
@@ -1065,6 +1120,31 @@ export type GetCuppingSessionQueryVariables = {
 
 export type GetCuppingSessionQuery = {__typename: 'Query'} & {
   getCuppingSession: Maybe<{__typename: 'CuppingSession'} & CupppingSessionFragmentFragment>
+}
+
+export type GetCuppingSessionWithScoreSheetsQueryVariables = {
+  id: Scalars['ID']
+}
+
+export type GetCuppingSessionWithScoreSheetsQuery = {__typename: 'Query'} & {
+  getCuppingSession: Maybe<{__typename: 'CuppingSession'} & CuppingSessionWithScoreSheetsFragmentFragment>
+}
+
+export type GetCuppingSessionCoffeeQueryVariables = {
+  id: Scalars['ID']
+}
+
+export type GetCuppingSessionCoffeeQuery = {__typename: 'Query'} & {
+  getCuppingSessionCoffee: Maybe<{__typename: 'SessionCoffee'} & SessionCoffeeWithScoreSheetsFragmentFragment>
+}
+
+export type GetScoreSheetQueryVariables = {
+  sessionCoffeeId: Scalars['ID']
+  scoreSheetId: Scalars['ID']
+}
+
+export type GetScoreSheetQuery = {__typename: 'Query'} & {
+  getScoreSheet: Maybe<{__typename: 'ScoreSheet'} & ScoreSheetFragmentFragment>
 }
 
 export type CreateCuppingSessionMutationVariables = {
@@ -1084,6 +1164,23 @@ export type UpdateCuppingSessionMutation = {__typename: 'Mutation'} & {
   updateCuppingSession: Maybe<{__typename: 'CuppingSession'} & CupppingSessionFragmentFragment>
 }
 
+export type UpdateCuppingSessionCoffeesMutationVariables = {
+  id: Scalars['ID']
+  sessionCoffees: Array<SessionCoffeeInput>
+}
+
+export type UpdateCuppingSessionCoffeesMutation = {__typename: 'Mutation'} & {
+  updateCuppingSessionCoffees: Maybe<{__typename: 'CuppingSession'} & CupppingSessionFragmentFragment>
+}
+
+export type LockCuppingSessionMutationVariables = {
+  id: Scalars['ID']
+}
+
+export type LockCuppingSessionMutation = {__typename: 'Mutation'} & {
+  lockCuppingSession: Maybe<{__typename: 'CuppingSession'} & CupppingSessionFragmentFragment>
+}
+
 export type DeleteCuppingSessionMutationVariables = {
   id: Scalars['ID']
 }
@@ -1092,32 +1189,47 @@ export type DeleteCuppingSessionMutation = {__typename: 'Mutation'} & {
   deleteCuppingSession: Maybe<{__typename: 'CuppingSession'} & CupppingSessionFragmentFragment>
 }
 
+export type CreateScoreSheetMutationVariables = {
+  sessionCoffeeId: Scalars['ID']
+  input: CreateScoreSheetInput
+}
+
+export type CreateScoreSheetMutation = {__typename: 'Mutation'} & {
+  createScoreSheet: Maybe<{__typename: 'ScoreSheet'} & ScoreSheetFragmentFragment>
+}
+
+export type UpdateScoreSheetMutationVariables = {
+  scoreSheetId: Scalars['ID']
+  sessionCoffeeId: Scalars['ID']
+  input: UpdateScoreSheetInput
+}
+
+export type UpdateScoreSheetMutation = {__typename: 'Mutation'} & {
+  updateScoreSheet: Maybe<{__typename: 'ScoreSheet'} & ScoreSheetFragmentFragment>
+}
+
 export type CupppingSessionFragmentFragment = {__typename: 'CuppingSession'} & Pick<
   CuppingSession,
-  'id' | 'description' | 'internalId' | 'createdAt' | 'updatedAt'
+  'id' | 'description' | 'internalId' | 'locked' | 'createdAt' | 'updatedAt'
+> & {sessionCoffees: Maybe<Array<Maybe<{__typename: 'SessionCoffee'} & SessionCoffeeFragmentFragment>>>}
+
+export type CuppingSessionWithScoreSheetsFragmentFragment = {__typename: 'CuppingSession'} & Pick<
+  CuppingSession,
+  'id' | 'description' | 'internalId' | 'locked' | 'createdAt' | 'updatedAt'
+> & {sessionCoffees: Maybe<Array<Maybe<{__typename: 'SessionCoffee'} & SessionCoffeeWithScoreSheetsFragmentFragment>>>}
+
+export type SessionCoffeeWithScoreSheetsFragmentFragment = {__typename: 'SessionCoffee'} & Pick<
+  SessionCoffee,
+  'id' | 'sampleNumber' | 'averageScore'
 > & {
-    sessionCoffees: Maybe<
-      Array<
-        Maybe<
-          {__typename: 'SessionCoffee'} & Pick<SessionCoffee, 'id' | 'sampleNumber'> & {
-              coffee: {__typename: 'Coffee'} & Pick<Coffee, 'id' | 'name'>
-            }
-        >
-      >
-    >
+    coffee: {__typename: 'Coffee'} & Pick<Coffee, 'id' | 'name'>
+    scoreSheets: Maybe<Array<Maybe<{__typename: 'ScoreSheet'} & ScoreSheetFragmentFragment>>>
   }
 
-export type CuppingSessionWithScoreSheetsFragmentFragment = {__typename: 'CuppingSession'} & {
-  sessionCoffees: Maybe<
-    Array<
-      Maybe<
-        {__typename: 'SessionCoffee'} & {
-          scoreSheets: Maybe<Array<Maybe<{__typename: 'ScoreSheet'} & ScoreSheetFragmentFragment>>>
-        }
-      >
-    >
-  >
-} & CupppingSessionFragmentFragment
+export type SessionCoffeeFragmentFragment = {__typename: 'SessionCoffee'} & Pick<
+  SessionCoffee,
+  'id' | 'sampleNumber'
+> & {coffee: {__typename: 'Coffee'} & Pick<Coffee, 'id' | 'name'>}
 
 export type ScoreSheetFragmentFragment = {__typename: 'ScoreSheet'} & Pick<
   ScoreSheet,
@@ -1133,8 +1245,6 @@ export type ScoreSheetFragmentFragment = {__typename: 'ScoreSheet'} & Pick<
   | 'balance'
   | 'sweetness'
   | 'overall'
-  | 'createdAt'
-  | 'updatedAt'
 > & {
     taints: Maybe<{__typename: 'DefectScore'} & Pick<DefectScore, 'numberOfCups' | 'intensity'>>
     defects: Maybe<{__typename: 'DefectScore'} & Pick<DefectScore, 'numberOfCups' | 'intensity'>>
@@ -1363,22 +1473,29 @@ export const CountryFragmentFragmentDoc = gql`
     updatedAt
   }
 `
+export const SessionCoffeeFragmentFragmentDoc = gql`
+  fragment SessionCoffeeFragment on SessionCoffee {
+    id
+    sampleNumber
+    coffee {
+      id
+      name
+    }
+  }
+`
 export const CupppingSessionFragmentFragmentDoc = gql`
   fragment CupppingSessionFragment on CuppingSession {
     id
     description
     internalId
+    locked
     sessionCoffees {
-      id
-      sampleNumber
-      coffee {
-        id
-        name
-      }
+      ...SessionCoffeeFragment
     }
     createdAt
     updatedAt
   }
+  ${SessionCoffeeFragmentFragmentDoc}
 `
 export const ScoreSheetFragmentFragmentDoc = gql`
   fragment ScoreSheetFragment on ScoreSheet {
@@ -1402,21 +1519,36 @@ export const ScoreSheetFragmentFragmentDoc = gql`
       numberOfCups
       intensity
     }
-    createdAt
-    updatedAt
   }
+`
+export const SessionCoffeeWithScoreSheetsFragmentFragmentDoc = gql`
+  fragment SessionCoffeeWithScoreSheetsFragment on SessionCoffee {
+    id
+    sampleNumber
+    coffee {
+      id
+      name
+    }
+    averageScore
+    scoreSheets {
+      ...ScoreSheetFragment
+    }
+  }
+  ${ScoreSheetFragmentFragmentDoc}
 `
 export const CuppingSessionWithScoreSheetsFragmentFragmentDoc = gql`
   fragment CuppingSessionWithScoreSheetsFragment on CuppingSession {
-    ...CupppingSessionFragment
+    id
+    description
+    internalId
+    locked
     sessionCoffees {
-      scoreSheets {
-        ...ScoreSheetFragment
-      }
+      ...SessionCoffeeWithScoreSheetsFragment
     }
+    createdAt
+    updatedAt
   }
-  ${CupppingSessionFragmentFragmentDoc}
-  ${ScoreSheetFragmentFragmentDoc}
+  ${SessionCoffeeWithScoreSheetsFragmentFragmentDoc}
 `
 export const FarmFragmentFragmentDoc = gql`
   fragment FarmFragment on Farm {
@@ -2093,6 +2225,7 @@ export const ListCuppingSessionsDocument = gql`
           id
           description
           internalId
+          locked
           createdAt
           updatedAt
         }
@@ -2188,6 +2321,155 @@ export type GetCuppingSessionQueryResult = ApolloReactCommon.QueryResult<
   GetCuppingSessionQuery,
   GetCuppingSessionQueryVariables
 >
+export const GetCuppingSessionWithScoreSheetsDocument = gql`
+  query GetCuppingSessionWithScoreSheets($id: ID!) {
+    getCuppingSession(id: $id) {
+      ...CuppingSessionWithScoreSheetsFragment
+    }
+  }
+  ${CuppingSessionWithScoreSheetsFragmentFragmentDoc}
+`
+
+/**
+ * __useGetCuppingSessionWithScoreSheetsQuery__
+ *
+ * To run a query within a React component, call `useGetCuppingSessionWithScoreSheetsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCuppingSessionWithScoreSheetsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCuppingSessionWithScoreSheetsQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetCuppingSessionWithScoreSheetsQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<
+    GetCuppingSessionWithScoreSheetsQuery,
+    GetCuppingSessionWithScoreSheetsQueryVariables
+  >,
+) {
+  return ApolloReactHooks.useQuery<
+    GetCuppingSessionWithScoreSheetsQuery,
+    GetCuppingSessionWithScoreSheetsQueryVariables
+  >(GetCuppingSessionWithScoreSheetsDocument, baseOptions)
+}
+export function useGetCuppingSessionWithScoreSheetsLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+    GetCuppingSessionWithScoreSheetsQuery,
+    GetCuppingSessionWithScoreSheetsQueryVariables
+  >,
+) {
+  return ApolloReactHooks.useLazyQuery<
+    GetCuppingSessionWithScoreSheetsQuery,
+    GetCuppingSessionWithScoreSheetsQueryVariables
+  >(GetCuppingSessionWithScoreSheetsDocument, baseOptions)
+}
+export type GetCuppingSessionWithScoreSheetsQueryHookResult = ReturnType<
+  typeof useGetCuppingSessionWithScoreSheetsQuery
+>
+export type GetCuppingSessionWithScoreSheetsLazyQueryHookResult = ReturnType<
+  typeof useGetCuppingSessionWithScoreSheetsLazyQuery
+>
+export type GetCuppingSessionWithScoreSheetsQueryResult = ApolloReactCommon.QueryResult<
+  GetCuppingSessionWithScoreSheetsQuery,
+  GetCuppingSessionWithScoreSheetsQueryVariables
+>
+export const GetCuppingSessionCoffeeDocument = gql`
+  query GetCuppingSessionCoffee($id: ID!) {
+    getCuppingSessionCoffee(id: $id) {
+      ...SessionCoffeeWithScoreSheetsFragment
+    }
+  }
+  ${SessionCoffeeWithScoreSheetsFragmentFragmentDoc}
+`
+
+/**
+ * __useGetCuppingSessionCoffeeQuery__
+ *
+ * To run a query within a React component, call `useGetCuppingSessionCoffeeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCuppingSessionCoffeeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCuppingSessionCoffeeQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetCuppingSessionCoffeeQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<GetCuppingSessionCoffeeQuery, GetCuppingSessionCoffeeQueryVariables>,
+) {
+  return ApolloReactHooks.useQuery<GetCuppingSessionCoffeeQuery, GetCuppingSessionCoffeeQueryVariables>(
+    GetCuppingSessionCoffeeDocument,
+    baseOptions,
+  )
+}
+export function useGetCuppingSessionCoffeeLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+    GetCuppingSessionCoffeeQuery,
+    GetCuppingSessionCoffeeQueryVariables
+  >,
+) {
+  return ApolloReactHooks.useLazyQuery<GetCuppingSessionCoffeeQuery, GetCuppingSessionCoffeeQueryVariables>(
+    GetCuppingSessionCoffeeDocument,
+    baseOptions,
+  )
+}
+export type GetCuppingSessionCoffeeQueryHookResult = ReturnType<typeof useGetCuppingSessionCoffeeQuery>
+export type GetCuppingSessionCoffeeLazyQueryHookResult = ReturnType<typeof useGetCuppingSessionCoffeeLazyQuery>
+export type GetCuppingSessionCoffeeQueryResult = ApolloReactCommon.QueryResult<
+  GetCuppingSessionCoffeeQuery,
+  GetCuppingSessionCoffeeQueryVariables
+>
+export const GetScoreSheetDocument = gql`
+  query GetScoreSheet($sessionCoffeeId: ID!, $scoreSheetId: ID!) {
+    getScoreSheet(sessionCoffeeId: $sessionCoffeeId, scoreSheetId: $scoreSheetId) {
+      ...ScoreSheetFragment
+    }
+  }
+  ${ScoreSheetFragmentFragmentDoc}
+`
+
+/**
+ * __useGetScoreSheetQuery__
+ *
+ * To run a query within a React component, call `useGetScoreSheetQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetScoreSheetQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetScoreSheetQuery({
+ *   variables: {
+ *      sessionCoffeeId: // value for 'sessionCoffeeId'
+ *      scoreSheetId: // value for 'scoreSheetId'
+ *   },
+ * });
+ */
+export function useGetScoreSheetQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<GetScoreSheetQuery, GetScoreSheetQueryVariables>,
+) {
+  return ApolloReactHooks.useQuery<GetScoreSheetQuery, GetScoreSheetQueryVariables>(GetScoreSheetDocument, baseOptions)
+}
+export function useGetScoreSheetLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetScoreSheetQuery, GetScoreSheetQueryVariables>,
+) {
+  return ApolloReactHooks.useLazyQuery<GetScoreSheetQuery, GetScoreSheetQueryVariables>(
+    GetScoreSheetDocument,
+    baseOptions,
+  )
+}
+export type GetScoreSheetQueryHookResult = ReturnType<typeof useGetScoreSheetQuery>
+export type GetScoreSheetLazyQueryHookResult = ReturnType<typeof useGetScoreSheetLazyQuery>
+export type GetScoreSheetQueryResult = ApolloReactCommon.QueryResult<GetScoreSheetQuery, GetScoreSheetQueryVariables>
 export const CreateCuppingSessionDocument = gql`
   mutation CreateCuppingSession($input: CreateCuppingSessionInput!) {
     createCuppingSession(input: $input) {
@@ -2283,6 +2565,100 @@ export type UpdateCuppingSessionMutationOptions = ApolloReactCommon.BaseMutation
   UpdateCuppingSessionMutation,
   UpdateCuppingSessionMutationVariables
 >
+export const UpdateCuppingSessionCoffeesDocument = gql`
+  mutation UpdateCuppingSessionCoffees($id: ID!, $sessionCoffees: [SessionCoffeeInput!]!) {
+    updateCuppingSessionCoffees(id: $id, sessionCoffees: $sessionCoffees) {
+      ...CupppingSessionFragment
+    }
+  }
+  ${CupppingSessionFragmentFragmentDoc}
+`
+export type UpdateCuppingSessionCoffeesMutationFn = ApolloReactCommon.MutationFunction<
+  UpdateCuppingSessionCoffeesMutation,
+  UpdateCuppingSessionCoffeesMutationVariables
+>
+
+/**
+ * __useUpdateCuppingSessionCoffeesMutation__
+ *
+ * To run a mutation, you first call `useUpdateCuppingSessionCoffeesMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCuppingSessionCoffeesMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCuppingSessionCoffeesMutation, { data, loading, error }] = useUpdateCuppingSessionCoffeesMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      sessionCoffees: // value for 'sessionCoffees'
+ *   },
+ * });
+ */
+export function useUpdateCuppingSessionCoffeesMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    UpdateCuppingSessionCoffeesMutation,
+    UpdateCuppingSessionCoffeesMutationVariables
+  >,
+) {
+  return ApolloReactHooks.useMutation<
+    UpdateCuppingSessionCoffeesMutation,
+    UpdateCuppingSessionCoffeesMutationVariables
+  >(UpdateCuppingSessionCoffeesDocument, baseOptions)
+}
+export type UpdateCuppingSessionCoffeesMutationHookResult = ReturnType<typeof useUpdateCuppingSessionCoffeesMutation>
+export type UpdateCuppingSessionCoffeesMutationResult = ApolloReactCommon.MutationResult<
+  UpdateCuppingSessionCoffeesMutation
+>
+export type UpdateCuppingSessionCoffeesMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  UpdateCuppingSessionCoffeesMutation,
+  UpdateCuppingSessionCoffeesMutationVariables
+>
+export const LockCuppingSessionDocument = gql`
+  mutation LockCuppingSession($id: ID!) {
+    lockCuppingSession(id: $id) {
+      ...CupppingSessionFragment
+    }
+  }
+  ${CupppingSessionFragmentFragmentDoc}
+`
+export type LockCuppingSessionMutationFn = ApolloReactCommon.MutationFunction<
+  LockCuppingSessionMutation,
+  LockCuppingSessionMutationVariables
+>
+
+/**
+ * __useLockCuppingSessionMutation__
+ *
+ * To run a mutation, you first call `useLockCuppingSessionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLockCuppingSessionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [lockCuppingSessionMutation, { data, loading, error }] = useLockCuppingSessionMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useLockCuppingSessionMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<LockCuppingSessionMutation, LockCuppingSessionMutationVariables>,
+) {
+  return ApolloReactHooks.useMutation<LockCuppingSessionMutation, LockCuppingSessionMutationVariables>(
+    LockCuppingSessionDocument,
+    baseOptions,
+  )
+}
+export type LockCuppingSessionMutationHookResult = ReturnType<typeof useLockCuppingSessionMutation>
+export type LockCuppingSessionMutationResult = ApolloReactCommon.MutationResult<LockCuppingSessionMutation>
+export type LockCuppingSessionMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  LockCuppingSessionMutation,
+  LockCuppingSessionMutationVariables
+>
 export const DeleteCuppingSessionDocument = gql`
   mutation DeleteCuppingSession($id: ID!) {
     deleteCuppingSession(id: $id) {
@@ -2329,6 +2705,97 @@ export type DeleteCuppingSessionMutationResult = ApolloReactCommon.MutationResul
 export type DeleteCuppingSessionMutationOptions = ApolloReactCommon.BaseMutationOptions<
   DeleteCuppingSessionMutation,
   DeleteCuppingSessionMutationVariables
+>
+export const CreateScoreSheetDocument = gql`
+  mutation CreateScoreSheet($sessionCoffeeId: ID!, $input: CreateScoreSheetInput!) {
+    createScoreSheet(sessionCoffeeId: $sessionCoffeeId, input: $input) {
+      ...ScoreSheetFragment
+    }
+  }
+  ${ScoreSheetFragmentFragmentDoc}
+`
+export type CreateScoreSheetMutationFn = ApolloReactCommon.MutationFunction<
+  CreateScoreSheetMutation,
+  CreateScoreSheetMutationVariables
+>
+
+/**
+ * __useCreateScoreSheetMutation__
+ *
+ * To run a mutation, you first call `useCreateScoreSheetMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateScoreSheetMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createScoreSheetMutation, { data, loading, error }] = useCreateScoreSheetMutation({
+ *   variables: {
+ *      sessionCoffeeId: // value for 'sessionCoffeeId'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateScoreSheetMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<CreateScoreSheetMutation, CreateScoreSheetMutationVariables>,
+) {
+  return ApolloReactHooks.useMutation<CreateScoreSheetMutation, CreateScoreSheetMutationVariables>(
+    CreateScoreSheetDocument,
+    baseOptions,
+  )
+}
+export type CreateScoreSheetMutationHookResult = ReturnType<typeof useCreateScoreSheetMutation>
+export type CreateScoreSheetMutationResult = ApolloReactCommon.MutationResult<CreateScoreSheetMutation>
+export type CreateScoreSheetMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  CreateScoreSheetMutation,
+  CreateScoreSheetMutationVariables
+>
+export const UpdateScoreSheetDocument = gql`
+  mutation UpdateScoreSheet($scoreSheetId: ID!, $sessionCoffeeId: ID!, $input: UpdateScoreSheetInput!) {
+    updateScoreSheet(scoreSheetId: $scoreSheetId, sessionCoffeeId: $sessionCoffeeId, input: $input) {
+      ...ScoreSheetFragment
+    }
+  }
+  ${ScoreSheetFragmentFragmentDoc}
+`
+export type UpdateScoreSheetMutationFn = ApolloReactCommon.MutationFunction<
+  UpdateScoreSheetMutation,
+  UpdateScoreSheetMutationVariables
+>
+
+/**
+ * __useUpdateScoreSheetMutation__
+ *
+ * To run a mutation, you first call `useUpdateScoreSheetMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateScoreSheetMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateScoreSheetMutation, { data, loading, error }] = useUpdateScoreSheetMutation({
+ *   variables: {
+ *      scoreSheetId: // value for 'scoreSheetId'
+ *      sessionCoffeeId: // value for 'sessionCoffeeId'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateScoreSheetMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateScoreSheetMutation, UpdateScoreSheetMutationVariables>,
+) {
+  return ApolloReactHooks.useMutation<UpdateScoreSheetMutation, UpdateScoreSheetMutationVariables>(
+    UpdateScoreSheetDocument,
+    baseOptions,
+  )
+}
+export type UpdateScoreSheetMutationHookResult = ReturnType<typeof useUpdateScoreSheetMutation>
+export type UpdateScoreSheetMutationResult = ApolloReactCommon.MutationResult<UpdateScoreSheetMutation>
+export type UpdateScoreSheetMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  UpdateScoreSheetMutation,
+  UpdateScoreSheetMutationVariables
 >
 export const ListFarmsDocument = gql`
   query ListFarms {

@@ -164,6 +164,7 @@ export type CreateRoleInput = {
 }
 
 export type CreateScoreSheetInput = {
+  userId?: Maybe<Scalars['ID']>
   fragranceAroma?: Maybe<Scalars['ScoreFloat']>
   flavor?: Maybe<Scalars['ScoreFloat']>
   aftertaste?: Maybe<Scalars['ScoreFloat']>
@@ -195,6 +196,7 @@ export type CuppingSession = {
   id: Scalars['ID']
   internalId?: Maybe<Scalars['ID']>
   description?: Maybe<Scalars['String']>
+  locked?: Maybe<Scalars['Boolean']>
   sessionCoffees?: Maybe<Array<Maybe<SessionCoffee>>>
   createdAt: Scalars['String']
   updatedAt: Scalars['String']
@@ -272,6 +274,20 @@ export type FarmZone = {
   name: Scalars['String']
 }
 
+export type Me = UserInterface & {
+  __typename: 'Me'
+  id: Scalars['ID']
+  username: Scalars['String']
+  firstName?: Maybe<Scalars['String']>
+  lastName?: Maybe<Scalars['String']>
+  account?: Maybe<Account>
+  accounts: Array<Account>
+  roles: Array<Role>
+  scopes: Array<Scalars['String']>
+  createdAt: Scalars['String']
+  updatedAt: Scalars['String']
+}
+
 export type Mutation = {
   __typename: 'Mutation'
   createAccount?: Maybe<Account>
@@ -319,8 +335,10 @@ export type Mutation = {
   createCuppingSession?: Maybe<CuppingSession>
   updateCuppingSession?: Maybe<CuppingSession>
   deleteCuppingSession?: Maybe<CuppingSession>
-  createScoreSheet?: Maybe<CuppingSession>
-  updateScoreSheet?: Maybe<CuppingSession>
+  updateCuppingSessionCoffees?: Maybe<CuppingSession>
+  lockCuppingSession?: Maybe<CuppingSession>
+  createScoreSheet?: Maybe<ScoreSheet>
+  updateScoreSheet?: Maybe<ScoreSheet>
   deleteScoreSheet?: Maybe<CuppingSession>
 }
 
@@ -516,6 +534,15 @@ export type MutationDeleteCuppingSessionArgs = {
   id: Scalars['ID']
 }
 
+export type MutationUpdateCuppingSessionCoffeesArgs = {
+  id: Scalars['ID']
+  sessionCoffees: Array<SessionCoffeeInput>
+}
+
+export type MutationLockCuppingSessionArgs = {
+  id: Scalars['ID']
+}
+
 export type MutationCreateScoreSheetArgs = {
   sessionCoffeeId: Scalars['ID']
   input: CreateScoreSheetInput
@@ -572,7 +599,7 @@ export type Query = {
   getRole?: Maybe<Role>
   listUsers: UserConnection
   getUser?: Maybe<User>
-  me?: Maybe<User>
+  me?: Maybe<Me>
   listCoffees: CoffeeConnection
   getCoffee?: Maybe<Coffee>
   listCountries: CountryConnection
@@ -587,6 +614,9 @@ export type Query = {
   getVariety?: Maybe<Variety>
   listCuppingSessions: CuppingSessionConnection
   getCuppingSession?: Maybe<CuppingSession>
+  getCuppingSessionCoffee?: Maybe<SessionCoffee>
+  listScoreSheets?: Maybe<Array<Maybe<ScoreSheet>>>
+  getScoreSheet?: Maybe<ScoreSheet>
 }
 
 export type QueryListAccountsArgs = {
@@ -689,6 +719,19 @@ export type QueryGetCuppingSessionArgs = {
   id: Scalars['ID']
 }
 
+export type QueryGetCuppingSessionCoffeeArgs = {
+  id: Scalars['ID']
+}
+
+export type QueryListScoreSheetsArgs = {
+  sessionCoffeeId: Scalars['ID']
+}
+
+export type QueryGetScoreSheetArgs = {
+  sessionCoffeeId: Scalars['ID']
+  scoreSheetId: Scalars['ID']
+}
+
 export type QueryInput = {
   field: Scalars['String']
   value?: Maybe<Scalars['String']>
@@ -763,12 +806,13 @@ export type SessionCoffee = {
   id: Scalars['ID']
   sampleNumber: Scalars['ID']
   coffee: Coffee
+  averageScore?: Maybe<Scalars['Int']>
   scoreSheets?: Maybe<Array<Maybe<ScoreSheet>>>
 }
 
 export type SessionCoffeeInput = {
   sampleNumber: Scalars['ID']
-  coffee?: Maybe<Scalars['ID']>
+  coffee: Scalars['ID']
 }
 
 export type UpdateAccountInput = {
@@ -793,7 +837,6 @@ export type UpdateCountryInput = {
 export type UpdateCuppingSessionInput = {
   internalId?: Maybe<Scalars['ID']>
   description?: Maybe<Scalars['String']>
-  sessionCoffees?: Maybe<Array<Maybe<SessionCoffeeInput>>>
 }
 
 export type UpdateDeviceInput = {
@@ -832,6 +875,7 @@ export type UpdateRoleInput = {
 }
 
 export type UpdateScoreSheetInput = {
+  userId?: Maybe<Scalars['ID']>
   fragranceAroma?: Maybe<Scalars['ScoreFloat']>
   flavor?: Maybe<Scalars['ScoreFloat']>
   aftertaste?: Maybe<Scalars['ScoreFloat']>
@@ -857,13 +901,12 @@ export type UpdateVarietyInput = {
   name?: Maybe<Scalars['String']>
 }
 
-export type User = {
+export type User = UserInterface & {
   __typename: 'User'
   id: Scalars['ID']
   username: Scalars['String']
   firstName?: Maybe<Scalars['String']>
   lastName?: Maybe<Scalars['String']>
-  account?: Maybe<Account>
   accounts: Array<Account>
   roles: Array<Role>
   scopes: Array<Scalars['String']>
@@ -881,6 +924,18 @@ export type UserEdge = {
   __typename: 'UserEdge'
   cursor: Scalars['String']
   node: User
+}
+
+export type UserInterface = {
+  id: Scalars['ID']
+  username: Scalars['String']
+  firstName?: Maybe<Scalars['String']>
+  lastName?: Maybe<Scalars['String']>
+  accounts: Array<Account>
+  roles: Array<Role>
+  scopes: Array<Scalars['String']>
+  createdAt: Scalars['String']
+  updatedAt: Scalars['String']
 }
 
 export type Variety = {
@@ -913,7 +968,7 @@ export type SwitchAccountMutation = {__typename: 'Mutation'} & Pick<Mutation, 's
 
 export type MeQueryVariables = {}
 
-export type MeQuery = {__typename: 'Query'} & {me: Maybe<{__typename: 'User'} & UserFragmentFragment>}
+export type MeQuery = {__typename: 'Query'} & {me: Maybe<{__typename: 'Me'} & UserFragmentFragment>}
 
 export type RefreshTokenMutationVariables = {}
 
@@ -930,8 +985,8 @@ export type LogoutMutationVariables = {}
 
 export type LogoutMutation = {__typename: 'Mutation'} & Pick<Mutation, 'logout'>
 
-export type UserFragmentFragment = {__typename: 'User'} & Pick<
-  User,
+export type UserFragmentFragment = {__typename: 'Me'} & Pick<
+  Me,
   'id' | 'username' | 'firstName' | 'lastName' | 'scopes'
 > & {
     account: Maybe<{__typename: 'Account'} & Pick<Account, 'id' | 'name'>>
@@ -940,7 +995,7 @@ export type UserFragmentFragment = {__typename: 'User'} & Pick<
   }
 
 export const UserFragmentFragmentDoc = gql`
-  fragment UserFragment on User {
+  fragment UserFragment on Me {
     id
     username
     firstName

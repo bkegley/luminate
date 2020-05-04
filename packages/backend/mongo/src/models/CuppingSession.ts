@@ -9,6 +9,7 @@ export interface CuppingSessionDocument extends AuthenticatedDocument {
 }
 
 export interface ScoreSheetDocument extends mongoose.Document {
+  userId: string
   fragranceAroma: number
   flavor: number
   aftertaste: number
@@ -35,50 +36,68 @@ export interface SessionCoffeeDocument extends mongoose.Document {
 }
 
 const ScoreSheet = new mongoose.Schema({
+  userId: {
+    type: mongoose.Types.ObjectId,
+    ref: 'user',
+  },
   fragranceAroma: {
     type: Number,
+    default: 0,
   },
   flavor: {
     type: Number,
+    default: 0,
   },
   aftertaste: {
     type: Number,
+    default: 0,
   },
   acidity: {
     type: Number,
+    default: 0,
   },
   body: {
     type: Number,
+    default: 0,
   },
   uniformity: {
     type: Number,
+    default: 0,
   },
   cleanCup: {
     type: Number,
+    default: 0,
   },
   balance: {
     type: Number,
+    default: 0,
   },
   sweetness: {
     type: Number,
+    default: 0,
   },
   overall: {
     type: Number,
+    default: 0,
   },
   taints: {
     numberOfCups: {
       type: Number,
+      default: 0,
     },
     intensity: {
       type: Number,
+      default: 0,
     },
   },
   defects: {
     numberOfCups: {
       type: Number,
+      default: 0,
     },
     intensity: {
       type: Number,
+      default: 0,
     },
   },
 })
@@ -91,6 +110,10 @@ const CuppingSession = extendSchema(
     },
     description: {
       type: String,
+    },
+    locked: {
+      type: Boolean,
+      default: false,
     },
     sessionCoffees: [
       {

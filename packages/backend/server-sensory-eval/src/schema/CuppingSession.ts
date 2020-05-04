@@ -6,6 +6,7 @@ const typeDefs = gql`
     id: ID!
     internalId: ID
     description: String
+    locked: Boolean
     sessionCoffees: [SessionCoffee]
     createdAt: String!
     updatedAt: String!
@@ -15,6 +16,7 @@ const typeDefs = gql`
     id: ID!
     sampleNumber: ID!
     coffee: Coffee!
+    averageScore: Float
     scoreSheets: [ScoreSheet]
   }
 
@@ -40,23 +42,25 @@ const typeDefs = gql`
   input UpdateCuppingSessionInput {
     internalId: ID
     description: String
-    sessionCoffees: [SessionCoffeeInput]
   }
 
   input SessionCoffeeInput {
     sampleNumber: ID!
-    coffee: ID
+    coffee: ID!
   }
 
   extend type Query {
     listCuppingSessions(cursor: String, limit: Int, query: [QueryInput!]): CuppingSessionConnection!
     getCuppingSession(id: ID!): CuppingSession
+    getCuppingSessionCoffee(id: ID!): SessionCoffee
   }
 
   extend type Mutation {
     createCuppingSession(input: CreateCuppingSessionInput!): CuppingSession
     updateCuppingSession(id: ID!, input: UpdateCuppingSessionInput!): CuppingSession
     deleteCuppingSession(id: ID!): CuppingSession
+    updateCuppingSessionCoffees(id: ID!, sessionCoffees: [SessionCoffeeInput!]!): CuppingSession
+    lockCuppingSession(id: ID!): CuppingSession
   }
 `
 
@@ -65,10 +69,11 @@ const resolvers: Resolvers = {
     listCuppingSessions: async (parent, args, {services}) => {
       return services.cuppingSession.getConnectionResults(args)
     },
-    getCuppingSession: async (parent, {id}, {services}, info) => {
+    getCuppingSession: async (parent, {id}, {services}) => {
       return services.cuppingSession.getById(id)
-      // const {cuppingSessions} = loaders
-      // return cuppingSessions.load(id)
+    },
+    getCuppingSessionCoffee: async (parent, {id}, {services}) => {
+      return services.cuppingSession.getCuppingSessionCoffee(id)
     },
   },
   Mutation: {
@@ -81,8 +86,38 @@ const resolvers: Resolvers = {
     deleteCuppingSession: async (parent, {id}, {services}) => {
       return services.cuppingSession.deleteById(id)
     },
+    updateCuppingSessionCoffees: async (parent, {id, sessionCoffees}, {services}) => {
+      return services.cuppingSession.updateCuppingSessionCoffees(id, sessionCoffees)
+    },
+    lockCuppingSession: async (parent, {id}, {services}) => {
+      return services.cuppingSession.lock(id)
+    },
   },
   SessionCoffee: {
+    averageScore: parent => {
+      const totalScore = parent.scoreSheets.reduce((acc, cur) => {
+        const {
+          fragranceAroma,
+          flavor,
+          aftertaste,
+          acidity,
+          body,
+          uniformity,
+          cleanCup,
+          balance,
+          sweetness,
+          overall,
+          taints,
+          defects,
+        } = cur
+        const totalScore =
+          fragranceAroma + flavor + aftertaste + acidity + body + uniformity + cleanCup + balance + sweetness + overall
+        const totalDefects =
+          taints.numberOfCups || 0 * taints.intensity || 0 + defects.numberOfCups || 0 * defects.intensity || 0
+        return acc + (totalScore - totalDefects)
+      }, 0)
+      return totalScore / parent.scoreSheets.length
+    },
     coffee: parent => {
       return {__typename: 'Coffee', id: parent.coffee}
     },
