@@ -28,6 +28,7 @@ type Navigation = {
 interface NavItem {
   text: string
   to: string
+  activeIsExact?: boolean
 }
 
 export type NavigationIcons = 'home' | 'geography' | 'sensory'
@@ -56,6 +57,7 @@ const navigation: Navigation = {
         {
           text: 'List',
           to: '/regions',
+          activeIsExact: true,
         },
         {
           text: 'Create',
@@ -131,16 +133,11 @@ const Sidebar = ({activeNavItem, setActiveNavItem, closeMenu, navMenuOpen}: Side
               return (
                 <div key={key} className="my-4">
                   <h3 className="text-gray-600 text-xs uppercase tracking-wide font-semibold">{key}</h3>
-                  {navItems.map(navItem => {
+                  {navItems.map((navItem, index) => {
                     return (
-                      <div>
-                        <Link
-                          to={navItem.to}
-                          className="block py-1 px-3 rounded text-gray-800 hover:bg-gray-400 hover:text-gray-900"
-                        >
-                          {navItem.text}
-                        </Link>
-                      </div>
+                      <NavLink key={index} to={navItem.to} exactPath={navItem.activeIsExact}>
+                        {navItem.text}
+                      </NavLink>
                     )
                   })}
                 </div>
@@ -148,6 +145,29 @@ const Sidebar = ({activeNavItem, setActiveNavItem, closeMenu, navMenuOpen}: Side
             })
           : null}
       </div>
+    </div>
+  )
+}
+
+interface NavLinkProps {
+  to: string
+  children: React.ReactNode
+  exactPath?: boolean
+}
+
+const NavLink = ({to, exactPath, children}: NavLinkProps) => {
+  const location = useLocation()
+  const isActivePath = !!location.pathname.match(`^${to}${exactPath ? '$' : ''}`)
+  return (
+    <div>
+      <Link
+        to={to}
+        className={`block py-1 px-2 m-1 border-l-4 border-${
+          isActivePath ? 'primary-500 bg-gray-400' : 'transparent'
+        } rounded text-gray-800 hover:bg-gray-400 hover:text-gray-900`}
+      >
+        {children}
+      </Link>
     </div>
   )
 }
