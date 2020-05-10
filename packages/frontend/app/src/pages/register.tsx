@@ -6,14 +6,14 @@ import Header from '../components/RootHeader'
 
 const RegisterPage = () => {
   return (
-    <Layout header={<Header />}>
+    <div>
       <div className="pt-20 px-4 mb-6">
         <Heading as="h2">Register</Heading>
       </div>
       <div>
         <RegisterForm />
       </div>
-    </Layout>
+    </div>
   )
 }
 
