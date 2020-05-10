@@ -46,7 +46,7 @@
 }
 
 .card-default {
-  @apply bg-white rounded-md shadow-md;
+  @apply bg-white rounded shadow-md;
 }
 
 .input {
