@@ -1,46 +1,78 @@
-version: '3'
+version: '3.8'
 
 services:
+  mongo-utils:
+    build:
+      target: install
+    volumes:
+      - ./packages/backend/mongo:/app/packages/backend/mongo
+    command: yarn workspace @luminate/mongo run develop
+
+  graphql-utils:
+    build:
+      target: install
+    volumes:
+      - ./packages/backend/graphql-utils:/app/packages/backend/graphql-utils
+    command: yarn workspace @luminate/graphql-utils run develop
+
   app:
+    build:
+      target: install
     ports:
       - 8001:8000
     environment:
-      - API_URL=http://server-gateway:3000/graphql
+      - API_URL=http://localhost:3000/graphql
     volumes:
-      - ./packages/frontend/app:/usr/src/app/packages/frontend/app
-    command: yarn workspace @luminate/app run develop --host "0.0.0.0"
+      - ./packages/frontend/app:/app/packages/frontend/app
+    command: yarn workspace @luminate/app run develop --host "0.0.0.0" --port 8000
 
   server-auth:
+    build:
+      target: install
     ports:
-      - 3001:3001
+      - 3001:3000
     environment:
-      - PORT=3001
+      - PORT=3000
       - MONGO_URL=mongodb://db:27017/db
-    command: yarn workspace @luminate/server-auth run start
+    volumes:
+      - ./packages/backend/server-auth:/app/packages/backend/server-auth
+    command: yarn workspace @luminate/server-auth run develop
 
   server-encyclopedia:
+    build:
+      target: install
     ports:
-      - 3002:3002
+      - 3002:3000
     environment:
-      - PORT=3002
+      - PORT=3000
       - MONGO_URL=mongodb://db:27017/db
-    command: yarn workspace @luminate/server-encyclopedia run start
+    volumes:
+      - ./packages/backend/server-encyclopedia:/app/packages/backend/server-encyclopedia
+    command: yarn workspace @luminate/server-encyclopedia run develop
 
   server-sensory-eval:
+    build:
+      target: install
     ports:
-      - 3003:3003
+      - 3003:3000
     environment:
-      - PORT=3003
+      - PORT=3000
       - MONGO_URL=mongodb://db:27017/db
-    command: yarn workspace @luminate/server-sensory-eval run start
+    volumes:
+      - ./packages/backend/server-sensory-eval:/app/packages/backend/server-sensory-eval
+    command: yarn workspace @luminate/server-sensory-eval run develop
 
   server-gateway:
+    build:
+      target: install
     ports:
       - 3000:3000
     environment:
       - PORT=3000
-      - SERVER_AUTH_PORT=3001
-      - SERVER_ENCYCLOPEDIA_PORT=3002
-      - SERVER_SENSORY_EVAL_PORT=3003
+      - SERVER_AUTH_URL=http://server-auth:3000/graphql
+      - SERVER_ENCYCLOPEDIA_URL=http://server-encyclopedia:3000/graphql
+      - SERVER_SENSORY_EVAL_URL=http://server-sensory-eval:3000/graphql
       - MONGO_URL=mongodb://db:27017/db
-    command: yarn workspace @luminate/server-gateway run start
+    volumes:
+      - ./packages/backend/server-gateway:/app/packages/backend/server-gateway
+    command: yarn workspace @luminate/server-gateway run develop

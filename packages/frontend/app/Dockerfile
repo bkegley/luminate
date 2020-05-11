@@ -1,11 +1,22 @@
-FROM node:12-alpine3.11 AS build
-WORKDIR /usr/src/app
+FROM node:12-alpine3.11 AS install
+WORKDIR /app
 
 # build python for bcrypt
 RUN apk --no-cache add --virtual builds-deps build-base python
 
-COPY ./packages/frontend/app ./packages/frontend/app
-COPY ./packages/frontend/gatsby-theme-luminate ./packages/frontend/gatsby-theme-luminate
+# backend dependencies
+COPY ./packages/backend/graphql-utils/package.json ./packages/backend/graphql-utils/package.json
+COPY ./packages/backend/mongo/package.json ./packages/backend/mongo/package.json
+COPY ./packages/backend/server-auth ./packages/backend/server-auth
+COPY ./packages/backend/server-encyclopedia ./packages/backend/server-encyclopedia
+COPY ./packages/backend/server-gateway ./packages/backend/server-gateway
+COPY ./packages/backend/server-sensory-eval ./packages/backend/server-sensory-eval
+
+# frontend dependencies
+COPY ./packages/frontend/admin/package.json ./packages/backend/admin/package.json
+COPY ./packages/frontend/app/package.json ./packages/backend/app/package.json
+COPY ./packages/frontend/gatsby-theme-luminate/package.json ./packages/backend/gatsby-theme-luminate/package.json
+
 COPY lerna.json .
 COPY package.json .
 COPY yarn.lock .
@@ -13,19 +24,14 @@ COPY tsconfig.base.json .
 
 RUN yarn
 
+FROM node:12-alpine3.11 as build
+
+COPY --from=install . .
 RUN yarn workspace @luminate/app run build
 
-FROM node:12-alpine3.11 AS run
-WORKDIR /usr/src/app
+FROM nginx:alpine
+WORKDIR /usr/share/nginx/html
 
-# build python for bcrypt
-RUN apk --no-cache add --virtual builds-deps build-base python
+EXPOSE 80
 
-COPY package.json .
-COPY --from=build /usr/src/app/packages/frontend/app ./packages/frontend/app
-COPY --from=build /usr/src/app/packages/frontend/gatsby-theme-luminate ./packages/frontend/gatsby-theme-luminate
-
-RUN yarn
-
-CMD [ "yarn", "workspace", "@luminate/app", "run", "serve", "--host", "0.0.0.0", "-p", "8000" ]
-EXPOSE 8000
+COPY --from=build /app/public /usr/share/nginx/html
