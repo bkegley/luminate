@@ -4,6 +4,8 @@ services:
   mongo-utils:
     build:
       target: install
+    environment:
+      - MONGO_URL=mongodb://db:27017/db
     volumes:
       - ./packages/backend/mongo:/app/packages/backend/mongo
     command: yarn workspace @luminate/mongo run develop
