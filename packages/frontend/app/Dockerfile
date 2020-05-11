@@ -1,4 +1,4 @@
-FROM node:12-alpine3.11 AS install
+FROM node:12-alpine3.11 AS pre-install
 WORKDIR /app
 
 # build python for bcrypt
@@ -13,9 +13,9 @@ COPY ./packages/backend/server-gateway ./packages/backend/server-gateway
 COPY ./packages/backend/server-sensory-eval ./packages/backend/server-sensory-eval
 
 # frontend dependencies
-COPY ./packages/frontend/admin/package.json ./packages/backend/admin/package.json
-COPY ./packages/frontend/app/package.json ./packages/backend/app/package.json
-COPY ./packages/frontend/gatsby-theme-luminate/package.json ./packages/backend/gatsby-theme-luminate/package.json
+COPY ./packages/frontend/admin/package.json ./packages/frontend/admin/package.json
+COPY ./packages/frontend/app/package.json ./packages/frontend/app/package.json
+COPY ./packages/frontend/gatsby-theme-luminate/package.json ./packages/frontend/gatsby-theme-luminate/package.json
 
 COPY lerna.json .
 COPY package.json .
@@ -24,9 +24,16 @@ COPY tsconfig.base.json .
 
 RUN yarn
 
-FROM node:12-alpine3.11 as build
+FROM node:12-alpine3.11 as install
+WORKDIR /app
+COPY --from=pre-install /app .
+COPY ./packages/frontend/gatsby-theme-luminate ./packages/frontend/gatsby-theme-luminate
 
-COPY --from=install . .
+
+FROM node:12-alpine3.11 as build
+WORKDIR /app
+
+COPY --from=install /app .
 RUN yarn workspace @luminate/app run build
 
 FROM nginx:alpine
@@ -34,4 +41,4 @@ WORKDIR /usr/share/nginx/html
 
 EXPOSE 80
 
-COPY --from=build /app/public /usr/share/nginx/html
+COPY --from=build /app/packages/frontend/app/public /usr/share/nginx/html

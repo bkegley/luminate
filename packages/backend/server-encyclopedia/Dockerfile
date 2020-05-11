@@ -13,9 +13,9 @@ COPY ./packages/backend/server-gateway ./packages/backend/server-gateway
 COPY ./packages/backend/server-sensory-eval ./packages/backend/server-sensory-eval
 
 # frontend dependencies
-COPY ./packages/frontend/admin/package.json ./packages/backend/admin/package.json
-COPY ./packages/frontend/app/package.json ./packages/backend/app/package.json
-COPY ./packages/frontend/gatsby-theme-luminate/package.json ./packages/backend/gatsby-theme-luminate/package.json
+COPY ./packages/frontend/admin/package.json ./packages/frontend/admin/package.json
+COPY ./packages/frontend/app/package.json ./packages/frontend/app/package.json
+COPY ./packages/frontend/gatsby-theme-luminate/package.json ./packages/frontend/gatsby-theme-luminate/package.json
 
 COPY lerna.json .
 COPY package.json .
