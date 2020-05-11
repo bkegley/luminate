@@ -16,6 +16,10 @@ const PORT = process.env.PORT || 3000
 const USER_AUTH_TOKEN = process.env.USER_AUTH_TOKEN || 'localsecrettoken'
 const DEPLOY_ENV = process.env.DEPLOY_ENV || 'development'
 
+const SERVER_AUTH_URL = process.env.SERVER_AUTH_URL || 'http://localhost:3001/graphl'
+const SERVER_ENCYCLOPEDIA_URL = process.env.SERVER_ENCYCLOPEDIA_URL || 'http://localhost:3002/graphql'
+const SERVER_SENSORY_EVAL_URL = process.env.SERVER_SENSORY_EVAL_URL || 'http://localhost:3003/graphql'
+
 export interface Context {
   req: express.Request
   res: express.Response
@@ -85,21 +89,15 @@ const startServer = async () => {
     serviceList: [
       {
         name: 'auth',
-        url: 'http://localhost:3001/graphql',
-        // url: `http://server-auth${false ? buildHostname(DEPLOY_ENV) : ''}:${process.env.SERVER_AUTH_PORT ||
-        //   3001}/graphql`,
+        url: SERVER_AUTH_URL,
       },
       {
         name: 'encyclopedia',
-        url: 'http://localhost:3002/graphql',
-        //   // url: `http://server-encyclopedia${false ? buildHostname(DEPLOY_ENV) : ''}:${process.env
-        //   //   .SERVER_ENCYCLOPEDIA_PORT || 3002}/graphql`,
+        url: SERVER_ENCYCLOPEDIA_URL,
       },
       {
         name: 'sensory-eval',
-        url: 'http://localhost:3003/graphql',
-        // url: `http://server-sensory-eval${false ? buildHostname(DEPLOY_ENV) : ''}:${process.env
-        //   .SERVER_SENSORY_EVAL_PORT || 3003}/graphql`,
+        url: SERVER_SENSORY_EVAL_URL,
       },
     ],
     buildService: ({url}) => {

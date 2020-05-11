@@ -1,4 +1,4 @@
-version: '3'
+version: '3.8'
 
 services:
   mongo-utils:
@@ -12,6 +12,8 @@ services:
       context: .
       dockerfile: packages/backend/graphql-utils/Dockerfile
     image: graphql-utils
+    depends_on:
+      - mongo-utils
 
   db:
     image: mongo:3.6.17-xenial
@@ -22,12 +24,10 @@ services:
   app:
     build:
       context: .
-      dockerfile: packages/frotend/app/Dockerfile
+      dockerfile: packages/frontend/app/Dockerfile
     image: app
     container_name: app
     restart: unless-stopped
-    links:
-      - server-gateway
 
   server-auth:
     build:
@@ -84,6 +84,9 @@ services:
     depends_on:
       - mongo-utils
       - graphql-utils
+      - server-auth
+      - server-encyclopedia
+      - server-sensory-eval
     links:
       - db:db
       - server-auth

@@ -1,20 +1,22 @@
-FROM mongo-utils AS mongo-utils
-WORKDIR /usr/src/app
-COPY ./packages/backend/mongo ./packages/backend/mongo
-
-FROM graphql-utils AS graphql-utils
-WORKDIR /usr/src/app
-COPY ./packages/backend/graphql-utils ./packages/backend/graphql-utils
-
-FROM node:12-alpine3.11 AS build-server
-WORKDIR /usr/src/app
+FROM node:12-alpine3.11 AS pre-install
+WORKDIR /app
 
 # build python for bcrypt
 RUN apk --no-cache add --virtual builds-deps build-base python
 
+# backend dependencies
+COPY ./packages/backend/graphql-utils/package.json ./packages/backend/graphql-utils/package.json
+COPY ./packages/backend/mongo/package.json ./packages/backend/mongo/package.json
+COPY ./packages/backend/server-auth ./packages/backend/server-auth
+COPY ./packages/backend/server-encyclopedia ./packages/backend/server-encyclopedia
+COPY ./packages/backend/server-gateway ./packages/backend/server-gateway
 COPY ./packages/backend/server-sensory-eval ./packages/backend/server-sensory-eval
-COPY --from=mongo-utils /usr/src/app/packages/backend/mongo ./packages/backend/mongo
-COPY --from=graphql-utils /usr/src/app/packages/backend/graphql-utils ./packages/backend/graphql-utils
+
+# frontend dependencies
+COPY ./packages/frontend/admin/package.json ./packages/backend/admin/package.json
+COPY ./packages/frontend/app/package.json ./packages/backend/app/package.json
+COPY ./packages/frontend/gatsby-theme-luminate/package.json ./packages/backend/gatsby-theme-luminate/package.json
+
 COPY lerna.json .
 COPY package.json .
 COPY yarn.lock .
@@ -22,23 +24,25 @@ COPY tsconfig.base.json .
 
 RUN yarn
 
+FROM mongo-utils AS mongo-utils
+WORKDIR /app
+COPY ./packages/backend/mongo ./packages/backend/mongo
+
+FROM graphql-utils AS graphql-utils
+WORKDIR /app
+COPY ./packages/backend/graphql-utils ./packages/backend/graphql-utils
+
+FROM pre-install AS install
+WORKDIR /app
+COPY --from=mongo-utils ./app/packages/backend/mongo ./packages/backend/mongo
+COPY --from=graphql-utils ./app/packages/backend/graphql-utils ./packages/backend/graphql-utils
+
+FROM node:12-alpine3.11
+WORKDIR /app
+
+COPY --from=install /app .
 RUN yarn workspace @luminate/server-sensory-eval run build
 
-FROM node:12-alpine3.11 AS run
-WORKDIR /usr/src/app
+CMD 'node packages/backend/server-sensory-eval/dist/startServer.js'
 
-RUN apk --no-cache add --virtual builds-deps build-base python
-
-COPY package.json .
-COPY yarn.lock .
-COPY --from=graphql-utils /usr/src/app/packages/backend/graphql-utils/package.json ./packages/backend/graphql-utils/package.json
-COPY --from=graphql-utils /usr/src/app/packages/backend/graphql-utils/dist ./packages/backend/graphql-utils/dist
-COPY --from=mongo-utils /usr/src/app/packages/backend/mongo/package.json ./packages/backend/mongo/package.json
-COPY --from=mongo-utils /usr/src/app/packages/backend/mongo/dist ./packages/backend/mongo/dist
-COPY --from=build-server /usr/src/app/packages/backend/server-sensory-eval/package.json ./packages/backend/server-sensory-eval/package.json
-COPY --from=build-server /usr/src/app/packages/backend/server-sensory-eval/dist ./packages/backend/server-sensory-eval/dist
-
-RUN yarn
-
-ENTRYPOINT [ "node", "packages/backend/server-sensory-eval/dist/startServer.js" ]
-EXPOSE 3001
+EXPOSE 3000
