@@ -5,6 +5,10 @@ export class Cursor {
   }
 
   public static parseCursor(string: string) {
-    return new Date(Buffer.from(string, 'base64').toString('utf-8')).toISOString()
+    try {
+      return new Date(Buffer.from(string, 'base64').toString('utf-8')).toISOString()
+    } catch {
+      return Buffer.from(string, 'base64').toString('utf-8')
+    }
   }
 }

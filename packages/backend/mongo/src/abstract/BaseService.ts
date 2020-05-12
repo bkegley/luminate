@@ -14,27 +14,33 @@ export class BaseService<T extends BaseDocument> {
   protected limit = 25
 
   protected buildConnectionQuery(args: IListDocumentsArgs): [any, null, any] {
-    const {cursor, limit, query, ...remainingArgs} = args
+    const {cursor, limit, query, sortBy, ...remainingArgs} = args
 
     const mappedQueryInput = QueryInput.getQueryValue(query)
 
+    const paginationCursor = cursor
+      ? sortBy
+        ? {
+            [sortBy.field]: {
+              // [sortBy.descending ? '$lte' : '$gte']: Cursor.parseCursor(cursor),
+              [sortBy.descending ? '$gte' : '$lte']: Cursor.parseCursor(cursor),
+            },
+          }
+        : {
+            updatedAt: {
+              $lte: Cursor.parseCursor(cursor),
+            },
+          }
+      : {}
+
     return [
       mappedQueryInput?.length
-        ? Object.assign(remainingArgs, ...mappedQueryInput, {
-            updatedAt: {
-              $lte: Cursor.parseCursor(cursor || Cursor.createCursor(new Date())),
-            },
-          })
-        : {
-            ...remainingArgs,
-            updatedAt: {
-              $lte: Cursor.parseCursor(cursor || Cursor.createCursor(new Date())),
-            },
-          },
+        ? Object.assign(remainingArgs, ...mappedQueryInput, paginationCursor)
+        : {...remainingArgs, ...paginationCursor},
       null,
       {
-        sort: '-updatedAt',
-        limit: limit || this.limit,
+        sort: sortBy ? `${sortBy.descending ? '' : '-'}${sortBy.field}` : '-updatedAt',
+        limit: limit ? limit + 1 : this.limit + 1,
       },
     ]
   }
@@ -54,7 +60,11 @@ export class BaseService<T extends BaseDocument> {
 
     const hasNextPage = documentsPlusOne.length > (args.limit || this.limit)
     const documents = hasNextPage ? documentsPlusOne.slice(0, -1) : documentsPlusOne
-    const nextCursor = hasNextPage ? Cursor.createCursor(documentsPlusOne[documentsPlusOne.length - 1].updatedAt) : null
+
+    const cursorField = (args.sortBy?.field ?? 'updatedAt') as keyof BaseDocument
+    const nextCursor = hasNextPage
+      ? Cursor.createCursor(documentsPlusOne[documentsPlusOne.length - 1][cursorField])
+      : null
 
     return {
       pageInfo: {
@@ -65,7 +75,7 @@ export class BaseService<T extends BaseDocument> {
       edges: documents.map(document => {
         return {
           node: document,
-          cursor: Cursor.createCursor(document.updatedAt),
+          cursor: Cursor.createCursor(document[cursorField]),
         }
       }),
     }
