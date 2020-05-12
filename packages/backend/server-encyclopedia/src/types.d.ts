@@ -73,8 +73,6 @@ export type Country = {
   id: Scalars['ID']
   name: Scalars['String']
   regions?: Maybe<Array<Maybe<Region>>>
-  createdAt: Scalars['String']
-  updatedAt: Scalars['String']
 }
 
 export type CountryConnection = {
@@ -91,17 +89,13 @@ export type CountryEdge = {
 
 export type CreateCoffeeInput = {
   name: Scalars['String']
-  country?: Maybe<Scalars['ID']>
-  region?: Maybe<Scalars['ID']>
+  country?: Maybe<Scalars['String']>
+  region?: Maybe<Scalars['String']>
   farm?: Maybe<Scalars['ID']>
   farmZone?: Maybe<Scalars['ID']>
   varieties?: Maybe<Array<Maybe<Scalars['ID']>>>
   elevation?: Maybe<Scalars['String']>
   components?: Maybe<Array<Maybe<ComponentInput>>>
-}
-
-export type CreateCountryInput = {
-  name: Scalars['String']
 }
 
 export type CreateDeviceInput = {
@@ -110,8 +104,8 @@ export type CreateDeviceInput = {
 
 export type CreateFarmInput = {
   name?: Maybe<Scalars['String']>
-  country?: Maybe<Scalars['ID']>
-  region?: Maybe<Scalars['ID']>
+  country?: Maybe<Scalars['String']>
+  region?: Maybe<Scalars['String']>
 }
 
 export type CreateFarmZoneInput = {
@@ -122,11 +116,6 @@ export type CreateNoteInput = {
   entityId: Scalars['ID']
   content: Scalars['String']
   field: Scalars['String']
-}
-
-export type CreateRegionInput = {
-  name: Scalars['String']
-  country?: Maybe<Scalars['ID']>
 }
 
 export type CreateVarietyInput = {
@@ -188,9 +177,6 @@ export type Mutation = {
   updateCoffee?: Maybe<Coffee>
   deleteCoffee?: Maybe<Coffee>
   updateCoffeePermissionsForAccount?: Maybe<Scalars['Boolean']>
-  createCountry?: Maybe<Country>
-  updateCountry?: Maybe<Country>
-  deleteCountry?: Maybe<Country>
   createDevice?: Maybe<Device>
   updateDevice?: Maybe<Device>
   deleteDevice?: Maybe<Device>
@@ -204,9 +190,6 @@ export type Mutation = {
   createNote?: Maybe<Note>
   updateNote?: Maybe<Note>
   deleteNote?: Maybe<Note>
-  createRegion?: Maybe<Region>
-  updateRegion?: Maybe<Region>
-  deleteRegion?: Maybe<Region>
   createVariety?: Maybe<Variety>
   updateVariety?: Maybe<Variety>
   deleteVariety?: Maybe<Variety>
@@ -230,19 +213,6 @@ export type MutationUpdateCoffeePermissionsForAccountArgs = {
   coffeeId: Scalars['ID']
   accountId: Scalars['ID']
   permissionTypes: Array<PermissionTypeEnum>
-}
-
-export type MutationCreateCountryArgs = {
-  input: CreateCountryInput
-}
-
-export type MutationUpdateCountryArgs = {
-  id: Scalars['ID']
-  input: UpdateCountryInput
-}
-
-export type MutationDeleteCountryArgs = {
-  id: Scalars['ID']
 }
 
 export type MutationCreateDeviceArgs = {
@@ -301,19 +271,6 @@ export type MutationUpdateNoteArgs = {
 }
 
 export type MutationDeleteNoteArgs = {
-  id: Scalars['ID']
-}
-
-export type MutationCreateRegionArgs = {
-  input: CreateRegionInput
-}
-
-export type MutationUpdateRegionArgs = {
-  id: Scalars['ID']
-  input: UpdateRegionInput
-}
-
-export type MutationDeleteRegionArgs = {
   id: Scalars['ID']
 }
 
@@ -455,8 +412,6 @@ export type Region = {
   name: Scalars['String']
   country?: Maybe<Country>
   farms?: Maybe<Array<Maybe<Farm>>>
-  createdAt: Scalars['String']
-  updatedAt: Scalars['String']
 }
 
 export type RegionConnection = {
@@ -473,17 +428,13 @@ export type RegionEdge = {
 
 export type UpdateCoffeeInput = {
   name?: Maybe<Scalars['String']>
-  country?: Maybe<Scalars['ID']>
-  region?: Maybe<Scalars['ID']>
+  country?: Maybe<Scalars['String']>
+  region?: Maybe<Scalars['String']>
   farm?: Maybe<Scalars['ID']>
   farmZone?: Maybe<Scalars['ID']>
   varieties?: Maybe<Array<Maybe<Scalars['ID']>>>
   elevation?: Maybe<Scalars['String']>
   components?: Maybe<Array<Maybe<ComponentInput>>>
-}
-
-export type UpdateCountryInput = {
-  name?: Maybe<Scalars['String']>
 }
 
 export type UpdateDeviceInput = {
@@ -492,8 +443,8 @@ export type UpdateDeviceInput = {
 
 export type UpdateFarmInput = {
   name?: Maybe<Scalars['String']>
-  country?: Maybe<Scalars['ID']>
-  region?: Maybe<Scalars['ID']>
+  country?: Maybe<Scalars['String']>
+  region?: Maybe<Scalars['String']>
 }
 
 export type UpdateFarmZoneInput = {
@@ -504,11 +455,6 @@ export type UpdateNoteInput = {
   entityId?: Maybe<Scalars['ID']>
   content?: Maybe<Scalars['String']>
   field?: Maybe<Scalars['String']>
-}
-
-export type UpdateRegionInput = {
-  name?: Maybe<Scalars['String']>
-  country?: Maybe<Scalars['ID']>
 }
 
 export type UpdateVarietyInput = {
@@ -654,8 +600,6 @@ export type ResolversTypes = ResolversObject<{
   ComponentInput: ComponentInput
   UpdateCoffeeInput: UpdateCoffeeInput
   PermissionTypeEnum: PermissionTypeEnum
-  CreateCountryInput: CreateCountryInput
-  UpdateCountryInput: UpdateCountryInput
   CreateDeviceInput: CreateDeviceInput
   UpdateDeviceInput: UpdateDeviceInput
   CreateFarmInput: CreateFarmInput
@@ -664,8 +608,6 @@ export type ResolversTypes = ResolversObject<{
   UpdateFarmZoneInput: UpdateFarmZoneInput
   CreateNoteInput: CreateNoteInput
   UpdateNoteInput: UpdateNoteInput
-  CreateRegionInput: CreateRegionInput
-  UpdateRegionInput: UpdateRegionInput
   CreateVarietyInput: CreateVarietyInput
   UpdateVarietyInput: UpdateVarietyInput
 }>
@@ -708,8 +650,6 @@ export type ResolversParentTypes = ResolversObject<{
   ComponentInput: ComponentInput
   UpdateCoffeeInput: UpdateCoffeeInput
   PermissionTypeEnum: PermissionTypeEnum
-  CreateCountryInput: CreateCountryInput
-  UpdateCountryInput: UpdateCountryInput
   CreateDeviceInput: CreateDeviceInput
   UpdateDeviceInput: UpdateDeviceInput
   CreateFarmInput: CreateFarmInput
@@ -718,8 +658,6 @@ export type ResolversParentTypes = ResolversObject<{
   UpdateFarmZoneInput: UpdateFarmZoneInput
   CreateNoteInput: CreateNoteInput
   UpdateNoteInput: UpdateNoteInput
-  CreateRegionInput: CreateRegionInput
-  UpdateRegionInput: UpdateRegionInput
   CreateVarietyInput: CreateVarietyInput
   UpdateVarietyInput: UpdateVarietyInput
 }>
@@ -820,8 +758,6 @@ export type CountryResolvers<
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   regions?: Resolver<Maybe<Array<Maybe<ResolversTypes['Region']>>>, ParentType, ContextType>
-  createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>
-  updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>
 }>
 
 export type RegionResolvers<
@@ -832,8 +768,6 @@ export type RegionResolvers<
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   country?: Resolver<Maybe<ResolversTypes['Country']>, ParentType, ContextType>
   farms?: Resolver<Maybe<Array<Maybe<ResolversTypes['Farm']>>>, ParentType, ContextType>
-  createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>
-  updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>
 }>
 
 export type FarmResolvers<
@@ -1014,24 +948,6 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationUpdateCoffeePermissionsForAccountArgs, 'coffeeId' | 'accountId' | 'permissionTypes'>
   >
-  createCountry?: Resolver<
-    Maybe<ResolversTypes['Country']>,
-    ParentType,
-    ContextType,
-    RequireFields<MutationCreateCountryArgs, 'input'>
-  >
-  updateCountry?: Resolver<
-    Maybe<ResolversTypes['Country']>,
-    ParentType,
-    ContextType,
-    RequireFields<MutationUpdateCountryArgs, 'id' | 'input'>
-  >
-  deleteCountry?: Resolver<
-    Maybe<ResolversTypes['Country']>,
-    ParentType,
-    ContextType,
-    RequireFields<MutationDeleteCountryArgs, 'id'>
-  >
   createDevice?: Resolver<
     Maybe<ResolversTypes['Device']>,
     ParentType,
@@ -1104,24 +1020,6 @@ export type MutationResolvers<
     ParentType,
     ContextType,
     RequireFields<MutationDeleteNoteArgs, 'id'>
-  >
-  createRegion?: Resolver<
-    Maybe<ResolversTypes['Region']>,
-    ParentType,
-    ContextType,
-    RequireFields<MutationCreateRegionArgs, 'input'>
-  >
-  updateRegion?: Resolver<
-    Maybe<ResolversTypes['Region']>,
-    ParentType,
-    ContextType,
-    RequireFields<MutationUpdateRegionArgs, 'id' | 'input'>
-  >
-  deleteRegion?: Resolver<
-    Maybe<ResolversTypes['Region']>,
-    ParentType,
-    ContextType,
-    RequireFields<MutationDeleteRegionArgs, 'id'>
   >
   createVariety?: Resolver<
     Maybe<ResolversTypes['Variety']>,

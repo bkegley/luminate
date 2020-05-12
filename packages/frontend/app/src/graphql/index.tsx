@@ -806,7 +806,7 @@ export type SessionCoffee = {
   id: Scalars['ID']
   sampleNumber: Scalars['ID']
   coffee: Coffee
-  averageScore?: Maybe<Scalars['Int']>
+  averageScore?: Maybe<Scalars['Float']>
   scoreSheets?: Maybe<Array<Maybe<ScoreSheet>>>
 }
 
@@ -1049,11 +1049,7 @@ export type ListCountriesTableQueryVariables = {}
 
 export type ListCountriesTableQuery = {__typename: 'Query'} & {
   listCountries: {__typename: 'CountryConnection'} & {
-    edges: Array<
-      {__typename: 'CountryEdge'} & {
-        node: {__typename: 'Country'} & Pick<Country, 'id' | 'name' | 'createdAt' | 'updatedAt'>
-      }
-    >
+    edges: Array<{__typename: 'CountryEdge'} & {node: {__typename: 'Country'} & Pick<Country, 'id' | 'name'>}>
   }
 }
 
@@ -1090,10 +1086,9 @@ export type DeleteCountryMutation = {__typename: 'Mutation'} & {
   deleteCountry: Maybe<{__typename: 'Country'} & Pick<Country, 'id'>>
 }
 
-export type CountryFragmentFragment = {__typename: 'Country'} & Pick<
-  Country,
-  'id' | 'name' | 'createdAt' | 'updatedAt'
-> & {regions: Maybe<Array<Maybe<{__typename: 'Region'} & Pick<Region, 'id' | 'name'>>>>}
+export type CountryFragmentFragment = {__typename: 'Country'} & Pick<Country, 'id' | 'name'> & {
+    regions: Maybe<Array<Maybe<{__typename: 'Region'} & Pick<Region, 'id' | 'name'>>>>
+  }
 
 export type ListCuppingSessionsQueryVariables = {
   cursor?: Maybe<Scalars['String']>
@@ -1325,7 +1320,7 @@ export type ListRegionsTableQuery = {__typename: 'Query'} & {
   listRegions: {__typename: 'RegionConnection'} & {
     edges: Array<
       {__typename: 'RegionEdge'} & {
-        node: {__typename: 'Region'} & Pick<Region, 'id' | 'name' | 'createdAt' | 'updatedAt'> & {
+        node: {__typename: 'Region'} & Pick<Region, 'id' | 'name'> & {
             country: Maybe<{__typename: 'Country'} & Pick<Country, 'id' | 'name'>>
           }
       }
@@ -1364,12 +1359,9 @@ export type DeleteRegionMutation = {__typename: 'Mutation'} & {
   deleteRegion: Maybe<{__typename: 'Region'} & Pick<Region, 'id'>>
 }
 
-export type RegionFragmentFragment = {__typename: 'Region'} & Pick<
-  Region,
-  'id' | 'name' | 'createdAt' | 'updatedAt'
-> & {
+export type RegionFragmentFragment = {__typename: 'Region'} & Pick<Region, 'id' | 'name'> & {
     country: Maybe<{__typename: 'Country'} & Pick<Country, 'id' | 'name'>>
-    farms: Maybe<Array<Maybe<{__typename: 'Farm'} & Pick<Farm, 'id'>>>>
+    farms: Maybe<Array<Maybe<{__typename: 'Farm'} & Pick<Farm, 'id' | 'name'>>>>
   }
 
 export type UserSearchQueryVariables = {
@@ -1469,8 +1461,6 @@ export const CountryFragmentFragmentDoc = gql`
       id
       name
     }
-    createdAt
-    updatedAt
   }
 `
 export const SessionCoffeeFragmentFragmentDoc = gql`
@@ -1580,9 +1570,8 @@ export const RegionFragmentFragmentDoc = gql`
     }
     farms {
       id
+      name
     }
-    createdAt
-    updatedAt
   }
 `
 export const VarietyFragmentFragmentDoc = gql`
@@ -2002,8 +1991,6 @@ export const ListCountriesTableDocument = gql`
         node {
           id
           name
-          createdAt
-          updatedAt
         }
       }
     }
@@ -3096,8 +3083,6 @@ export const ListRegionsTableDocument = gql`
             id
             name
           }
-          createdAt
-          updatedAt
         }
       }
     }

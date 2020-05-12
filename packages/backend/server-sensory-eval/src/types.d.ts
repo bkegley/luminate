@@ -205,7 +205,7 @@ export type SessionCoffee = {
   id: Scalars['ID']
   sampleNumber: Scalars['ID']
   coffee: Coffee
-  averageScore?: Maybe<Scalars['Int']>
+  averageScore?: Maybe<Scalars['Float']>
   scoreSheets?: Maybe<Array<Maybe<ScoreSheet>>>
 }
 
@@ -327,8 +327,8 @@ export type ResolversTypes = ResolversObject<{
   ID: ResolverTypeWrapper<Scalars['ID']>
   SessionCoffee: ResolverTypeWrapper<SessionCoffeeDocument>
   Coffee: ResolverTypeWrapper<Coffee>
-  ScoreSheet: ResolverTypeWrapper<ScoreSheetDocument>
   Float: ResolverTypeWrapper<Scalars['Float']>
+  ScoreSheet: ResolverTypeWrapper<ScoreSheetDocument>
   ScoreFloat: ResolverTypeWrapper<Scalars['ScoreFloat']>
   DefectScore: ResolverTypeWrapper<DefectScore>
   Mutation: ResolverTypeWrapper<{}>
@@ -357,8 +357,8 @@ export type ResolversParentTypes = ResolversObject<{
   ID: Scalars['ID']
   SessionCoffee: SessionCoffeeDocument
   Coffee: Coffee
-  ScoreSheet: ScoreSheetDocument
   Float: Scalars['Float']
+  ScoreSheet: ScoreSheetDocument
   ScoreFloat: Scalars['ScoreFloat']
   DefectScore: DefectScore
   Mutation: {}
@@ -456,7 +456,7 @@ export type SessionCoffeeResolvers<
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
   sampleNumber?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
   coffee?: Resolver<ResolversTypes['Coffee'], ParentType, ContextType>
-  averageScore?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  averageScore?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>
   scoreSheets?: Resolver<Maybe<Array<Maybe<ResolversTypes['ScoreSheet']>>>, ParentType, ContextType>
 }>
 

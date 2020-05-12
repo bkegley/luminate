@@ -806,7 +806,7 @@ export type SessionCoffee = {
   id: Scalars['ID']
   sampleNumber: Scalars['ID']
   coffee: Coffee
-  averageScore?: Maybe<Scalars['Int']>
+  averageScore?: Maybe<Scalars['Float']>
   scoreSheets?: Maybe<Array<Maybe<ScoreSheet>>>
 }
 
