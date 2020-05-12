@@ -116,7 +116,7 @@ const resolvers: Resolvers = {
     },
     country: async (parent, args, {services}) => {
       if (!parent.country) return null
-      return services.country.getById(parent.country)
+      return services.country.getByName(parent.country)
     },
     notes: async (parent, {fields}, {services}) => {
       const notes = await services.note.listByEntityId(parent.id)
@@ -124,7 +124,7 @@ const resolvers: Resolvers = {
     },
     region: async (parent, args, {services}) => {
       if (!parent.region) return null
-      return services.region.getById(parent.region)
+      return services.region.getByName(parent.region)
     },
     varieties: async (parent, args, {services}) => {
       if (!parent.varieties) return []

@@ -49,7 +49,7 @@ const resolvers: Resolvers = {
       return services.region.getConnectionResults(args)
     },
     getRegion: async (parent, {id}, {services}) => {
-      return services.region.getById(id)
+      return services.region.getByName(id)
     },
   },
   Mutation: {
@@ -66,10 +66,10 @@ const resolvers: Resolvers = {
   Region: {
     country: async (parent, args, {services}) => {
       if (!parent.country) return null
-      return services.country.getById(parent.country)
+      return services.country.getByName(parent.country)
     },
     farms: async (parent, args, {services}) => {
-      return services.farm.listByRegionId(parent.id)
+      return services.farm.listByRegionName(parent.id)
     },
   },
 }

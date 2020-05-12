@@ -8,6 +8,10 @@ export interface IListDocumentsArgs {
   cursor?: string | null | undefined
   limit?: number | null | undefined
   query?: Array<QueryInput> | null | undefined
+  sortBy?: {
+    field: string
+    descending?: boolean
+  }
   [x: string]: any
 }
 
