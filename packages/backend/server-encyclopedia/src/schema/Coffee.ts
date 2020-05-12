@@ -38,8 +38,8 @@ const typeDefs = gql`
 
   input CreateCoffeeInput {
     name: String!
-    country: ID
-    region: ID
+    country: String
+    region: String
     farm: ID
     farmZone: ID
     varieties: [ID]
@@ -49,8 +49,8 @@ const typeDefs = gql`
 
   input UpdateCoffeeInput {
     name: String
-    country: ID
-    region: ID
+    country: String
+    region: String
     farm: ID
     farmZone: ID
     varieties: [ID]

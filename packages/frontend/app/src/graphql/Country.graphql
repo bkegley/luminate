@@ -15,8 +15,6 @@ query ListCountriesTable {
       node {
         id
         name
-        createdAt
-        updatedAt
       }
     }
   }
@@ -53,6 +51,4 @@ fragment CountryFragment on Country {
     id
     name
   }
-  createdAt
-  updatedAt
 }

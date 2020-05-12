@@ -1,8 +1,7 @@
 import React from 'react'
 import {useListRegionsTableQuery} from '../../graphql'
 import {Link, RouteComponentProps} from 'react-router-dom'
-import {Heading, Button, Card, Region, Tooltip} from '@luminate/gatsby-theme-luminate/src'
-import {formatDistanceToNow, format} from 'date-fns'
+import {Heading, Button, Card, Region} from '@luminate/gatsby-theme-luminate/src'
 
 interface Props extends RouteComponentProps {}
 
@@ -51,16 +50,6 @@ const RegionRow = ({region, index}: RegionRowProps) => {
     <div className={`flex items-center py-3 px-4 bg-${index % 2 === 0 ? 'transparent' : 'gray-100'}`}>
       <div className="w-1/4">{region.name}</div>
       <div className="w-1/4">{region.country?.name}</div>
-      <div className="w-1/4">
-        <Tooltip text={format(parseInt(region.createdAt), 'EE, LLL do, yyyy')}>
-          <span>{formatDistanceToNow(parseInt(region.createdAt), {addSuffix: true})}</span>
-        </Tooltip>
-      </div>
-      <div className="w-1/4">
-        <Tooltip text={format(parseInt(region.updatedAt), 'EE, LLL do, yyyy')}>
-          <span>{formatDistanceToNow(parseInt(region.updatedAt), {addSuffix: true})}</span>
-        </Tooltip>
-      </div>
     </div>
   )
 }

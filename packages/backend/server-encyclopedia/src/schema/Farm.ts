@@ -29,14 +29,14 @@ const typeDefs = gql`
 
   input CreateFarmInput {
     name: String
-    country: ID
-    region: ID
+    country: String
+    region: String
   }
 
   input UpdateFarmInput {
     name: String
-    country: ID
-    region: ID
+    country: String
+    region: String
   }
 
   input CreateFarmZoneInput {

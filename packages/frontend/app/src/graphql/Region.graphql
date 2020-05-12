@@ -19,8 +19,6 @@ query ListRegionsTable {
           id
           name
         }
-        createdAt
-        updatedAt
       }
     }
   }
@@ -59,7 +57,6 @@ fragment RegionFragment on Region {
   }
   farms {
     id
+    name
   }
-  createdAt
-  updatedAt
 }

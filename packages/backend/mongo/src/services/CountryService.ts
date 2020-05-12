@@ -6,6 +6,7 @@ import {IListDocumentsArgs} from '../abstract/types'
 
 interface Loaders {
   byCountryName?: DataLoader<string, CountryDocument | null>
+  byCountryId?: DataLoader<string, CountryDocument | null>
 }
 
 export class CountryService extends BaseService<CountryDocument> {
@@ -14,6 +15,10 @@ export class CountryService extends BaseService<CountryDocument> {
     this.loaders.byCountryName = new DataLoader<string, CountryDocument | null>(async names => {
       const countries = await this.model.find({name: names})
       return names.map(name => countries.find(country => country.name === name) || null)
+    })
+    this.loaders.byCountryId = new DataLoader<string, CountryDocument | null>(async ids => {
+      const countries = await this.model.find({_id: ids})
+      return ids.map(id => countries.find(country => country._id.toString() === id.toString()) || null)
     })
   }
 
@@ -29,6 +34,10 @@ export class CountryService extends BaseService<CountryDocument> {
 
   public findCountries(conditions?: {[x: string]: any}) {
     return this.model.find(conditions)
+  }
+
+  public async getById(id: string) {
+    return this.loaders.byCountryId?.load(id) || null
   }
 
   public async getByName(name: string) {
