@@ -7,8 +7,6 @@ const typeDefs = gql`
     name: String!
     country: Country
     farms: [Farm]
-    createdAt: String!
-    updatedAt: String!
   }
 
   type RegionConnection {
@@ -21,25 +19,9 @@ const typeDefs = gql`
     node: Region!
   }
 
-  input CreateRegionInput {
-    name: String!
-    country: ID
-  }
-
-  input UpdateRegionInput {
-    name: String
-    country: ID
-  }
-
   extend type Query {
     listRegions(cursor: String, limit: Int, query: [QueryInput!]): RegionConnection!
     getRegion(id: ID!): Region
-  }
-
-  extend type Mutation {
-    createRegion(input: CreateRegionInput!): Region
-    updateRegion(id: ID!, input: UpdateRegionInput!): Region
-    deleteRegion(id: ID!): Region
   }
 `
 
@@ -49,18 +31,7 @@ const resolvers: Resolvers = {
       return services.region.getConnectionResults(args)
     },
     getRegion: async (parent, {id}, {services}) => {
-      return services.region.getByName(id)
-    },
-  },
-  Mutation: {
-    createRegion: async (parent, {input}, {services}) => {
-      return services.region.create(input)
-    },
-    updateRegion: async (parent, {id, input}, {services}) => {
-      return services.region.updateById(id, input)
-    },
-    deleteRegion: async (parent, {id}, {services}) => {
-      return services.region.deleteById(id)
+      return services.region.getById(id)
     },
   },
   Region: {
