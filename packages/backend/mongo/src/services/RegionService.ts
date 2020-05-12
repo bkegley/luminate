@@ -1,38 +1,47 @@
 import {RegionModel, RegionDocument} from '../models/Region'
-import {AuthenticatedService} from '../abstract/AuthenticatedService'
 import DataLoader from 'dataloader'
+import {BaseService} from '../abstract/BaseService'
+import {IListDocumentsArgs} from '../abstract/types'
 
 interface Loaders {
-  byRegionId?: DataLoader<string, RegionDocument | null>
-  byCountryId?: DataLoader<string, RegionDocument[] | null>
+  byRegionName?: DataLoader<string, RegionDocument | null>
+  byCountryName?: DataLoader<string, RegionDocument[] | null>
 }
 
-export class RegionService extends AuthenticatedService<RegionDocument> {
+export class RegionService extends BaseService<RegionDocument> {
   constructor() {
     super(RegionModel)
 
-    this.loaders.byRegionId = new DataLoader<string, RegionDocument | null>(async ids => {
-      const regions = await this.model.find({_id: ids, ...this.getReadConditionsForUser()})
-      return ids.map(id => regions.find(region => region._id.toString() === id.toString()) || null)
+    this.loaders.byRegionName = new DataLoader<string, RegionDocument | null>(async names => {
+      const regions = await this.model.find({name: names})
+      return names.map(name => regions.find(region => region.name === name) || null)
     })
 
-    this.loaders.byCountryId = new DataLoader<string, RegionDocument[] | null>(async ids => {
-      const regions = await this.model.find({country: ids, ...this.getReadConditionsForUser()})
-      return ids.map(id => regions.filter(region => region.country?.toString() === id.toString()))
+    this.loaders.byCountryName = new DataLoader<string, RegionDocument[] | null>(async names => {
+      const regions = await this.model.find({country: names}, null, {sort: 'name'})
+      return names.map(name => regions.filter(region => region.country === name))
     })
   }
 
   private loaders: Loaders = {}
 
-  public async getById(id: string) {
-    return this.loaders.byRegionId?.load(id) || null
+  public async upsert(region: any) {
+    return this.model.findOneAndUpdate({name: region.name}, region, {upsert: true})
   }
 
-  public async listByCountryId(id: string) {
-    return this.loaders.byCountryId?.load(id) || []
+  public async getConnectionResults(args: IListDocumentsArgs) {
+    return super.getConnectionResults({...args, sortBy: {field: 'name', descending: true}})
+  }
+
+  public async getByName(name: string) {
+    return this.loaders.byRegionName?.load(name) || null
+  }
+
+  public async listByCountryName(name: string) {
+    return this.loaders.byCountryName?.load(name) || []
   }
 
   public findRegions(conditions?: {[x: string]: any}) {
-    return this.model.find({...conditions, ...this.getReadConditionsForUser()})
+    return this.model.find(conditions)
   }
 }

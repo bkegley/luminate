@@ -1,23 +1,23 @@
 import mongoose from 'mongoose'
 import extendSchema from '../utils/extendSchema'
-import {BaseAuthenticatedSchema} from '../abstract/schemas'
-import {AuthenticatedDocument} from '../abstract/documents'
+import {BasePublicSchema} from '../abstract/schemas'
+import {BaseDocument} from '../abstract/documents'
 
-export interface RegionDocument extends AuthenticatedDocument {
+export interface RegionDocument extends BaseDocument {
   name: string
   country?: string
 }
 
 const Region = extendSchema(
-  BaseAuthenticatedSchema,
+  BasePublicSchema,
   {
     name: {
       type: String,
       required: true,
+      unique: true,
     },
     country: {
-      type: mongoose.Types.ObjectId,
-      ref: 'country',
+      type: String,
     },
   },
   {

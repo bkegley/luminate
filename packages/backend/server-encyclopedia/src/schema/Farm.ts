@@ -94,11 +94,11 @@ const resolvers: Resolvers = {
   Farm: {
     country: async (parent, args, {services}) => {
       if (!parent.country) return null
-      return services.country.getById(parent.country)
+      return services.country.getByName(parent.country)
     },
     region: async (parent, args, {services}) => {
       if (!parent.region) return null
-      return services.region.getById(parent.region)
+      return services.region.getByName(parent.region)
     },
   },
 }
