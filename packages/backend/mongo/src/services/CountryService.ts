@@ -1,27 +1,37 @@
 import {CountryModel, CountryDocument} from '../models/Country'
 import {AuthenticatedService} from '../abstract/AuthenticatedService'
 import DataLoader from 'dataloader'
+import {BaseService} from '../abstract/BaseService'
+import {IListDocumentsArgs} from '../abstract/types'
 
 interface Loaders {
-  byCountryId?: DataLoader<string, CountryDocument | null>
+  byCountryName?: DataLoader<string, CountryDocument | null>
 }
 
-export class CountryService extends AuthenticatedService<CountryDocument> {
+export class CountryService extends BaseService<CountryDocument> {
   constructor() {
     super(CountryModel)
-    this.loaders.byCountryId = new DataLoader<string, CountryDocument | null>(async ids => {
-      const countries = await this.model.find({_id: ids})
-      return ids.map(id => countries.find(country => country._id.toString() === id.toString()) || null)
+    this.loaders.byCountryName = new DataLoader<string, CountryDocument | null>(async names => {
+      const countries = await this.model.find({name: names})
+      return names.map(name => countries.find(country => country.name === name) || null)
     })
   }
 
   private loaders: Loaders = {}
 
-  public findCountries(conditions?: {[x: string]: any}) {
-    return this.model.find({...conditions, ...this.getReadConditionsForUser()})
+  public async upsert(country: any) {
+    return this.model.findOneAndUpdate({name: country.name}, country, {upsert: true})
   }
 
-  public async getById(id: string) {
-    return this.loaders.byCountryId?.load(id) || null
+  public async getConnectionResults(args: IListDocumentsArgs) {
+    return super.getConnectionResults({...args, sortBy: {field: 'name', descending: true}})
+  }
+
+  public findCountries(conditions?: {[x: string]: any}) {
+    return this.model.find(conditions)
+  }
+
+  public async getByName(name: string) {
+    return this.loaders.byCountryName?.load(name) || null
   }
 }

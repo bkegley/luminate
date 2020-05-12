@@ -4,7 +4,7 @@ import DataLoader from 'dataloader'
 
 interface Loaders {
   byFarmId?: DataLoader<string, FarmDocument | null>
-  listByRegionId?: DataLoader<string, FarmDocument[] | null>
+  listByRegionName?: DataLoader<string, FarmDocument[] | null>
 }
 
 export class FarmService extends AuthenticatedService<FarmDocument> {
@@ -16,16 +16,16 @@ export class FarmService extends AuthenticatedService<FarmDocument> {
       return ids.map(id => farms.find(farm => farm._id.toString() === id.toString()) || null)
     })
 
-    this.loaders.listByRegionId = new DataLoader<string, FarmDocument[] | null>(async ids => {
-      const farms = await this.model.find({region: ids, ...this.getReadConditionsForUser()})
-      return ids.map(id => farms.filter(farm => farm.region?.toString() === id.toString()) || null)
+    this.loaders.listByRegionName = new DataLoader<string, FarmDocument[] | null>(async names => {
+      const farms = await this.model.find({region: names, ...this.getReadConditionsForUser()})
+      return names.map(name => farms.filter(farm => farm.region === name) || null)
     })
   }
 
   private loaders: Loaders = {}
 
-  public listByRegionId(regionId: string) {
-    return this.loaders.listByRegionId?.load(regionId) || null
+  public listByRegionName(regionName: string) {
+    return this.loaders.listByRegionName?.load(regionName) || null
   }
 
   public findFarms(conditions?: {[x: string]: any}) {

@@ -44,7 +44,7 @@ export class ContextBuilder {
 
   public withCountry() {
     const country = new CountryService()
-    country.loadUser(this.user)
+    // country.loadUser(this.user)
     this.context.services.country = country
     return this
   }
@@ -86,7 +86,7 @@ export class ContextBuilder {
 
   public withRegion() {
     const region = new RegionService()
-    region.loadUser(this.user)
+    // region.loadUser(this.user)
     this.context.services.region = region
     return this
   }
