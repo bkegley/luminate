@@ -30,24 +30,6 @@ query GetRegion($id: ID!) {
   }
 }
 
-mutation CreateRegion($input: CreateRegionInput!) {
-  createRegion(input: $input) {
-    ...RegionFragment
-  }
-}
-
-mutation UpdateRegion($id: ID!, $input: UpdateRegionInput!) {
-  updateRegion(id: $id, input: $input) {
-    ...RegionFragment
-  }
-}
-
-mutation DeleteRegion($id: ID!) {
-  deleteRegion(id: $id) {
-    id
-  }
-}
-
 fragment RegionFragment on Region {
   id
   name

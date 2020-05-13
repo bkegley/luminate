@@ -91,8 +91,6 @@ export type Country = {
   id: Scalars['ID']
   name: Scalars['String']
   regions?: Maybe<Array<Maybe<Region>>>
-  createdAt: Scalars['String']
-  updatedAt: Scalars['String']
 }
 
 export type CountryConnection = {
@@ -115,17 +113,13 @@ export type CreateAccountInput = {
 
 export type CreateCoffeeInput = {
   name: Scalars['String']
-  country?: Maybe<Scalars['ID']>
-  region?: Maybe<Scalars['ID']>
+  country?: Maybe<Scalars['String']>
+  region?: Maybe<Scalars['String']>
   farm?: Maybe<Scalars['ID']>
   farmZone?: Maybe<Scalars['ID']>
   varieties?: Maybe<Array<Maybe<Scalars['ID']>>>
   elevation?: Maybe<Scalars['String']>
   components?: Maybe<Array<Maybe<ComponentInput>>>
-}
-
-export type CreateCountryInput = {
-  name: Scalars['String']
 }
 
 export type CreateCuppingSessionInput = {
@@ -139,8 +133,8 @@ export type CreateDeviceInput = {
 
 export type CreateFarmInput = {
   name?: Maybe<Scalars['String']>
-  country?: Maybe<Scalars['ID']>
-  region?: Maybe<Scalars['ID']>
+  country?: Maybe<Scalars['String']>
+  region?: Maybe<Scalars['String']>
 }
 
 export type CreateFarmZoneInput = {
@@ -151,11 +145,6 @@ export type CreateNoteInput = {
   entityId: Scalars['ID']
   content: Scalars['String']
   field: Scalars['String']
-}
-
-export type CreateRegionInput = {
-  name: Scalars['String']
-  country?: Maybe<Scalars['ID']>
 }
 
 export type CreateRoleInput = {
@@ -312,9 +301,6 @@ export type Mutation = {
   updateCoffee?: Maybe<Coffee>
   deleteCoffee?: Maybe<Coffee>
   updateCoffeePermissionsForAccount?: Maybe<Scalars['Boolean']>
-  createCountry?: Maybe<Country>
-  updateCountry?: Maybe<Country>
-  deleteCountry?: Maybe<Country>
   createDevice?: Maybe<Device>
   updateDevice?: Maybe<Device>
   deleteDevice?: Maybe<Device>
@@ -325,9 +311,6 @@ export type Mutation = {
   createFarmZone?: Maybe<Farm>
   updateFarmZone?: Maybe<Farm>
   deleteFarmZone?: Maybe<Farm>
-  createRegion?: Maybe<Region>
-  updateRegion?: Maybe<Region>
-  deleteRegion?: Maybe<Region>
   createVariety?: Maybe<Variety>
   updateVariety?: Maybe<Variety>
   deleteVariety?: Maybe<Variety>
@@ -432,19 +415,6 @@ export type MutationUpdateCoffeePermissionsForAccountArgs = {
   permissionTypes: Array<PermissionTypeEnum>
 }
 
-export type MutationCreateCountryArgs = {
-  input: CreateCountryInput
-}
-
-export type MutationUpdateCountryArgs = {
-  id: Scalars['ID']
-  input: UpdateCountryInput
-}
-
-export type MutationDeleteCountryArgs = {
-  id: Scalars['ID']
-}
-
 export type MutationCreateDeviceArgs = {
   input: CreateDeviceInput
 }
@@ -488,19 +458,6 @@ export type MutationUpdateFarmZoneArgs = {
 }
 
 export type MutationDeleteFarmZoneArgs = {
-  id: Scalars['ID']
-}
-
-export type MutationCreateRegionArgs = {
-  input: CreateRegionInput
-}
-
-export type MutationUpdateRegionArgs = {
-  id: Scalars['ID']
-  input: UpdateRegionInput
-}
-
-export type MutationDeleteRegionArgs = {
   id: Scalars['ID']
 }
 
@@ -744,8 +701,6 @@ export type Region = {
   name: Scalars['String']
   country?: Maybe<Country>
   farms?: Maybe<Array<Maybe<Farm>>>
-  createdAt: Scalars['String']
-  updatedAt: Scalars['String']
 }
 
 export type RegionConnection = {
@@ -821,17 +776,13 @@ export type UpdateAccountInput = {
 
 export type UpdateCoffeeInput = {
   name?: Maybe<Scalars['String']>
-  country?: Maybe<Scalars['ID']>
-  region?: Maybe<Scalars['ID']>
+  country?: Maybe<Scalars['String']>
+  region?: Maybe<Scalars['String']>
   farm?: Maybe<Scalars['ID']>
   farmZone?: Maybe<Scalars['ID']>
   varieties?: Maybe<Array<Maybe<Scalars['ID']>>>
   elevation?: Maybe<Scalars['String']>
   components?: Maybe<Array<Maybe<ComponentInput>>>
-}
-
-export type UpdateCountryInput = {
-  name?: Maybe<Scalars['String']>
 }
 
 export type UpdateCuppingSessionInput = {
@@ -845,8 +796,8 @@ export type UpdateDeviceInput = {
 
 export type UpdateFarmInput = {
   name?: Maybe<Scalars['String']>
-  country?: Maybe<Scalars['ID']>
-  region?: Maybe<Scalars['ID']>
+  country?: Maybe<Scalars['String']>
+  region?: Maybe<Scalars['String']>
 }
 
 export type UpdateFarmZoneInput = {
@@ -862,11 +813,6 @@ export type UpdateNoteInput = {
 export type UpdatePasswordInput = {
   currentPassword: Scalars['String']
   newPassword: Scalars['String']
-}
-
-export type UpdateRegionInput = {
-  name?: Maybe<Scalars['String']>
-  country?: Maybe<Scalars['ID']>
 }
 
 export type UpdateRoleInput = {
