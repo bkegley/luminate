@@ -37,7 +37,7 @@ const resolvers: Resolvers = {
   Region: {
     country: async (parent, args, {services}) => {
       if (!parent.country) return null
-      return services.country.getByName(parent.country)
+      return services.country.getById(parent.country)
     },
     farms: async (parent, args, {services}) => {
       return services.farm.listByRegionName(parent.id)
