@@ -25,7 +25,7 @@ export class CountryService extends BaseService<CountryDocument> {
   private loaders: Loaders = {}
 
   public async upsert(country: any) {
-    return this.model.findOneAndUpdate({name: country.name}, country, {upsert: true})
+    return this.model.findOneAndUpdate({name: country.name}, country, {upsert: true, new: true})
   }
 
   public async getConnectionResults(args: IListDocumentsArgs) {
