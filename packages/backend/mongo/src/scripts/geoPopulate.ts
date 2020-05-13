@@ -44,13 +44,38 @@ async function geoPopulate() {
     (shp.parseZip(regionsZipFile) as unknown) as shp.FeatureCollectionWithFilename,
   ])
 
+  await createMongoConnection(process.env.MONGO_URL)
+
+  // Create countries
   const countries = countriesJson.features
 
   const countryData = countries.map(country => {
-    // @ts-ignore
-    const {NAME, POP_EST, POP_RANK, POP_YEAR, REGION_UN, SOVEREIGNT, SUBREGION, SUBUNIT} = country.properties
+    const {
+      // @ts-ignore
+      NAME,
+      // @ts-ignore
+      NAME_EN,
+      // @ts-ignore
+      SOV_A3,
+      // @ts-ignore
+      POP_EST,
+      // @ts-ignore
+      POP_RANK,
+      // @ts-ignore
+      POP_YEAR,
+      // @ts-ignore
+      REGION_UN,
+      // @ts-ignore
+      SOVEREIGNT,
+      // @ts-ignore
+      SUBREGION,
+      // @ts-ignore
+      SUBUNIT,
+    } = country.properties
     return {
       name: NAME,
+      nameEn: NAME_EN,
+      sovereignId: SOV_A3,
       population: {
         estimate: POP_EST,
         rank: POP_RANK,
@@ -65,26 +90,40 @@ async function geoPopulate() {
     }
   })
 
+  const countryService = new CountryService()
+  const dbCountries = await Promise.all([...countryData.map(country => countryService.upsert(country))])
+
+  // Create regions
   const regions = regionsJson.features
+
+  const regionService = new RegionService()
 
   const regionData = regions.map(region => {
     // @ts-ignore
-    const {admin, name} = region.properties
+    const {admin: countryName, name, sov_a3: sovereignId} = region.properties
+
+    const foundCountry = dbCountries.find(
+      country =>
+        country?.sovereignId === sovereignId ||
+        country?.name === countryName ||
+        country?.nameEn === countryName ||
+        country?.geography.subUnit === countryName ||
+        country?.geography.sovereignNation === countryName,
+    )
+
+    if (!foundCountry) {
+      console.log(`There was an error finding the country - ${countryName} for region - ${name}`)
+    }
+
     return {
       name,
-      country: admin,
+      country: foundCountry?._id || null,
     }
-  })
+  }, [])
 
-  await createMongoConnection(process.env.MONGO_URL)
-  const countryService = new CountryService()
-  const regionService = new RegionService()
+  const dbRegions = await Promise.all([...regionData.filter(Boolean).map(region => regionService.upsert(region))])
 
-  await Promise.all([
-    ...countryData.map(country => countryService.upsert(country)),
-    ...regionData.map(region => regionService.upsert(region)),
-  ])
-
+  // console.log({dbRegions})
   process.exit(0)
 }
 
