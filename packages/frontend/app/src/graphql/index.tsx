@@ -91,8 +91,6 @@ export type Country = {
   id: Scalars['ID']
   name: Scalars['String']
   regions?: Maybe<Array<Maybe<Region>>>
-  createdAt: Scalars['String']
-  updatedAt: Scalars['String']
 }
 
 export type CountryConnection = {
@@ -115,17 +113,13 @@ export type CreateAccountInput = {
 
 export type CreateCoffeeInput = {
   name: Scalars['String']
-  country?: Maybe<Scalars['ID']>
-  region?: Maybe<Scalars['ID']>
+  country?: Maybe<Scalars['String']>
+  region?: Maybe<Scalars['String']>
   farm?: Maybe<Scalars['ID']>
   farmZone?: Maybe<Scalars['ID']>
   varieties?: Maybe<Array<Maybe<Scalars['ID']>>>
   elevation?: Maybe<Scalars['String']>
   components?: Maybe<Array<Maybe<ComponentInput>>>
-}
-
-export type CreateCountryInput = {
-  name: Scalars['String']
 }
 
 export type CreateCuppingSessionInput = {
@@ -139,8 +133,8 @@ export type CreateDeviceInput = {
 
 export type CreateFarmInput = {
   name?: Maybe<Scalars['String']>
-  country?: Maybe<Scalars['ID']>
-  region?: Maybe<Scalars['ID']>
+  country?: Maybe<Scalars['String']>
+  region?: Maybe<Scalars['String']>
 }
 
 export type CreateFarmZoneInput = {
@@ -151,11 +145,6 @@ export type CreateNoteInput = {
   entityId: Scalars['ID']
   content: Scalars['String']
   field: Scalars['String']
-}
-
-export type CreateRegionInput = {
-  name: Scalars['String']
-  country?: Maybe<Scalars['ID']>
 }
 
 export type CreateRoleInput = {
@@ -312,9 +301,6 @@ export type Mutation = {
   updateCoffee?: Maybe<Coffee>
   deleteCoffee?: Maybe<Coffee>
   updateCoffeePermissionsForAccount?: Maybe<Scalars['Boolean']>
-  createCountry?: Maybe<Country>
-  updateCountry?: Maybe<Country>
-  deleteCountry?: Maybe<Country>
   createDevice?: Maybe<Device>
   updateDevice?: Maybe<Device>
   deleteDevice?: Maybe<Device>
@@ -325,9 +311,6 @@ export type Mutation = {
   createFarmZone?: Maybe<Farm>
   updateFarmZone?: Maybe<Farm>
   deleteFarmZone?: Maybe<Farm>
-  createRegion?: Maybe<Region>
-  updateRegion?: Maybe<Region>
-  deleteRegion?: Maybe<Region>
   createVariety?: Maybe<Variety>
   updateVariety?: Maybe<Variety>
   deleteVariety?: Maybe<Variety>
@@ -432,19 +415,6 @@ export type MutationUpdateCoffeePermissionsForAccountArgs = {
   permissionTypes: Array<PermissionTypeEnum>
 }
 
-export type MutationCreateCountryArgs = {
-  input: CreateCountryInput
-}
-
-export type MutationUpdateCountryArgs = {
-  id: Scalars['ID']
-  input: UpdateCountryInput
-}
-
-export type MutationDeleteCountryArgs = {
-  id: Scalars['ID']
-}
-
 export type MutationCreateDeviceArgs = {
   input: CreateDeviceInput
 }
@@ -488,19 +458,6 @@ export type MutationUpdateFarmZoneArgs = {
 }
 
 export type MutationDeleteFarmZoneArgs = {
-  id: Scalars['ID']
-}
-
-export type MutationCreateRegionArgs = {
-  input: CreateRegionInput
-}
-
-export type MutationUpdateRegionArgs = {
-  id: Scalars['ID']
-  input: UpdateRegionInput
-}
-
-export type MutationDeleteRegionArgs = {
   id: Scalars['ID']
 }
 
@@ -744,8 +701,6 @@ export type Region = {
   name: Scalars['String']
   country?: Maybe<Country>
   farms?: Maybe<Array<Maybe<Farm>>>
-  createdAt: Scalars['String']
-  updatedAt: Scalars['String']
 }
 
 export type RegionConnection = {
@@ -821,17 +776,13 @@ export type UpdateAccountInput = {
 
 export type UpdateCoffeeInput = {
   name?: Maybe<Scalars['String']>
-  country?: Maybe<Scalars['ID']>
-  region?: Maybe<Scalars['ID']>
+  country?: Maybe<Scalars['String']>
+  region?: Maybe<Scalars['String']>
   farm?: Maybe<Scalars['ID']>
   farmZone?: Maybe<Scalars['ID']>
   varieties?: Maybe<Array<Maybe<Scalars['ID']>>>
   elevation?: Maybe<Scalars['String']>
   components?: Maybe<Array<Maybe<ComponentInput>>>
-}
-
-export type UpdateCountryInput = {
-  name?: Maybe<Scalars['String']>
 }
 
 export type UpdateCuppingSessionInput = {
@@ -845,8 +796,8 @@ export type UpdateDeviceInput = {
 
 export type UpdateFarmInput = {
   name?: Maybe<Scalars['String']>
-  country?: Maybe<Scalars['ID']>
-  region?: Maybe<Scalars['ID']>
+  country?: Maybe<Scalars['String']>
+  region?: Maybe<Scalars['String']>
 }
 
 export type UpdateFarmZoneInput = {
@@ -862,11 +813,6 @@ export type UpdateNoteInput = {
 export type UpdatePasswordInput = {
   currentPassword: Scalars['String']
   newPassword: Scalars['String']
-}
-
-export type UpdateRegionInput = {
-  name?: Maybe<Scalars['String']>
-  country?: Maybe<Scalars['ID']>
 }
 
 export type UpdateRoleInput = {
@@ -1053,37 +999,20 @@ export type ListCountriesTableQuery = {__typename: 'Query'} & {
   }
 }
 
+export type ListAllCountriesQueryVariables = {}
+
+export type ListAllCountriesQuery = {__typename: 'Query'} & {
+  listCountries: {__typename: 'CountryConnection'} & {
+    edges: Array<{__typename: 'CountryEdge'} & {node: {__typename: 'Country'} & Pick<Country, 'id' | 'name'>}>
+  }
+}
+
 export type GetCountryQueryVariables = {
   id: Scalars['ID']
 }
 
 export type GetCountryQuery = {__typename: 'Query'} & {
   getCountry: Maybe<{__typename: 'Country'} & CountryFragmentFragment>
-}
-
-export type CreateCountryMutationVariables = {
-  input: CreateCountryInput
-}
-
-export type CreateCountryMutation = {__typename: 'Mutation'} & {
-  createCountry: Maybe<{__typename: 'Country'} & CountryFragmentFragment>
-}
-
-export type UpdateCountryMutationVariables = {
-  id: Scalars['ID']
-  input: UpdateCountryInput
-}
-
-export type UpdateCountryMutation = {__typename: 'Mutation'} & {
-  updateCountry: Maybe<{__typename: 'Country'} & CountryFragmentFragment>
-}
-
-export type DeleteCountryMutationVariables = {
-  id: Scalars['ID']
-}
-
-export type DeleteCountryMutation = {__typename: 'Mutation'} & {
-  deleteCountry: Maybe<{__typename: 'Country'} & Pick<Country, 'id'>>
 }
 
 export type CountryFragmentFragment = {__typename: 'Country'} & Pick<Country, 'id' | 'name'> & {
@@ -1333,31 +1262,6 @@ export type GetRegionQueryVariables = {
 }
 
 export type GetRegionQuery = {__typename: 'Query'} & {getRegion: Maybe<{__typename: 'Region'} & RegionFragmentFragment>}
-
-export type CreateRegionMutationVariables = {
-  input: CreateRegionInput
-}
-
-export type CreateRegionMutation = {__typename: 'Mutation'} & {
-  createRegion: Maybe<{__typename: 'Region'} & RegionFragmentFragment>
-}
-
-export type UpdateRegionMutationVariables = {
-  id: Scalars['ID']
-  input: UpdateRegionInput
-}
-
-export type UpdateRegionMutation = {__typename: 'Mutation'} & {
-  updateRegion: Maybe<{__typename: 'Region'} & RegionFragmentFragment>
-}
-
-export type DeleteRegionMutationVariables = {
-  id: Scalars['ID']
-}
-
-export type DeleteRegionMutation = {__typename: 'Mutation'} & {
-  deleteRegion: Maybe<{__typename: 'Region'} & Pick<Region, 'id'>>
-}
 
 export type RegionFragmentFragment = {__typename: 'Region'} & Pick<Region, 'id' | 'name'> & {
     country: Maybe<{__typename: 'Country'} & Pick<Country, 'id' | 'name'>>
@@ -2034,6 +1938,56 @@ export type ListCountriesTableQueryResult = ApolloReactCommon.QueryResult<
   ListCountriesTableQuery,
   ListCountriesTableQueryVariables
 >
+export const ListAllCountriesDocument = gql`
+  query ListAllCountries {
+    listCountries(limit: 500) {
+      edges {
+        node {
+          id
+          name
+        }
+      }
+    }
+  }
+`
+
+/**
+ * __useListAllCountriesQuery__
+ *
+ * To run a query within a React component, call `useListAllCountriesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListAllCountriesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useListAllCountriesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useListAllCountriesQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<ListAllCountriesQuery, ListAllCountriesQueryVariables>,
+) {
+  return ApolloReactHooks.useQuery<ListAllCountriesQuery, ListAllCountriesQueryVariables>(
+    ListAllCountriesDocument,
+    baseOptions,
+  )
+}
+export function useListAllCountriesLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ListAllCountriesQuery, ListAllCountriesQueryVariables>,
+) {
+  return ApolloReactHooks.useLazyQuery<ListAllCountriesQuery, ListAllCountriesQueryVariables>(
+    ListAllCountriesDocument,
+    baseOptions,
+  )
+}
+export type ListAllCountriesQueryHookResult = ReturnType<typeof useListAllCountriesQuery>
+export type ListAllCountriesLazyQueryHookResult = ReturnType<typeof useListAllCountriesLazyQuery>
+export type ListAllCountriesQueryResult = ApolloReactCommon.QueryResult<
+  ListAllCountriesQuery,
+  ListAllCountriesQueryVariables
+>
 export const GetCountryDocument = gql`
   query GetCountry($id: ID!) {
     getCountry(id: $id) {
@@ -2072,138 +2026,6 @@ export function useGetCountryLazyQuery(
 export type GetCountryQueryHookResult = ReturnType<typeof useGetCountryQuery>
 export type GetCountryLazyQueryHookResult = ReturnType<typeof useGetCountryLazyQuery>
 export type GetCountryQueryResult = ApolloReactCommon.QueryResult<GetCountryQuery, GetCountryQueryVariables>
-export const CreateCountryDocument = gql`
-  mutation CreateCountry($input: CreateCountryInput!) {
-    createCountry(input: $input) {
-      ...CountryFragment
-    }
-  }
-  ${CountryFragmentFragmentDoc}
-`
-export type CreateCountryMutationFn = ApolloReactCommon.MutationFunction<
-  CreateCountryMutation,
-  CreateCountryMutationVariables
->
-
-/**
- * __useCreateCountryMutation__
- *
- * To run a mutation, you first call `useCreateCountryMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateCountryMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createCountryMutation, { data, loading, error }] = useCreateCountryMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useCreateCountryMutation(
-  baseOptions?: ApolloReactHooks.MutationHookOptions<CreateCountryMutation, CreateCountryMutationVariables>,
-) {
-  return ApolloReactHooks.useMutation<CreateCountryMutation, CreateCountryMutationVariables>(
-    CreateCountryDocument,
-    baseOptions,
-  )
-}
-export type CreateCountryMutationHookResult = ReturnType<typeof useCreateCountryMutation>
-export type CreateCountryMutationResult = ApolloReactCommon.MutationResult<CreateCountryMutation>
-export type CreateCountryMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  CreateCountryMutation,
-  CreateCountryMutationVariables
->
-export const UpdateCountryDocument = gql`
-  mutation UpdateCountry($id: ID!, $input: UpdateCountryInput!) {
-    updateCountry(id: $id, input: $input) {
-      ...CountryFragment
-    }
-  }
-  ${CountryFragmentFragmentDoc}
-`
-export type UpdateCountryMutationFn = ApolloReactCommon.MutationFunction<
-  UpdateCountryMutation,
-  UpdateCountryMutationVariables
->
-
-/**
- * __useUpdateCountryMutation__
- *
- * To run a mutation, you first call `useUpdateCountryMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateCountryMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateCountryMutation, { data, loading, error }] = useUpdateCountryMutation({
- *   variables: {
- *      id: // value for 'id'
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateCountryMutation(
-  baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateCountryMutation, UpdateCountryMutationVariables>,
-) {
-  return ApolloReactHooks.useMutation<UpdateCountryMutation, UpdateCountryMutationVariables>(
-    UpdateCountryDocument,
-    baseOptions,
-  )
-}
-export type UpdateCountryMutationHookResult = ReturnType<typeof useUpdateCountryMutation>
-export type UpdateCountryMutationResult = ApolloReactCommon.MutationResult<UpdateCountryMutation>
-export type UpdateCountryMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  UpdateCountryMutation,
-  UpdateCountryMutationVariables
->
-export const DeleteCountryDocument = gql`
-  mutation DeleteCountry($id: ID!) {
-    deleteCountry(id: $id) {
-      id
-    }
-  }
-`
-export type DeleteCountryMutationFn = ApolloReactCommon.MutationFunction<
-  DeleteCountryMutation,
-  DeleteCountryMutationVariables
->
-
-/**
- * __useDeleteCountryMutation__
- *
- * To run a mutation, you first call `useDeleteCountryMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteCountryMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [deleteCountryMutation, { data, loading, error }] = useDeleteCountryMutation({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useDeleteCountryMutation(
-  baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteCountryMutation, DeleteCountryMutationVariables>,
-) {
-  return ApolloReactHooks.useMutation<DeleteCountryMutation, DeleteCountryMutationVariables>(
-    DeleteCountryDocument,
-    baseOptions,
-  )
-}
-export type DeleteCountryMutationHookResult = ReturnType<typeof useDeleteCountryMutation>
-export type DeleteCountryMutationResult = ApolloReactCommon.MutationResult<DeleteCountryMutation>
-export type DeleteCountryMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  DeleteCountryMutation,
-  DeleteCountryMutationVariables
->
 export const ListCuppingSessionsDocument = gql`
   query ListCuppingSessions($cursor: String, $limit: Int, $query: [QueryInput!]) {
     listCuppingSessions(cursor: $cursor, limit: $limit, query: $query) {
@@ -3164,138 +2986,6 @@ export function useGetRegionLazyQuery(
 export type GetRegionQueryHookResult = ReturnType<typeof useGetRegionQuery>
 export type GetRegionLazyQueryHookResult = ReturnType<typeof useGetRegionLazyQuery>
 export type GetRegionQueryResult = ApolloReactCommon.QueryResult<GetRegionQuery, GetRegionQueryVariables>
-export const CreateRegionDocument = gql`
-  mutation CreateRegion($input: CreateRegionInput!) {
-    createRegion(input: $input) {
-      ...RegionFragment
-    }
-  }
-  ${RegionFragmentFragmentDoc}
-`
-export type CreateRegionMutationFn = ApolloReactCommon.MutationFunction<
-  CreateRegionMutation,
-  CreateRegionMutationVariables
->
-
-/**
- * __useCreateRegionMutation__
- *
- * To run a mutation, you first call `useCreateRegionMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateRegionMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createRegionMutation, { data, loading, error }] = useCreateRegionMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useCreateRegionMutation(
-  baseOptions?: ApolloReactHooks.MutationHookOptions<CreateRegionMutation, CreateRegionMutationVariables>,
-) {
-  return ApolloReactHooks.useMutation<CreateRegionMutation, CreateRegionMutationVariables>(
-    CreateRegionDocument,
-    baseOptions,
-  )
-}
-export type CreateRegionMutationHookResult = ReturnType<typeof useCreateRegionMutation>
-export type CreateRegionMutationResult = ApolloReactCommon.MutationResult<CreateRegionMutation>
-export type CreateRegionMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  CreateRegionMutation,
-  CreateRegionMutationVariables
->
-export const UpdateRegionDocument = gql`
-  mutation UpdateRegion($id: ID!, $input: UpdateRegionInput!) {
-    updateRegion(id: $id, input: $input) {
-      ...RegionFragment
-    }
-  }
-  ${RegionFragmentFragmentDoc}
-`
-export type UpdateRegionMutationFn = ApolloReactCommon.MutationFunction<
-  UpdateRegionMutation,
-  UpdateRegionMutationVariables
->
-
-/**
- * __useUpdateRegionMutation__
- *
- * To run a mutation, you first call `useUpdateRegionMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateRegionMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateRegionMutation, { data, loading, error }] = useUpdateRegionMutation({
- *   variables: {
- *      id: // value for 'id'
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateRegionMutation(
-  baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateRegionMutation, UpdateRegionMutationVariables>,
-) {
-  return ApolloReactHooks.useMutation<UpdateRegionMutation, UpdateRegionMutationVariables>(
-    UpdateRegionDocument,
-    baseOptions,
-  )
-}
-export type UpdateRegionMutationHookResult = ReturnType<typeof useUpdateRegionMutation>
-export type UpdateRegionMutationResult = ApolloReactCommon.MutationResult<UpdateRegionMutation>
-export type UpdateRegionMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  UpdateRegionMutation,
-  UpdateRegionMutationVariables
->
-export const DeleteRegionDocument = gql`
-  mutation DeleteRegion($id: ID!) {
-    deleteRegion(id: $id) {
-      id
-    }
-  }
-`
-export type DeleteRegionMutationFn = ApolloReactCommon.MutationFunction<
-  DeleteRegionMutation,
-  DeleteRegionMutationVariables
->
-
-/**
- * __useDeleteRegionMutation__
- *
- * To run a mutation, you first call `useDeleteRegionMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteRegionMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [deleteRegionMutation, { data, loading, error }] = useDeleteRegionMutation({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useDeleteRegionMutation(
-  baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteRegionMutation, DeleteRegionMutationVariables>,
-) {
-  return ApolloReactHooks.useMutation<DeleteRegionMutation, DeleteRegionMutationVariables>(
-    DeleteRegionDocument,
-    baseOptions,
-  )
-}
-export type DeleteRegionMutationHookResult = ReturnType<typeof useDeleteRegionMutation>
-export type DeleteRegionMutationResult = ApolloReactCommon.MutationResult<DeleteRegionMutation>
-export type DeleteRegionMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  DeleteRegionMutation,
-  DeleteRegionMutationVariables
->
 export const UserSearchDocument = gql`
   query UserSearch($searchText: String) {
     listUsers(query: [{field: "username", operator: contains, value: $searchText}]) {

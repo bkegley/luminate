@@ -20,27 +20,20 @@ query ListCountriesTable {
   }
 }
 
+query ListAllCountries {
+  listCountries(limit: 500) {
+    edges {
+      node {
+        id
+        name
+      }
+    }
+  }
+}
+
 query GetCountry($id: ID!) {
   getCountry(id: $id) {
     ...CountryFragment
-  }
-}
-
-mutation CreateCountry($input: CreateCountryInput!) {
-  createCountry(input: $input) {
-    ...CountryFragment
-  }
-}
-
-mutation UpdateCountry($id: ID!, $input: UpdateCountryInput!) {
-  updateCountry(id: $id, input: $input) {
-    ...CountryFragment
-  }
-}
-
-mutation DeleteCountry($id: ID!) {
-  deleteCountry(id: $id) {
-    id
   }
 }
 
