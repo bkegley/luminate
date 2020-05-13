@@ -6,7 +6,7 @@ import {IListDocumentsArgs} from '../abstract/types'
 interface Loaders {
   byRegionName?: DataLoader<string, RegionDocument | null>
   byRegionId?: DataLoader<string, RegionDocument | null>
-  byCountryName?: DataLoader<string, RegionDocument[] | null>
+  byCountryId?: DataLoader<string, RegionDocument[] | null>
 }
 
 export class RegionService extends BaseService<RegionDocument> {
@@ -23,9 +23,9 @@ export class RegionService extends BaseService<RegionDocument> {
       return ids.map(id => regions.find(region => region._id.toString() === id.toString()) || null)
     })
 
-    this.loaders.byCountryName = new DataLoader<string, RegionDocument[] | null>(async names => {
-      const regions = await this.model.find({country: names}, null, {sort: 'name'})
-      return names.map(name => regions.filter(region => region.country === name))
+    this.loaders.byCountryId = new DataLoader<string, RegionDocument[] | null>(async ids => {
+      const regions = await this.model.find({country: ids}, null, {sort: 'name'})
+      return ids.map(id => regions.filter(region => region.country?.toString() === id.toString()))
     })
   }
 
@@ -47,8 +47,8 @@ export class RegionService extends BaseService<RegionDocument> {
     return this.loaders.byRegionName?.load(name) || null
   }
 
-  public async listByCountryName(name: string) {
-    return this.loaders.byCountryName?.load(name) || []
+  public async listByCountryId(id: string) {
+    return this.loaders.byCountryId?.load(id) || []
   }
 
   public findRegions(conditions?: {[x: string]: any}) {

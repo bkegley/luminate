@@ -17,7 +17,8 @@ const Region = extendSchema(
       unique: true,
     },
     country: {
-      type: String,
+      type: mongoose.Types.ObjectId,
+      ref: 'country',
     },
   },
   {
