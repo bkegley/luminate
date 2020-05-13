@@ -32,7 +32,7 @@ export class RegionService extends BaseService<RegionDocument> {
   private loaders: Loaders = {}
 
   public async upsert(region: any) {
-    return this.model.findOneAndUpdate({name: region.name}, region, {upsert: true})
+    return this.model.findOneAndUpdate({name: region.name}, region, {upsert: true, new: true})
   }
 
   public async getConnectionResults(args: IListDocumentsArgs) {
