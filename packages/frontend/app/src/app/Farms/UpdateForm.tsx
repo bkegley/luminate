@@ -24,8 +24,6 @@ import {
 } from '../../graphql'
 import {Formik, Form, Field} from 'formik'
 import {useHistory, useRouteMatch} from 'react-router-dom'
-import CreateCountryForm from '../Countries/CreateForm'
-import CreateRegionForm from '../Regions/CreateForm'
 
 interface FarmUpdateFormProps {
   farm: Farm
@@ -108,8 +106,6 @@ const FarmUpdateForm = ({
     }
   })
 
-  const createNewCountryDialog = useDialogState()
-  const createNewRegionDialog = useDialogState()
   const deleteDialog = useDialogState()
 
   return (
@@ -136,41 +132,6 @@ const FarmUpdateForm = ({
       {({setFieldValue, values}) => {
         return (
           <Form>
-            <Modal dialog={createNewCountryDialog} className="bg-white p-3 rounded-md" top="100px" aria-label="Alert">
-              <div>
-                <CreateCountryForm
-                  isModal
-                  onCreateSuccess={async res => {
-                    // TODO: this could refactor to a getGeographyQuery {getCountry.... getRegion($countryId: ID!)...}
-                    await Promise.all([
-                      countryRefetch(),
-                      regionRefetch({
-                        query: [{field: 'country', operator: 'eq' as OperatorEnum, value: res.createCountry?.id}],
-                      }),
-                    ])
-                    setFieldValue('country', res.createCountry?.id)
-                    setFieldValue('region', '')
-                    createNewCountryDialog.toggle()
-                  }}
-                />
-              </div>
-            </Modal>
-            <Modal dialog={createNewRegionDialog} className="bg-white p-3 rounded-md" top="100px" aria-label="Alert">
-              <div>
-                <CreateRegionForm
-                  isModal
-                  initialValues={{country: values.country}}
-                  fields={['name']}
-                  onCreateSuccess={res => {
-                    setFieldValue('region', res.createRegion?.id)
-                    regionRefetch({
-                      query: [{field: 'country', operator: 'eq' as OperatorEnum, value: values.country}],
-                    })
-                    createNewRegionDialog.toggle()
-                  }}
-                />
-              </div>
-            </Modal>
             <Modal dialog={deleteDialog} className="bg-white p-3 rounded-md" top="100px" aria-label="Alert">
               <div className="w-screen-11/12 md:w-screen-3/4 lg:w-screen-1/2">
                 <Alert
@@ -213,7 +174,6 @@ const FarmUpdateForm = ({
                       }
                       setFieldValue('country', value.selectedItem?.value)
                     }}
-                    createNewDialog={createNewCountryDialog}
                   />
                 </div>
               ) : null}
@@ -228,7 +188,6 @@ const FarmUpdateForm = ({
                     initialSelectedItem={regionOptions?.find(option => option.value === values.region)}
                     loading={regionLoading}
                     onChange={value => setFieldValue('region', value.selectedItem?.value)}
-                    createNewDialog={createNewRegionDialog}
                   />
                 </div>
               ) : null}

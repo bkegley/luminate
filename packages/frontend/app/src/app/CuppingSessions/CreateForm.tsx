@@ -9,8 +9,6 @@ import {
   CreateCuppingSessionInput,
 } from '../../graphql'
 import {useHistory} from 'react-router-dom'
-import CreateCountryForm from '../Countries/CreateForm'
-import CreateRegionForm from '../Regions/CreateForm'
 
 interface CuppingSessionCreateFormProps {
   title?: React.ReactNode
