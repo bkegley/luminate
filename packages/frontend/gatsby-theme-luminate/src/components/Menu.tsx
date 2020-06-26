@@ -1,5 +1,5 @@
 import React from 'react'
-import {useMenuState, Menu as BaseMenu, DialogBackdrop, MenuButton, MenuStateReturn} from 'reakit'
+import {useMenuState, Menu as BaseMenu, MenuButton, MenuStateReturn} from 'reakit'
 
 export interface MenuProps {
   children: (menu: MenuStateReturn) => React.ReactNode
