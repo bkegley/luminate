@@ -16,7 +16,7 @@ const PORT = process.env.PORT || 3000
 const USER_AUTH_TOKEN = process.env.USER_AUTH_TOKEN || 'localsecrettoken'
 const DEPLOY_ENV = process.env.DEPLOY_ENV || 'development'
 
-const SERVER_AUTH_URL = process.env.SERVER_AUTH_URL || 'http://localhost:3001/graphl'
+const SERVER_AUTH_URL = process.env.SERVER_AUTH_URL || 'http://localhost:3001/graphql'
 const SERVER_ENCYCLOPEDIA_URL = process.env.SERVER_ENCYCLOPEDIA_URL || 'http://localhost:3002/graphql'
 const SERVER_SENSORY_EVAL_URL = process.env.SERVER_SENSORY_EVAL_URL || 'http://localhost:3003/graphql'
 
