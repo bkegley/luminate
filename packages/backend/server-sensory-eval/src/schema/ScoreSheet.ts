@@ -20,6 +20,11 @@ const typeDefs = gql`
     defects: DefectScore
     createdAt: String!
     updatedAt: String!
+    user: User
+  }
+
+  extend type User @key(fields: "id") {
+    id: ID! @external
   }
 
   type DefectScore {
@@ -99,6 +104,13 @@ const resolvers: Resolvers = {
     },
   },
   ScoreSheet: {
+    // @ts-ignore
+    user: parent => {
+      return {
+        __typename: 'User',
+        id: parent.userId,
+      }
+    },
     totalScore: parent => {
       const {
         fragranceAroma,

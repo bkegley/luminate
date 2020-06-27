@@ -22,7 +22,7 @@ const Layout = ({children}: LayoutProps) => {
         setActiveNavItem={setActiveNavItem}
       />
       <main className={`main relative mt-16 ${open ? 'sidebar-open' : 'ml-16'}`}>
-        <div className="w-5/6 mx-auto">{children}</div>
+        <div className="w-5/6 mx-auto py-20">{children}</div>
       </main>
       <footer className="fixed bottom-0 left-0 w-full" />
     </div>
