@@ -14,7 +14,7 @@ const typeDefs = gql`
     updatedAt: String!
   }
 
-  type User implements UserInterface {
+  type User implements UserInterface @key(fields: "id") {
     id: ID!
     username: String!
     firstName: String
@@ -168,6 +168,12 @@ const resolvers: Resolvers = {
     },
   },
   User: {
+    // @ts-ignore
+    __resolveReference: async (parent, {services}) => {
+      const user = await services.user.getById(parent.id)
+      console.log({user})
+      return services.user.getById(parent.id)
+    },
     accounts: async (parent, args, {services}) => {
       return services.account.findAccounts({_id: parent.accounts})
     },

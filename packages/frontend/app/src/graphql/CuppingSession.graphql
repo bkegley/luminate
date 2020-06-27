@@ -126,6 +126,10 @@ fragment SessionCoffeeFragment on SessionCoffee {
 
 fragment ScoreSheetFragment on ScoreSheet {
   id
+  user {
+    id
+    username
+  }
   totalScore
   fragranceAroma
   flavor

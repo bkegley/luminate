@@ -754,6 +754,7 @@ export type ScoreSheet = {
   defects?: Maybe<DefectScore>
   createdAt: Scalars['String']
   updatedAt: Scalars['String']
+  user?: Maybe<User>
 }
 
 export type SessionCoffee = {
@@ -1170,6 +1171,7 @@ export type ScoreSheetFragmentFragment = {__typename: 'ScoreSheet'} & Pick<
   | 'sweetness'
   | 'overall'
 > & {
+    user: Maybe<{__typename: 'User'} & Pick<User, 'id' | 'username'>>
     taints: Maybe<{__typename: 'DefectScore'} & Pick<DefectScore, 'numberOfCups' | 'intensity'>>
     defects: Maybe<{__typename: 'DefectScore'} & Pick<DefectScore, 'numberOfCups' | 'intensity'>>
   }
@@ -1394,6 +1396,10 @@ export const CupppingSessionFragmentFragmentDoc = gql`
 export const ScoreSheetFragmentFragmentDoc = gql`
   fragment ScoreSheetFragment on ScoreSheet {
     id
+    user {
+      id
+      username
+    }
     totalScore
     fragranceAroma
     flavor
