@@ -754,6 +754,7 @@ export type ScoreSheet = {
   defects?: Maybe<DefectScore>
   createdAt: Scalars['String']
   updatedAt: Scalars['String']
+  user?: Maybe<User>
 }
 
 export type SessionCoffee = {

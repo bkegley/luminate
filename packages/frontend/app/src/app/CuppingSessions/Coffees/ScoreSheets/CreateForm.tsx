@@ -3,10 +3,11 @@ import {
   useCreateScoreSheetMutation,
   CreateScoreSheetMutation,
   GetCuppingSessionCoffeeDocument,
+  useUserSearchQuery,
 } from '../../../../graphql'
 import {Formik, Form, Field} from 'formik'
 import EvalScore from './EvalScore'
-import {Button} from '@luminate/gatsby-theme-luminate/src'
+import {Button, Select} from '@luminate/gatsby-theme-luminate/src'
 import {useRouteMatch, useHistory} from 'react-router-dom'
 
 interface ScoreSheetCreateFormProps {
@@ -26,6 +27,7 @@ const ScoreSheetCreateForm = ({
 }: ScoreSheetCreateFormProps) => {
   const match = useRouteMatch()
   const history = useHistory()
+  const {error, loading, data} = useUserSearchQuery({variables: {searchText: ''}})
   const [createScoreSheet] = useCreateScoreSheetMutation({
     refetchQueries: [{query: GetCuppingSessionCoffeeDocument, variables: {id: sessionCoffeeId}}],
     onCompleted: data => {
@@ -45,6 +47,7 @@ const ScoreSheetCreateForm = ({
   return (
     <Formik
       initialValues={{
+        userId: '',
         fragranceAroma: 6,
         flavor: 6,
         aftertaste: 6,
@@ -64,21 +67,38 @@ const ScoreSheetCreateForm = ({
           intensity: 0,
         },
       }}
-      onSubmit={(values, {setSubmitting}) => {
+      onSubmit={(values, {setSubmitting, resetForm}) => {
         createScoreSheet({
           variables: {
             input: values,
             sessionCoffeeId: sessionCoffeeId,
           },
         }).then(res => {
-          console.log({res})
           setSubmitting(false)
         })
       }}
     >
-      {({values, setFieldValue}) => {
+      {({setFieldValue}) => {
         return (
           <Form>
+            <div className="mb-4">
+              <label className="mb-2" htmlFor="user">
+                User
+              </label>
+              <Select
+                onChange={({selectedItem}) => {
+                  if (selectedItem) {
+                    setFieldValue('userId', selectedItem.value)
+                  }
+                }}
+                options={data?.listUsers.edges.map(({node}) => {
+                  return {
+                    name: node.username,
+                    value: node.id,
+                  }
+                })}
+              />
+            </div>
             <div className="mb-4">
               <label className="mb-2" htmlFor="fragranceAroma">
                 Fragrance/Aroma
