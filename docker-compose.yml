@@ -1,6 +1,10 @@
 version: '3.8'
 
 services:
+  db:
+    image: mongo:3.6.17-xenial
+    container_name: db
+
   mongo-utils:
     build:
       context: .
@@ -15,86 +19,53 @@ services:
     depends_on:
       - mongo-utils
 
-  db:
-    image: mongo:3.6.17-xenial
-    container_name: db
-    volumes:
-      - mongo:/data/db
-
   app:
     build:
       context: .
       dockerfile: packages/frontend/app/Dockerfile
     image: app
     container_name: app
-    restart: unless-stopped
 
-  server-auth:
+  identity-schema:
     build:
       context: .
-      dockerfile: packages/backend/server-auth/Dockerfile
-    image: server-auth
-    container_name: server-auth
-    restart: unless-stopped
+      dockerfile: packages/backend/services/identity/schema/Dockerfile
+    image: identity-schema
+    container_name: identity-schema
     depends_on:
+      - db
       - mongo-utils
       - graphql-utils
-    links:
-      - db:db
-    volumes:
-      - mongo:/data/db
 
-  server-encyclopedia:
+  encyclopedia-schema:
     build:
       context: .
-      dockerfile: packages/backend/server-encyclopedia/Dockerfile
-    image: server-encyclopedia
-    container_name: server-encyclopedia
-    restart: unless-stopped
+      dockerfile: packages/backend/services/encyclopedia/schema/Dockerfile
+    image: encyclopedia-schema
+    container_name: encyclopedia-schema
     depends_on:
+      - db
       - mongo-utils
       - graphql-utils
-    links:
-      - db:db
-    volumes:
-      - mongo:/data/db
 
-  server-sensory-eval:
+  sensory-eval-schema:
     build:
       context: .
-      dockerfile: packages/backend/server-sensory-eval/Dockerfile
-    image: server-sensory-eval
-    container_name: server-sensory-eval
-    restart: unless-stopped
+      dockerfile: packages/backend/services/sensory-eval/schema/Dockerfile
+    image: sensory-eval-schema
+    container_name: sensory-eval-schema
     depends_on:
+      - db
       - mongo-utils
       - graphql-utils
-    links:
-      - db:db
-    volumes:
-      - mongo:/data/db
 
-  server-gateway:
+  gateway-luminate:
     build:
       context: .
-      dockerfile: packages/backend/server-gateway/Dockerfile
-    image: server-gateway
-    container_name: server-gateway
-    restart: unless-stopped
+      dockerfile: packages/backend/gateways/luminate/Dockerfile
+    image: gateway-luminate
+    container_name: gateway-luminate
     depends_on:
-      - mongo-utils
-      - graphql-utils
-      - server-auth
-      - server-encyclopedia
-      - server-sensory-eval
-    links:
-      - db:db
-      - server-auth
-      - server-encyclopedia
-      - server-sensory-eval
-    volumes:
-      - mongo:/data/db
-
-volumes:
-  mongo:
-    external: true
+      - identity-schema
+      - encyclopedia-schema
+      - sensory-eval-schema

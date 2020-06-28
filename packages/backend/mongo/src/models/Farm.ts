@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import {model, Schema, Types} from 'mongoose'
 import extendSchema from '../utils/extendSchema'
 import {AuthenticatedDocument} from '../abstract/documents'
 import {BaseAuthenticatedSchema} from '../abstract/schemas'
@@ -9,7 +9,7 @@ export interface FarmDocument extends AuthenticatedDocument {
   region?: string
 }
 
-const FarmZone = new mongoose.Schema({
+const FarmZone = new Schema({
   name: {
     type: String,
     required: true,
@@ -24,11 +24,11 @@ const Farm = extendSchema(
       required: true,
     },
     country: {
-      type: mongoose.Types.ObjectId,
+      type: Types.ObjectId,
       ref: 'country',
     },
     region: {
-      type: mongoose.Types.ObjectId,
+      type: Types.ObjectId,
       ref: 'region',
     },
     farmZones: [FarmZone],
@@ -36,4 +36,4 @@ const Farm = extendSchema(
   {timestamps: true},
 )
 
-export const FarmModel = mongoose.model<FarmDocument>('farm', Farm)
+export const FarmModel = model<FarmDocument>('farm', Farm)

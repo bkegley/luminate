@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import {model, Types} from 'mongoose'
 import extendSchema from '../utils/extendSchema'
 import {BasePublicSchema} from '../abstract/schemas'
 import {BaseDocument} from '../abstract/documents'
@@ -17,7 +17,7 @@ const Region = extendSchema(
       unique: true,
     },
     country: {
-      type: mongoose.Types.ObjectId,
+      type: Types.ObjectId,
       ref: 'country',
     },
   },
@@ -26,4 +26,4 @@ const Region = extendSchema(
   },
 )
 
-export const RegionModel = mongoose.model<RegionDocument>('region', Region)
+export const RegionModel = model<RegionDocument>('region', Region)

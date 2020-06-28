@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import {model} from 'mongoose'
 import extendSchema from '../utils/extendSchema'
 import {AuthenticatedDocument} from '../abstract/documents'
 import {BaseAuthenticatedSchema} from '../abstract/schemas'
@@ -20,4 +20,4 @@ const Device = extendSchema(
   },
 )
 
-export const DeviceModel = mongoose.model<DeviceDocument>('device', Device)
+export const DeviceModel = model<DeviceDocument>('device', Device)

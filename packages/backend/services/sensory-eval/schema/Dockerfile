@@ -7,10 +7,10 @@ RUN apk --no-cache add --virtual builds-deps build-base python
 # backend dependencies
 COPY ./packages/backend/graphql-utils/package.json ./packages/backend/graphql-utils/package.json
 COPY ./packages/backend/mongo/package.json ./packages/backend/mongo/package.json
-COPY ./packages/backend/server-auth ./packages/backend/server-auth
-COPY ./packages/backend/server-encyclopedia ./packages/backend/server-encyclopedia
-COPY ./packages/backend/server-gateway ./packages/backend/server-gateway
-COPY ./packages/backend/server-sensory-eval ./packages/backend/server-sensory-eval
+COPY ./packages/backend/services/identity/schema ./packages/backend/services/identity/schema
+COPY ./packages/backend/services/encyclopedia/schema ./packages/backend/services/encyclopedia/schema
+COPY ./packages/backend/gateways/luminate ./packages/backend/gateways/luminate
+COPY ./packages/backend/services/sensory-eval/schema ./packages/backend/services/sensory-eval/schema
 
 # frontend dependencies
 COPY ./packages/frontend/admin/package.json ./packages/frontend/admin/package.json
@@ -41,8 +41,8 @@ FROM node:12-alpine3.11
 WORKDIR /app
 
 COPY --from=install /app .
-RUN yarn workspace @luminate/server-gateway run build
+RUN yarn workspace @luminate/sensory-eval-schema run build
 
-CMD 'node packages/backend/server-gateway/dist/startServer.js'
+CMD 'node packages/backend/services/sensory-eval/schema/dist/startServer.js'
 
 EXPOSE 3000

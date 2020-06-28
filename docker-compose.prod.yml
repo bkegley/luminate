@@ -5,34 +5,34 @@ services:
     ports:
       - 8001:8000
     environment:
-      - API_URL=http://server-gateway:3000/graphql
+      - API_URL=http://gateway-luminate:3000/graphql
     command: yarn workspace @luminate/app run serve --host "0.0.0.0" -p 8000
 
-  server-auth:
+  identity-schema:
     ports:
       - 3001:3001
     environment:
       - PORT=3001
       - MONGO_URL=mongodb://db:27017/db
-    command: yarn workspace @luminate/server-auth run start
+    command: yarn workspace @luminate/identity-schema run start
 
-  server-encyclopedia:
+  encyclopedia-schema:
     ports:
       - 3002:3002
     environment:
       - PORT=3002
       - MONGO_URL=mongodb://db:27017/db
-    command: yarn workspace @luminate/server-encyclopedia run start
+    command: yarn workspace @luminate/encyclopedia-schema run start
 
-  server-sensory-eval:
+  sensory-eval-schema:
     ports:
       - 3003:3003
     environment:
       - PORT=3003
       - MONGO_URL=mongodb://db:27017/db
-    command: yarn workspace @luminate/server-sensory-eval run start
+    command: yarn workspace @luminate/sensory-eval-schema run start
 
-  server-gateway:
+  gateway-luminate:
     ports:
       - 3000:3000
     environment:
@@ -41,4 +41,4 @@ services:
       - SERVER_ENCYCLOPEDIA_PORT=3002
       - SERVER_SENSORY_EVAL_PORT=3003
       - MONGO_URL=mongodb://db:27017/db
-    command: yarn workspace @luminate/server-gateway run start
+    command: yarn workspace @luminate/gateway-luminate run start

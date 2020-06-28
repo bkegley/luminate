@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import {model} from 'mongoose'
 import extendSchema from '../utils/extendSchema'
 import {BaseDocument} from '../abstract/documents'
 import {BasePublicSchema} from '../abstract/schemas'
@@ -65,4 +65,4 @@ const Country = extendSchema(
   },
 )
 
-export const CountryModel = mongoose.model<CountryDocument>('country', Country, 'countries')
+export const CountryModel = model<CountryDocument>('country', Country, 'countries')

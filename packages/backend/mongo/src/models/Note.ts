@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import {model, Types} from 'mongoose'
 import extendSchema from '../utils/extendSchema'
 import {AuthenticatedDocument} from '../abstract/documents'
 import {BaseAuthenticatedSchema} from '../abstract/schemas'
@@ -13,7 +13,7 @@ const Note = extendSchema(
   BaseAuthenticatedSchema,
   {
     entityId: {
-      type: mongoose.SchemaTypes.ObjectId,
+      type: Types.ObjectId,
       required: true,
     },
     content: {
@@ -28,4 +28,4 @@ const Note = extendSchema(
   {timestamps: true},
 )
 
-export const NoteModel = mongoose.model<NoteDocument>('note', Note)
+export const NoteModel = model<NoteDocument>('note', Note)

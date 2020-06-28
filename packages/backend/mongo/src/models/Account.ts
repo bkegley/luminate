@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import {model} from 'mongoose'
 import extendSchema from '../utils/extendSchema'
 import {BaseAuthenticatedSchema} from '../abstract/schemas'
 import {AuthenticatedDocument} from '../abstract/documents'
@@ -18,4 +18,4 @@ const Account = extendSchema(
   {timestamps: true},
 )
 
-export const AccountModel = mongoose.model<AccountDocument>('account', Account)
+export const AccountModel = model<AccountDocument>('account', Account)

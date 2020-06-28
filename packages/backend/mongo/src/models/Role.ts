@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import {model} from 'mongoose'
 import extendSchema from '../utils/extendSchema'
 import {AuthenticatedDocument} from '../abstract/documents'
 import {BaseAuthenticatedSchema} from '../abstract/schemas'
@@ -21,4 +21,4 @@ const Role = extendSchema(
   {timestamps: true},
 )
 
-export const RoleModel = mongoose.model<RoleDocument>('role', Role)
+export const RoleModel = model<RoleDocument>('role', Role)

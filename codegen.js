@@ -40,8 +40,8 @@ const serverGenerates = {
   'packages/backend/graphql-utils/src/types.ts': {
     plugins: ['typescript'],
   },
-  'packages/backend/server-auth/src/types.d.ts': {
-    schema: ['./packages/backend/server-auth/src/schema/**/!(index.ts)*.ts'],
+  'packages/backend/services/identity/schema/src/types.d.ts': {
+    schema: ['./packages/backend/services/identity/schema/src/schema/**/!(index.ts)*.ts'],
     plugins: ['typescript', 'typescript-resolvers'],
     config: {
       contextType: './startServer#Context',
@@ -54,8 +54,8 @@ const serverGenerates = {
       },
     },
   },
-  'packages/backend/server-encyclopedia/src/types.d.ts': {
-    schema: ['./packages/backend/server-encyclopedia/src/schema/**/!(index.ts)*.ts'],
+  'packages/backend/services/encyclopedia/schema/src/types.d.ts': {
+    schema: ['./packages/backend/services/encyclopedia/schema/src/schema/**/!(index.ts)*.ts'],
     plugins: ['typescript', 'typescript-resolvers'],
     config: {
       contextType: './startServer#Context',
@@ -71,8 +71,8 @@ const serverGenerates = {
       },
     },
   },
-  'packages/backend/server-sensory-eval/src/types.d.ts': {
-    schema: ['./packages/backend/server-sensory-eval/src/schema/**/!(index.ts)*.ts'],
+  'packages/backend/services/sensory-eval/schema/src/types.d.ts': {
+    schema: ['./packages/backend/services/sensory-eval/schema/src/schema/**/!(index.ts)*.ts'],
     plugins: ['typescript', 'typescript-resolvers'],
     config: {
       contextType: './startServer#Context',
@@ -88,7 +88,7 @@ const serverGenerates = {
 }
 
 module.exports = {
-  schema: ['./packages/backend//graphql-utils/src/schema/**/*.ts'],
+  schema: ['./packages/backend/graphql-utils/src/schema/**/*.ts'],
   generates: Object.assign(
     {},
     process.argv.find(arg => arg === '--client') ? clientGenerates : null,
