@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import {model, Types} from 'mongoose'
 import extendSchema from '../utils/extendSchema'
 import bcrypt from 'bcrypt'
 const saltRounds = 10
@@ -17,19 +17,19 @@ export interface PersonDocument extends AuthenticatedDocument {
 interface BaseUserDocument extends PersonDocument {
   username: string
   password: string
-  defaultAccount?: mongoose.Types.ObjectId
+  defaultAccount?: Types.ObjectId
   scopes: string[]
   lastLoggedIn?: Date
 }
 
 export interface UserDocument extends BaseUserDocument {
-  accounts?: Array<mongoose.Types.ObjectId>
+  accounts?: Array<Types.ObjectId>
   roles?: UserRole[]
 }
 
 interface UserRole {
-  account: mongoose.Types.ObjectId | string
-  roles: Array<mongoose.Types.ObjectId | string>
+  account: Types.ObjectId | string
+  roles: Array<Types.ObjectId | string>
 }
 
 type ContactType = 'work' | 'home' | 'mobile' | 'other'
@@ -112,23 +112,23 @@ const UserSchema = extendSchema(
     },
     accounts: [
       {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Types.ObjectId,
         ref: 'account',
       },
     ],
     defaultAccount: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Types.ObjectId,
       ref: 'account',
     },
     roles: [
       {
         account: {
-          type: mongoose.Schema.Types.ObjectId,
+          type: Types.ObjectId,
           ref: 'account',
         },
         roles: [
           {
-            type: mongoose.Schema.Types.ObjectId,
+            type: Types.ObjectId,
             ref: 'role',
           },
         ],
@@ -143,11 +143,13 @@ const UserSchema = extendSchema(
 
 UserSchema.pre<UserDocument>('save', async function(next) {
   if (this.password) {
-    const hashedPassword = await bcrypt.hash(this.password, saltRounds).then(res => res)
+    console.log('going to hash')
+    const hashedPassword = bcrypt.hashSync(this.password, saltRounds)
+    console.log('just finished hashing')
     this.password = hashedPassword
   }
   next()
 })
 
-export const PersonModel = mongoose.model<PersonDocument>('person', PersonSchema, 'people')
-export const UserModel = mongoose.model<UserDocument>('user', UserSchema, 'people')
+export const PersonModel = model<PersonDocument>('person', PersonSchema, 'people')
+export const UserModel = model<UserDocument>('user', UserSchema, 'people')

@@ -1,6 +1,6 @@
-import bcrypt from 'bcrypt'
+import * as bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import mongoose from 'mongoose'
+import * as mongoose from 'mongoose'
 import {UserModel, UserDocument} from '../models/Person'
 import {AccountDocument} from '../models/Account'
 import {RoleDocument} from '../models/Role'
@@ -123,9 +123,7 @@ export class UserService extends AuthenticatedService<UserDocument> {
         return acc.concat(newScopes || [])
       }, [] as string[]) || []
 
-    if (!user) return null
-
-    const passwordMatches = await bcrypt.compare(password, user.password)
+    const passwordMatches = bcrypt.compareSync(password, user.password)
 
     if (!passwordMatches) return null
 

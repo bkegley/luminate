@@ -29,6 +29,7 @@ const startServer = async () => {
   const server = new ApolloServer({
     schema: buildFederatedSchema(schemas),
     context: ({req, res}): Context => {
+      console.log('receiving a request!!!')
       const contextBuilder = new ContextBuilder(req)
       const {services} = contextBuilder
         .withAccount()

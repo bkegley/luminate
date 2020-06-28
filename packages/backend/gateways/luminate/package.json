@@ -1,8 +1,7 @@
 {
-  "name": "@luminate/server-encyclopedia",
+  "name": "@luminate/gateway-luminate",
   "version": "0.0.1",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "index.js",
   "author": "Bryan Kegley <hi@bryankegley.me>",
   "license": "MIT",
   "scripts": {
@@ -12,17 +11,15 @@
     "prestart": "yarn build"
   },
   "dependencies": {
-    "@apollo/federation": "^0.11.2",
+    "@apollo/gateway": "^0.11.6",
     "@luminate/graphql-utils": "*",
     "@luminate/mongo": "*",
-    "apollo-server-express": "^2.9.13",
-    "dataloader": "^2.0.0",
-    "express": "^4.17.1",
-    "lodash.merge": "^4.6.2"
+    "apollo-server-express": "^2.15.0",
+    "cookie-parser": "^1.4.4",
+    "express": "^4.17.1"
   },
   "devDependencies": {
-    "@types/lodash.merge": "^4.6.6",
-    "@types/node-fetch": "^2.5.4",
+    "@types/cookie-parser": "^1.4.2",
     "nodemon": "^2.0.2"
   }
 }

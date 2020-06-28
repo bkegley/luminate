@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import * as mongoose from 'mongoose'
 import {Cursor} from '../utils/Cursor'
 import {BaseDocument} from './documents'
 import {QueryInput} from '../utils/QueryInput'

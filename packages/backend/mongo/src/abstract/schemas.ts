@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import * as mongoose from 'mongoose'
 
 export const BasePublicSchema = new mongoose.Schema({
   permissionType: {

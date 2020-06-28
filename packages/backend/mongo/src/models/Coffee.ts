@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import {model, Types} from 'mongoose'
 import extendSchema from '../utils/extendSchema'
 import {AuthenticatedDocument} from '../abstract/documents'
 import {BaseAuthenticatedSchema} from '../abstract/schemas'
@@ -22,23 +22,23 @@ const Coffee = extendSchema(
       required: true,
     },
     country: {
-      type: mongoose.Types.ObjectId,
+      type: Types.ObjectId,
       ref: 'country',
     },
     region: {
-      type: mongoose.Types.ObjectId,
+      type: Types.ObjectId,
       ref: 'region',
     },
     farm: {
-      type: mongoose.Types.ObjectId,
+      type: Types.ObjectId,
       ref: 'farm',
     },
     farmZone: {
-      type: mongoose.Types.ObjectId,
+      type: Types.ObjectId,
     },
     varieties: [
       {
-        type: mongoose.Types.ObjectId,
+        type: Types.ObjectId,
         ref: 'variety',
       },
     ],
@@ -47,7 +47,7 @@ const Coffee = extendSchema(
     },
     components: [
       {
-        coffee: mongoose.Types.ObjectId,
+        coffee: Types.ObjectId,
         percentage: Number,
       },
     ],
@@ -55,4 +55,4 @@ const Coffee = extendSchema(
   {timestamps: true},
 )
 
-export const CoffeeModel = mongoose.model<CoffeeDocument>('coffee', Coffee)
+export const CoffeeModel = model<CoffeeDocument>('coffee', Coffee)
