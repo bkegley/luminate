@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import * as mongoose from 'mongoose'
 
 function extendSchema(
   Schema: mongoose.Schema,

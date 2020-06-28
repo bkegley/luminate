@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import {model} from 'mongoose'
 import extendSchema from '../utils/extendSchema'
 import {AuthenticatedDocument} from '../abstract/documents'
 import {BaseAuthenticatedSchema} from '../abstract/schemas'
@@ -24,4 +24,4 @@ const Variety = extendSchema(
   },
 )
 
-export const VarietyModel = mongoose.model<VarietyDocument>('variety', Variety, 'varieties')
+export const VarietyModel = model<VarietyDocument>('variety', Variety, 'varieties')

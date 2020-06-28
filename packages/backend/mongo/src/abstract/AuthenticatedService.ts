@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import * as mongoose from 'mongoose'
 import {BaseService} from './BaseService'
 import {Token} from './types'
 import {BaseDocument} from './documents'

@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import {model, Schema, Document, Types} from 'mongoose'
 import extendSchema from '../utils/extendSchema'
 import {AuthenticatedDocument} from '../abstract/documents'
 import {BaseAuthenticatedSchema} from '../abstract/schemas'
@@ -8,7 +8,7 @@ export interface CuppingSessionDocument extends AuthenticatedDocument {
   sessionCoffees?: [SessionCoffeeDocument]
 }
 
-export interface ScoreSheetDocument extends mongoose.Document {
+export interface ScoreSheetDocument extends Document {
   userId: string
   fragranceAroma: number
   flavor: number
@@ -29,15 +29,15 @@ interface IDefectScore {
   intensity: number
 }
 
-export interface SessionCoffeeDocument extends mongoose.Document {
+export interface SessionCoffeeDocument extends Document {
   sampleNumber: string
   coffee: string
   scoreSheets: Array<ScoreSheetDocument>
 }
 
-const ScoreSheet = new mongoose.Schema({
+const ScoreSheet = new Schema({
   userId: {
-    type: mongoose.Types.ObjectId,
+    type: Types.ObjectId,
     ref: 'user',
   },
   fragranceAroma: {
@@ -122,7 +122,7 @@ const CuppingSession = extendSchema(
           required: true,
         },
         coffee: {
-          type: mongoose.Types.ObjectId,
+          type: Types.ObjectId,
           ref: 'coffee',
           required: true,
         },
@@ -133,4 +133,4 @@ const CuppingSession = extendSchema(
   {timestamps: true},
 )
 
-export const CuppingSessionModel = mongoose.model<CuppingSessionDocument>('cuppingSession', CuppingSession)
+export const CuppingSessionModel = model<CuppingSessionDocument>('cuppingSession', CuppingSession)

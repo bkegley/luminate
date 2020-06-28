@@ -1,11 +1,8 @@
-import createMongoConnection from './createMongoConnection'
 import {models} from './models'
 const {Role} = models
 import {ScopeOperations, ScopeResources} from './abstract/scopeEnums'
 
 const seedDatabase = async () => {
-  await createMongoConnection(process.env.MONGO_URL)
-
   const scopes = Object.values(ScopeOperations)
     .map(operation => {
       return Object.values(ScopeResources).map(resource => `${operation}:${resource}`)
