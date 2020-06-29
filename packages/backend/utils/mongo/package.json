@@ -1,0 +1,26 @@
+{
+  "name": "@luminate/mongo-utils",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "types": "src/index.js",
+  "author": "Bryan Kegley <hi@bryankegley.me>",
+  "license": "MIT",
+  "scripts": {
+    "develop": "rimraf ./dist && tsc -w",
+    "build": "rimraf ./dist && tsc",
+    "prebuild": "yarn generate-scopes",
+    "generate-scopes": "ts-node src/scripts/generateScopeTypes.ts"
+  },
+  "dependencies": {
+    "dataloader": "^2.0.0",
+    "jsonwebtoken": "^8.5.1",
+    "lodash.merge": "^4.6.2",
+    "mongoose": "^5.8.1"
+  },
+  "devDependencies": {
+    "@types/jsonwebtoken": "^8.3.9",
+    "@types/lodash.merge": "^4.6.6",
+    "@types/mongoose": "^5.5.36",
+    "ts-node": "^8.8.1"
+  }
+}

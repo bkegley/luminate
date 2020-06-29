@@ -13,7 +13,7 @@
   "dependencies": {
     "@apollo/federation": "^0.11.2",
     "@luminate/graphql-utils": "*",
-    "@luminate/mongo": "*",
+    "@luminate/mongo-utils": "*",
     "apollo-server-express": "^2.15.0",
     "dataloader": "^2.0.0",
     "express": "^4.17.1",

@@ -15662,10 +15662,10 @@ shellwords@^0.1.1:
   resolved "https://registry.yarnpkg.com/shellwords/-/shellwords-0.1.1.tgz#d6b9181c1a48d397324c84871efbcfc73fc0654b"
   integrity sha512-vFwSUfQvqybiICwZY5+DAWIPLKsWO31Q91JSKl3UYv+K5c2QRPzn0qzec6QPu1Qc9eHYItiP3NdJqNVqetYAww==
 
-shpjs@^3.4.3:
-  version "3.4.3"
-  resolved "https://registry.yarnpkg.com/shpjs/-/shpjs-3.4.3.tgz#f2c95d41ff193cd722ea21bf4cf5404548ff9c4e"
-  integrity sha512-NZM75+SLgPt9dK91Z92QK+fVd2OR6zswAmkTrkHRc4mnONbAWGo38I+AxCYsKgCNfqF5cZUi2KfO7r2TZ+tHdw==
+shpjs@^3.5.0:
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/shpjs/-/shpjs-3.5.0.tgz#25f5796b0d236ad48524a0a66dc6c05479995d44"
+  integrity sha512-v21xnhMuvIdU+lcm9rLBZcA/PSwYfv1nfeNcgh6KbGygRnCt0wvyLnm1NbAl0wN45gP+qT7fkM414ukXXReTXQ==
   dependencies:
     jszip "^2.4.0"
     lie "^3.0.1"

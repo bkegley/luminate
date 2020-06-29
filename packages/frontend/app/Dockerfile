@@ -5,8 +5,8 @@ WORKDIR /app
 RUN apk --no-cache add --virtual builds-deps build-base python
 
 # backend dependencies
-COPY ./packages/backend/graphql-utils/package.json ./packages/backend/graphql-utils/package.json
-COPY ./packages/backend/mongo/package.json ./packages/backend/mongo/package.json
+COPY ./packages/backend/utils/graphql/package.json ./packages/backend/utils/graphql/package.json
+COPY ./packages/backend/utils/mongo/package.json ./packages/backend/utils/mongo/package.json
 COPY ./packages/backend/services/identity/schema ./packages/backend/services/identity/schema
 COPY ./packages/backend/services/encyclopedia/schema ./packages/backend/services/encyclopedia/schema
 COPY ./packages/backend/gateways/luminate ./packages/backend/gateways/luminate
