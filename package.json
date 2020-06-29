@@ -4,8 +4,7 @@
   "private": true,
   "workspaces": {
     "packages": [
-      "packages/backend/*",
-      "packages/frontend/*"
+      "packages/**"
     ]
   },
   "scripts": {
@@ -17,12 +16,12 @@
     "generate": "graphql-codegen --server --client && yarn format",
     "generate:server": "graphql-codegen --server && yarn format",
     "generate:client": "graphql-codegen --client  && yarn format",
-    "develop:services": "lerna run develop --parallel --scope={@luminate/server-auth,@luminate/server-encyclopedia,@luminate/server-sensory-eval}",
-    "develop:gateway": "lerna run develop --parallel --scope=@luminate/server-gateway",
-    "build:utils": "lerna run build --scope={@luminate/mongo,@luminate/graphql-utils}",
-    "seed-database": "yarn workspace @luminate/mongo run seed-database",
-    "start:services": "lerna run start --scope={@luminate/server-auth,@luminate/server-encyclopedia,@luminate/server-sensory-eval}",
-    "start:gateway": "yarn workspace @luminate/server-gateway run start"
+    "develop:services": "lerna run develop --parallel --scope={@luminate/identity-schema,@luminate/encyclopedia-schema,@luminate/sensory-eval-schema}",
+    "develop:gateway": "lerna run develop --parallel --scope=@luminate/gateway-luminate",
+    "build:utils": "lerna run build --scope={@luminate/mongo-utils,@luminate/graphql-utils}",
+    "seed-database": "yarn workspace @luminate/mongo-utils run seed-database",
+    "start:services": "lerna run start --scope={@luminate/identity-schema,@luminate/encyclopedia-schema,@luminate/sensory-eval-schema}",
+    "start:gateway": "yarn workspace @luminate/gateway-luminate run start"
   },
   "devDependencies": {
     "@graphql-codegen/add": "^1.12.1",

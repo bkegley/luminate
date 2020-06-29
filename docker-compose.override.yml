@@ -1,20 +1,26 @@
 version: '3.8'
 
 services:
+  db:
+    volumes:
+      - /var/lib/mongodb:/data/db
+
   mongo-utils:
     build:
       target: install
     environment:
-      - MONGO_URL=mongodb://db:27017/db
+      - MONGO_URL=mongodb://db:27017/luminate-encyclopedia
+    user: 1000:1000
     volumes:
-      - ./packages/backend/mongo:/app/packages/backend/mongo
-    command: yarn workspace @luminate/mongo run develop
+      - ./packages/backend/utils/mongo:/app/packages/backend/utils/mongo
+    command: yarn workspace @luminate/mongo-utils run develop
 
   graphql-utils:
     build:
       target: install
+    user: 1000:1000
     volumes:
-      - ./packages/backend/graphql-utils:/app/packages/backend/graphql-utils
+      - ./packages/backend/utils/graphql:/app/packages/backend/utils/graphql
     command: yarn workspace @luminate/graphql-utils run develop
 
   app:
@@ -24,57 +30,63 @@ services:
       - 8001:8000
     environment:
       - API_URL=http://localhost:3000/graphql
+    user: 1000:1000
     volumes:
       - ./packages/frontend/app:/app/packages/frontend/app
+      - ./node_modules:/app/node_modules
     command: yarn workspace @luminate/app run develop --host "0.0.0.0" --port 8000
 
-  server-auth:
+  identity-schema:
     build:
       target: install
     ports:
       - 3001:3000
     environment:
       - PORT=3000
-      - MONGO_URL=mongodb://db:27017/db
+      - MONGO_URL=mongodb://db:27017/luminate-identity
+    user: 1000:1000
     volumes:
-      - ./packages/backend/server-auth:/app/packages/backend/server-auth
-    command: yarn workspace @luminate/server-auth run develop
+      - ./:/app
+      - /app/node_modules
+    command: yarn workspace @luminate/identity-schema run develop
 
-  server-encyclopedia:
+  encyclopedia-schema:
     build:
       target: install
     ports:
       - 3002:3000
     environment:
       - PORT=3000
-      - MONGO_URL=mongodb://db:27017/db
+      - MONGO_URL=mongodb://db:27017/luminate-encyclopedia
+    user: 1000:1000
     volumes:
-      - ./packages/backend/server-encyclopedia:/app/packages/backend/server-encyclopedia
-    command: yarn workspace @luminate/server-encyclopedia run develop
+      - ./:/app
+    command: yarn workspace @luminate/encyclopedia-schema run develop
 
-  server-sensory-eval:
+  sensory-eval-schema:
     build:
       target: install
     ports:
       - 3003:3000
     environment:
       - PORT=3000
-      - MONGO_URL=mongodb://db:27017/db
+      - MONGO_URL=mongodb://db:27017/luminate-sensory-eval
+    user: 1000:1000
     volumes:
-      - ./packages/backend/server-sensory-eval:/app/packages/backend/server-sensory-eval
-    command: yarn workspace @luminate/server-sensory-eval run develop
+      - ./:/app
+    command: yarn workspace @luminate/sensory-eval-schema run develop
 
-  server-gateway:
+  gateway-luminate:
     build:
       target: install
     ports:
       - 3000:3000
     environment:
       - PORT=3000
-      - SERVER_AUTH_URL=http://server-auth:3000/graphql
-      - SERVER_ENCYCLOPEDIA_URL=http://server-encyclopedia:3000/graphql
-      - SERVER_SENSORY_EVAL_URL=http://server-sensory-eval:3000/graphql
-      - MONGO_URL=mongodb://db:27017/db
+      - SERVER_AUTH_URL=http://identity-schema:3000/graphql
+      - SERVER_ENCYCLOPEDIA_URL=http://encyclopedia-schema:3000/graphql
+      - SERVER_SENSORY_EVAL_URL=http://sensory-eval-schema:3000/graphql
+    user: 1000:1000
     volumes:
-      - ./packages/backend/server-gateway:/app/packages/backend/server-gateway
-    command: yarn workspace @luminate/server-gateway run develop
+      - ./:/app
+    command: yarn workspace @luminate/gateway-luminate run develop

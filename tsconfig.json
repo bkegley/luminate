@@ -2,10 +2,11 @@
   "extends": "./tsconfig.base.json",
   "files": [],
   "references": [
-    {"path": "packages/backend/graphql-utils"},
-    {"path": "packages/backend/mongo"},
-    {"path": "packages/backend/server-auth"},
-    {"path": "packages/backend/server-gateway"},
-    {"path": "packages/backend/server-encyclopedia"}
+    {"path": "packages/backend/utils/graphql"},
+    {"path": "packages/backend/utils/mongo"},
+    {"path": "packages/backend/gateways/luminate"},
+    {"path": "packages/backend/services/identity/schema"},
+    {"path": "packages/backend/services/encyclopedia/schema"},
+    {"path": "packages/backend/services/sensory-eval/schema"}
   ]
 }

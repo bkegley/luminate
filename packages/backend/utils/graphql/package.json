@@ -1,0 +1,27 @@
+{
+  "name": "@luminate/graphql-utils",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "types": "src/index.ts",
+  "author": "Bryan Kegley <hi@bryankegley.me>",
+  "license": "MIT",
+  "scripts": {
+    "develop": "nodemon --watch src/ -e ts --exec \"npm run start\"",
+    "build": "rimraf ./dist && tsc",
+    "start": "node dist/index.js",
+    "prestart": "yarn build"
+  },
+  "dependencies": {
+    "@luminate/mongo-utils": "*",
+    "apollo-server-express": "^2.15.0",
+    "dataloader": "^2.0.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.8.1",
+    "uuid": "^3.3.3"
+  },
+  "devDependencies": {
+    "@types/jsonwebtoken": "^8.3.5",
+    "@types/mongoose": "^5.5.36",
+    "@types/uuid": "^3.4.6"
+  }
+}

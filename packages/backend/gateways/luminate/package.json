@@ -1,0 +1,25 @@
+{
+  "name": "@luminate/gateway-luminate",
+  "version": "0.0.1",
+  "main": "index.js",
+  "author": "Bryan Kegley <hi@bryankegley.me>",
+  "license": "MIT",
+  "scripts": {
+    "develop": "nodemon --watch src/ --ignore src/index.d --ignore src/types.d -e ts --exec \"npm run start\"",
+    "build": "rimraf ./dist && tsc",
+    "start": "node dist/startServer.js",
+    "prestart": "yarn build"
+  },
+  "dependencies": {
+    "@apollo/gateway": "^0.11.6",
+    "@luminate/graphql-utils": "*",
+    "@luminate/mongo-utils": "*",
+    "apollo-server-express": "^2.15.0",
+    "cookie-parser": "^1.4.4",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.2",
+    "nodemon": "^2.0.2"
+  }
+}
