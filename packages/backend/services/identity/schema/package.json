@@ -14,7 +14,7 @@
   "dependencies": {
     "@apollo/federation": "^0.11.2",
     "@luminate/graphql-utils": "*",
-    "@luminate/mongo": "*",
+    "@luminate/mongo-utils": "*",
     "apollo-server-express": "^2.15.0",
     "bcrypt": "^3.0.7",
     "dataloader": "^2.0.0",

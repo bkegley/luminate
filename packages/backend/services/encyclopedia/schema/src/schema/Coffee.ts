@@ -1,6 +1,6 @@
 import {gql} from 'apollo-server-express'
 import {Resolvers} from '../types'
-import {VarietyDocument} from '@luminate/mongo'
+import {VarietyDocument} from '../models'
 
 const typeDefs = gql`
   type Coffee @key(fields: "id") {
@@ -128,7 +128,7 @@ const resolvers: Resolvers = {
     },
     varieties: async (parent, args, {services}) => {
       if (!parent.varieties) return []
-      return (await Promise.all(parent.varieties.map(id => services.variety.getById(id)))).filter(
+      return (await Promise.all(parent.varieties.map((id: string) => services.variety.getById(id)))).filter(
         Boolean,
       ) as VarietyDocument[]
     },

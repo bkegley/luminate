@@ -1,12 +1,5 @@
 import {GraphQLResolveInfo} from 'graphql'
-import {
-  CoffeeDocument,
-  CountryDocument,
-  FarmDocument,
-  NoteDocument,
-  RegionDocument,
-  VarietyDocument,
-} from '@luminate/mongo'
+import {CoffeeDocument, CountryDocument, FarmDocument, NoteDocument, RegionDocument, VarietyDocument} from './models'
 import {Context} from './startServer'
 export type Maybe<T> = T | null
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
@@ -98,10 +91,6 @@ export type CreateCoffeeInput = {
   components?: Maybe<Array<Maybe<ComponentInput>>>
 }
 
-export type CreateDeviceInput = {
-  name: Scalars['String']
-}
-
 export type CreateFarmInput = {
   name?: Maybe<Scalars['String']>
   country?: Maybe<Scalars['String']>
@@ -120,26 +109,6 @@ export type CreateNoteInput = {
 
 export type CreateVarietyInput = {
   name: Scalars['String']
-}
-
-export type Device = {
-  __typename?: 'Device'
-  id: Scalars['ID']
-  name: Scalars['String']
-  createdAt: Scalars['String']
-  updatedAt: Scalars['String']
-}
-
-export type DeviceConnection = {
-  __typename?: 'DeviceConnection'
-  pageInfo: PageInfo
-  edges: Array<DeviceEdge>
-}
-
-export type DeviceEdge = {
-  __typename?: 'DeviceEdge'
-  cursor: Scalars['String']
-  node: Device
 }
 
 export type Farm = {
@@ -177,10 +146,6 @@ export type Mutation = {
   updateCoffee?: Maybe<Coffee>
   deleteCoffee?: Maybe<Coffee>
   updateCoffeePermissionsForAccount?: Maybe<Scalars['Boolean']>
-  createDevice?: Maybe<Device>
-  updateDevice?: Maybe<Device>
-  deleteDevice?: Maybe<Device>
-  updateDevicePermissionsForAccount?: Maybe<Scalars['Boolean']>
   createFarm?: Maybe<Farm>
   updateFarm?: Maybe<Farm>
   deleteFarm?: Maybe<Farm>
@@ -211,25 +176,6 @@ export type MutationDeleteCoffeeArgs = {
 
 export type MutationUpdateCoffeePermissionsForAccountArgs = {
   coffeeId: Scalars['ID']
-  accountId: Scalars['ID']
-  permissionTypes: Array<PermissionTypeEnum>
-}
-
-export type MutationCreateDeviceArgs = {
-  input: CreateDeviceInput
-}
-
-export type MutationUpdateDeviceArgs = {
-  id: Scalars['ID']
-  input: UpdateDeviceInput
-}
-
-export type MutationDeleteDeviceArgs = {
-  id: Scalars['ID']
-}
-
-export type MutationUpdateDevicePermissionsForAccountArgs = {
-  DeviceId: Scalars['ID']
   accountId: Scalars['ID']
   permissionTypes: Array<PermissionTypeEnum>
 }
@@ -330,8 +276,6 @@ export type Query = {
   getCoffee?: Maybe<Coffee>
   listCountries: CountryConnection
   getCountry?: Maybe<Country>
-  listDevices: DeviceConnection
-  getDevice?: Maybe<Device>
   listFarms: FarmConnection
   getFarm?: Maybe<Farm>
   listRegions: RegionConnection
@@ -357,16 +301,6 @@ export type QueryListCountriesArgs = {
 }
 
 export type QueryGetCountryArgs = {
-  id: Scalars['ID']
-}
-
-export type QueryListDevicesArgs = {
-  cursor?: Maybe<Scalars['String']>
-  limit?: Maybe<Scalars['Int']>
-  query?: Maybe<Array<QueryInput>>
-}
-
-export type QueryGetDeviceArgs = {
   id: Scalars['ID']
 }
 
@@ -435,10 +369,6 @@ export type UpdateCoffeeInput = {
   varieties?: Maybe<Array<Maybe<Scalars['ID']>>>
   elevation?: Maybe<Scalars['String']>
   components?: Maybe<Array<Maybe<ComponentInput>>>
-}
-
-export type UpdateDeviceInput = {
-  name?: Maybe<Scalars['String']>
 }
 
 export type UpdateFarmInput = {
@@ -584,9 +514,6 @@ export type ResolversTypes = ResolversObject<{
     Omit<CountryConnection, 'edges'> & {edges: Array<ResolversTypes['CountryEdge']>}
   >
   CountryEdge: ResolverTypeWrapper<Omit<CountryEdge, 'node'> & {node: ResolversTypes['Country']}>
-  DeviceConnection: ResolverTypeWrapper<DeviceConnection>
-  DeviceEdge: ResolverTypeWrapper<DeviceEdge>
-  Device: ResolverTypeWrapper<Device>
   FarmConnection: ResolverTypeWrapper<Omit<FarmConnection, 'edges'> & {edges: Array<ResolversTypes['FarmEdge']>}>
   FarmEdge: ResolverTypeWrapper<Omit<FarmEdge, 'node'> & {node: ResolversTypes['Farm']}>
   RegionConnection: ResolverTypeWrapper<Omit<RegionConnection, 'edges'> & {edges: Array<ResolversTypes['RegionEdge']>}>
@@ -600,8 +527,6 @@ export type ResolversTypes = ResolversObject<{
   ComponentInput: ComponentInput
   UpdateCoffeeInput: UpdateCoffeeInput
   PermissionTypeEnum: PermissionTypeEnum
-  CreateDeviceInput: CreateDeviceInput
-  UpdateDeviceInput: UpdateDeviceInput
   CreateFarmInput: CreateFarmInput
   UpdateFarmInput: UpdateFarmInput
   CreateFarmZoneInput: CreateFarmZoneInput
@@ -636,9 +561,6 @@ export type ResolversParentTypes = ResolversObject<{
   Note: NoteDocument
   CountryConnection: Omit<CountryConnection, 'edges'> & {edges: Array<ResolversParentTypes['CountryEdge']>}
   CountryEdge: Omit<CountryEdge, 'node'> & {node: ResolversParentTypes['Country']}
-  DeviceConnection: DeviceConnection
-  DeviceEdge: DeviceEdge
-  Device: Device
   FarmConnection: Omit<FarmConnection, 'edges'> & {edges: Array<ResolversParentTypes['FarmEdge']>}
   FarmEdge: Omit<FarmEdge, 'node'> & {node: ResolversParentTypes['Farm']}
   RegionConnection: Omit<RegionConnection, 'edges'> & {edges: Array<ResolversParentTypes['RegionEdge']>}
@@ -650,8 +572,6 @@ export type ResolversParentTypes = ResolversObject<{
   ComponentInput: ComponentInput
   UpdateCoffeeInput: UpdateCoffeeInput
   PermissionTypeEnum: PermissionTypeEnum
-  CreateDeviceInput: CreateDeviceInput
-  UpdateDeviceInput: UpdateDeviceInput
   CreateFarmInput: CreateFarmInput
   UpdateFarmInput: UpdateFarmInput
   CreateFarmZoneInput: CreateFarmZoneInput
@@ -679,13 +599,6 @@ export type QueryResolvers<
     ParentType,
     ContextType,
     RequireFields<QueryGetCountryArgs, 'id'>
-  >
-  listDevices?: Resolver<ResolversTypes['DeviceConnection'], ParentType, ContextType, QueryListDevicesArgs>
-  getDevice?: Resolver<
-    Maybe<ResolversTypes['Device']>,
-    ParentType,
-    ContextType,
-    RequireFields<QueryGetDeviceArgs, 'id'>
   >
   listFarms?: Resolver<ResolversTypes['FarmConnection'], ParentType, ContextType, QueryListFarmsArgs>
   getFarm?: Resolver<Maybe<ResolversTypes['Farm']>, ParentType, ContextType, RequireFields<QueryGetFarmArgs, 'id'>>
@@ -846,32 +759,6 @@ export type CountryEdgeResolvers<
   node?: Resolver<ResolversTypes['Country'], ParentType, ContextType>
 }>
 
-export type DeviceConnectionResolvers<
-  ContextType = Context,
-  ParentType extends ResolversParentTypes['DeviceConnection'] = ResolversParentTypes['DeviceConnection']
-> = ResolversObject<{
-  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>
-  edges?: Resolver<Array<ResolversTypes['DeviceEdge']>, ParentType, ContextType>
-}>
-
-export type DeviceEdgeResolvers<
-  ContextType = Context,
-  ParentType extends ResolversParentTypes['DeviceEdge'] = ResolversParentTypes['DeviceEdge']
-> = ResolversObject<{
-  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>
-  node?: Resolver<ResolversTypes['Device'], ParentType, ContextType>
-}>
-
-export type DeviceResolvers<
-  ContextType = Context,
-  ParentType extends ResolversParentTypes['Device'] = ResolversParentTypes['Device']
-> = ResolversObject<{
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
-  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>
-  createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>
-  updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>
-}>
-
 export type FarmConnectionResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['FarmConnection'] = ResolversParentTypes['FarmConnection']
@@ -947,30 +834,6 @@ export type MutationResolvers<
     ParentType,
     ContextType,
     RequireFields<MutationUpdateCoffeePermissionsForAccountArgs, 'coffeeId' | 'accountId' | 'permissionTypes'>
-  >
-  createDevice?: Resolver<
-    Maybe<ResolversTypes['Device']>,
-    ParentType,
-    ContextType,
-    RequireFields<MutationCreateDeviceArgs, 'input'>
-  >
-  updateDevice?: Resolver<
-    Maybe<ResolversTypes['Device']>,
-    ParentType,
-    ContextType,
-    RequireFields<MutationUpdateDeviceArgs, 'id' | 'input'>
-  >
-  deleteDevice?: Resolver<
-    Maybe<ResolversTypes['Device']>,
-    ParentType,
-    ContextType,
-    RequireFields<MutationDeleteDeviceArgs, 'id'>
-  >
-  updateDevicePermissionsForAccount?: Resolver<
-    Maybe<ResolversTypes['Boolean']>,
-    ParentType,
-    ContextType,
-    RequireFields<MutationUpdateDevicePermissionsForAccountArgs, 'DeviceId' | 'accountId' | 'permissionTypes'>
   >
   createFarm?: Resolver<
     Maybe<ResolversTypes['Farm']>,
@@ -1063,9 +926,6 @@ export type Resolvers<ContextType = Context> = ResolversObject<{
   Note?: NoteResolvers<ContextType>
   CountryConnection?: CountryConnectionResolvers<ContextType>
   CountryEdge?: CountryEdgeResolvers<ContextType>
-  DeviceConnection?: DeviceConnectionResolvers<ContextType>
-  DeviceEdge?: DeviceEdgeResolvers<ContextType>
-  Device?: DeviceResolvers<ContextType>
   FarmConnection?: FarmConnectionResolvers<ContextType>
   FarmEdge?: FarmEdgeResolvers<ContextType>
   RegionConnection?: RegionConnectionResolvers<ContextType>

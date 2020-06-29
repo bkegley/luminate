@@ -37,7 +37,7 @@ const clientGenerates = {
 }
 
 const serverGenerates = {
-  'packages/backend/graphql-utils/src/types.ts': {
+  'packages/backend/utils/graphql/src/types.ts': {
     plugins: ['typescript'],
   },
   'packages/backend/services/identity/schema/src/types.d.ts': {
@@ -48,9 +48,9 @@ const serverGenerates = {
       useIndexSignature: true,
       federation: true,
       mappers: {
-        Role: '@luminate/mongo#RoleDocument',
-        User: '@luminate/mongo#UserDocument',
-        Me: '@luminate/mongo#UserDocument',
+        Role: './models#RoleDocument',
+        User: './models#UserDocument',
+        Me: './models#UserDocument',
       },
     },
   },
@@ -62,12 +62,12 @@ const serverGenerates = {
       useIndexSignature: true,
       federation: true,
       mappers: {
-        Coffee: '@luminate/mongo#CoffeeDocument',
-        Country: '@luminate/mongo#CountryDocument',
-        Farm: '@luminate/mongo#FarmDocument',
-        Note: '@luminate/mongo#NoteDocument',
-        Region: '@luminate/mongo#RegionDocument',
-        Variety: '@luminate/mongo#VarietyDocument',
+        Coffee: './models#CoffeeDocument',
+        Country: './models#CountryDocument',
+        Farm: './models#FarmDocument',
+        Note: './models#NoteDocument',
+        Region: './models#RegionDocument',
+        Variety: './models#VarietyDocument',
       },
     },
   },
@@ -79,16 +79,16 @@ const serverGenerates = {
       useIndexSignature: true,
       federation: true,
       mappers: {
-        CuppingSession: '@luminate/mongo#CuppingSessionDocument',
-        SessionCoffee: '@luminate/mongo#SessionCoffeeDocument',
-        ScoreSheet: '@luminate/mongo#ScoreSheetDocument',
+        CuppingSession: './models#CuppingSessionDocument',
+        SessionCoffee: './models#SessionCoffeeDocument',
+        ScoreSheet: './models#ScoreSheetDocument',
       },
     },
   },
 }
 
 module.exports = {
-  schema: ['./packages/backend/graphql-utils/src/schema/**/*.ts'],
+  schema: ['./packages/backend/utils/graphql/src/schema/**/*.ts'],
   generates: Object.assign(
     {},
     process.argv.find(arg => arg === '--client') ? clientGenerates : null,

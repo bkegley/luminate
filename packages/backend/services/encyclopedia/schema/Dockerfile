@@ -5,8 +5,8 @@ WORKDIR /app
 RUN apk --no-cache add --virtual builds-deps build-base python
 
 # backend dependencies
-COPY ./packages/backend/graphql-utils/package.json ./packages/backend/graphql-utils/package.json
-COPY ./packages/backend/mongo/package.json ./packages/backend/mongo/package.json
+COPY ./packages/backend/utils/graphql/package.json ./packages/backend/utils/graphql/package.json
+COPY ./packages/backend/utils/mongo/package.json ./packages/backend/utils/mongo/package.json
 COPY ./packages/backend/services/identity/schema ./packages/backend/services/identity/schema
 COPY ./packages/backend/services/encyclopedia/schema ./packages/backend/services/encyclopedia/schema
 COPY ./packages/backend/gateways/luminate ./packages/backend/gateways/luminate
@@ -26,16 +26,16 @@ RUN yarn
 
 FROM mongo-utils AS mongo-utils
 WORKDIR /app
-COPY ./packages/backend/mongo ./packages/backend/mongo
+COPY ./packages/backend/utils/mongo ./packages/backend/utils/mongo
 
 FROM graphql-utils AS graphql-utils
 WORKDIR /app
-COPY ./packages/backend/graphql-utils ./packages/backend/graphql-utils
+COPY ./packages/backend/utils/graphql ./packages/backend/utils/graphql
 
 FROM pre-install AS install
 WORKDIR /app
-COPY --from=mongo-utils ./app/packages/backend/mongo ./packages/backend/mongo
-COPY --from=graphql-utils ./app/packages/backend/graphql-utils ./packages/backend/graphql-utils
+COPY --from=mongo-utils ./app/packages/backend/utils/mongo ./packages/backend/utils/mongo
+COPY --from=graphql-utils ./app/packages/backend/utils/graphql ./packages/backend/utils/graphql
 
 FROM node:12-alpine3.11
 WORKDIR /app

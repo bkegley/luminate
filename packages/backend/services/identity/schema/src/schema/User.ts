@@ -114,7 +114,6 @@ const resolvers: Resolvers = {
     },
     login: async (parent, {username, password}, {services, res}) => {
       const token = await services.user.createLoginToken({username, password})
-      console.log({token})
       if (!token) return false
       res.cookie('id', token, {
         httpOnly: false,

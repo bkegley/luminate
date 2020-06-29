@@ -1,5 +1,5 @@
 import {GraphQLResolveInfo} from 'graphql'
-import {RoleDocument, UserDocument} from '@luminate/mongo'
+import {RoleDocument, UserDocument} from './models'
 import {Context} from './startServer'
 export type Maybe<T> = T | null
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
@@ -301,6 +301,12 @@ export type ResolverFn<TResult, TParent, TContext, TArgs> = (
   info: GraphQLResolveInfo,
 ) => Promise<TResult> | TResult
 
+export type ReferenceResolver<TResult, TReference, TContext> = (
+  reference: TReference,
+  context: TContext,
+  info: GraphQLResolveInfo,
+) => Promise<TResult> | TResult
+
 export type StitchingResolver<TResult, TParent, TContext, TArgs> = {
   fragment: string
   resolve: ResolverFn<TResult, TParent, TContext, TArgs>
@@ -488,6 +494,11 @@ export type UserResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']
 > = ResolversObject<{
+  __resolveReference?: ReferenceResolver<
+    Maybe<ResolversTypes['User']>,
+    {__typename: 'User'} & Pick<ParentType, 'id'>,
+    ContextType
+  >
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
   username?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   firstName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>

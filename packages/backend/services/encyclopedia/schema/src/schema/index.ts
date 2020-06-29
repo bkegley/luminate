@@ -6,8 +6,6 @@ import {schema as coffeeSchema} from './Coffee'
 
 import {schema as countrySchema} from './Country'
 
-import {schema as deviceSchema} from './Device'
-
 import {schema as farmSchema} from './Farm'
 
 import {schema as noteSchema} from './Note'
@@ -20,7 +18,6 @@ export const schemas = [
   {typeDefs: sharedTypeDefs},
   coffeeSchema,
   countrySchema,
-  deviceSchema,
   farmSchema,
   noteSchema,
   regionSchema,
