@@ -4,7 +4,6 @@ require('dotenv').config({
 })
 import {ApolloServer, CorsOptions} from 'apollo-server-express'
 import {ApolloGateway, RemoteGraphQLDataSource} from '@apollo/gateway'
-import {createMongoConnection} from '@luminate/mongo'
 import {parseTokenFromRequest, Token} from '@luminate/graphql-utils'
 import cookieParser from 'cookie-parser'
 import express from 'express'
@@ -47,7 +46,6 @@ class AuthenticatedDataSource extends RemoteGraphQLDataSource {
 }
 
 const startServer = async () => {
-  await createMongoConnection(process.env.MONGO_URL)
   //configure cors
   const whitelist = [
     `http://localhost:${PORT}`,

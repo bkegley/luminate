@@ -5,4 +5,4 @@ coverage
 public
 .cache
 
-packages/backend/graphql-utils/src/scopes.ts
+packages/backend/utils/graphql/src/scopes.ts

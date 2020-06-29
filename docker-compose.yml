@@ -8,13 +8,13 @@ services:
   mongo-utils:
     build:
       context: .
-      dockerfile: packages/backend/mongo/Dockerfile
+      dockerfile: packages/backend/utils/mongo/Dockerfile
     image: mongo-utils
 
   graphql-utils:
     build:
       context: .
-      dockerfile: packages/backend/graphql-utils/Dockerfile
+      dockerfile: packages/backend/utils/graphql/Dockerfile
     image: graphql-utils
     depends_on:
       - mongo-utils

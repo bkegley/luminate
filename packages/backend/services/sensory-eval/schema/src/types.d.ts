@@ -1,5 +1,5 @@
 import {GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig} from 'graphql'
-import {CuppingSessionDocument, SessionCoffeeDocument, ScoreSheetDocument} from '@luminate/mongo'
+import {CuppingSessionDocument, SessionCoffeeDocument, ScoreSheetDocument} from './models'
 import {Context} from './startServer'
 export type Maybe<T> = T | null
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
@@ -23,6 +23,10 @@ export type Coffee = {
 export type CreateCuppingSessionInput = {
   internalId?: Maybe<Scalars['ID']>
   description?: Maybe<Scalars['String']>
+}
+
+export type CreateDeviceInput = {
+  name: Scalars['String']
 }
 
 export type CreateScoreSheetInput = {
@@ -75,6 +79,26 @@ export type DefectScoreInput = {
   intensity?: Maybe<Scalars['Float']>
 }
 
+export type Device = {
+  __typename?: 'Device'
+  id: Scalars['ID']
+  name: Scalars['String']
+  createdAt: Scalars['String']
+  updatedAt: Scalars['String']
+}
+
+export type DeviceConnection = {
+  __typename?: 'DeviceConnection'
+  pageInfo: PageInfo
+  edges: Array<DeviceEdge>
+}
+
+export type DeviceEdge = {
+  __typename?: 'DeviceEdge'
+  cursor: Scalars['String']
+  node: Device
+}
+
 export type Mutation = {
   __typename?: 'Mutation'
   createCuppingSession?: Maybe<CuppingSession>
@@ -82,6 +106,9 @@ export type Mutation = {
   deleteCuppingSession?: Maybe<CuppingSession>
   updateCuppingSessionCoffees?: Maybe<CuppingSession>
   lockCuppingSession?: Maybe<CuppingSession>
+  createDevice?: Maybe<Device>
+  updateDevice?: Maybe<Device>
+  deleteDevice?: Maybe<Device>
   createScoreSheet?: Maybe<ScoreSheet>
   updateScoreSheet?: Maybe<ScoreSheet>
   deleteScoreSheet?: Maybe<CuppingSession>
@@ -106,6 +133,19 @@ export type MutationUpdateCuppingSessionCoffeesArgs = {
 }
 
 export type MutationLockCuppingSessionArgs = {
+  id: Scalars['ID']
+}
+
+export type MutationCreateDeviceArgs = {
+  input: CreateDeviceInput
+}
+
+export type MutationUpdateDeviceArgs = {
+  id: Scalars['ID']
+  input: UpdateDeviceInput
+}
+
+export type MutationDeleteDeviceArgs = {
   id: Scalars['ID']
 }
 
@@ -147,6 +187,8 @@ export type Query = {
   listCuppingSessions: CuppingSessionConnection
   getCuppingSession?: Maybe<CuppingSession>
   getCuppingSessionCoffee?: Maybe<SessionCoffee>
+  listDevices: DeviceConnection
+  getDevice?: Maybe<Device>
   listScoreSheets?: Maybe<Array<Maybe<ScoreSheet>>>
   getScoreSheet?: Maybe<ScoreSheet>
 }
@@ -162,6 +204,16 @@ export type QueryGetCuppingSessionArgs = {
 }
 
 export type QueryGetCuppingSessionCoffeeArgs = {
+  id: Scalars['ID']
+}
+
+export type QueryListDevicesArgs = {
+  cursor?: Maybe<Scalars['String']>
+  limit?: Maybe<Scalars['Int']>
+  query?: Maybe<Array<QueryInput>>
+}
+
+export type QueryGetDeviceArgs = {
   id: Scalars['ID']
 }
 
@@ -198,6 +250,7 @@ export type ScoreSheet = {
   defects?: Maybe<DefectScore>
   createdAt: Scalars['String']
   updatedAt: Scalars['String']
+  user?: Maybe<User>
 }
 
 export type SessionCoffee = {
@@ -219,6 +272,10 @@ export type UpdateCuppingSessionInput = {
   description?: Maybe<Scalars['String']>
 }
 
+export type UpdateDeviceInput = {
+  name?: Maybe<Scalars['String']>
+}
+
 export type UpdateScoreSheetInput = {
   userId?: Maybe<Scalars['ID']>
   fragranceAroma?: Maybe<Scalars['ScoreFloat']>
@@ -233,6 +290,11 @@ export type UpdateScoreSheetInput = {
   overall?: Maybe<Scalars['ScoreFloat']>
   taints?: Maybe<DefectScoreInput>
   defects?: Maybe<DefectScoreInput>
+}
+
+export type User = {
+  __typename?: 'User'
+  id: Scalars['ID']
 }
 
 export type WithIndex<TObject> = TObject & Record<string, any>
@@ -331,10 +393,16 @@ export type ResolversTypes = ResolversObject<{
   ScoreSheet: ResolverTypeWrapper<ScoreSheetDocument>
   ScoreFloat: ResolverTypeWrapper<Scalars['ScoreFloat']>
   DefectScore: ResolverTypeWrapper<DefectScore>
+  User: ResolverTypeWrapper<User>
+  DeviceConnection: ResolverTypeWrapper<DeviceConnection>
+  DeviceEdge: ResolverTypeWrapper<DeviceEdge>
+  Device: ResolverTypeWrapper<Device>
   Mutation: ResolverTypeWrapper<{}>
   CreateCuppingSessionInput: CreateCuppingSessionInput
   UpdateCuppingSessionInput: UpdateCuppingSessionInput
   SessionCoffeeInput: SessionCoffeeInput
+  CreateDeviceInput: CreateDeviceInput
+  UpdateDeviceInput: UpdateDeviceInput
   CreateScoreSheetInput: CreateScoreSheetInput
   DefectScoreInput: DefectScoreInput
   UpdateScoreSheetInput: UpdateScoreSheetInput
@@ -361,10 +429,16 @@ export type ResolversParentTypes = ResolversObject<{
   ScoreSheet: ScoreSheetDocument
   ScoreFloat: Scalars['ScoreFloat']
   DefectScore: DefectScore
+  User: User
+  DeviceConnection: DeviceConnection
+  DeviceEdge: DeviceEdge
+  Device: Device
   Mutation: {}
   CreateCuppingSessionInput: CreateCuppingSessionInput
   UpdateCuppingSessionInput: UpdateCuppingSessionInput
   SessionCoffeeInput: SessionCoffeeInput
+  CreateDeviceInput: CreateDeviceInput
+  UpdateDeviceInput: UpdateDeviceInput
   CreateScoreSheetInput: CreateScoreSheetInput
   DefectScoreInput: DefectScoreInput
   UpdateScoreSheetInput: UpdateScoreSheetInput
@@ -391,6 +465,13 @@ export type QueryResolvers<
     ParentType,
     ContextType,
     RequireFields<QueryGetCuppingSessionCoffeeArgs, 'id'>
+  >
+  listDevices?: Resolver<ResolversTypes['DeviceConnection'], ParentType, ContextType, QueryListDevicesArgs>
+  getDevice?: Resolver<
+    Maybe<ResolversTypes['Device']>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryGetDeviceArgs, 'id'>
   >
   listScoreSheets?: Resolver<
     Maybe<Array<Maybe<ResolversTypes['ScoreSheet']>>>,
@@ -496,6 +577,7 @@ export type ScoreSheetResolvers<
   defects?: Resolver<Maybe<ResolversTypes['DefectScore']>, ParentType, ContextType>
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>
 }>
 
 export interface ScoreFloatScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['ScoreFloat'], any> {
@@ -508,6 +590,43 @@ export type DefectScoreResolvers<
 > = ResolversObject<{
   numberOfCups?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
   intensity?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>
+}>
+
+export type UserResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']
+> = ResolversObject<{
+  __resolveReference?: ReferenceResolver<
+    Maybe<ResolversTypes['User']>,
+    {__typename: 'User'} & Pick<ParentType, 'id'>,
+    ContextType
+  >
+}>
+
+export type DeviceConnectionResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['DeviceConnection'] = ResolversParentTypes['DeviceConnection']
+> = ResolversObject<{
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>
+  edges?: Resolver<Array<ResolversTypes['DeviceEdge']>, ParentType, ContextType>
+}>
+
+export type DeviceEdgeResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['DeviceEdge'] = ResolversParentTypes['DeviceEdge']
+> = ResolversObject<{
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  node?: Resolver<ResolversTypes['Device'], ParentType, ContextType>
+}>
+
+export type DeviceResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['Device'] = ResolversParentTypes['Device']
+> = ResolversObject<{
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>
 }>
 
 export type MutationResolvers<
@@ -544,6 +663,24 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationLockCuppingSessionArgs, 'id'>
   >
+  createDevice?: Resolver<
+    Maybe<ResolversTypes['Device']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationCreateDeviceArgs, 'input'>
+  >
+  updateDevice?: Resolver<
+    Maybe<ResolversTypes['Device']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationUpdateDeviceArgs, 'id' | 'input'>
+  >
+  deleteDevice?: Resolver<
+    Maybe<ResolversTypes['Device']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationDeleteDeviceArgs, 'id'>
+  >
   createScoreSheet?: Resolver<
     Maybe<ResolversTypes['ScoreSheet']>,
     ParentType,
@@ -575,6 +712,10 @@ export type Resolvers<ContextType = Context> = ResolversObject<{
   ScoreSheet?: ScoreSheetResolvers<ContextType>
   ScoreFloat?: GraphQLScalarType
   DefectScore?: DefectScoreResolvers<ContextType>
+  User?: UserResolvers<ContextType>
+  DeviceConnection?: DeviceConnectionResolvers<ContextType>
+  DeviceEdge?: DeviceEdgeResolvers<ContextType>
+  Device?: DeviceResolvers<ContextType>
   Mutation?: MutationResolvers<ContextType>
 }>
 

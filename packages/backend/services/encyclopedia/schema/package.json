@@ -9,20 +9,23 @@
     "develop": "nodemon --watch src/ --ignore src/index.d --ignore src/types.d -e ts --exec \"npm run start\"",
     "build": "rimraf ./dist && tsc",
     "start": "node dist/startServer.js",
-    "prestart": "yarn build"
+    "prestart": "yarn build",
+    "geo-populate": "ts-node src/scripts/geoPopulate.ts"
   },
   "dependencies": {
     "@apollo/federation": "^0.11.2",
     "@luminate/graphql-utils": "*",
-    "@luminate/mongo": "*",
+    "@luminate/mongo-utils": "*",
     "apollo-server-express": "^2.15.0",
     "dataloader": "^2.0.0",
     "express": "^4.17.1",
-    "lodash.merge": "^4.6.2"
+    "lodash.merge": "^4.6.2",
+    "shpjs": "^3.5.0"
   },
   "devDependencies": {
     "@types/lodash.merge": "^4.6.6",
     "@types/node-fetch": "^2.5.4",
+    "@types/shpjs": "^3.4.0",
     "nodemon": "^2.0.2"
   }
 }
