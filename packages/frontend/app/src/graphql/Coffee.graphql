@@ -50,6 +50,10 @@ mutation DeleteCoffee($id: ID!) {
   }
 }
 
+mutation UpdateCoffeePermissions($coffeeId: ID!, $accountId: ID!, $permissionTypes: [PermissionTypeEnum!]!) {
+  updateCoffeePermissionsForAccount(coffeeId: $coffeeId, accountId: $accountId, permissionTypes: $permissionTypes)
+}
+
 fragment CoffeeFragment on Coffee {
   id
   name

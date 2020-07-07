@@ -31,13 +31,25 @@ interface NavItem {
   activeIsExact?: boolean
 }
 
-export type NavigationIcons = 'home' | 'geography' | 'sensory'
+export type NavigationIcons = 'home' | 'coffee' | 'geography' | 'sensory'
 
 const navigation: Navigation = {
   home: {
     Icon: Home,
     routeRegex: '^/$',
     to: '/',
+  },
+  coffee: {
+    Icon: Home,
+    routeRegex: '^/(coffees)',
+    navigationMenu: {
+      Coffees: [
+        {
+          text: 'List',
+          to: '/coffees',
+        },
+      ],
+    },
   },
   geography: {
     Icon: Globe,
