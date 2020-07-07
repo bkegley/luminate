@@ -301,10 +301,6 @@ export type Mutation = {
   updateCoffee?: Maybe<Coffee>
   deleteCoffee?: Maybe<Coffee>
   updateCoffeePermissionsForAccount?: Maybe<Scalars['Boolean']>
-  createDevice?: Maybe<Device>
-  updateDevice?: Maybe<Device>
-  deleteDevice?: Maybe<Device>
-  updateDevicePermissionsForAccount?: Maybe<Scalars['Boolean']>
   createFarm?: Maybe<Farm>
   updateFarm?: Maybe<Farm>
   deleteFarm?: Maybe<Farm>
@@ -320,6 +316,9 @@ export type Mutation = {
   deleteCuppingSession?: Maybe<CuppingSession>
   updateCuppingSessionCoffees?: Maybe<CuppingSession>
   lockCuppingSession?: Maybe<CuppingSession>
+  createDevice?: Maybe<Device>
+  updateDevice?: Maybe<Device>
+  deleteDevice?: Maybe<Device>
   createScoreSheet?: Maybe<ScoreSheet>
   updateScoreSheet?: Maybe<ScoreSheet>
   deleteScoreSheet?: Maybe<CuppingSession>
@@ -415,25 +414,6 @@ export type MutationUpdateCoffeePermissionsForAccountArgs = {
   permissionTypes: Array<PermissionTypeEnum>
 }
 
-export type MutationCreateDeviceArgs = {
-  input: CreateDeviceInput
-}
-
-export type MutationUpdateDeviceArgs = {
-  id: Scalars['ID']
-  input: UpdateDeviceInput
-}
-
-export type MutationDeleteDeviceArgs = {
-  id: Scalars['ID']
-}
-
-export type MutationUpdateDevicePermissionsForAccountArgs = {
-  DeviceId: Scalars['ID']
-  accountId: Scalars['ID']
-  permissionTypes: Array<PermissionTypeEnum>
-}
-
 export type MutationCreateFarmArgs = {
   input: CreateFarmInput
 }
@@ -500,6 +480,19 @@ export type MutationLockCuppingSessionArgs = {
   id: Scalars['ID']
 }
 
+export type MutationCreateDeviceArgs = {
+  input: CreateDeviceInput
+}
+
+export type MutationUpdateDeviceArgs = {
+  id: Scalars['ID']
+  input: UpdateDeviceInput
+}
+
+export type MutationDeleteDeviceArgs = {
+  id: Scalars['ID']
+}
+
 export type MutationCreateScoreSheetArgs = {
   sessionCoffeeId: Scalars['ID']
   input: CreateScoreSheetInput
@@ -561,8 +554,6 @@ export type Query = {
   getCoffee?: Maybe<Coffee>
   listCountries: CountryConnection
   getCountry?: Maybe<Country>
-  listDevices: DeviceConnection
-  getDevice?: Maybe<Device>
   listFarms: FarmConnection
   getFarm?: Maybe<Farm>
   listRegions: RegionConnection
@@ -572,6 +563,8 @@ export type Query = {
   listCuppingSessions: CuppingSessionConnection
   getCuppingSession?: Maybe<CuppingSession>
   getCuppingSessionCoffee?: Maybe<SessionCoffee>
+  listDevices: DeviceConnection
+  getDevice?: Maybe<Device>
   listScoreSheets?: Maybe<Array<Maybe<ScoreSheet>>>
   getScoreSheet?: Maybe<ScoreSheet>
 }
@@ -626,16 +619,6 @@ export type QueryGetCountryArgs = {
   id: Scalars['ID']
 }
 
-export type QueryListDevicesArgs = {
-  cursor?: Maybe<Scalars['String']>
-  limit?: Maybe<Scalars['Int']>
-  query?: Maybe<Array<QueryInput>>
-}
-
-export type QueryGetDeviceArgs = {
-  id: Scalars['ID']
-}
-
 export type QueryListFarmsArgs = {
   cursor?: Maybe<Scalars['String']>
   limit?: Maybe<Scalars['Int']>
@@ -677,6 +660,16 @@ export type QueryGetCuppingSessionArgs = {
 }
 
 export type QueryGetCuppingSessionCoffeeArgs = {
+  id: Scalars['ID']
+}
+
+export type QueryListDevicesArgs = {
+  cursor?: Maybe<Scalars['String']>
+  limit?: Maybe<Scalars['Int']>
+  query?: Maybe<Array<QueryInput>>
+}
+
+export type QueryGetDeviceArgs = {
   id: Scalars['ID']
 }
 

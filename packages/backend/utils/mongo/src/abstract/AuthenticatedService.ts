@@ -1,4 +1,4 @@
-import * as mongoose from 'mongoose'
+import {Types, Model, QueryFindOneAndUpdateOptions} from 'mongoose'
 import {BaseService} from './BaseService'
 import {Token} from './types'
 import {BaseDocument} from './BaseDocument'
@@ -20,7 +20,7 @@ const permissionKeysToPermissionsMap: PermissionMap = {
 }
 
 export class AuthenticatedService<T extends BaseDocument> extends BaseService<T> implements IService<T> {
-  constructor(model: mongoose.Model<T>, user: Token | null) {
+  constructor(model: Model<T>, user: Token | null) {
     super(model)
     this.user = user
   }
@@ -99,11 +99,11 @@ export class AuthenticatedService<T extends BaseDocument> extends BaseService<T>
     return super.create({...defaults, ...input})
   }
 
-  public updateOne(conditions: any, input: any, options?: mongoose.QueryFindOneAndUpdateOptions) {
+  public updateOne(conditions: any, input: any, options?: QueryFindOneAndUpdateOptions) {
     return super.updateOne({...conditions, ...this.getReadConditionsForUser()}, input, options)
   }
 
-  public updateById(id: string, input: any, options?: mongoose.QueryFindOneAndUpdateOptions) {
+  public updateById(id: string, input: any, options?: QueryFindOneAndUpdateOptions) {
     return this.updateOne({_id: id}, input, options)
   }
 
@@ -125,8 +125,8 @@ export class AuthenticatedService<T extends BaseDocument> extends BaseService<T>
     Object.keys(permissionKeysToPermissionsMap)
       .map(permission =>
         (permissions as string[]).includes(permission)
-          ? {$addToSet: {[permissionKeysToPermissionsMap[permission]]: mongoose.Types.ObjectId(accountId)}}
-          : {$pull: {[permissionKeysToPermissionsMap[permission]]: mongoose.Types.ObjectId(accountId)}},
+          ? {$addToSet: {[permissionKeysToPermissionsMap[permission]]: Types.ObjectId(accountId)}}
+          : {$pull: {[permissionKeysToPermissionsMap[permission]]: Types.ObjectId(accountId)}},
       )
       .forEach(object => (permissionsObject = merge(permissionsObject, object)))
 
