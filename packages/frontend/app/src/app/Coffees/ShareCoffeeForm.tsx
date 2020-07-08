@@ -10,6 +10,7 @@ export interface ShareCoffeeFormProps {
 
 export const ShareCoffeeForm = ({coffeeId}: ShareCoffeeFormProps) => {
   const [updateCoffeePermissions, {error, loading, data}] = useUpdateCoffeePermissionsMutation()
+  console.log({coffeeId})
 
   return (
     <Formik
@@ -27,15 +28,15 @@ export const ShareCoffeeForm = ({coffeeId}: ShareCoffeeFormProps) => {
         return (
           <Form>
             <div>
-              <label htmlFor="account">Account Id</label>
-              <Field name="account" id="account" as={Input} />
+              <label htmlFor="accountId">Account Id</label>
+              <Field name="accountId" id="accountId" as={Input} />
             </div>
-            <div className="mb-3">
-              <label className="block mb-1" htmlFor="varieties">
-                Varieties
+            <div className="my-3">
+              <label className="block mb-1" htmlFor="permissions">
+                Permissions
               </label>
               <Combobox
-                id="varieties"
+                id="permissions"
                 options={[
                   {name: 'read', value: 'read'},
                   {name: 'write', value: 'write'},

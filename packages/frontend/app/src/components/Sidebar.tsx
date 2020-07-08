@@ -60,20 +60,12 @@ const navigation: Navigation = {
           text: 'List',
           to: '/countries',
         },
-        {
-          text: 'Create',
-          to: '/countries/create',
-        },
       ],
       Regions: [
         {
           text: 'List',
           to: '/regions',
           activeIsExact: true,
-        },
-        {
-          text: 'Create',
-          to: '/regions/create',
         },
       ],
     },
@@ -106,8 +98,8 @@ const Sidebar = ({activeNavItem, setActiveNavItem, closeMenu, navMenuOpen}: Side
 
   const activeMenu = activeNavItem ? navigation[activeNavItem].navigationMenu : null
   return (
-    <div className="fixed left-0 flex z-10 min-h-screen">
-      <div className="flex flex-col overflow-x-hidden bg-gray-500 w-16 pt-16">
+    <div className="fixed left-0 z-10 flex min-h-screen">
+      <div className="flex flex-col w-16 pt-16 overflow-x-hidden bg-gray-500">
         {((Object.keys(navigation) as unknown) as NavigationIcons[]).map(key => {
           const {Icon, to} = navigation[key]
           return to ? (
@@ -133,7 +125,7 @@ const Sidebar = ({activeNavItem, setActiveNavItem, closeMenu, navMenuOpen}: Side
           activeNavItem && activeMenu && navMenuOpen ? 'w-64 px-6' : 'w-0'
         }`}
       >
-        <div className="text-right pt-4 text-primary-500">
+        <div className="pt-4 text-right text-primary-500">
           <button onClick={closeMenu}>
             <ChevronLeft />
           </button>
@@ -144,7 +136,7 @@ const Sidebar = ({activeNavItem, setActiveNavItem, closeMenu, navMenuOpen}: Side
 
               return (
                 <div key={key} className="my-4">
-                  <h3 className="text-gray-600 text-xs uppercase tracking-wide font-semibold">{key}</h3>
+                  <h3 className="text-xs font-semibold tracking-wide text-gray-600 uppercase">{key}</h3>
                   {navItems.map((navItem, index) => {
                     return (
                       <NavLink key={index} to={navItem.to} exactPath={navItem.activeIsExact}>

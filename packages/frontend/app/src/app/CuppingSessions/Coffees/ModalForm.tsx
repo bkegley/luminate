@@ -32,8 +32,8 @@ const CreateSessionCoffee = ({
   }, [initialCoffee])
 
   return (
-    <div className="bg-white p-10">
-      <div className="w-5/12">
+    <div className="p-10 bg-white">
+      <div>
         <label htmlFor={`sampleNumber-${index}`}>Sample Number</label>
         <Input
           id={`sampleNumber-${index}`}
@@ -42,7 +42,7 @@ const CreateSessionCoffee = ({
           onChange={(e: React.FormEvent<HTMLInputElement>) => setSampleNumber(e.currentTarget.value)}
         />
       </div>
-      <div className="w-5/12">
+      <div>
         <label htmlFor={`coffeeOption-${index}`}>Coffee</label>
         <Combobox
           id={`coffeeOption-${index}`}
@@ -55,26 +55,28 @@ const CreateSessionCoffee = ({
           }}
         />
       </div>
-      <div>
-        <Button
-          variant="text"
-          onClick={() => {
-            resetForm()
-            onCancel()
-          }}
-        >
-          Cancel
-        </Button>
-      </div>
-      <div>
-        <Button
-          onClick={() => {
-            resetForm()
-            onSubmit({sampleNumber, coffee})
-          }}
-        >
-          Save
-        </Button>
+      <div className="flex items-center justify-end my-4">
+        <div className="order-1">
+          <Button
+            onClick={() => {
+              resetForm()
+              onSubmit({sampleNumber, coffee})
+            }}
+          >
+            Save
+          </Button>
+        </div>
+        <div>
+          <Button
+            variant="text"
+            onClick={() => {
+              resetForm()
+              onCancel()
+            }}
+          >
+            Cancel
+          </Button>
+        </div>
       </div>
     </div>
   )

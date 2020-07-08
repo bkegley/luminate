@@ -1,7 +1,8 @@
 import React from 'react'
 import {useGetCoffeeQuery} from '../../graphql'
-import {StyledLink, Card, Heading} from '@luminate/gatsby-theme-luminate/src'
+import {StyledLink, Card, Heading, Button, useDialogState, Modal} from '@luminate/gatsby-theme-luminate/src'
 import {RouteComponentProps} from 'react-router-dom'
+import {ShareCoffeeForm} from './ShareCoffeeForm'
 
 interface Params {
   id: string
@@ -10,6 +11,7 @@ interface Params {
 interface Props extends RouteComponentProps<Params> {}
 
 const CoffeeDetailView = ({match}: Props) => {
+  const shareCoffeeDialog = useDialogState()
   const {
     params: {id},
   } = match
@@ -29,6 +31,11 @@ const CoffeeDetailView = ({match}: Props) => {
 
   return (
     <div>
+      <Modal dialog={shareCoffeeDialog}>
+        <div className="p-6 bg-white">
+          <ShareCoffeeForm coffeeId={id} />
+        </div>
+      </Modal>
       <div className="flex items-center mb-4">
         <div className="mr-4">
           <Heading>{data.getCoffee?.name}</Heading>
@@ -42,7 +49,7 @@ const CoffeeDetailView = ({match}: Props) => {
           <Card className="overflow-hidden">
             <img src="https://picsum.photos/800/400" />
             <div className="p-6">
-              <p className="uppercase tracking-wide text-xs text-gray-600">Information Section</p>
+              <p className="text-xs tracking-wide text-gray-600 uppercase">Information Section</p>
               <p>This is some information about the coffee</p>
             </div>
           </Card>
@@ -50,7 +57,7 @@ const CoffeeDetailView = ({match}: Props) => {
         <div className="flex flex-col w-4/12">
           <Card className="p-4 mb-3 bg-gray-100">
             <div className="mb-3">
-              <p className="text-xs text-gray-500 uppercase tracking-wide">Country</p>
+              <p className="text-xs tracking-wide text-gray-500 uppercase">Country</p>
               {data.getCoffee.country ? (
                 <StyledLink to={`/countries/${data.getCoffee.country?.id}`} variant="text">
                   {data.getCoffee.country?.name}
@@ -60,7 +67,7 @@ const CoffeeDetailView = ({match}: Props) => {
               )}
             </div>
             <div className="mb-3">
-              <p className="text-xs text-gray-500 uppercase tracking-wide">Region</p>
+              <p className="text-xs tracking-wide text-gray-500 uppercase">Region</p>
               {data.getCoffee.region ? (
                 <StyledLink to={`/regions/${data.getCoffee.region?.id}`} variant="text">
                   {data.getCoffee.region?.name}
@@ -68,6 +75,13 @@ const CoffeeDetailView = ({match}: Props) => {
               ) : (
                 '-'
               )}
+            </div>
+            <div className="flex flex-col items-end">
+              <div className="w-1/4">
+                <Button type="button" variant="text" onClick={shareCoffeeDialog.toggle}>
+                  Share
+                </Button>
+              </div>
             </div>
           </Card>
         </div>
