@@ -99,38 +99,78 @@ const ScoreSheetCreateForm = ({
                 })}
               />
             </div>
-            <div className="mb-4">
-              <label className="mb-2" htmlFor="fragranceAroma">
-                Fragrance/Aroma
-              </label>
-              <EvalScore
-                id="fragranceAroma"
-                onChange={value => setFieldValue('fragranceAroma', value.selectedItem?.value)}
-              />
+            <div className="flex items-center w-full space-x-8">
+              <div className="flex-1 mb-4">
+                <label className="mb-2" htmlFor="fragranceAroma">
+                  Fragrance/Aroma
+                </label>
+                <EvalScore
+                  id="fragranceAroma"
+                  onChange={value => setFieldValue('fragranceAroma', value.selectedItem?.value)}
+                />
+              </div>
+              <div className="flex-1 mb-4">
+                <label className="mb-2" htmlFor="flavor">
+                  Flavor
+                </label>
+                <EvalScore id="flavor" onChange={value => setFieldValue('flavor', value.selectedItem?.value)} />
+              </div>
             </div>
-            <div className="mb-4">
-              <label className="mb-2" htmlFor="flavor">
-                Acidity
-              </label>
-              <EvalScore id="flavor" onChange={value => setFieldValue('flavor', value.selectedItem?.value)} />
+            <div className="flex items-center w-full space-x-8">
+              <div className="flex-1 mb-4">
+                <label className="mb-2" htmlFor="aftertaste">
+                  Aftertaste
+                </label>
+                <EvalScore id="aftertaste" onChange={value => setFieldValue('aftertaste', value.selectedItem?.value)} />
+              </div>
+              <div className="flex-1 mb-4">
+                <label className="mb-2" htmlFor="acidity">
+                  Acidity
+                </label>
+                <EvalScore id="acidity" onChange={value => setFieldValue('acidity', value.selectedItem?.value)} />
+              </div>
             </div>
-            <div className="mb-4">
-              <label className="mb-2" htmlFor="aftertaste">
-                Acidity
-              </label>
-              <EvalScore id="aftertaste" onChange={value => setFieldValue('aftertaste', value.selectedItem?.value)} />
+            <div className="flex items-center w-full space-x-8">
+              <div className="flex-1 mb-4">
+                <label className="mb-2" htmlFor="body">
+                  Body
+                </label>
+                <EvalScore id="body" onChange={value => setFieldValue('body', value.selectedItem?.value)} />
+              </div>
+              <div className="flex-1 mb-4">
+                <label className="mb-2" htmlFor="uniformity">
+                  Uniformity
+                </label>
+                <EvalScore id="uniformity" onChange={value => setFieldValue('uniformity', value.selectedItem?.value)} />
+              </div>
             </div>
-            <div className="mb-4">
-              <label className="mb-2" htmlFor="acidity">
-                Acidity
-              </label>
-              <EvalScore id="acidity" onChange={value => setFieldValue('acidity', value.selectedItem?.value)} />
+            <div className="flex items-center w-full space-x-8">
+              <div className="flex-1 mb-4">
+                <label className="mb-2" htmlFor="cleanCup">
+                  Clean Cup
+                </label>
+                <EvalScore id="cleanCup" onChange={value => setFieldValue('cleanCup', value.selectedItem?.value)} />
+              </div>
+              <div className="flex-1 mb-4">
+                <label className="mb-2" htmlFor="balance">
+                  Balance
+                </label>
+                <EvalScore id="balance" onChange={value => setFieldValue('balance', value.selectedItem?.value)} />
+              </div>
             </div>
-            <div className="mb-4">
-              <label className="mb-2" htmlFor="body">
-                Acidity
-              </label>
-              <EvalScore id="body" onChange={value => setFieldValue('body', value.selectedItem?.value)} />
+            <div className="flex items-center w-full space-x-8">
+              <div className="flex-1 mb-4">
+                <label className="mb-2" htmlFor="sweetness">
+                  Sweetness
+                </label>
+                <EvalScore id="sweetness" onChange={value => setFieldValue('sweetness', value.selectedItem?.value)} />
+              </div>
+              <div className="flex-1 mb-4">
+                <label className="mb-2" htmlFor="overall">
+                  Overall
+                </label>
+                <EvalScore id="overall" onChange={value => setFieldValue('overall', value.selectedItem?.value)} />
+              </div>
             </div>
             <div>
               <Button type="submit" variant="primary">

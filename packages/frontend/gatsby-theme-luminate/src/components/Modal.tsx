@@ -13,7 +13,7 @@ export interface ModalProps {
 const Modal = ({children, className, dialog, top = '50px', variant, ...props}: ModalProps) => {
   return (
     <React.Fragment>
-      <DialogBackdrop {...dialog} className="absolute bg-gray-600 opacity-50 inset-0 z-50" />
+      <DialogBackdrop {...dialog} className="fixed inset-0 z-50 w-full h-full min-h-screen bg-gray-600 opacity-50" />
       <Dialog
         {...dialog}
         {...props}

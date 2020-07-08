@@ -17,8 +17,6 @@ export interface SelectProps {
 const Select = ({onChange, options = [], initialSelectedItem, id}: SelectProps) => {
   const itemToString = (option: IItem | null) => (option ? option.name : '')
 
-  console.log({id})
-
   const {isOpen, selectedItem, getToggleButtonProps, getMenuProps, highlightedIndex, getItemProps} = useSelect({
     items: options,
     itemToString,
@@ -45,7 +43,7 @@ const Select = ({onChange, options = [], initialSelectedItem, id}: SelectProps) 
       </button>
       {isOpen ? (
         <ul
-          className="absolute z-50 w-full m-0 p-0 overflow-y-auto bg-white list-none left-0 right-0 input border-t-0 rounded-t-none shadow-sm rounded-md"
+          className="absolute left-0 right-0 z-50 w-full p-0 m-0 overflow-y-auto list-none bg-white border-t-0 rounded-t-none input shadow-sm rounded-md"
           style={{maxHeight: '250px'}}
           {...getMenuProps()}
         >

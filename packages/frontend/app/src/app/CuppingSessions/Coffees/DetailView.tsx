@@ -118,9 +118,10 @@ const SessionCoffeeDetailView = ({match}: SessionCoffeeDetailViewProps) => {
         </XYPlot>
         {coffee?.scoreSheets?.map(scoreSheet => {
           return (
-            <Link to={`${match.url}/scoreSheets/${scoreSheet?.id}`} key={scoreSheet?.id}>
-              <p>Total Score: {scoreSheet?.totalScore}</p>
-            </Link>
+            <div>
+              <div>{scoreSheet.user?.username}</div>
+              <div>{scoreSheet?.totalScore}</div>
+            </div>
           )
         })}
       </div>

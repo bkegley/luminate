@@ -38,14 +38,14 @@ const SessionCoffeeCard = ({sessionCoffee, pathname}: SessionCoffeeCardProps) =>
   return (
     <>
       <Modal dialog={createScoreSheetDialog}>
-        <div className="bg-white p-6">
+        <div className="p-6 bg-white">
           <CreateScoreSheetForm
             sessionCoffeeId={sessionCoffee.id}
             onCreateSuccess={() => createScoreSheetDialog.toggle()}
           />
         </div>
       </Modal>
-      <Card className="p-3 w-1/4">
+      <Card className="w-1/4 p-3">
         <Link to={`${pathname}/coffees/${sessionCoffee.id}`}>
           <Heading as="h4">{sessionCoffee.sampleNumber}</Heading>
         </Link>

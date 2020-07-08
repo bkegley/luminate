@@ -78,6 +78,7 @@ const resolvers: Resolvers = {
   },
   Mutation: {
     createCuppingSession: async (parent, {input}, {services}) => {
+      console.log({input})
       return services.cuppingSession.create(input)
     },
     updateCuppingSession: async (parent, {id, input}, {services}) => {
