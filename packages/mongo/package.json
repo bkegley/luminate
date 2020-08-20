@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@luminate/graphql-utils": "*",
-    "bcrypt": "^3.0.7",
+    "bcrypt": "^5.0.0",
     "mongoose": "^5.8.1"
   },
   "devDependencies": {

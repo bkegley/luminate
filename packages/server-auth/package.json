@@ -16,7 +16,7 @@
     "@luminate/graphql-utils": "*",
     "@luminate/mongo": "*",
     "apollo-server-express": "^2.9.14",
-    "bcrypt": "^3.0.7",
+    "bcrypt": "^5.0.0",
     "dataloader": "^2.0.0",
     "express": "^4.17.1",
     "lodash.merge": "^4.6.2"
