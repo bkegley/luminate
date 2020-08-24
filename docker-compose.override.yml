@@ -27,7 +27,7 @@ services:
     build:
       target: install
     ports:
-      - 8001:8000
+      - 8003:8000
     environment:
       - API_URL=http://localhost:3000/graphql
     user: 1000:1000

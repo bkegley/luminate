@@ -51,10 +51,8 @@ const SessionCoffeeCard = ({sessionCoffee, pathname}: SessionCoffeeCardProps) =>
         </Link>
         <p>Total score sheets: {sessionCoffee.scoreSheets?.length || 0}</p>
         <div className="flex justify-end">
-          <div>
-            <Button variant="text" onClick={createScoreSheetDialog.toggle}>
-              Add Score Sheet
-            </Button>
+          <div className="text-primary-600">
+            <Link to={`${pathname}/coffees/${sessionCoffee.id}/create`}>Add Score Sheet</Link>
           </div>
         </div>
       </Card>

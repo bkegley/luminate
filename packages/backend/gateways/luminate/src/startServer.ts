@@ -50,6 +50,7 @@ const startServer = async () => {
   const whitelist = [
     `http://localhost:${PORT}`,
     'http://localhost:8001',
+    'http://localhost:8003',
     'https://luminate.coffee',
     'http://api.luminate.coffee',
     'http://staging.luminate.coffee',
