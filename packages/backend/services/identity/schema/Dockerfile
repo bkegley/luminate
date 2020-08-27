@@ -21,10 +21,11 @@ COPY lerna.json .
 COPY package.json .
 COPY yarn.lock .
 COPY tsconfig.base.json .
+COPY tsconfig.json .
 
 RUN yarn
 
-COPY ./packages/backend/utils/graphql ./package/backend/utils/graphql
+COPY ./packages/backend/utils/graphql ./packages/backend/utils/graphql
 COPY ./packages/backend/utils/mongo ./packages/backend/utils/mongo
 
 RUN yarn build:utils

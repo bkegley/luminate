@@ -5,7 +5,7 @@
     "sourceMap": true,
     "moduleResolution": "node",
     "declaration": true,
-    "strict": true,
+    "strict": false,
     "esModuleInterop": true,
     "noImplicitAny": true,
     "resolveJsonModule": true

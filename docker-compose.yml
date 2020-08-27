@@ -1,6 +1,12 @@
 version: '3.8'
 
 services:
+  zookeeper:
+    image: wurstmeister/zookeeper
+
+  kafka:
+    image: wurstmeister/kafka
+
   db:
     image: mongo:3.6.17-xenial
     container_name: db

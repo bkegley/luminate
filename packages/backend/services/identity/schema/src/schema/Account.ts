@@ -1,5 +1,7 @@
 import {gql} from 'apollo-server-express'
 import {Resolvers} from '../types'
+import {TYPES} from '../utils/types'
+import {IAccountsAggregate} from '../aggregates'
 
 const typeDefs = gql`
   type Account {
@@ -45,11 +47,13 @@ const typeDefs = gql`
 
 const resolvers: Resolvers = {
   Query: {
-    listAccounts: async (parent, args, {services}) => {
-      return services.account.getConnectionResults(args)
+    listAccounts: async (parent, args, {container}) => {
+      const accountsAggregate = container.resolve<IAccountsAggregate>(TYPES.AccountsAggregate)
+      return accountsAggregate.getConnectionResults(args)
     },
-    getAccount: async (parent, {id}, {services}, info) => {
-      return services.account.getById(id)
+    getAccount: async (parent, {id}, {container}, info) => {
+      const accountsAggregate = container.resolve<IAccountsAggregate>(TYPES.AccountsAggregate)
+      return accountsAggregate.getAccount(id)
     },
   },
   Mutation: {

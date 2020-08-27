@@ -1,22 +1,30 @@
 import {AccountDocument, AccountModel, RoleModel, UserModel} from '../models'
 import {AuthenticatedService, Token} from '@luminate/mongo-utils'
 import DataLoader from 'dataloader'
+import {Producer, KafkaClient, Consumer} from 'kafka-node'
+import {CreateAccountCommand} from '../commands'
+import {IMessage} from '../commands/IMessage'
 
 interface Loaders {
   byAccountId?: DataLoader<string, AccountDocument | null>
 }
 
 export class AccountService extends AuthenticatedService<AccountDocument> {
-  constructor(user: Token | null) {
+  private loaders: Loaders = {}
+  private producer: Producer
+  private client: KafkaClient
+
+  constructor(producer: Producer, client: KafkaClient, user: Token | null) {
     super(AccountModel, user)
+
+    this.producer = producer
+    this.client = client
 
     this.loaders.byAccountId = new DataLoader<string, AccountDocument | null>(async ids => {
       const accounts = await this.model.find({_id: ids, ...this.getReadConditionsForUser()})
       return ids.map(id => accounts.find(account => account._id.toString() === id.toString()) || null)
     })
   }
-
-  private loaders: Loaders = {}
 
   protected getReadConditionsForUser(): any {
     const conditions = super.getReadConditionsForUser()
@@ -44,6 +52,7 @@ export class AccountService extends AuthenticatedService<AccountDocument> {
     return this.loaders.byAccountId?.load(this.user.account.id) || null
   }
 
+  // @ts-ignore
   public async create(input: any) {
     const {name, username, password} = input
     const ownerRole = await RoleModel.findOne({name: 'Owner'})
@@ -69,8 +78,14 @@ export class AccountService extends AuthenticatedService<AccountDocument> {
       type: ['user'],
     })
 
-    account.save()
-    user.save()
+    //await account.save()
+
+    const createAccountCommand = new CreateAccountCommand(this.producer)
+
+    const didExecute = await createAccountCommand.execute(account)
+    console.log({didExecute})
+
+    await user.save()
 
     return account
   }

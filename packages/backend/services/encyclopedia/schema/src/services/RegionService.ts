@@ -46,7 +46,7 @@ export class RegionService extends BaseService<RegionDocument> {
     return this.loaders.byRegionName?.load(name) || null
   }
 
-  public async listByCountryId(id: string) {
+  public async listByCountryId(id: string): Promise<RegionDocument[] | any[]> {
     return this.loaders.byCountryId?.load(id) || []
   }
 

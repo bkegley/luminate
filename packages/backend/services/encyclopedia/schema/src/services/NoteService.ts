@@ -24,7 +24,7 @@ export class NoteService extends AuthenticatedService<NoteDocument> {
 
   private loaders: Loaders = {}
 
-  public listByEntityId(entityId: string) {
+  public async listByEntityId(entityId: string): Promise<NoteDocument[] | any[]> {
     return this.loaders.byEntityId?.load(entityId) || []
   }
 
