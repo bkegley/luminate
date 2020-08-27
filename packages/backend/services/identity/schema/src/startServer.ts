@@ -12,11 +12,14 @@ import {seedDatabase} from './seedDatabase'
 import {Container} from './utils'
 import {createMongoConnection, Token} from '@luminate/mongo-utils'
 import {parseUserFromRequest} from '@luminate/graphql-utils'
-
+import {KafkaClient, Consumer, Producer} from 'kafka-node'
+import {AccountsAggregate, IAccountsAggregate} from './aggregates'
 const PORT = process.env.PORT || 3001
+import {TYPES} from './utils/types'
 
 export interface Context {
   res: express.Response
+  container: Container
   services: {
     account: AccountService
     role: RoleService
@@ -29,34 +32,50 @@ class Server {
   private port = process.env.PORT || 3001
   private container = new Container()
 
-  private types = {
-    User: Symbol('User'),
-    AccountService: Symbol('AccountService'),
-    PersonService: Symbol('PersonService'),
-    RoleService: Symbol('RoleService'),
-    UserService: Symbol('UserService'),
-  }
-
   public async start() {
     await createMongoConnection(process.env.MONGO_URL)
     await seedDatabase()
 
     this.registerServices()
 
+    const client = new KafkaClient({
+      kafkaHost: process.env.KAFKA_HOST || 'http://localhost:9092',
+      autoConnect: true,
+      connectTimeout: 1000,
+    })
+
+    await new Promise<Producer>((resolve, reject) => {
+      client.createTopics([{topic: 'accounts', partitions: 1, replicationFactor: 1}], async err => {
+        if (err) {
+          console.error({err})
+          reject(err)
+        }
+        const producer = new Producer(client)
+
+        this.container.bind<Producer>(TYPES.KafkaProducer, producer)
+        resolve()
+      })
+    })
+
+    this.container.bind<KafkaClient>(TYPES.KafkaClient, client)
+
+    this.container.bind<IAccountsAggregate>(TYPES.AccountsAggregate, new AccountsAggregate(client))
+
     const server = new ApolloServer({
       schema: buildFederatedSchema(schemas),
       context: ({req, res}): Context => {
-        this.container.bind<Token | null>(this.types.User, parseUserFromRequest(req))
+        this.container.bind<Token | null>(TYPES.User, parseUserFromRequest(req))
 
         const services = {
-          account: this.container.resolve<AccountService>(this.types.AccountService),
-          role: this.container.resolve<RoleService>(this.types.RoleService),
-          user: this.container.resolve<UserService>(this.types.UserService),
+          account: this.container.resolve<AccountService>(TYPES.AccountService),
+          role: this.container.resolve<RoleService>(TYPES.RoleService),
+          user: this.container.resolve<UserService>(TYPES.UserService),
         }
 
         return {
           res,
           services,
+          container: this.container,
         }
       },
       introspection: true,
@@ -80,19 +99,18 @@ class Server {
 
   private registerServices() {
     this.container.bind<AccountService>(
-      this.types.AccountService,
-      resolver => new AccountService(resolver.resolve(this.types.User)),
+      TYPES.AccountService,
+      resolver =>
+        new AccountService(
+          resolver.resolve(TYPES.KafkaProducer),
+          resolver.resolve(TYPES.KafkaClient),
+          resolver.resolve(TYPES.User),
+        ),
     )
 
-    this.container.bind<RoleService>(
-      this.types.RoleService,
-      resolver => new RoleService(resolver.resolve(this.types.User)),
-    )
+    this.container.bind<RoleService>(TYPES.RoleService, resolver => new RoleService(resolver.resolve(TYPES.User)))
 
-    this.container.bind<UserService>(
-      this.types.UserService,
-      resolver => new UserService(resolver.resolve(this.types.User)),
-    )
+    this.container.bind<UserService>(TYPES.UserService, resolver => new UserService(resolver.resolve(TYPES.User)))
   }
 }
 

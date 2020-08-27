@@ -16,13 +16,14 @@
     "@luminate/graphql-utils": "*",
     "@luminate/mongo-utils": "*",
     "apollo-server-express": "^2.15.0",
-    "bcrypt": "^3.0.7",
+    "bcryptjs": "^2.4.3",
     "dataloader": "^2.0.0",
     "express": "^4.17.1",
+    "kafka-node": "^5.0.0",
     "lodash.merge": "^4.6.2"
   },
   "devDependencies": {
-    "@types/bcrypt": "^3.0.0",
+    "@types/bcryptjs": "^2.4.2",
     "nodemon": "^2.0.2"
   }
 }

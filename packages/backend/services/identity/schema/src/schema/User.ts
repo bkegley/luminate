@@ -1,5 +1,8 @@
 import {gql} from 'apollo-server-express'
 import {Resolvers} from '../types'
+import {TYPES} from '../utils/types'
+import {Producer} from 'kafka-node'
+import {CreateUserCommand} from '../commands'
 
 const typeDefs = gql`
   interface UserInterface {
@@ -100,7 +103,9 @@ const resolvers: Resolvers = {
     },
   },
   Mutation: {
-    createUser: async (parent, {input}, {services}) => {
+    createUser: async (parent, {input}, {container}) => {
+      const producer = container.resolve<Producer>(TYPES.KafkaProducer)
+      const createAccountCommand = new CreateUserCommand(producer)
       return services.user.create(input)
     },
     updateUser: async (parent, {id, input}, {services}) => {

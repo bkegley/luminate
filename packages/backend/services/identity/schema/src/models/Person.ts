@@ -1,6 +1,6 @@
 import {model, Types} from 'mongoose'
 import {extendSchema, AuthenticatedDocument, BaseAuthenticatedSchema} from '@luminate/mongo-utils'
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 const saltRounds = 10
 
 export interface PersonDocument extends AuthenticatedDocument {
@@ -143,6 +143,7 @@ UserSchema.pre<UserDocument>('save', async function(next) {
     const hashedPassword = bcrypt.hashSync(this.password, saltRounds)
     this.password = hashedPassword
   }
+
   next()
 })
 

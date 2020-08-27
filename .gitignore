@@ -108,3 +108,6 @@ dist
 
 # JWT Secret
 token.json
+
+# Kafka
+kafka

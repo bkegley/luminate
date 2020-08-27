@@ -1,4 +1,4 @@
-import * as bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import * as mongoose from 'mongoose'
 import {UserModel, UserDocument} from '../models/Person'
