@@ -1,9 +1,10 @@
 import {AccountDocument, AccountModel, RoleModel, UserModel} from '../models'
 import {AuthenticatedService, Token} from '@luminate/mongo-utils'
 import DataLoader from 'dataloader'
-import {Producer, KafkaClient, Consumer} from 'kafka-node'
-import {CreateAccountCommand} from '../commands'
-import {IMessage} from '../commands/IMessage'
+import {Producer} from 'kafka-node'
+import {CreateAccountWithOwnerCommand} from '../commands'
+import {IAccountsAggregate, IUsersAggregate} from '../aggregates'
+import {CreateAccountInput} from '../types'
 
 interface Loaders {
   byAccountId?: DataLoader<string, AccountDocument | null>
@@ -12,13 +13,20 @@ interface Loaders {
 export class AccountService extends AuthenticatedService<AccountDocument> {
   private loaders: Loaders = {}
   private producer: Producer
-  private client: KafkaClient
+  private accountsAggregate: IAccountsAggregate
+  private usersAggregate: IUsersAggregate
 
-  constructor(producer: Producer, client: KafkaClient, user: Token | null) {
+  constructor(
+    user: Token | null,
+    producer: Producer,
+    accountsAggregate: IAccountsAggregate,
+    usersAggregate: IUsersAggregate,
+  ) {
     super(AccountModel, user)
 
     this.producer = producer
-    this.client = client
+    this.accountsAggregate = accountsAggregate
+    this.usersAggregate = usersAggregate
 
     this.loaders.byAccountId = new DataLoader<string, AccountDocument | null>(async ids => {
       const accounts = await this.model.find({_id: ids, ...this.getReadConditionsForUser()})
@@ -52,9 +60,13 @@ export class AccountService extends AuthenticatedService<AccountDocument> {
     return this.loaders.byAccountId?.load(this.user.account.id) || null
   }
 
-  // @ts-ignore
-  public async create(input: any) {
+  public async create(input: CreateAccountInput) {
     const {name, username, password} = input
+    const existingAccount = await this.accountsAggregate.getAccountByName(name)
+    if (existingAccount) {
+      throw new Error('Account name taken')
+    }
+
     const ownerRole = await RoleModel.findOne({name: 'Owner'})
 
     if (!ownerRole) {
@@ -78,14 +90,13 @@ export class AccountService extends AuthenticatedService<AccountDocument> {
       type: ['user'],
     })
 
-    //await account.save()
+    const error = account.validateSync()
 
-    const createAccountCommand = new CreateAccountCommand(this.producer)
+    if (error) {
+      throw new Error(JSON.stringify(error))
+    }
 
-    const didExecute = await createAccountCommand.execute(account)
-    console.log({didExecute})
-
-    await user.save()
+    // await user.save()
 
     return account
   }

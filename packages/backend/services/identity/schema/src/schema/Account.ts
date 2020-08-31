@@ -1,7 +1,11 @@
 import {gql} from 'apollo-server-express'
 import {Resolvers} from '../types'
 import {TYPES} from '../utils/types'
-import {IAccountsAggregate} from '../aggregates'
+import {IAccountsAggregate, IUsersAggregate} from '../aggregates'
+import {CreateAccountWithOwnerCommand} from '../commands'
+import {ICommandRegistry} from '../commands/ICommandRegistry'
+import {CommandType} from '../commands/CommandType'
+import {AccountDocument, UserDocument} from '../models'
 
 const typeDefs = gql`
   type Account {
@@ -47,6 +51,7 @@ const typeDefs = gql`
 
 const resolvers: Resolvers = {
   Query: {
+    // @ts-ignore not sure why this isn't working
     listAccounts: async (parent, args, {container}) => {
       const accountsAggregate = container.resolve<IAccountsAggregate>(TYPES.AccountsAggregate)
       return accountsAggregate.getConnectionResults(args)
@@ -57,8 +62,15 @@ const resolvers: Resolvers = {
     },
   },
   Mutation: {
-    createAccount: async (parent, {input}, {services}) => {
-      return services.account.create(input)
+    createAccount: async (parent, {input}, {container}) => {
+      const command = new CreateAccountWithOwnerCommand(input)
+      return container
+        .resolve<ICommandRegistry>(TYPES.CommandRegistry)
+        .process<CreateAccountWithOwnerCommand, AccountDocument & {users: UserDocument[]}>(
+          CommandType.CREATE_ACCOUNT_COMMAND,
+          command,
+        )
+      //return services.account.create(input)
     },
     updateAccount: async (parent, {id, input}, {services}) => {
       return services.account.updateById(id, input)
@@ -71,8 +83,9 @@ const resolvers: Resolvers = {
     },
   },
   Account: {
-    users: async (parent, args, {services}) => {
-      return services.user.listByAccount(parent.id)
+    users: async (parent, args, {container}) => {
+      return container.resolve<IUsersAggregate>(TYPES.UsersAggregate).listByAccount(parent.id)
+      //return services.user.listByAccount(parent.id)
     },
   },
 }

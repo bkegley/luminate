@@ -13,9 +13,11 @@ import {Container} from './utils'
 import {createMongoConnection, Token} from '@luminate/mongo-utils'
 import {parseUserFromRequest} from '@luminate/graphql-utils'
 import {KafkaClient, Consumer, Producer} from 'kafka-node'
-import {AccountsAggregate, IAccountsAggregate} from './aggregates'
+import {AccountsAggregate, IAccountsAggregate, IUsersAggregate, UsersAggregate} from './aggregates'
 const PORT = process.env.PORT || 3001
 import {TYPES} from './utils/types'
+import {ICommandRegistry} from './commands/ICommandRegistry'
+import {CommandRegistry} from './commands/CommandRegistry'
 
 export interface Context {
   res: express.Response
@@ -45,21 +47,34 @@ class Server {
     })
 
     await new Promise<Producer>((resolve, reject) => {
-      client.createTopics([{topic: 'accounts', partitions: 1, replicationFactor: 1}], async err => {
-        if (err) {
-          console.error({err})
-          reject(err)
-        }
-        const producer = new Producer(client)
+      client.createTopics(
+        [
+          {topic: 'accounts', partitions: 1, replicationFactor: 1},
+          {topic: 'users', partitions: 1, replicationFactor: 1},
+        ],
+        async err => {
+          if (err) {
+            console.error({err})
+            reject(err)
+          }
+          const producer = new Producer(client)
 
-        this.container.bind<Producer>(TYPES.KafkaProducer, producer)
-        resolve()
-      })
+          this.container.bind<Producer>(TYPES.KafkaProducer, producer)
+          resolve(producer)
+        },
+      )
     })
 
-    this.container.bind<KafkaClient>(TYPES.KafkaClient, client)
+    const accountsAggregate = new AccountsAggregate()
+    const usersAggregate = new UsersAggregate()
 
-    this.container.bind<IAccountsAggregate>(TYPES.AccountsAggregate, new AccountsAggregate(client))
+    this.container.bind<IAccountsAggregate>(TYPES.AccountsAggregate, accountsAggregate)
+    this.container.bind<IUsersAggregate>(TYPES.UsersAggregate, usersAggregate)
+
+    this.container.bind<ICommandRegistry>(
+      TYPES.CommandRegistry,
+      new CommandRegistry(this.container.resolve(TYPES.KafkaProducer), accountsAggregate, usersAggregate),
+    )
 
     const server = new ApolloServer({
       schema: buildFederatedSchema(schemas),
@@ -102,9 +117,10 @@ class Server {
       TYPES.AccountService,
       resolver =>
         new AccountService(
-          resolver.resolve(TYPES.KafkaProducer),
-          resolver.resolve(TYPES.KafkaClient),
           resolver.resolve(TYPES.User),
+          resolver.resolve(TYPES.KafkaProducer),
+          resolver.resolve(TYPES.AccountsAggregate),
+          resolver.resolve(TYPES.UsersAggregate),
         ),
     )
 

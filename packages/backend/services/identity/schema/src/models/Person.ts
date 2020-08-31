@@ -95,7 +95,7 @@ const PersonSchema = extendSchema(
   {timestamps: true},
 )
 
-const UserSchema = extendSchema(
+export const UserSchema = extendSchema(
   PersonSchema,
   {
     username: {

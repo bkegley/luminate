@@ -103,9 +103,7 @@ const resolvers: Resolvers = {
     },
   },
   Mutation: {
-    createUser: async (parent, {input}, {container}) => {
-      const producer = container.resolve<Producer>(TYPES.KafkaProducer)
-      const createAccountCommand = new CreateUserCommand(producer)
+    createUser: async (parent, {input}, {container, services}) => {
       return services.user.create(input)
     },
     updateUser: async (parent, {id, input}, {services}) => {

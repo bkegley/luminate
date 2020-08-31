@@ -3,14 +3,19 @@ import {KafkaClient, Consumer} from 'kafka-node'
 import {UserDocument} from '../../models'
 import {IMessage} from '../../commands/IMessage'
 import {IListDocumentsArgs} from '@luminate/mongo-utils'
+import {User} from '../../types'
 
 export class UsersAggregate implements IUsersAggregate {
   private client: KafkaClient
 
   private users: UserDocument[] = []
 
-  constructor(client: KafkaClient) {
-    this.client = client
+  constructor() {
+    this.client = new KafkaClient({
+      kafkaHost: process.env.KAFKA_HOST || 'http://localhost:9092',
+      autoConnect: true,
+      connectTimeout: 1000,
+    })
 
     const usersConsumer = new Consumer(this.client, [{topic: 'users', offset: 0}], {
       fromOffset: true,
@@ -18,6 +23,7 @@ export class UsersAggregate implements IUsersAggregate {
 
     usersConsumer.on('message', message => {
       const data: IMessage<UserDocument> = JSON.parse(message.value as string)
+      console.log({userAggMessage: message})
 
       switch (data.event) {
         case 'UserCreatedEvent': {
@@ -33,15 +39,23 @@ export class UsersAggregate implements IUsersAggregate {
     this.users.push({id: _id, ...user})
   }
 
-  // @ts-ignore
   public async getConnectionResults(args: IListDocumentsArgs) {
     return {
       pageInfo: {
         hasNextPage: false,
-        previousCursor: '',
+        prevCursor: '',
         nextCursor: '',
       },
-      edges: this.users.map(user => ({node: user, cursor: ''})),
+      // needs to convert accountId in user object to account object either here or in a loader
+      edges: this.users.map(user => ({node: (user as unknown) as User, cursor: ''})),
     }
+  }
+
+  public async getByUsername(username: string) {
+    return this.users.find(user => user.username === username)
+  }
+
+  public async listByAccount(accountId: string) {
+    return this.users.filter(user => user.accounts.includes(accountId as any))
   }
 }
