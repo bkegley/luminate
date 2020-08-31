@@ -1,0 +1,3 @@
+export enum CommandType {
+  CREATE_ACCOUNT_COMMAND = 'CREATE_ACCOUNT_COMMAND',
+}

@@ -1,6 +1,8 @@
-import {IConnectionResults, IListDocumentsArgs} from '@luminate/mongo-utils'
 import {UserDocument} from '../../models'
+import {QueryListUsersArgs, UserConnection} from '../../types'
 
 export interface IUsersAggregate {
-  getConnectionResults(args: IListDocumentsArgs): Promise<IConnectionResults<UserDocument>>
+  getConnectionResults(args: QueryListUsersArgs): Promise<UserConnection>
+  getByUsername(username: string): Promise<UserDocument>
+  listByAccount(accountId: string): Promise<UserDocument[]>
 }

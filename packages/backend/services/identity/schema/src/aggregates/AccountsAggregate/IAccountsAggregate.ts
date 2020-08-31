@@ -1,9 +1,9 @@
 import {AccountDocument} from '../../models'
-import {IListDocumentsArgs} from '@luminate/mongo-utils'
-import {IConnectionResults} from '@luminate/mongo-utils/src/abstract/IConnectionResults'
+import {AccountConnection, QueryListAccountsArgs} from '../../types'
 
 export interface IAccountsAggregate {
-  getConnectionResults(args: IListDocumentsArgs): Promise<IConnectionResults<AccountDocument>>
+  getConnectionResults(args: QueryListAccountsArgs): Promise<AccountConnection>
   listAccounts(): Promise<AccountDocument[]>
   getAccount(id: string): Promise<AccountDocument>
+  getAccountByName(name: string): Promise<AccountDocument>
 }
