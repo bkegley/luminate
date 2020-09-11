@@ -1,5 +1,9 @@
 import {gql} from 'apollo-server-express'
-import {Resolvers} from '../types'
+import {Resolvers, RoleConnection} from '../types'
+import {IRolesAggregate} from '../aggregates'
+import {TYPES} from '../utils/types'
+import {CreateRoleCommand, ICommandRegistry, CommandType, UpdateRoleCommand, DeleteRoleCommand} from '../commands'
+import {RoleDocument} from '../models'
 
 const typeDefs = gql`
   type Role {
@@ -9,6 +13,7 @@ const typeDefs = gql`
     createdAt: String!
     updatedAt: String!
   }
+
   type RoleConnection {
     pageInfo: PageInfo!
     edges: [RoleEdge!]!
@@ -43,22 +48,35 @@ const typeDefs = gql`
 
 const resolvers: Resolvers = {
   Query: {
-    listRoles: async (parent, args, {services}) => {
-      return services.role.getConnectionResults(args)
+    // @ts-ignore
+    listRoles: async (_parent, args, {container}) => {
+      const rolesAggregate = container.resolve<IRolesAggregate>(TYPES.RolesAggregate)
+      return rolesAggregate.getConnectionResults(args)
     },
-    getRole: async (parent, {id}, {services}) => {
-      return services.role.getById(id)
+    getRole: async (_parent, {id}, {container}) => {
+      const rolesAggregate = container.resolve<IRolesAggregate>(TYPES.RolesAggregate)
+      return rolesAggregate.getRole(id)
     },
   },
   Mutation: {
-    createRole: async (parent, {input}, {services}) => {
-      return services.role.create(input)
+    createRole: async (_parent, {input}, {container, user}) => {
+      const createRoleCommand = new CreateRoleCommand({...input, account: user.account.id})
+
+      return container
+        .resolve<ICommandRegistry>(TYPES.CommandRegistry)
+        .process<CreateRoleCommand, RoleDocument>(CommandType.CREATE_ROLE_COMMAND, createRoleCommand)
     },
-    updateRole: async (parent, {id, input}, {services}) => {
-      return services.role.updateById(id, input)
+    updateRole: async (_parent, {id, input}, {container}) => {
+      const updateRoleCommand = new UpdateRoleCommand(id, input)
+      return container
+        .resolve<ICommandRegistry>(TYPES.CommandRegistry)
+        .process<UpdateRoleCommand, RoleDocument>(CommandType.UPDATE_ROLE_COMMAND, updateRoleCommand)
     },
-    deleteRole: async (parent, {id}, {services}) => {
-      return services.role.deleteById(id)
+    deleteRole: async (_parent, {id}, {container}) => {
+      const deleteRoleCommand = new DeleteRoleCommand(id)
+      return container
+        .resolve<ICommandRegistry>(TYPES.CommandRegistry)
+        .process<DeleteRoleCommand, RoleDocument>(CommandType.DELETE_ROLE_COMMAND, deleteRoleCommand)
     },
   },
 }

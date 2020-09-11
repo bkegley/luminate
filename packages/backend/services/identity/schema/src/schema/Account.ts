@@ -2,9 +2,14 @@ import {gql} from 'apollo-server-express'
 import {Resolvers} from '../types'
 import {TYPES} from '../utils/types'
 import {IAccountsAggregate, IUsersAggregate} from '../aggregates'
-import {CreateAccountWithOwnerCommand} from '../commands'
-import {ICommandRegistry} from '../commands/ICommandRegistry'
-import {CommandType} from '../commands/CommandType'
+import {
+  CreateAccountWithOwnerCommand,
+  ICommandRegistry,
+  CommandType,
+  UpdateAccountCommand,
+  DeleteAccountCommand,
+  AddUserToAccountCommand,
+} from '../commands'
 import {AccountDocument, UserDocument} from '../models'
 
 const typeDefs = gql`
@@ -51,10 +56,10 @@ const typeDefs = gql`
 
 const resolvers: Resolvers = {
   Query: {
-    // @ts-ignore not sure why this isn't working
     listAccounts: async (parent, args, {container}) => {
       const accountsAggregate = container.resolve<IAccountsAggregate>(TYPES.AccountsAggregate)
-      return accountsAggregate.getConnectionResults(args)
+      // TODO: not sure why this isn't matching the listAccounts return type
+      return accountsAggregate.getConnectionResults(args) as ReturnType<Resolvers['QueryResolvers']['listAccounts']>
     },
     getAccount: async (parent, {id}, {container}, info) => {
       const accountsAggregate = container.resolve<IAccountsAggregate>(TYPES.AccountsAggregate)
@@ -70,22 +75,29 @@ const resolvers: Resolvers = {
           CommandType.CREATE_ACCOUNT_COMMAND,
           command,
         )
-      //return services.account.create(input)
     },
-    updateAccount: async (parent, {id, input}, {services}) => {
-      return services.account.updateById(id, input)
+    updateAccount: async (parent, {id, input}, {container}) => {
+      const command = new UpdateAccountCommand(id, input)
+      return container
+        .resolve<ICommandRegistry>(TYPES.CommandRegistry)
+        .process<UpdateAccountCommand, AccountDocument>(CommandType.UPDATE_ACCOUNT_COMMAND, command)
     },
-    deleteAccount: async (parent, {id}, {services}) => {
-      return services.account.deleteById(id)
+    deleteAccount: async (parent, {id}, {container}) => {
+      const command = new DeleteAccountCommand(id)
+      return container
+        .resolve<ICommandRegistry>(TYPES.CommandRegistry)
+        .process<DeleteAccountCommand, AccountDocument>(CommandType.DELETE_ACCOUNT_COMMAND, command)
     },
-    addUserToAccount: async (parent, {accountId, userId}, {services}) => {
-      return services.account.addUserToAccount(accountId, userId)
+    addUserToAccount: async (parent, {accountId, userId}, {container}) => {
+      const command = new AddUserToAccountCommand({accountId, userId})
+      return container
+        .resolve<ICommandRegistry>(TYPES.CommandRegistry)
+        .process<AddUserToAccountCommand, boolean>(CommandType.ADD_USER_TO_ACCOUNT, command)
     },
   },
   Account: {
     users: async (parent, args, {container}) => {
       return container.resolve<IUsersAggregate>(TYPES.UsersAggregate).listByAccount(parent.id)
-      //return services.user.listByAccount(parent.id)
     },
   },
 }

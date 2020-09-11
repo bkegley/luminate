@@ -1,22 +1,31 @@
-import {ICommandHandler} from './ICommandHandler'
 import {Producer} from 'kafka-node'
-import {CreateAccountWithOwnerCommand} from './CreateAccountWithOwner'
-import {IMessage} from './IMessage'
-import {AccountDocument, UserDocument, UserModel, AccountModel, RoleModel} from '../models'
-import {IAccountsAggregate, IUsersAggregate} from '../aggregates'
+import {CreateAccountWithOwnerCommand, ICommandHandler} from '.'
+import {IEvent, EventType} from '../events'
+import {AccountDocument, UserDocument, UserModel, AccountModel} from '../models'
+import {IAccountsAggregate, IUsersAggregate, IRolesAggregate} from '../aggregates'
+import bcrypt from 'bcryptjs'
 
-type CreateAccountWithOwnerResponse = Account & {users: UserDocument[]}
+const saltRounds = 10
+
+type CreateAccountWithOwnerResponse = AccountDocument & {users: UserDocument[]}
 
 export class CreateAccountWithOwnerCommandHandler
   implements ICommandHandler<CreateAccountWithOwnerCommand, CreateAccountWithOwnerResponse> {
   private producer: Producer
   private accountsAggregate: IAccountsAggregate
   private usersAggregate: IUsersAggregate
+  private rolesAggregate: IRolesAggregate
 
-  constructor(producer: Producer, accountsAggregate: IAccountsAggregate, usersAggregate: IUsersAggregate) {
+  constructor(
+    producer: Producer,
+    accountsAggregate: IAccountsAggregate,
+    usersAggregate: IUsersAggregate,
+    rolesAggregate: IRolesAggregate,
+  ) {
     this.producer = producer
     this.accountsAggregate = accountsAggregate
     this.usersAggregate = usersAggregate
+    this.rolesAggregate = rolesAggregate
   }
 
   public async handle(command: CreateAccountWithOwnerCommand) {
@@ -36,7 +45,7 @@ export class CreateAccountWithOwnerCommandHandler
     const [existingAccount, existingUser, ownerRole] = await Promise.all([
       this.accountsAggregate.getAccountByName(name),
       this.usersAggregate.getByUsername(username),
-      RoleModel.findOne({name: 'Owner'}),
+      this.rolesAggregate.getRoleByName('Owner'),
     ])
 
     if (existingAccount) {
@@ -50,10 +59,12 @@ export class CreateAccountWithOwnerCommandHandler
       throw new Error('Owner role does not exist')
     }
 
+    const hashedPassword = bcrypt.hashSync(password, saltRounds)
+
     const account = new AccountModel({name})
     const owner = new UserModel({
       username,
-      password,
+      password: hashedPassword,
       roles: [
         {
           account: account.id,
@@ -67,26 +78,25 @@ export class CreateAccountWithOwnerCommandHandler
       type: ['user'],
     })
 
-    console.log({account: JSON.stringify(account.toObject()), owner: JSON.stringify(owner.toObject())})
     const now = new Date()
 
-    const accountMessage: IMessage<AccountDocument> = {
+    const accountCreatedEvent: IEvent<AccountDocument> = {
       timestamp: now,
-      event: 'AccountCreatedEvent',
+      event: EventType.ACCOUNT_CREATED_EVENT,
       data: account,
     }
 
-    const userMessage: IMessage<UserDocument> = {
+    const userCreatedEvent: IEvent<UserDocument> = {
       timestamp: now,
-      event: 'UserCreatedEvent',
+      event: EventType.USER_CREATED_EVENT,
       data: owner,
     }
 
     return new Promise<CreateAccountWithOwnerResponse>((resolve, reject) => {
       this.producer.send(
         [
-          {messages: JSON.stringify(accountMessage), topic: 'accounts'},
-          {messages: JSON.stringify(userMessage), topic: 'users'},
+          {messages: JSON.stringify(accountCreatedEvent), topic: 'accounts'},
+          {messages: JSON.stringify(userCreatedEvent), topic: 'users'},
         ],
         (err, data) => {
           if (err) {

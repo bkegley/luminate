@@ -6,6 +6,7 @@ export const TYPES = {
   KafkaProducer: Symbol('KafkaProducer'),
   PersonService: Symbol('PersonService'),
   RoleService: Symbol('RoleService'),
+  RolesAggregate: Symbol('RolesAggregate'),
   User: Symbol('User'),
   UserService: Symbol('UserService'),
   UsersAggregate: Symbol('UsersAggregate'),

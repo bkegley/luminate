@@ -150,13 +150,13 @@ const CoffeeUpdateForm = ({
 
         return (
           <Form>
-            <Modal dialog={createNewVarietyDialog} className="bg-white p-3 rounded-md" top="100px" aria-label="Alert">
+            <Modal dialog={createNewVarietyDialog} className="p-3 bg-white rounded-md" top="100px" aria-label="Alert">
               <div>
                 <CreateVarietyForm isModal />
               </div>
             </Modal>
             <Modal
-              className="bg-white p-3 rounded-md w-screen-5/6 md:w-screen-3/4 lg:w-screen-1/3"
+              className="p-3 bg-white rounded-md w-screen-5/6 md:w-screen-3/4 lg:w-screen-1/3"
               top="100px"
               dialog={deleteDialog}
               aria-label="Alert"
@@ -254,7 +254,7 @@ const CoffeeUpdateForm = ({
                 </div>
               ) : null}
             </Card>
-            <div className="flex justify-end mt-4 px-3">
+            <div className="flex justify-end px-3 mt-4">
               <div className="order-1">
                 <Button type="submit">Submit</Button>
               </div>
