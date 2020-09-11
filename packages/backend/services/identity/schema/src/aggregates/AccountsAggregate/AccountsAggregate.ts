@@ -1,9 +1,9 @@
 import {KafkaClient, Consumer} from 'kafka-node'
-import {AccountDocument, UserDocument} from '../../models'
-import {IMessage} from '../../commands/IMessage'
+import {AccountDocument} from '../../models'
+import {EventType, IEvent, AccountUpdatedEvent, AccountDeletedEvent} from '../../events'
 import {IAccountsAggregate} from './IAccountsAggregate'
 import {IListDocumentsArgs} from '@luminate/mongo-utils'
-import {Account, User} from '../../types'
+import {Account, AccountConnection} from '../../types'
 
 export class AccountsAggregate implements IAccountsAggregate {
   private client: KafkaClient
@@ -22,49 +22,70 @@ export class AccountsAggregate implements IAccountsAggregate {
     })
 
     accountsConsumer.on('message', message => {
-      const data: IMessage<AccountDocument> = JSON.parse(message.value as string)
-      console.log({accountsAggMessage: message})
+      const data = JSON.parse(message.value as string)
       switch (data.event) {
-        case 'AccountCreatedEvent': {
+        case EventType.ACCOUNT_CREATED_EVENT: {
           this.accountCreatedEventHandler(data)
+          break
+        }
+
+        case EventType.ACCOUNT_UPDATED_EVENT: {
+          this.accountUpdatedEventHandler(data)
+          break
+        }
+
+        case EventType.ACCOUNT_DELETED_EVENT: {
+          this.accountDeletedEventHandler(data)
+          break
         }
       }
     })
   }
-  private accountCreatedEventHandler(message: IMessage<AccountDocument>) {
+
+  private accountCreatedEventHandler(message: IEvent<AccountDocument>) {
     const {_id, ...account} = message.data
     // @ts-ignore
     this.accounts.push({id: _id, ...account})
   }
 
+  private accountUpdatedEventHandler(event: AccountUpdatedEvent) {
+    const {id, ...updatedAccount} = event.data
+    // @ts-ignore
+    this.accounts = this.accounts.map(account => (account.id === id ? {...account, ...updatedAccount} : account))
+  }
+
+  private accountDeletedEventHandler(event: AccountDeletedEvent) {
+    const {id} = event.data
+    this.accounts = this.accounts.filter(account => account.id !== id)
+  }
+
   public async getConnectionResults(args: IListDocumentsArgs) {
-    return {
+    return Promise.resolve({
       pageInfo: {
         hasNextPage: false,
         prevCursor: '',
         nextCursor: '',
       },
       // needs to convert userId in account object to user object either here or in a loader
-      edges: this.accounts.map(account => ({node: account, cursor: ''})),
-    }
+      edges: this.accounts.map(account => ({node: (account as unknown) as Account, cursor: ''})),
+    }) as Promise<AccountConnection>
   }
 
-  public async listAccounts() {
-    return Promise.resolve(this.accounts)
+  public async listAccounts(args?: any) {
+    if (!args) {
+      return this.accounts
+    }
+    // TODO: add use cases outside of filtering on id(s)
+    return this.accounts.filter(account =>
+      Array.isArray(args.id) ? args.id.includes(account.id) : args.id === account.id,
+    )
   }
 
   public async getAccount(id: string) {
-    return new Promise<AccountDocument>((resolve, reject) => {
-      const account = this.accounts.find(account => account.id === id)
-      if (account) {
-        resolve(account)
-      } else {
-        reject('Account not found')
-      }
-    })
+    return this.accounts.find(account => account.id === id)
   }
 
   public async getAccountByName(name: string) {
-    return Promise.resolve(this.accounts.find(account => account.name === name))
+    return this.accounts.find(account => account.name === name)
   }
 }

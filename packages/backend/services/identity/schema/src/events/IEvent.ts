@@ -1,6 +1,5 @@
 export interface IEvent<T> {
-  id: string
-  timestamp: string
+  timestamp: Date
   event: string
   data: T
 }

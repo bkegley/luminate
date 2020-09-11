@@ -125,7 +125,7 @@ export const UserSchema = extendSchema(
         },
         roles: [
           {
-            type: Types.ObjectId,
+            type: String,
             ref: 'role',
           },
         ],

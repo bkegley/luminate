@@ -35,6 +35,12 @@ export type AccountEdge = {
   node: Account
 }
 
+export type City = {
+  __typename?: 'City'
+  id: Scalars['ID']
+  name?: Maybe<Scalars['String']>
+}
+
 export type CreateAccountInput = {
   name: Scalars['String']
   username: Scalars['String']
@@ -79,6 +85,7 @@ export type Mutation = {
   deleteRole?: Maybe<Role>
   createUser?: Maybe<User>
   updateUser?: Maybe<User>
+  updateUserRoles?: Maybe<User>
   deleteUser?: Maybe<User>
   updatePassword: Scalars['Boolean']
   login?: Maybe<Scalars['Boolean']>
@@ -127,6 +134,11 @@ export type MutationUpdateUserArgs = {
   input: UpdateUserInput
 }
 
+export type MutationUpdateUserRolesArgs = {
+  id: Scalars['ID']
+  roles?: Maybe<Array<Scalars['ID']>>
+}
+
 export type MutationDeleteUserArgs = {
   id: Scalars['ID']
 }
@@ -170,6 +182,7 @@ export type Query = {
   listRoles: RoleConnection
   getRole?: Maybe<Role>
   listUsers: UserConnection
+  listStations?: Maybe<Array<Maybe<Station>>>
   getUser?: Maybe<User>
   me?: Maybe<Me>
 }
@@ -231,6 +244,13 @@ export type RoleEdge = {
   node: Role
 }
 
+export type Station = {
+  __typename?: 'Station'
+  id: Scalars['ID']
+  description?: Maybe<Scalars['String']>
+  city?: Maybe<City>
+}
+
 export type UpdateAccountInput = {
   name?: Maybe<Scalars['String']>
 }
@@ -249,7 +269,6 @@ export type UpdateUserInput = {
   firstName?: Maybe<Scalars['String']>
   lastName?: Maybe<Scalars['String']>
   username?: Maybe<Scalars['String']>
-  roles?: Maybe<Array<Scalars['ID']>>
 }
 
 export type User = UserInterface & {
@@ -391,6 +410,8 @@ export type ResolversTypes = ResolversObject<{
   RoleEdge: ResolverTypeWrapper<Omit<RoleEdge, 'node'> & {node: ResolversTypes['Role']}>
   UserConnection: ResolverTypeWrapper<Omit<UserConnection, 'edges'> & {edges: Array<ResolversTypes['UserEdge']>}>
   UserEdge: ResolverTypeWrapper<Omit<UserEdge, 'node'> & {node: ResolversTypes['User']}>
+  Station: ResolverTypeWrapper<Station>
+  City: ResolverTypeWrapper<City>
   Me: ResolverTypeWrapper<UserDocument>
   Mutation: ResolverTypeWrapper<{}>
   CreateAccountInput: CreateAccountInput
@@ -425,6 +446,8 @@ export type ResolversParentTypes = ResolversObject<{
   RoleEdge: Omit<RoleEdge, 'node'> & {node: ResolversParentTypes['Role']}
   UserConnection: Omit<UserConnection, 'edges'> & {edges: Array<ResolversParentTypes['UserEdge']>}
   UserEdge: Omit<UserEdge, 'node'> & {node: ResolversParentTypes['User']}
+  Station: Station
+  City: City
   Me: UserDocument
   Mutation: {}
   CreateAccountInput: CreateAccountInput
@@ -450,6 +473,7 @@ export type QueryResolvers<
   listRoles?: Resolver<ResolversTypes['RoleConnection'], ParentType, ContextType, QueryListRolesArgs>
   getRole?: Resolver<Maybe<ResolversTypes['Role']>, ParentType, ContextType, RequireFields<QueryGetRoleArgs, 'id'>>
   listUsers?: Resolver<ResolversTypes['UserConnection'], ParentType, ContextType, QueryListUsersArgs>
+  listStations?: Resolver<Maybe<Array<Maybe<ResolversTypes['Station']>>>, ParentType, ContextType>
   getUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryGetUserArgs, 'id'>>
   me?: Resolver<Maybe<ResolversTypes['Me']>, ParentType, ContextType>
 }>
@@ -569,6 +593,23 @@ export type UserEdgeResolvers<
   node?: Resolver<ResolversTypes['User'], ParentType, ContextType>
 }>
 
+export type StationResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['Station'] = ResolversParentTypes['Station']
+> = ResolversObject<{
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
+  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  city?: Resolver<Maybe<ResolversTypes['City']>, ParentType, ContextType>
+}>
+
+export type CityResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['City'] = ResolversParentTypes['City']
+> = ResolversObject<{
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
+  name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+}>
+
 export type MeResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['Me'] = ResolversParentTypes['Me']
@@ -643,6 +684,12 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationUpdateUserArgs, 'id' | 'input'>
   >
+  updateUserRoles?: Resolver<
+    Maybe<ResolversTypes['User']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationUpdateUserRolesArgs, 'id'>
+  >
   deleteUser?: Resolver<
     Maybe<ResolversTypes['User']>,
     ParentType,
@@ -684,6 +731,8 @@ export type Resolvers<ContextType = Context> = ResolversObject<{
   RoleEdge?: RoleEdgeResolvers<ContextType>
   UserConnection?: UserConnectionResolvers<ContextType>
   UserEdge?: UserEdgeResolvers<ContextType>
+  Station?: StationResolvers<ContextType>
+  City?: CityResolvers<ContextType>
   Me?: MeResolvers<ContextType>
   Mutation?: MutationResolvers<ContextType>
 }>

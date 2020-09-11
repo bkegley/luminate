@@ -12,16 +12,23 @@ import {seedDatabase} from './seedDatabase'
 import {Container} from './utils'
 import {createMongoConnection, Token} from '@luminate/mongo-utils'
 import {parseUserFromRequest} from '@luminate/graphql-utils'
-import {KafkaClient, Consumer, Producer} from 'kafka-node'
-import {AccountsAggregate, IAccountsAggregate, IUsersAggregate, UsersAggregate} from './aggregates'
+import {KafkaClient, Producer} from 'kafka-node'
+import {
+  AccountsAggregate,
+  IAccountsAggregate,
+  RolesAggregete,
+  IRolesAggregate,
+  IUsersAggregate,
+  UsersAggregate,
+} from './aggregates'
 const PORT = process.env.PORT || 3001
 import {TYPES} from './utils/types'
-import {ICommandRegistry} from './commands/ICommandRegistry'
-import {CommandRegistry} from './commands/CommandRegistry'
+import {ICommandRegistry, CommandRegistry} from './commands'
 
 export interface Context {
   res: express.Response
   container: Container
+  user: Token | null
   services: {
     account: AccountService
     role: RoleService
@@ -51,6 +58,7 @@ class Server {
         [
           {topic: 'accounts', partitions: 1, replicationFactor: 1},
           {topic: 'users', partitions: 1, replicationFactor: 1},
+          {topic: 'roles', partitions: 1, replicationFactor: 1},
         ],
         async err => {
           if (err) {
@@ -67,20 +75,25 @@ class Server {
 
     const accountsAggregate = new AccountsAggregate()
     const usersAggregate = new UsersAggregate()
+    const rolesAggregate = new RolesAggregete()
 
     this.container.bind<IAccountsAggregate>(TYPES.AccountsAggregate, accountsAggregate)
     this.container.bind<IUsersAggregate>(TYPES.UsersAggregate, usersAggregate)
+    this.container.bind<IRolesAggregate>(TYPES.RolesAggregate, rolesAggregate)
 
     this.container.bind<ICommandRegistry>(
       TYPES.CommandRegistry,
-      new CommandRegistry(this.container.resolve(TYPES.KafkaProducer), accountsAggregate, usersAggregate),
+      new CommandRegistry(
+        this.container.resolve(TYPES.KafkaProducer),
+        accountsAggregate,
+        usersAggregate,
+        rolesAggregate,
+      ),
     )
 
     const server = new ApolloServer({
       schema: buildFederatedSchema(schemas),
       context: ({req, res}): Context => {
-        this.container.bind<Token | null>(TYPES.User, parseUserFromRequest(req))
-
         const services = {
           account: this.container.resolve<AccountService>(TYPES.AccountService),
           role: this.container.resolve<RoleService>(TYPES.RoleService),
@@ -90,6 +103,7 @@ class Server {
         return {
           res,
           services,
+          user: parseUserFromRequest(req),
           container: this.container,
         }
       },

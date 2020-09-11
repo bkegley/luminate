@@ -1,9 +1,17 @@
 import {IUsersAggregate} from './IUsersAggregate'
 import {KafkaClient, Consumer} from 'kafka-node'
 import {UserDocument} from '../../models'
-import {IMessage} from '../../commands/IMessage'
 import {IListDocumentsArgs} from '@luminate/mongo-utils'
 import {User} from '../../types'
+import {
+  IEvent,
+  EventType,
+  UserAddedToAccountEvent,
+  UserUpdatedEvent,
+  UserDeletedEvent,
+  UserPasswordUpdatedEvent,
+  UserRolesUpdatedEvent,
+} from '../../events'
 
 export class UsersAggregate implements IUsersAggregate {
   private client: KafkaClient
@@ -22,24 +30,104 @@ export class UsersAggregate implements IUsersAggregate {
     })
 
     usersConsumer.on('message', message => {
-      const data: IMessage<UserDocument> = JSON.parse(message.value as string)
-      console.log({userAggMessage: message})
+      const data = JSON.parse(message.value as string)
 
       switch (data.event) {
-        case 'UserCreatedEvent': {
-          this.handleUserCreatedEvent(data)
+        case EventType.USER_CREATED_EVENT: {
+          this.userCreatedEventHandler(data)
+          break
+        }
+        case EventType.USER_UPDATED_EVENT: {
+          this.userUpdatedEventHandler(data)
+          break
+        }
+        case EventType.USER_ROLES_UPDATED_EVENT: {
+          this.userRolesUpdatedEventHandler(data)
+          break
+        }
+        case EventType.USER_DELETED_EVENT: {
+          this.userDeletedEventHandler(data)
+          break
+        }
+        case EventType.USER_PASSWORD_UPDATED_EVENT: {
+          this.userPasswordUpdatedEventHandler(data)
+          break
+        }
+        case EventType.USER_ADDED_TO_ACCOUNT_EVENT: {
+          this.userAddedToAccountEventHandler(data)
+          break
         }
       }
     })
   }
 
-  private handleUserCreatedEvent(message: IMessage<UserDocument>) {
+  private userCreatedEventHandler(message: IEvent<UserDocument>) {
     const {_id, ...user} = message.data
     // @ts-ignore
     this.users.push({id: _id, ...user})
   }
 
+  private userUpdatedEventHandler(message: UserUpdatedEvent) {
+    // @ts-ignore -- see TODO
+    this.users = this.users.map(user => {
+      if (user.id === message.data.id) {
+        return {
+          // TODO: in-memory objects don't have toObject({getters: true}) method call
+          // figure out a shared interface that isn't tied to mongo
+          ...user,
+          ...message.data,
+        }
+      }
+      return user
+    })
+  }
+
+  private userRolesUpdatedEventHandler(message: UserRolesUpdatedEvent) {
+    // @ts-ignore -- see TODO
+    this.users = this.users.map(user => {
+      if (user.id === message.data.id) {
+        const {account, roles} = message.data
+
+        return {
+          ...user,
+          roles: user.roles.map(role => (role.account === account ? {account: account, roles: roles} : role)),
+        }
+      }
+      return user
+    })
+  }
+
+  private userDeletedEventHandler(message: UserDeletedEvent) {
+    this.users = this.users.filter(user => user.id !== message.data.id)
+  }
+
+  private userPasswordUpdatedEventHandler(message: UserPasswordUpdatedEvent) {
+    // @ts-ignore -- see TODO
+    this.users = this.users.map(user =>
+      // TODO: in-memory objects don't have toObject({getters: true}) method call
+      // figure out a shared interface that isn't tied to mongo
+      user.id === message.data.id ? {...user, password: message.data.password} : user,
+    )
+  }
+
+  private userAddedToAccountEventHandler(message: UserAddedToAccountEvent) {
+    const {accountId, userId} = message.data
+    // @ts-ignore -- see TODO
+    this.users = this.users.map(user => {
+      if (user.id === userId) {
+        return {
+          // TODO: in-memory objects don't have toObject({getters: true}) method call
+          // figure out a shared interface that isn't tied to mongo
+          ...user,
+          accounts: user.accounts.concat(accountId as any),
+        }
+      }
+      return user
+    })
+  }
+
   public async getConnectionResults(args: IListDocumentsArgs) {
+    // TODO: add pagination
     return {
       pageInfo: {
         hasNextPage: false,
@@ -49,6 +137,10 @@ export class UsersAggregate implements IUsersAggregate {
       // needs to convert accountId in user object to account object either here or in a loader
       edges: this.users.map(user => ({node: (user as unknown) as User, cursor: ''})),
     }
+  }
+
+  public async getUser(id: string) {
+    return this.users.find(user => user.id === id)
   }
 
   public async getByUsername(username: string) {

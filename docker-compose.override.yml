@@ -5,8 +5,8 @@ services:
     ports:
       - 2181:2181
     #volumes:
-      #- ./kafka/zk/data:/opt/zookeeper-3.4.13/data
-      #- ./kafka/zk/conf:/opt/zookeeper-3.4.13/conf
+    #- ./kafka/zk/data:/opt/zookeeper-3.4.13/data
+    #- ./kafka/zk/conf:/opt/zookeeper-3.4.13/conf
 
   kafka:
     ports:
