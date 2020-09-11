@@ -9,7 +9,8 @@
     "develop": "nodemon --watch src/ --ignore src/index.d --ignore src/types.d -e ts --exec \"npm run start\"",
     "build": "rimraf ./dist && tsc",
     "start": "node dist/startServer.js",
-    "prestart": "yarn build"
+    "prestart": "yarn build",
+    "test": "jest"
   },
   "dependencies": {
     "@apollo/federation": "^0.11.2",
@@ -24,6 +25,9 @@
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
-    "nodemon": "^2.0.2"
+    "@types/jest": "^26.0.13",
+    "apollo-server-testing": "^2.17.0",
+    "nodemon": "^2.0.2",
+    "ts-jest": "^26.3.0"
   }
 }

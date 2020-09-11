@@ -16,7 +16,7 @@ import {KafkaClient, Producer} from 'kafka-node'
 import {
   AccountsAggregate,
   IAccountsAggregate,
-  RolesAggregete,
+  RolesAggregate,
   IRolesAggregate,
   IUsersAggregate,
   UsersAggregate,
@@ -75,7 +75,7 @@ class Server {
 
     const accountsAggregate = new AccountsAggregate()
     const usersAggregate = new UsersAggregate()
-    const rolesAggregate = new RolesAggregete()
+    const rolesAggregate = new RolesAggregate()
 
     this.container.bind<IAccountsAggregate>(TYPES.AccountsAggregate, accountsAggregate)
     this.container.bind<IUsersAggregate>(TYPES.UsersAggregate, usersAggregate)

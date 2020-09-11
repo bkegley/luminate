@@ -5,7 +5,7 @@ import {IRolesAggregate} from './IRolesAggregate'
 import {ScopeOperations, ScopeResources} from '@luminate/mongo-utils'
 import {EventType, RoleUpdatedEvent, RoleDeletedEvent, RoleCreatedEvent} from '../../events'
 
-export class RolesAggregete implements IRolesAggregate {
+export class RolesAggregate implements IRolesAggregate {
   private client: KafkaClient
   private roles: RoleDocument[] = []
 
