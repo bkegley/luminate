@@ -17,6 +17,7 @@
     "apollo-server-express": "^2.15.0",
     "dataloader": "^2.0.0",
     "express": "^4.17.1",
+    "kafka-node": "^5.0.0",
     "lodash.merge": "^4.6.2"
   },
   "devDependencies": {

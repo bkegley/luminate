@@ -5,17 +5,17 @@ require('dotenv').config({
 import {ApolloServer} from 'apollo-server-express'
 import {buildFederatedSchema} from '@apollo/federation'
 import express from 'express'
-import {CuppingSessionService, DeviceService} from './services'
 import {schemas} from './schema'
 import {createMongoConnection, Token} from '@luminate/mongo-utils'
 import {Container} from './utils'
 import {parseUserFromRequest} from '@luminate/graphql-utils'
+import {ICommandRegistry, CommandRegistry} from './commands'
+import {TYPES} from './utils'
+import {Producer, KafkaClient} from 'kafka-node'
 
 export interface Context {
-  services: {
-    cuppingSession: CuppingSessionService
-    device: DeviceService
-  }
+  services: any
+  container: Container
 }
 
 class Server {
@@ -23,27 +23,40 @@ class Server {
   private port = process.env.PORT || 3003
   private container = new Container()
 
-  private types = {
-    User: Symbol('User'),
-    CuppingSessionService: Symbol('CuppingSessionService'),
-    DeviceService: Symbol('DeviceService'),
-  }
-
   public async start() {
     await createMongoConnection(process.env.MONGO_URL)
 
+    const client = new KafkaClient({
+      kafkaHost: process.env.KAFKA_HOST || 'http://localhost:9092',
+      autoConnect: true,
+      connectTimeout: 1000,
+    })
+
+    await new Promise<Producer>((resolve, reject) => {
+      client.createTopics([{topic: 'brewers', partitions: 1, replicationFactor: 1}], async err => {
+        if (err) {
+          console.error({err})
+          reject(err)
+        }
+        const producer = new Producer(client)
+
+        this.container.bind<Producer>(TYPES.KafkaProducer, producer)
+        resolve(producer)
+      })
+    })
+
     this.registerServices()
+
+    this.container.bind<ICommandRegistry>(
+      TYPES.CommandRegistry,
+      resolver => new CommandRegistry(resolver.resolve(TYPES.KafkaProducer)),
+    )
 
     const server = new ApolloServer({
       schema: buildFederatedSchema(schemas),
       context: ({req}) => {
-        this.container.bind<Token | null>(this.types.User, parseUserFromRequest(req))
-        const services: Context['services'] = {
-          cuppingSession: this.container.resolve<CuppingSessionService>(this.types.CuppingSessionService),
-          device: this.container.resolve<DeviceService>(this.types.DeviceService),
-        }
         return {
-          services,
+          container: this.container,
         }
       },
       introspection: true,
@@ -65,16 +78,7 @@ class Server {
     )
   }
 
-  private registerServices() {
-    this.container.bind<CuppingSessionService>(
-      this.types.CuppingSessionService,
-      resolver => new CuppingSessionService(resolver.resolve(this.types.User)),
-    )
-    this.container.bind<DeviceService>(
-      this.types.DeviceService,
-      resolver => new DeviceService(resolver.resolve(this.types.User)),
-    )
-  }
+  private registerServices() {}
 }
 
 const server = new Server()
