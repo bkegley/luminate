@@ -1,9 +1,9 @@
 import {gql} from 'apollo-server-express'
-import {Resolvers, RoleConnection} from '../types'
-import {IRolesAggregate} from '../aggregates'
+import {Resolvers} from '../types'
 import {TYPES} from '../utils/types'
 import {CreateRoleCommand, ICommandRegistry, CommandType, UpdateRoleCommand, DeleteRoleCommand} from '../commands'
 import {RoleDocument} from '../models'
+import {IRolesProjection} from '../projections'
 
 const typeDefs = gql`
   type Role {
@@ -50,12 +50,12 @@ const resolvers: Resolvers = {
   Query: {
     // @ts-ignore
     listRoles: async (_parent, args, {container}) => {
-      const rolesAggregate = container.resolve<IRolesAggregate>(TYPES.RolesAggregate)
-      return rolesAggregate.getConnectionResults(args)
+      const rolesProjection = container.resolve<IRolesProjection>(TYPES.RolesProjection)
+      return rolesProjection.getConnectionResults(args)
     },
     getRole: async (_parent, {id}, {container}) => {
-      const rolesAggregate = container.resolve<IRolesAggregate>(TYPES.RolesAggregate)
-      return rolesAggregate.getRole(id)
+      const rolesProjection = container.resolve<IRolesProjection>(TYPES.RolesProjection)
+      return rolesProjection.getRole(id)
     },
   },
   Mutation: {

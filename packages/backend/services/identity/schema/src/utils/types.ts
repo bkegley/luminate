@@ -1,13 +1,16 @@
 export const TYPES = {
   AccountService: Symbol('AccountService'),
   AccountsAggregate: Symbol('AccountsAggregate'),
+  AccountsProjection: Symbol('AccountsProjection'),
   CommandRegistry: Symbol('CommandRegistry'),
   KafkaClient: Symbol('KafkaClient'),
   KafkaProducer: Symbol('KafkaProducer'),
   PersonService: Symbol('PersonService'),
   RoleService: Symbol('RoleService'),
   RolesAggregate: Symbol('RolesAggregate'),
+  RolesProjection: Symbol('RolesProjection'),
   User: Symbol('User'),
   UserService: Symbol('UserService'),
   UsersAggregate: Symbol('UsersAggregate'),
+  UsersProjection: Symbol('UsersProjection'),
 }

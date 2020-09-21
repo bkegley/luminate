@@ -24,6 +24,14 @@ import {
 const PORT = process.env.PORT || 3001
 import {TYPES} from './utils/types'
 import {ICommandRegistry, CommandRegistry} from './commands'
+import {
+  IRolesProjection,
+  RolesProjection,
+  AccountsProjection,
+  UsersProjection,
+  IAccountsProjection,
+  IUsersProjection,
+} from './projections'
 
 export interface Context {
   res: express.Response
@@ -80,6 +88,14 @@ class Server {
     this.container.bind<IAccountsAggregate>(TYPES.AccountsAggregate, accountsAggregate)
     this.container.bind<IUsersAggregate>(TYPES.UsersAggregate, usersAggregate)
     this.container.bind<IRolesAggregate>(TYPES.RolesAggregate, rolesAggregate)
+
+    const accountsProjection = new AccountsProjection()
+    const usersProjection = new UsersProjection()
+    const rolesProjection = new RolesProjection()
+
+    this.container.bind<IAccountsProjection>(TYPES.AccountsProjection, accountsProjection)
+    this.container.bind<IUsersProjection>(TYPES.UsersProjection, usersProjection)
+    this.container.bind<IRolesProjection>(TYPES.RolesProjection, rolesProjection)
 
     this.container.bind<ICommandRegistry>(
       TYPES.CommandRegistry,

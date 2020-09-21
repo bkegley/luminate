@@ -11,6 +11,7 @@ import {
   AddUserToAccountCommand,
 } from '../commands'
 import {AccountDocument, UserDocument} from '../models'
+import {IAccountsProjection} from '../projections'
 
 const typeDefs = gql`
   type Account {
@@ -57,13 +58,13 @@ const typeDefs = gql`
 const resolvers: Resolvers = {
   Query: {
     listAccounts: async (parent, args, {container}) => {
-      const accountsAggregate = container.resolve<IAccountsAggregate>(TYPES.AccountsAggregate)
+      const accountsProjection = container.resolve<IAccountsProjection>(TYPES.AccountsProjection)
       // TODO: not sure why this isn't matching the listAccounts return type
-      return accountsAggregate.getConnectionResults(args) as ReturnType<Resolvers['QueryResolvers']['listAccounts']>
+      return accountsProjection.getConnectionResults(args) as ReturnType<Resolvers['QueryResolvers']['listAccounts']>
     },
     getAccount: async (parent, {id}, {container}, info) => {
-      const accountsAggregate = container.resolve<IAccountsAggregate>(TYPES.AccountsAggregate)
-      return accountsAggregate.getAccount(id)
+      const accountsProjection = container.resolve<IAccountsProjection>(TYPES.AccountsProjection)
+      return accountsProjection.getAccount(id)
     },
   },
   Mutation: {
