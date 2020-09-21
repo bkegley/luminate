@@ -1,6 +1,7 @@
 import {ICommandHandler, DeleteBrewerCommand} from '.'
 import {Producer} from 'kafka-node'
 import {BrewerDeletedEvent} from '../events'
+import {BrewerAggregate} from '../aggregates/BrewerAggregate'
 
 export class DeleteBrewerCommandHandler implements ICommandHandler<DeleteBrewerCommand, boolean> {
   private producer: Producer
@@ -10,6 +11,12 @@ export class DeleteBrewerCommandHandler implements ICommandHandler<DeleteBrewerC
   }
 
   public async handle(command: DeleteBrewerCommand) {
+    const deletedBrewer = await BrewerAggregate.findByIdAndDelete(command.id)
+
+    if (!deletedBrewer) {
+      throw new Error('Brewer delete failed')
+    }
+
     const brewerDeletedEvent = new BrewerDeletedEvent(command.id)
 
     return new Promise<boolean>((resolve, reject) => {
