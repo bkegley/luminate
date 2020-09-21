@@ -1,25 +1,37 @@
 import {KafkaClient, Consumer} from 'kafka-node'
-import {RoleDocument} from '../../models'
+import {EventType, RoleCreatedEvent, RoleDeletedEvent, RoleUpdatedEvent} from '../../events'
+import {RoleDocument, RoleModel} from '../../models'
+import {IRolesProjection} from './IRolesProjection'
+import {ScopeOperations, ScopeResources} from '@luminate/mongo-utils'
 import {QueryListRolesArgs, Role} from '../../types'
-import {IRolesAggregate} from './IRolesAggregate'
-import {EventType, RoleUpdatedEvent, RoleDeletedEvent, RoleCreatedEvent} from '../../events'
 
-export class RolesAggregate implements IRolesAggregate {
-  private client: KafkaClient
+export class RolesProjection implements IRolesProjection {
+  private rolesConsumer: Consumer
   private roles: RoleDocument[] = []
 
   constructor() {
-    this.client = new KafkaClient({
+    const client = new KafkaClient({
       kafkaHost: process.env.KAFKA_HOST || 'http://localhost:9092',
       autoConnect: true,
       connectTimeout: 1000,
     })
 
-    const rolesConsumer = new Consumer(this.client, [{topic: 'roles', offset: 0}], {
+    const scopes = Object.values(ScopeOperations)
+      .map(operation => {
+        return Object.values(ScopeResources).map(resource => `${operation}:${resource}`)
+      })
+      .reduce((acc, arr) => acc.concat(arr), [])
+
+    // seed the db with owner role
+    // TODO: this should probably happen as a command on server startup
+    const ownerRole = new RoleModel({name: 'Owner', scopes, permissionType: 'public'})
+    this.roles.push({...ownerRole.toObject({getters: true})})
+
+    this.rolesConsumer = new Consumer(client, [{topic: 'roles', offset: 0}], {
       fromOffset: true,
     })
 
-    rolesConsumer.on('message', message => {
+    this.rolesConsumer.on('message', message => {
       const data = JSON.parse(message.value as string)
       switch (data.event) {
         case EventType.ROLE_CREATED_EVENT: {
@@ -42,6 +54,7 @@ export class RolesAggregate implements IRolesAggregate {
   }
 
   private roleCreatedEventHandler(data: RoleCreatedEvent) {
+    console.log('projection receiving created event', data)
     const {_id, ...role} = data.data
     // @ts-ignore
     this.roles.push({id: _id, ...role})
@@ -86,24 +99,10 @@ export class RolesAggregate implements IRolesAggregate {
   }
 
   public async getRole(id: string) {
-    return new Promise<RoleDocument>((resolve, reject) => {
-      const role = this.roles.find(role => role.id === id)
-      if (role) {
-        resolve(role)
-      } else {
-        reject('Role not found')
-      }
-    })
+    return this.roles.find(role => role.id === id)
   }
 
   public async getRoleByName(name: string) {
-    return new Promise<RoleDocument>((resolve, reject) => {
-      const role = this.roles.find(role => role.name === name)
-      if (role) {
-        resolve(role)
-      } else {
-        reject('Role not found')
-      }
-    })
+    return this.roles.find(role => role.name === name)
   }
 }

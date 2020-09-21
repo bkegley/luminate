@@ -113,10 +113,7 @@ export class CommandRegistry implements ICommandRegistry {
     )
 
     // Role Commands
-    this.handlerRegistry.set(
-      CommandType.CREATE_ROLE_COMMAND,
-      new CreateRoleCommandHandler(this.producer, this.rolesAggregate),
-    )
+    this.handlerRegistry.set(CommandType.CREATE_ROLE_COMMAND, new CreateRoleCommandHandler(this.producer))
 
     this.handlerRegistry.set(
       CommandType.UPDATE_ROLE_COMMAND,

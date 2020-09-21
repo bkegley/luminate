@@ -14,8 +14,7 @@ const DeleteAlert = ({heading, text, onCancelClick, onConfirmClick, variant = 'p
     <div>
       {heading ? <Heading>{heading}</Heading> : null}
       {text ? <p>{text}</p> : null}
-
-      <div className="flex justify-end mt-4 px-3">
+      <div className="flex justify-end px-3 mt-4">
         {onConfirmClick ? (
           <div className="order-1">
             <Button onClick={onConfirmClick} variant={variant}>

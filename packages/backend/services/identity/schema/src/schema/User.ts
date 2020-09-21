@@ -17,6 +17,7 @@ import {IUsersAggregate, IAccountsAggregate, IRolesAggregate} from '../aggregate
 import {UserDocument} from '../models'
 import jwt from 'jsonwebtoken'
 import {Token} from '@luminate/graphql-utils'
+import {IUsersProjection} from '../projections'
 
 const USER_AUTH_TOKEN = process.env.USER_AUTH_TOKEN || 'localsecrettoken'
 
@@ -122,14 +123,14 @@ const resolvers: Resolvers = {
   Query: {
     // @ts-ignore
     listUsers: async (parent, args, {container}) => {
-      const usersAggregate = container.resolve<IUsersAggregate>(TYPES.UsersAggregate)
-      return usersAggregate.getConnectionResults(args)
+      const usersProjection = container.resolve<IUsersProjection>(TYPES.UsersProjection)
+      return usersProjection.getConnectionResults(args)
     },
     getUser: async (parent, {id}, {container}) => {
-      return container.resolve<IUsersAggregate>(TYPES.UsersAggregate).getUser(id)
+      return container.resolve<IUsersProjection>(TYPES.UsersProjection).getUser(id)
     },
     me: async (parent, args, {user, container}) => {
-      return container.resolve<IUsersAggregate>(TYPES.UsersAggregate).getUser(user.jti)
+      return container.resolve<IUsersProjection>(TYPES.UsersProjection).getUser(user.jti)
     },
   },
   Mutation: {
