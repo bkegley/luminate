@@ -1,7 +1,7 @@
 import {ICommandHandler, DeleteBrewerCommand} from '.'
 import {Producer} from 'kafka-node'
 import {BrewerDeletedEvent} from '../events'
-import {BrewerAggregate} from '../aggregates/BrewerAggregate'
+import {BrewerAggregate} from '../aggregates'
 
 export class DeleteBrewerCommandHandler implements ICommandHandler<DeleteBrewerCommand, boolean> {
   private producer: Producer
