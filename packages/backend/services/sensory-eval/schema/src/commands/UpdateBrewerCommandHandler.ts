@@ -2,7 +2,7 @@ import {ICommandHandler, UpdateBrewerCommand} from '.'
 import {Producer} from 'kafka-node'
 import {BrewerUpdatedEvent} from '../events'
 import {Brewer} from '../types'
-import {BrewerAggregate} from '../aggregates/BrewerAggregate'
+import {BrewerAggregate} from '../aggregates'
 
 export class UpdateBrewerCommandHandler implements ICommandHandler<UpdateBrewerCommand, Brewer> {
   private producer: Producer
