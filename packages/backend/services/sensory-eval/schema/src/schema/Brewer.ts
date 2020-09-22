@@ -2,6 +2,7 @@ import {gql} from 'apollo-server-express'
 import {Resolvers} from '../types'
 import {ICommandRegistry, CommandType, CreateBrewerCommand, UpdateBrewerCommand, DeleteBrewerCommand} from '../commands'
 import {TYPES} from '../utils'
+import {IBrewersView} from '../views'
 
 const typeDefs = gql`
   type Brewer {
@@ -41,17 +42,13 @@ const typeDefs = gql`
 
 const resolvers: Resolvers = {
   Query: {
-    listBrewers: async (_parent, _args, {}) => {
-      return {
-        pageInfo: {
-          hasNextPage: false,
-          nextCursor: '',
-        },
-        edges: [],
-      }
+    listBrewers: async (_parent, _args, {container}) => {
+      const brewersView = container.resolve<IBrewersView>(TYPES.BrewersView)
+      return brewersView.listBrewers()
     },
-    getBrewer: async (_parent, {id}, {}) => {
-      return null
+    getBrewer: async (_parent, {id}, {container}) => {
+      const brewersView = container.resolve<IBrewersView>(TYPES.BrewersView)
+      return brewersView.getBrewerById(id)
     },
   },
   Mutation: {
