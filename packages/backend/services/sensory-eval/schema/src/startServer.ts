@@ -12,6 +12,7 @@ import {parseUserFromRequest} from '@luminate/graphql-utils'
 import {ICommandRegistry, CommandRegistry} from './commands'
 import {TYPES} from './utils'
 import {Producer, KafkaClient} from 'kafka-node'
+import {BrewersView, IBrewersView} from './views'
 
 export interface Context {
   services: any
@@ -45,7 +46,7 @@ class Server {
       })
     })
 
-    this.registerServices()
+    this.container.bind<IBrewersView>(TYPES.BrewersView, new BrewersView())
 
     this.container.bind<ICommandRegistry>(
       TYPES.CommandRegistry,
