@@ -1,32 +1,38 @@
 import {ICommandHandler, DeleteBrewerCommand} from '.'
-import {Producer} from 'kafka-node'
-import {BrewerDeletedEvent} from '../events'
-import {BrewerAggregate} from '../aggregates'
+import {IBrewerRepository} from '../repositories/IBrewerRepository'
+import {IEventRegistry} from '../infra'
+import {Brewer} from '../domain/Brewer'
 
-export class DeleteBrewerCommandHandler implements ICommandHandler<DeleteBrewerCommand, boolean> {
-  private producer: Producer
+export class DeleteBrewerCommandHandler implements ICommandHandler<DeleteBrewerCommand, Brewer> {
+  private eventRegistry: IEventRegistry
+  private brewersRepo: IBrewerRepository
 
-  constructor(producer: Producer) {
-    this.producer = producer
+  constructor(eventRegistry: IEventRegistry, brewersRepo: IBrewerRepository) {
+    this.eventRegistry = eventRegistry
+    this.brewersRepo = brewersRepo
   }
 
   public async handle(command: DeleteBrewerCommand) {
-    const deletedBrewer = await BrewerAggregate.findByIdAndDelete(command.id)
+    return new Promise<Brewer>(async (resolve, reject) => {
+      const brewer = await this.brewersRepo.getById(command.id)
 
-    if (!deletedBrewer) {
-      throw new Error('Brewer delete failed')
-    }
+      if (!brewer) {
+        reject('Brewer does not exist')
+        return
+      }
 
-    const brewerDeletedEvent = new BrewerDeletedEvent(command.id)
+      brewer.delete()
 
-    return new Promise<boolean>((resolve, reject) => {
-      this.producer.send([{messages: JSON.stringify(brewerDeletedEvent), topic: 'brewers'}], (err, data) => {
-        if (err) {
+      this.brewersRepo
+        .delete(brewer.getEntityId())
+        .then(() => {
+          this.eventRegistry.markAggregateForPublish(brewer)
+          this.eventRegistry.publishEvents()
+          resolve(brewer)
+        })
+        .catch(err => {
           reject(err)
-        } else {
-          resolve(true)
-        }
-      })
+        })
     })
   }
 }

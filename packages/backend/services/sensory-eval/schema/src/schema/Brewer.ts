@@ -3,6 +3,8 @@ import {Resolvers} from '../types'
 import {ICommandRegistry, CommandType, CreateBrewerCommand, UpdateBrewerCommand, DeleteBrewerCommand} from '../commands'
 import {TYPES} from '../utils'
 import {IBrewersView} from '../views'
+import {Brewer} from '../domain/Brewer'
+import {BrewerMapper} from '../mappers/BrewerMapper'
 
 const typeDefs = gql`
   type Brewer {
@@ -55,23 +57,32 @@ const resolvers: Resolvers = {
     createBrewer: async (_parent, {input}, {container}) => {
       const createBrewerCommand = new CreateBrewerCommand(input)
 
-      return container
+      const brewer = await container
         .resolve<ICommandRegistry>(TYPES.CommandRegistry)
-        .process(CommandType.CREATE_BREWER_COMMAND, createBrewerCommand)
+        .process<CreateBrewerCommand, Brewer>(CommandType.CREATE_BREWER_COMMAND, createBrewerCommand)
+
+      return BrewerMapper.toDTO(brewer)
     },
     updateBrewer: async (_parent, {id, input}, {container}) => {
       const updateBrewerCommand = new UpdateBrewerCommand(id, input)
 
-      return container
+      const brewer = await container
         .resolve<ICommandRegistry>(TYPES.CommandRegistry)
-        .process(CommandType.UPDATE_BREWER_COMMAND, updateBrewerCommand)
+        .process<UpdateBrewerCommand, Brewer>(CommandType.UPDATE_BREWER_COMMAND, updateBrewerCommand)
+
+      return BrewerMapper.toDTO(brewer)
     },
     deleteBrewer: async (_parent, {id}, {container}) => {
       const deleteBrewerCommand = new DeleteBrewerCommand(id)
 
-      return container
+      const brewer = await container
         .resolve<ICommandRegistry>(TYPES.CommandRegistry)
         .process(CommandType.DELETE_BREWER_COMMAND, deleteBrewerCommand)
+
+      if (!brewer) {
+        return false
+      }
+      return true
     },
   },
 }

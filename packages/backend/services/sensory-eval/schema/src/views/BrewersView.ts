@@ -1,6 +1,6 @@
 import {KafkaClient, Consumer} from 'kafka-node'
 import {IBrewersView} from '.'
-import {EventType, BrewerCreatedEvent, BrewerUpdatedEvent, BrewerDeletedEvent} from '../events'
+import {EventType, BrewerCreatedEvent, BrewerUpdatedEvent, BrewerDeletedEvent} from '../domain/events'
 import {Brewer} from '../types'
 
 export class BrewersView implements IBrewersView {
@@ -40,6 +40,7 @@ export class BrewersView implements IBrewersView {
   }
 
   private handleBrewerCreatedEvent(data: BrewerCreatedEvent) {
+    // @ts-ignore
     this.brewers.push(data.data)
   }
 

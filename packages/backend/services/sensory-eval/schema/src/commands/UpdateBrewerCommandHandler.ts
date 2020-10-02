@@ -1,46 +1,46 @@
 import {ICommandHandler, UpdateBrewerCommand} from '.'
-import {Producer} from 'kafka-node'
-import {BrewerUpdatedEvent} from '../events'
-import {Brewer} from '../types'
-import {BrewerAggregate} from '../aggregates'
+import {Brewer} from '../domain/Brewer'
+import {IEventRegistry} from '../infra'
+import {IBrewerRepository} from '../repositories/IBrewerRepository'
 
 export class UpdateBrewerCommandHandler implements ICommandHandler<UpdateBrewerCommand, Brewer> {
-  private producer: Producer
+  private eventRegistry: IEventRegistry
+  private brewerRepo: IBrewerRepository
 
-  constructor(producer: Producer) {
-    this.producer = producer
+  constructor(eventRegistry: IEventRegistry, brewerRepo: IBrewerRepository) {
+    this.eventRegistry = eventRegistry
+    this.brewerRepo = brewerRepo
   }
 
   public async handle(command: UpdateBrewerCommand) {
-    const [brewerToUpdate, existingBrewerName] = await Promise.all([
-      BrewerAggregate.findById(command.id),
-      BrewerAggregate.findOne({name: command.name}),
-    ])
+    return new Promise<Brewer>(async (resolve, reject) => {
+      const [brewer, existingBrewerName] = await Promise.all([
+        this.brewerRepo.getById(command.id),
+        this.brewerRepo.getByName(command.name),
+      ])
 
-    if (!brewerToUpdate) {
-      throw new Error('Brewer not found')
-    }
+      if (!brewer) {
+        reject('Brewer not found')
+        return
+      }
 
-    if (existingBrewerName) {
-      throw new Error('Brewer already exists')
-    }
+      if (existingBrewerName && brewer.name.value !== command.name.value) {
+        reject('Brewer already exists')
+        return
+      }
 
-    ;(Object.keys(command) as Array<keyof UpdateBrewerCommand>).forEach(key => {
-      brewerToUpdate[key] = command[key]
-    })
+      brewer.update(command)
 
-    await brewerToUpdate.save()
-
-    const brewerUpdatedEvent = new BrewerUpdatedEvent(brewerToUpdate.toObject({getters: true}))
-
-    return new Promise<Brewer>((resolve, reject) => {
-      this.producer.send([{messages: JSON.stringify(brewerUpdatedEvent), topic: 'brewers'}], (err, data) => {
-        if (err) {
+      this.brewerRepo
+        .save(brewer)
+        .then(() => {
+          this.eventRegistry.markAggregateForPublish(brewer)
+          this.eventRegistry.publishEvents()
+          resolve(brewer)
+        })
+        .catch(err => {
           reject(err)
-        } else {
-          resolve(brewerToUpdate.toObject({getters: true}))
-        }
-      })
+        })
     })
   }
 }

@@ -1,5 +1,5 @@
-export * from './IEvent'
-export * from './EventType'
 export * from './BrewerCreatedEvent'
 export * from './BrewerDeletedEvent'
 export * from './BrewerUpdatedEvent'
+export * from './EventType'
+export * from './IEvent'
