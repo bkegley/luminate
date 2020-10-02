@@ -1,36 +1,38 @@
 import {ICommandHandler, CreateBrewerCommand} from '.'
-import {Producer} from 'kafka-node'
-import {BrewerCreatedEvent} from '../events'
-import {Brewer} from '../types'
-import {BrewerAggregate} from '../aggregates'
+import {Brewer} from '../domain/Brewer'
+import {IEventRegistry} from '../infra'
+import {IBrewerRepository} from '../repositories/IBrewerRepository'
 
 export class CreateBrewerCommandHandler implements ICommandHandler<CreateBrewerCommand, Brewer> {
-  private producer: Producer
+  private eventRegistry: IEventRegistry
+  private brewerRepo: IBrewerRepository
 
-  constructor(producer: Producer) {
-    this.producer = producer
+  constructor(eventRegistry: IEventRegistry, brewerRepo: IBrewerRepository) {
+    this.eventRegistry = eventRegistry
+    this.brewerRepo = brewerRepo
   }
 
   public async handle(command: CreateBrewerCommand) {
-    const existingBrewer = await BrewerAggregate.findOne({name: command.name})
+    return new Promise<Brewer>(async (resolve, reject) => {
+      // Brewer name cannot already exist
+      const existingBrewer = await this.brewerRepo.getByName(command.name)
+      if (existingBrewer) {
+        reject('Brewer already exists')
+        return
+      }
 
-    if (existingBrewer) {
-      throw new Error('Brewer already exists')
-    }
+      const brewer = Brewer.create(command)
 
-    const brewer = new BrewerAggregate(command)
-    await brewer.save()
-
-    const brewerCreatedEvent = new BrewerCreatedEvent(brewer.toObject({getters: true}))
-
-    return new Promise<Brewer>((resolve, reject) => {
-      this.producer.send([{messages: JSON.stringify(brewerCreatedEvent), topic: 'brewers'}], (err, data) => {
-        if (err) {
+      this.brewerRepo
+        .save(brewer)
+        .then(() => {
+          this.eventRegistry.markAggregateForPublish(brewer)
+          this.eventRegistry.publishEvents()
+          resolve(brewer)
+        })
+        .catch(err => {
           reject(err)
-        } else {
-          resolve(brewer.toObject({getters: true}))
-        }
-      })
+        })
     })
   }
 }

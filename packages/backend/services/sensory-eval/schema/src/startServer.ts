@@ -13,6 +13,8 @@ import {ICommandRegistry, CommandRegistry} from './commands'
 import {TYPES} from './utils'
 import {Producer, KafkaClient} from 'kafka-node'
 import {BrewersView, IBrewersView} from './views'
+import {EventRegistry, IEventRegistry} from './infra'
+import {IBrewerRepository, InMemoryBrewerRepository} from './repositories'
 
 export interface Context {
   services: any
@@ -46,11 +48,19 @@ class Server {
       })
     })
 
+    const brewerRepository = new InMemoryBrewerRepository()
+
     this.container.bind<IBrewersView>(TYPES.BrewersView, new BrewersView())
+    this.container.bind<IBrewerRepository>(TYPES.BrewerRepository, brewerRepository)
 
     this.container.bind<ICommandRegistry>(
       TYPES.CommandRegistry,
-      resolver => new CommandRegistry(resolver.resolve(TYPES.KafkaProducer)),
+      resolver => new CommandRegistry(resolver.resolve(TYPES.EventRegistry), resolver.resolve(TYPES.BrewerRepository)),
+    )
+
+    this.container.bind<IEventRegistry>(
+      TYPES.EventRegistry,
+      resolver => new EventRegistry(resolver.resolve(TYPES.KafkaProducer)),
     )
 
     const server = new ApolloServer({

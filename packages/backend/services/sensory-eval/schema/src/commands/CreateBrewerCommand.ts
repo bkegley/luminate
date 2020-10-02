@@ -1,9 +1,10 @@
 import {CreateBrewerInput} from '../types'
+import {BrewerName} from '../domain/BrewerName'
 
 export class CreateBrewerCommand {
-  name: string
+  name: BrewerName
 
   constructor(input: CreateBrewerInput) {
-    this.name = input.name
+    this.name = BrewerName.create({value: input.name})
   }
 }

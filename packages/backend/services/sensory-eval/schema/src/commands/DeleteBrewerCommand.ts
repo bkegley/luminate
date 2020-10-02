@@ -1,7 +1,9 @@
+import {EntityId} from '../shared'
+
 export class DeleteBrewerCommand {
-  id: string
+  id: EntityId
 
   constructor(id: string) {
-    this.id = id
+    this.id = EntityId.create(id)
   }
 }
