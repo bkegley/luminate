@@ -19,6 +19,8 @@ export type Brewer = {
   __typename?: 'Brewer'
   id: Scalars['ID']
   name?: Maybe<Scalars['String']>
+  description?: Maybe<Scalars['String']>
+  type?: Maybe<BrewerType>
 }
 
 export type BrewerConnection = {
@@ -33,6 +35,13 @@ export type BrewerEdge = {
   node?: Maybe<Brewer>
 }
 
+export enum BrewerType {
+  Autodrip = 'AUTODRIP',
+  FullImmersion = 'FULL_IMMERSION',
+  Pourover = 'POUROVER',
+  Espresso = 'ESPRESSO',
+}
+
 export type Coffee = {
   __typename?: 'Coffee'
   id: Scalars['ID']
@@ -40,6 +49,8 @@ export type Coffee = {
 
 export type CreateBrewerInput = {
   name?: Maybe<Scalars['String']>
+  description?: Maybe<Scalars['String']>
+  type?: Maybe<BrewerType>
 }
 
 export type CreateCuppingSessionInput = {
@@ -313,6 +324,8 @@ export type SessionCoffeeInput = {
 
 export type UpdateBrewerInput = {
   name?: Maybe<Scalars['String']>
+  description?: Maybe<Scalars['String']>
+  type?: Maybe<BrewerType>
 }
 
 export type UpdateCuppingSessionInput = {
@@ -430,6 +443,7 @@ export type ResolversTypes = ResolversObject<{
   BrewerEdge: ResolverTypeWrapper<BrewerEdge>
   Brewer: ResolverTypeWrapper<Brewer>
   ID: ResolverTypeWrapper<Scalars['ID']>
+  BrewerType: BrewerType
   Int: ResolverTypeWrapper<Scalars['Int']>
   QueryInput: QueryInput
   OperatorEnum: OperatorEnum
@@ -471,6 +485,7 @@ export type ResolversParentTypes = ResolversObject<{
   BrewerEdge: BrewerEdge
   Brewer: Brewer
   ID: Scalars['ID']
+  BrewerType: BrewerType
   Int: Scalars['Int']
   QueryInput: QueryInput
   OperatorEnum: OperatorEnum
@@ -583,6 +598,8 @@ export type BrewerResolvers<
 > = ResolversObject<{
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  type?: Resolver<Maybe<ResolversTypes['BrewerType']>, ParentType, ContextType>
 }>
 
 export type CuppingSessionConnectionResolvers<
