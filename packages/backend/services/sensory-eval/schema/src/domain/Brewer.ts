@@ -1,9 +1,13 @@
 import {BrewerName} from './BrewerName'
 import {AggregateRoot, EntityId} from '../shared'
 import {BrewerCreatedEvent, BrewerDeletedEvent, BrewerUpdatedEvent} from './events'
+import {BrewerType} from './BrewerType'
+import {BrewerDescription} from './BrewerDescription'
 
 export interface BrewerAttributes {
   name: BrewerName
+  description?: BrewerDescription
+  type?: BrewerType
 }
 
 export class Brewer extends AggregateRoot<BrewerAttributes> {
@@ -17,6 +21,14 @@ export class Brewer extends AggregateRoot<BrewerAttributes> {
 
   get name() {
     return this.attrs.name
+  }
+
+  get description() {
+    return this.attrs.description
+  }
+
+  get type() {
+    return this.attrs.type
   }
 
   delete() {

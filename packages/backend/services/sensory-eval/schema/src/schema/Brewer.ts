@@ -10,6 +10,15 @@ const typeDefs = gql`
   type Brewer {
     id: ID!
     name: String
+    description: String
+    type: BrewerType
+  }
+
+  enum BrewerType {
+    AUTODRIP
+    FULL_IMMERSION
+    POUROVER
+    ESPRESSO
   }
 
   type BrewerConnection {
@@ -24,10 +33,14 @@ const typeDefs = gql`
 
   input CreateBrewerInput {
     name: String
+    description: String
+    type: BrewerType
   }
 
   input UpdateBrewerInput {
     name: String
+    description: String
+    type: BrewerType
   }
 
   extend type Query {
