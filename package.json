@@ -16,11 +16,11 @@
     "generate": "graphql-codegen --server --client && yarn format",
     "generate:server": "graphql-codegen --server && yarn format",
     "generate:client": "graphql-codegen --client  && yarn format",
-    "develop:services": "lerna run develop --parallel --scope={@luminate/identity-schema,@luminate/encyclopedia-schema,@luminate/sensory-eval-schema}",
+    "develop:services": "lerna run develop --parallel --scope={@luminate/identity-schema,@luminate/encyclopedia-schema,@luminate/brewing-schema}",
     "develop:gateway": "lerna run develop --parallel --scope=@luminate/gateway-luminate",
     "build:utils": "lerna run build --scope={@luminate/mongo-utils,@luminate/graphql-utils}",
     "seed-database": "yarn workspace @luminate/mongo-utils run seed-database",
-    "start:services": "lerna run start --scope={@luminate/identity-schema,@luminate/encyclopedia-schema,@luminate/sensory-eval-schema}",
+    "start:services": "lerna run start --scope={@luminate/identity-schema,@luminate/encyclopedia-schema,@luminate/brewing-schema}",
     "start:gateway": "yarn workspace @luminate/gateway-luminate run start"
   },
   "devDependencies": {

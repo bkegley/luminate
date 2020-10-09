@@ -24,13 +24,13 @@ services:
       - MONGO_URL=mongodb://db:27017/db
     command: yarn workspace @luminate/encyclopedia-schema run start
 
-  sensory-eval-schema:
+  brewing-schema:
     ports:
       - 3003:3003
     environment:
       - PORT=3003
       - MONGO_URL=mongodb://db:27017/db
-    command: yarn workspace @luminate/sensory-eval-schema run start
+    command: yarn workspace @luminate/brewing-schema run start
 
   gateway-luminate:
     ports:
@@ -39,6 +39,6 @@ services:
       - PORT=3000
       - SERVER_AUTH_PORT=3001
       - SERVER_ENCYCLOPEDIA_PORT=3002
-      - SERVER_SENSORY_EVAL_PORT=3003
+      - SERVER_BREWING_PORT=3003
       - MONGO_URL=mongodb://db:27017/db
     command: yarn workspace @luminate/gateway-luminate run start

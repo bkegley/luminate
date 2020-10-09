@@ -17,7 +17,7 @@ const DEPLOY_ENV = process.env.DEPLOY_ENV || 'development'
 
 const SERVER_AUTH_URL = process.env.SERVER_AUTH_URL || 'http://localhost:3001/graphql'
 const SERVER_ENCYCLOPEDIA_URL = process.env.SERVER_ENCYCLOPEDIA_URL || 'http://localhost:3002/graphql'
-const SERVER_SENSORY_EVAL_URL = process.env.SERVER_SENSORY_EVAL_URL || 'http://localhost:3003/graphql'
+const SERVER_BREWING_URL = process.env.SERVER_BREWING_URL || 'http://localhost:3003/graphql'
 
 export interface Context {
   req: express.Request
@@ -95,8 +95,8 @@ const startServer = async () => {
         url: SERVER_ENCYCLOPEDIA_URL,
       },
       {
-        name: 'sensory-eval',
-        url: SERVER_SENSORY_EVAL_URL,
+        name: 'brewing',
+        url: SERVER_BREWING_URL,
       },
     ],
     buildService: ({url}) => {

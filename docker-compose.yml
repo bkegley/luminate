@@ -54,12 +54,12 @@ services:
       - mongo-utils
       - graphql-utils
 
-  sensory-eval-schema:
+  brewing-schema:
     build:
       context: .
-      dockerfile: packages/backend/services/sensory-eval/schema/Dockerfile
-    image: sensory-eval-schema
-    container_name: sensory-eval-schema
+      dockerfile: packages/backend/services/brewing/schema/Dockerfile
+    image: brewing-schema
+    container_name: brewing-schema
     depends_on:
       - db
       - mongo-utils
@@ -74,4 +74,4 @@ services:
     depends_on:
       - identity-schema
       - encyclopedia-schema
-      - sensory-eval-schema
+      - brewing-schema
