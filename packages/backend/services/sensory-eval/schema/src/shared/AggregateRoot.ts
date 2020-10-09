@@ -5,6 +5,8 @@ import {IEvent} from '../domain/events'
 export abstract class AggregateRoot<T> extends Entity<T> {
   public readonly events: IEvent<any>[] = []
 
+  public markedFields = new Map<string, any>()
+
   protected constructor(attrs: T, id?: EntityId) {
     super(attrs, id)
   }

@@ -27,12 +27,12 @@ export class BrewerMapper {
     }
   }
 
-  public static toPersistence(brewer: Brewer) {
+  public static toPersistence(brewer: Brewer): any {
     return {
       id: brewer.id.toString(),
       name: brewer.name?.value,
       description: brewer.description?.value,
-      type: (brewer.type?.value as unknown) as BrewerTypeDTO,
+      type: brewer.type?.value,
     }
   }
 }

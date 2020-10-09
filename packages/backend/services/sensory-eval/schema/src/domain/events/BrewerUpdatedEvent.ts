@@ -1,14 +1,17 @@
-import {EventType, IEvent} from '.'
+import {EventType} from '.'
 import {Brewer} from '../Brewer'
-import {BrewerDTO} from '../../dtos'
-import {BrewerMapper} from '../../mappers'
+import {IBrewerUpdatedEvent} from './IBrewerUpdatedEvent'
 
-export class BrewerUpdatedEvent implements IEvent<BrewerDTO> {
+export class BrewerUpdatedEvent implements IBrewerUpdatedEvent {
   timestamp = new Date()
   event = EventType.BREWER_UPDATED_EVENT
-  data: BrewerDTO
+  data: any
 
   constructor(brewer: Brewer) {
-    this.data = BrewerMapper.toPersistence(brewer)
+    const updatedFields = Object.fromEntries([...brewer.markedFields])
+    this.data = {
+      id: brewer.id.toString(),
+      ...updatedFields,
+    }
   }
 }
