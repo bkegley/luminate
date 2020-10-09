@@ -10,7 +10,7 @@ COPY ./packages/backend/utils/mongo/package.json ./packages/backend/utils/mongo/
 COPY ./packages/backend/services/identity/schema ./packages/backend/services/identity/schema
 COPY ./packages/backend/services/encyclopedia/schema ./packages/backend/services/encyclopedia/schema
 COPY ./packages/backend/gateways/luminate ./packages/backend/gateways/luminate
-COPY ./packages/backend/services/sensory-eval/schema ./packages/backend/services/sensory-eval/schema
+COPY ./packages/backend/services/brewing/schema ./packages/backend/services/brewing/schema
 
 # frontend dependencies
 COPY ./packages/frontend/admin/package.json ./packages/frontend/admin/package.json

@@ -1,5 +1,5 @@
 {
-  "name": "@luminate/sensory-eval-schema",
+  "name": "@luminate/brewing-schema",
   "version": "0.0.1",
   "main": "dist/index.js",
   "author": "Bryan Kegley <hi@bryankegley.me>",

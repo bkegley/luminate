@@ -71,8 +71,8 @@ const serverGenerates = {
       },
     },
   },
-  'packages/backend/services/sensory-eval/schema/src/types.d.ts': {
-    schema: ['./packages/backend/services/sensory-eval/schema/src/schema/**/!(index.ts)*.ts'],
+  'packages/backend/services/brewing/schema/src/types.d.ts': {
+    schema: ['./packages/backend/services/brewing/schema/src/schema/**/!(index.ts)*.ts'],
     plugins: ['typescript', 'typescript-resolvers'],
     config: {
       contextType: './startServer#Context',

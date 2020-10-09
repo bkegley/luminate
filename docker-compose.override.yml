@@ -91,19 +91,19 @@ services:
       - ./:/app
     command: yarn workspace @luminate/encyclopedia-schema run develop
 
-  sensory-eval-schema:
+  brewing-schema:
     build:
       target: install
     ports:
       - 3003:3000
     environment:
       - PORT=3000
-      - MONGO_URL=mongodb://db:27017/luminate-sensory-eval
+      - MONGO_URL=mongodb://db:27017/luminate-brewing
       - KAFKA_HOST=kafka:9092
     user: 1000:1000
     volumes:
       - ./:/app
-    command: yarn workspace @luminate/sensory-eval-schema run develop
+    command: yarn workspace @luminate/brewing-schema run develop
 
   gateway-luminate:
     build:
@@ -114,7 +114,7 @@ services:
       - PORT=3000
       - SERVER_AUTH_URL=http://identity-schema:3000/graphql
       - SERVER_ENCYCLOPEDIA_URL=http://encyclopedia-schema:3000/graphql
-      - SERVER_SENSORY_EVAL_URL=http://sensory-eval-schema:3000/graphql
+      - SERVER_BREWING_URL=http://brewing-schema:3000/graphql
     user: 1000:1000
     volumes:
       - ./:/app

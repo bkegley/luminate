@@ -7,6 +7,6 @@
     {"path": "packages/backend/gateways/luminate"},
     {"path": "packages/backend/services/identity/schema"},
     {"path": "packages/backend/services/encyclopedia/schema"},
-    {"path": "packages/backend/services/sensory-eval/schema"}
+    {"path": "packages/backend/services/brewing/schema"}
   ]
 }

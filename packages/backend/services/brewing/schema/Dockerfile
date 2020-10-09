@@ -10,7 +10,7 @@ COPY ./packages/backend/utils/mongo/package.json ./packages/backend/utils/mongo/
 COPY ./packages/backend/services/identity/schema ./packages/backend/services/identity/schema
 COPY ./packages/backend/services/encyclopedia/schema ./packages/backend/services/encyclopedia/schema
 COPY ./packages/backend/gateways/luminate ./packages/backend/gateways/luminate
-COPY ./packages/backend/services/sensory-eval/schema ./packages/backend/services/sensory-eval/schema
+COPY ./packages/backend/services/brewing/schema ./packages/backend/services/brewing/schema
 
 # frontend dependencies
 COPY ./packages/frontend/admin/package.json ./packages/frontend/admin/package.json
@@ -41,8 +41,9 @@ FROM node:12-alpine3.11
 WORKDIR /app
 
 COPY --from=install /app .
-RUN yarn workspace @luminate/sensory-eval-schema run build
+RUN yarn workspace @luminate/brewing-schema run build
 
-CMD 'node packages/backend/services/sensory-eval/schema/dist/startServer.js'
+CMD 'node packages/backend/services/brewing/schema/dist/startServer.js'
 
 EXPOSE 3000
+
