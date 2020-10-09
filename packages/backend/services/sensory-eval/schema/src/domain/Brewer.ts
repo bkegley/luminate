@@ -39,7 +39,19 @@ export class Brewer extends AggregateRoot<BrewerAttributes> {
   update(attrs: BrewerAttributes) {
     if (attrs.name) {
       this.attrs.name = attrs.name
+      this.markedFields.set('name', this.attrs.name.value)
     }
+
+    if (attrs.description) {
+      this.attrs.description = attrs.description
+      this.markedFields.set('description', this.attrs.description.value)
+    }
+
+    if (attrs.type) {
+      this.attrs.type = attrs.type
+      this.markedFields.set('type', this.attrs.type.value)
+    }
+
     this.registerEvent(new BrewerUpdatedEvent(this))
     return this
   }
@@ -49,6 +61,9 @@ export class Brewer extends AggregateRoot<BrewerAttributes> {
     const isNew = !!id === false
 
     if (isNew) {
+      ;(Object.keys(attrs) as Array<keyof typeof attrs>).forEach(key => {
+        brewer.markedFields.set(key, attrs[key].value)
+      })
       brewer.registerEvent(new BrewerCreatedEvent(brewer))
     }
 

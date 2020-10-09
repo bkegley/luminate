@@ -8,6 +8,7 @@ import {KafkaClient, Consumer} from 'kafka-node'
 import {EventType, BrewerCreatedEvent, BrewerUpdatedEvent, BrewerDeletedEvent} from '../domain/events'
 
 export class InMemoryBrewerRepository implements IBrewerRepository {
+  // TODO: Saving these as BrewerDTO[] is a temp solution
   private brewers: BrewerDTO[] = []
 
   constructor() {
@@ -21,12 +22,17 @@ export class InMemoryBrewerRepository implements IBrewerRepository {
       fromOffset: true,
     })
 
+    /**
+     * This is a temporary solution that bypasses db persistence
+     * and requires replaying all events on startup
+     */
     brewersConsumer.on('message', async message => {
       const data = JSON.parse(message.value as string)
 
       switch (data.event) {
         case EventType.BREWER_CREATED_EVENT: {
           const eventData = data.data as BrewerCreatedEvent['data']
+          // @ts-ignore
           const brewer = BrewerMapper.toDomain(eventData)
           await this.save(brewer)
           break
@@ -80,7 +86,7 @@ export class InMemoryBrewerRepository implements IBrewerRepository {
         // or to merge 2 dtos
         const existingBrewerAgg = BrewerMapper.toDomain(existingBrewer)
         existingBrewerAgg.update(brewer.attrs)
-        return BrewerMapper.toDTO(existingBrewerAgg)
+        return BrewerMapper.toPersistence(existingBrewerAgg)
       })
     } else {
       // if no id create new
