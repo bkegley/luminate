@@ -1,15 +1,9 @@
 import {AggregateRoot} from '../shared'
 import {IEventRegistry} from '.'
-import {
-  IEvent,
-  BrewerCreatedEvent,
-  BrewerUpdatedEvent,
-  BrewerDeletedEvent,
-  EventType,
-  IGrinderCreatedEvent,
-  IGrinderUpdatedEvent,
-  GrinderDeletedEvent,
-} from '../domain/events'
+import {EventType} from '../domain/EventType'
+import {IEvent} from '../domain/IEvent'
+import {BrewerCreatedEvent, BrewerUpdatedEvent, BrewerDeletedEvent} from '../domain/Brewer/events'
+import {IGrinderCreatedEvent, IGrinderUpdatedEvent, GrinderDeletedEvent} from '../domain/Grinder/events'
 import {Producer} from 'kafka-node'
 
 export class EventRegistry implements IEventRegistry {

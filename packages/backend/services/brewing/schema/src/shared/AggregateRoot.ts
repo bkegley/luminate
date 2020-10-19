@@ -1,6 +1,6 @@
 import {Entity} from './Entity'
 import {EntityId} from './EntityId'
-import {IEvent} from '../domain/events'
+import {IEvent} from '../domain/IEvent'
 
 export abstract class AggregateRoot<T> extends Entity<T> {
   public readonly events: IEvent<any>[] = []

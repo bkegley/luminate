@@ -1,6 +1,7 @@
 import {KafkaClient, Consumer} from 'kafka-node'
 import {IGrindersView} from '.'
-import {EventType, GrinderCreatedEvent, GrinderUpdatedEvent, GrinderDeletedEvent} from '../domain/events'
+import {GrinderCreatedEvent, GrinderUpdatedEvent, GrinderDeletedEvent} from '../domain/Grinder/events'
+import {EventType} from '../domain/EventType'
 import {Grinder} from '../types'
 
 export class GrindersView implements IGrindersView {

@@ -1,11 +1,12 @@
 import {IGrinderRepository} from './IGrinderRepository'
 import {EntityId} from '../shared'
 import {Grinder} from '../domain/Grinder'
-import {GrinderName} from '../domain/GrinderName'
+import {GrinderName} from '../domain/Grinder/GrinderName'
 import {GrinderDTO} from '../dtos'
 import {GrinderMapper} from '../mappers'
 import {KafkaClient, Consumer} from 'kafka-node'
-import {EventType, GrinderCreatedEvent, GrinderUpdatedEvent, GrinderDeletedEvent} from '../domain/events'
+import {GrinderCreatedEvent, GrinderUpdatedEvent, GrinderDeletedEvent} from '../domain/Grinder/events'
+import {EventType} from '../domain/EventType'
 
 export class InMemoryGrinderRepository implements IGrinderRepository {
   // TODO: Saving these as GrinderDTO[] is a temp solution

@@ -1,9 +1,9 @@
 import {EntityId} from '../shared'
 import {Brewer} from '../domain/Brewer'
-import {BrewerName} from '../domain/BrewerName'
+import {BrewerName} from '../domain/Brewer/BrewerName'
 import {BrewerDTO} from '../dtos'
-import {BrewerDescription} from '../domain/BrewerDescription'
-import {BrewerType, BrewerTypeEnum} from '../domain/BrewerType'
+import {BrewerDescription} from '../domain/Brewer/BrewerDescription'
+import {BrewerType, BrewerTypeEnum} from '../domain/Brewer/BrewerType'
 import {BrewerType as BrewerTypeDTO} from '../types'
 
 export class BrewerMapper {

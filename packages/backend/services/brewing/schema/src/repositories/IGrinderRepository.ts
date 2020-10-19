@@ -1,6 +1,6 @@
 import {EntityId} from '../shared'
 import {Grinder} from '../domain/Grinder'
-import {GrinderName} from '../domain/GrinderName'
+import {GrinderName} from '../domain/Grinder/GrinderName'
 import {IRepository} from './IRepository'
 
 export interface IGrinderRepository extends IRepository {

@@ -1,6 +1,8 @@
 import {KafkaClient, Consumer} from 'kafka-node'
 import {IBrewersView} from '.'
-import {EventType, BrewerCreatedEvent, BrewerUpdatedEvent, BrewerDeletedEvent} from '../domain/events'
+import {BrewerCreatedEvent, BrewerUpdatedEvent, BrewerDeletedEvent} from '../domain/Brewer/events'
+import {EventType} from '../domain/EventType'
+
 import {Brewer} from '../types'
 
 export class BrewersView implements IBrewersView {

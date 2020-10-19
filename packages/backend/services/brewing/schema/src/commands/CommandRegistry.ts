@@ -1,17 +1,9 @@
-import {
-  CommandType,
-  ICommandHandler,
-  ICommandRegistry,
-  CreateBrewerCommandHandler,
-  DeleteBrewerCommandHandler,
-  UpdateBrewerCommandHandler,
-} from '.'
+import {CommandType, ICommandHandler, ICommandRegistry} from '.'
+import {CreateBrewerCommandHandler, DeleteBrewerCommandHandler, UpdateBrewerCommandHandler} from './Brewer'
+import {CreateGrinderCommandHandler, UpdateGrinderCommandHandler, DeleteGrinderCommandHandler} from './Grinder'
 import {IEventRegistry} from '../infra'
 import {IBrewerRepository} from '../repositories/IBrewerRepository'
 import {IGrinderRepository} from '../repositories/IGrinderRepository'
-import {CreateGrinderCommandHandler} from './CreateGrinderCommandHandler'
-import {UpdateGrinderCommandHandler} from './UpdateGrinderCommandHandler'
-import {DeleteGrinderCommandHandler} from './DeleteGrinderCommandHandler'
 
 export class CommandRegistry implements ICommandRegistry {
   private eventRegistry: IEventRegistry

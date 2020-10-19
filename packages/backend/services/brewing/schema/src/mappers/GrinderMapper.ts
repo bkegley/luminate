@@ -1,9 +1,9 @@
 import {EntityId} from '../shared'
 import {Grinder} from '../domain/Grinder'
-import {GrinderName} from '../domain/GrinderName'
+import {GrinderName} from '../domain/Grinder/GrinderName'
 import {GrinderDTO} from '../dtos'
-import {GrinderDescription} from '../domain/GrinderDescription'
-import {GrinderBurrSet, GrinderBurrSetEnum} from '../domain/GrinderBurrSet'
+import {GrinderDescription} from '../domain/Grinder/GrinderDescription'
+import {GrinderBurrSet, GrinderBurrSetEnum} from '../domain/Grinder/GrinderBurrSet'
 
 export class GrinderMapper {
   public static toDomain(grinderDTO: GrinderDTO) {
