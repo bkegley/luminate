@@ -1,6 +1,15 @@
 import {AggregateRoot} from '../shared'
 import {IEventRegistry} from '.'
-import {IEvent, BrewerCreatedEvent, BrewerUpdatedEvent, BrewerDeletedEvent, EventType} from '../domain/events'
+import {
+  IEvent,
+  BrewerCreatedEvent,
+  BrewerUpdatedEvent,
+  BrewerDeletedEvent,
+  EventType,
+  IGrinderCreatedEvent,
+  IGrinderUpdatedEvent,
+  GrinderDeletedEvent,
+} from '../domain/events'
 import {Producer} from 'kafka-node'
 
 export class EventRegistry implements IEventRegistry {
@@ -22,6 +31,18 @@ export class EventRegistry implements IEventRegistry {
 
     this.eventHandlers.set(EventType.BREWER_DELETED_EVENT, (event: IEvent<BrewerDeletedEvent>) => {
       this.publishEvent(event, 'brewers')
+    })
+
+    this.eventHandlers.set(EventType.GRINDER_CREATED_EVENT, (event: IGrinderCreatedEvent) => {
+      this.publishEvent(event, 'grinders')
+    })
+
+    this.eventHandlers.set(EventType.GRINDER_UPDATED_EVENT, (event: IGrinderUpdatedEvent) => {
+      this.publishEvent(event, 'grinders')
+    })
+
+    this.eventHandlers.set(EventType.GRINDER_DELETED_EVENT, (event: IEvent<GrinderDeletedEvent>) => {
+      this.publishEvent(event, 'grinders')
     })
   }
 

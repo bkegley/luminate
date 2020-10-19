@@ -8,16 +8,22 @@ import {
 } from '.'
 import {IEventRegistry} from '../infra'
 import {IBrewerRepository} from '../repositories/IBrewerRepository'
+import {IGrinderRepository} from '../repositories/IGrinderRepository'
+import {CreateGrinderCommandHandler} from './CreateGrinderCommandHandler'
+import {UpdateGrinderCommandHandler} from './UpdateGrinderCommandHandler'
+import {DeleteGrinderCommandHandler} from './DeleteGrinderCommandHandler'
 
 export class CommandRegistry implements ICommandRegistry {
   private eventRegistry: IEventRegistry
   private brewerRepo: IBrewerRepository
+  private grinderRepo: IGrinderRepository
 
   private handlerRegistry: Map<CommandType, any> = new Map()
 
-  constructor(eventRegistry: IEventRegistry, brewerRepo: IBrewerRepository) {
+  constructor(eventRegistry: IEventRegistry, brewerRepo: IBrewerRepository, grinderRepo: IGrinderRepository) {
     this.eventRegistry = eventRegistry
     this.brewerRepo = brewerRepo
+    this.grinderRepo = grinderRepo
 
     // register the handlers
     this.registerHandlers()
@@ -36,6 +42,20 @@ export class CommandRegistry implements ICommandRegistry {
     this.handlerRegistry.set(
       CommandType.DELETE_BREWER_COMMAND,
       new DeleteBrewerCommandHandler(this.eventRegistry, this.brewerRepo),
+    )
+
+    // Grinder Handlers
+    this.handlerRegistry.set(
+      CommandType.CREATE_GRINDER_COMMAND,
+      new CreateGrinderCommandHandler(this.eventRegistry, this.grinderRepo),
+    )
+    this.handlerRegistry.set(
+      CommandType.UPDATE_GRINDER_COMMAND,
+      new UpdateGrinderCommandHandler(this.eventRegistry, this.grinderRepo),
+    )
+    this.handlerRegistry.set(
+      CommandType.DELETE_GRINDER_COMMAND,
+      new DeleteGrinderCommandHandler(this.eventRegistry, this.grinderRepo),
     )
   }
 
