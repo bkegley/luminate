@@ -4,6 +4,7 @@ import {EventType} from '../domain/EventType'
 import {IEvent} from '../domain/IEvent'
 import {BrewerCreatedEvent, BrewerUpdatedEvent, BrewerDeletedEvent} from '../domain/Brewer/events'
 import {IGrinderCreatedEvent, IGrinderUpdatedEvent, GrinderDeletedEvent} from '../domain/Grinder/events'
+import {IRecipeCreatedEvent, IRecipeDeletedEvent, IRecipeUpdatedEvent} from '../domain/Recipe/events'
 import {Producer} from 'kafka-node'
 
 export class EventRegistry implements IEventRegistry {
@@ -37,6 +38,18 @@ export class EventRegistry implements IEventRegistry {
 
     this.eventHandlers.set(EventType.GRINDER_DELETED_EVENT, (event: IEvent<GrinderDeletedEvent>) => {
       this.publishEvent(event, 'grinders')
+    })
+
+    this.eventHandlers.set(EventType.RECIPE_CREATED_EVENT, (event: IRecipeCreatedEvent) => {
+      this.publishEvent(event, 'recipes')
+    })
+
+    this.eventHandlers.set(EventType.RECIPE_UPDATED_EVENT, (event: IRecipeUpdatedEvent) => {
+      this.publishEvent(event, 'recipes')
+    })
+
+    this.eventHandlers.set(EventType.RECIPE_DELETED_EVENT, (event: IRecipeDeletedEvent) => {
+      this.publishEvent(event, 'recipes')
     })
   }
 

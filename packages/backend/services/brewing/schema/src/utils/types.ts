@@ -6,4 +6,5 @@ export const TYPES = {
   KafkaProducer: Symbol('KafkaProducer'),
   BrewerRepository: Symbol('BrewerRepository'),
   GrinderRepository: Symbol('GrinderRepository'),
+  RecipeRepository: Symbol('RecipeRepository'),
 }

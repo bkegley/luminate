@@ -14,7 +14,7 @@ import {TYPES} from './utils'
 import {Producer, KafkaClient} from 'kafka-node'
 import {BrewersView, IBrewersView, IGrindersView, GrindersView} from './views'
 import {EventRegistry, IEventRegistry} from './infra'
-import {IBrewerRepository, InMemoryBrewerRepository} from './repositories'
+import {IBrewerRepository, InMemoryBrewerRepository, InMemoryRecipeRepository, IRecipeRepository} from './repositories'
 import {InMemoryGrinderRepository} from './repositories/GrinderRepository'
 import {IGrinderRepository} from './repositories/IGrinderRepository'
 
@@ -42,6 +42,7 @@ class Server {
         [
           {topic: 'brewers', partitions: 1, replicationFactor: 1},
           {topic: 'grinders', partitions: 1, replicationFactor: 1},
+          {topic: 'recipes', partitions: 1, replicationFactor: 1},
         ],
         async err => {
           if (err) {
@@ -64,6 +65,9 @@ class Server {
     this.container.bind<IGrindersView>(TYPES.GrindersView, new GrindersView())
     this.container.bind<IGrinderRepository>(TYPES.GrinderRepository, grinderRepository)
 
+    const recipeRepository = new InMemoryRecipeRepository()
+    this.container.bind<IRecipeRepository>(TYPES.RecipeRepository, recipeRepository)
+
     this.container.bind<ICommandRegistry>(
       TYPES.CommandRegistry,
       resolver =>
@@ -71,6 +75,7 @@ class Server {
           resolver.resolve(TYPES.EventRegistry),
           resolver.resolve(TYPES.BrewerRepository),
           resolver.resolve(TYPES.GrinderRepository),
+	  resolver.resolve(TYPES.RecipeRepository),
         ),
     )
 

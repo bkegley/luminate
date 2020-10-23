@@ -17,7 +17,7 @@ export class Grinder extends AggregateRoot<any> {
   }
 
   get id() {
-    return this._id.toValue()
+    return this._id.toString()
   }
 
   get name() {

@@ -8,7 +8,8 @@
     "develop": "nodemon --watch src/ --ignore src/index.d --ignore src/types.d -e ts --exec \"npm run start\"",
     "build": "rimraf ./dist && tsc",
     "start": "node dist/startServer.js",
-    "prestart": "yarn build"
+    "prestart": "yarn build",
+    "test": "jest"
   },
   "dependencies": {
     "@apollo/federation": "^0.11.2",

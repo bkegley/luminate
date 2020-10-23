@@ -16,7 +16,7 @@ export class Brewer extends AggregateRoot<BrewerAttributes> {
   }
 
   get id() {
-    return this._id.toValue()
+    return this._id.toString()
   }
 
   get name() {

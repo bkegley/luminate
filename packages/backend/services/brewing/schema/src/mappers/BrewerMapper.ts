@@ -14,6 +14,7 @@ export class BrewerMapper {
         description: brewerDTO.description ? BrewerDescription.create({value: brewerDTO.description}) : null,
         type: brewerDTO.type ? BrewerType.create({value: (brewerDTO.type as unknown) as BrewerTypeEnum}) : null,
       },
+      //TODO: I'm not sure if this should check for provided id
       EntityId.create(brewerDTO.id),
     )
   }
