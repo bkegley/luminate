@@ -10,7 +10,7 @@ export class BrewerUpdatedEvent implements IBrewerUpdatedEvent {
   constructor(brewer: Brewer) {
     const updatedFields = Object.fromEntries([...brewer.markedFields])
     this.data = {
-      id: brewer.id.toString(),
+      id: brewer.id,
       ...updatedFields,
     }
   }

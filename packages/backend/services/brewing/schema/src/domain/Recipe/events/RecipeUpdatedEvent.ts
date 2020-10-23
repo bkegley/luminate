@@ -10,7 +10,7 @@ export class RecipeUpdatedEvent implements IRecipeUpdatedEvent {
   constructor(recipe: Recipe) {
     const updatedFields = Object.fromEntries([...recipe.markedFields])
     this.data = {
-      id: recipe.id.toString(),
+      id: recipe.id,
       ...updatedFields,
     }
   }
