@@ -1,5 +1,7 @@
+export * from './BrewGuideRepository'
 export * from './BrewerRepository'
 export * from './GrinderRepository'
+export * from './IBrewGuideRepository'
 export * from './IBrewerRepository'
 export * from './IGrinderRepository'
 export * from './IRecipeRepository'

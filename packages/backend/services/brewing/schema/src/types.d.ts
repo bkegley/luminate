@@ -42,6 +42,23 @@ export enum BrewerType {
   Espresso = 'ESPRESSO',
 }
 
+export type BrewGuide = {
+  __typename?: 'BrewGuide'
+  id: Scalars['ID']
+  name?: Maybe<Scalars['String']>
+}
+
+export type BrewGuideConnection = {
+  __typename?: 'BrewGuideConnection'
+  pageInfo: PageInfo
+  edges?: Maybe<Array<Maybe<BrewGuideEdge>>>
+}
+
+export type BrewGuideEdge = {
+  __typename?: 'BrewGuideEdge'
+  cursor: Scalars['String']
+}
+
 export enum BurrSet {
   ConicalBurr = 'CONICAL_BURR',
   FlatBurr = 'FLAT_BURR',
@@ -57,6 +74,10 @@ export type CreateBrewerInput = {
   name?: Maybe<Scalars['String']>
   description?: Maybe<Scalars['String']>
   type?: Maybe<BrewerType>
+}
+
+export type CreateBrewGuideInput = {
+  name: Scalars['String']
 }
 
 export type CreateCuppingSessionInput = {
@@ -177,6 +198,9 @@ export type Mutation = {
   createBrewer?: Maybe<Brewer>
   updateBrewer?: Maybe<Brewer>
   deleteBrewer?: Maybe<Scalars['Boolean']>
+  createBrewGuide?: Maybe<BrewGuide>
+  updateBrewGuide?: Maybe<BrewGuide>
+  deleteBrewGuide?: Maybe<Scalars['Boolean']>
   createCuppingSession?: Maybe<CuppingSession>
   updateCuppingSession?: Maybe<CuppingSession>
   deleteCuppingSession?: Maybe<CuppingSession>
@@ -206,6 +230,19 @@ export type MutationUpdateBrewerArgs = {
 }
 
 export type MutationDeleteBrewerArgs = {
+  id: Scalars['ID']
+}
+
+export type MutationCreateBrewGuideArgs = {
+  input: CreateBrewGuideInput
+}
+
+export type MutationUpdateBrewGuideArgs = {
+  id: Scalars['ID']
+  input: UpdateBrewGuideInput
+}
+
+export type MutationDeleteBrewGuideArgs = {
   id: Scalars['ID']
 }
 
@@ -307,6 +344,8 @@ export type Query = {
   __typename?: 'Query'
   listBrewers: BrewerConnection
   getBrewer?: Maybe<Brewer>
+  listBrewGuides: BrewGuideConnection
+  getBrewGuide?: Maybe<BrewGuide>
   listCuppingSessions: CuppingSessionConnection
   getCuppingSession?: Maybe<CuppingSession>
   getCuppingSessionCoffee?: Maybe<SessionCoffee>
@@ -321,6 +360,10 @@ export type Query = {
 }
 
 export type QueryGetBrewerArgs = {
+  id: Scalars['ID']
+}
+
+export type QueryGetBrewGuideArgs = {
   id: Scalars['ID']
 }
 
@@ -432,6 +475,10 @@ export type UpdateBrewerInput = {
   name?: Maybe<Scalars['String']>
   description?: Maybe<Scalars['String']>
   type?: Maybe<BrewerType>
+}
+
+export type UpdateBrewGuideInput = {
+  name?: Maybe<Scalars['String']>
 }
 
 export type UpdateCuppingSessionInput = {
@@ -564,6 +611,9 @@ export type ResolversTypes = ResolversObject<{
   Brewer: ResolverTypeWrapper<Brewer>
   ID: ResolverTypeWrapper<Scalars['ID']>
   BrewerType: BrewerType
+  BrewGuideConnection: ResolverTypeWrapper<BrewGuideConnection>
+  BrewGuideEdge: ResolverTypeWrapper<BrewGuideEdge>
+  BrewGuide: ResolverTypeWrapper<BrewGuide>
   Int: ResolverTypeWrapper<Scalars['Int']>
   QueryInput: QueryInput
   OperatorEnum: OperatorEnum
@@ -592,6 +642,8 @@ export type ResolversTypes = ResolversObject<{
   Mutation: ResolverTypeWrapper<{}>
   CreateBrewerInput: CreateBrewerInput
   UpdateBrewerInput: UpdateBrewerInput
+  CreateBrewGuideInput: CreateBrewGuideInput
+  UpdateBrewGuideInput: UpdateBrewGuideInput
   CreateCuppingSessionInput: CreateCuppingSessionInput
   UpdateCuppingSessionInput: UpdateCuppingSessionInput
   SessionCoffeeInput: SessionCoffeeInput
@@ -617,6 +669,9 @@ export type ResolversParentTypes = ResolversObject<{
   Brewer: Brewer
   ID: Scalars['ID']
   BrewerType: BrewerType
+  BrewGuideConnection: BrewGuideConnection
+  BrewGuideEdge: BrewGuideEdge
+  BrewGuide: BrewGuide
   Int: Scalars['Int']
   QueryInput: QueryInput
   OperatorEnum: OperatorEnum
@@ -645,6 +700,8 @@ export type ResolversParentTypes = ResolversObject<{
   Mutation: {}
   CreateBrewerInput: CreateBrewerInput
   UpdateBrewerInput: UpdateBrewerInput
+  CreateBrewGuideInput: CreateBrewGuideInput
+  UpdateBrewGuideInput: UpdateBrewGuideInput
   CreateCuppingSessionInput: CreateCuppingSessionInput
   UpdateCuppingSessionInput: UpdateCuppingSessionInput
   SessionCoffeeInput: SessionCoffeeInput
@@ -669,6 +726,13 @@ export type QueryResolvers<
     ParentType,
     ContextType,
     RequireFields<QueryGetBrewerArgs, 'id'>
+  >
+  listBrewGuides?: Resolver<ResolversTypes['BrewGuideConnection'], ParentType, ContextType>
+  getBrewGuide?: Resolver<
+    Maybe<ResolversTypes['BrewGuide']>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryGetBrewGuideArgs, 'id'>
   >
   listCuppingSessions?: Resolver<
     ResolversTypes['CuppingSessionConnection'],
@@ -756,6 +820,29 @@ export type BrewerResolvers<
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   type?: Resolver<Maybe<ResolversTypes['BrewerType']>, ParentType, ContextType>
+}>
+
+export type BrewGuideConnectionResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['BrewGuideConnection'] = ResolversParentTypes['BrewGuideConnection']
+> = ResolversObject<{
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>
+  edges?: Resolver<Maybe<Array<Maybe<ResolversTypes['BrewGuideEdge']>>>, ParentType, ContextType>
+}>
+
+export type BrewGuideEdgeResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['BrewGuideEdge'] = ResolversParentTypes['BrewGuideEdge']
+> = ResolversObject<{
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+}>
+
+export type BrewGuideResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['BrewGuide'] = ResolversParentTypes['BrewGuide']
+> = ResolversObject<{
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
+  name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
 }>
 
 export type CuppingSessionConnectionResolvers<
@@ -967,6 +1054,24 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationDeleteBrewerArgs, 'id'>
   >
+  createBrewGuide?: Resolver<
+    Maybe<ResolversTypes['BrewGuide']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationCreateBrewGuideArgs, 'input'>
+  >
+  updateBrewGuide?: Resolver<
+    Maybe<ResolversTypes['BrewGuide']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationUpdateBrewGuideArgs, 'id' | 'input'>
+  >
+  deleteBrewGuide?: Resolver<
+    Maybe<ResolversTypes['Boolean']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationDeleteBrewGuideArgs, 'id'>
+  >
   createCuppingSession?: Resolver<
     Maybe<ResolversTypes['CuppingSession']>,
     ParentType,
@@ -1072,6 +1177,9 @@ export type Resolvers<ContextType = Context> = ResolversObject<{
   PageInfo?: PageInfoResolvers<ContextType>
   BrewerEdge?: BrewerEdgeResolvers<ContextType>
   Brewer?: BrewerResolvers<ContextType>
+  BrewGuideConnection?: BrewGuideConnectionResolvers<ContextType>
+  BrewGuideEdge?: BrewGuideEdgeResolvers<ContextType>
+  BrewGuide?: BrewGuideResolvers<ContextType>
   CuppingSessionConnection?: CuppingSessionConnectionResolvers<ContextType>
   CuppingSessionEdge?: CuppingSessionEdgeResolvers<ContextType>
   CuppingSession?: CuppingSessionResolvers<ContextType>

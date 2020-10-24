@@ -1,16 +1,13 @@
 import {Container} from '../src/utils/Container'
-import {KafkaClient, Producer} from 'kafka-node'
+import {Producer} from 'kafka-node'
 import {TYPES} from '../src/utils/types'
-import {ICommandRegistry, CommandRegistry, CommandType} from '../src/commands'
+import {ICommandRegistry, CommandType} from '../src/commands'
 import {
   InMemoryBrewerRepository,
   IBrewerRepository,
-  IRecipeRepository,
-  InMemoryRecipeRepository,
   IGrinderRepository,
   InMemoryGrinderRepository,
 } from '../src/repositories'
-import {IEventRegistry, EventRegistry} from '../src/infra'
 import {CreateRecipeCommand} from '../src/commands/Recipe/CreateRecipeCommand'
 import {CreateRecipeInput} from '../src/types'
 import {CreateRecipeDTO} from '../src/commands/Recipe/CreateRecipeDTO'
@@ -20,6 +17,7 @@ import {EntityId} from '../src/shared'
 import {Grinder} from '../src/domain/Grinder'
 import {GrinderName} from '../src/domain/Grinder/GrinderName'
 import {EventType} from '../src/domain/EventType'
+import {buildCommandTestContainer} from './buildCommandTestContainer'
 
 class MockBrewerRepository extends InMemoryBrewerRepository {
   async getById(id: EntityId | string) {
@@ -39,27 +37,9 @@ describe('CreateRecipeCommand', () => {
   let container: Container
 
   beforeEach(() => {
-    container = new Container()
-    container.bind<Producer>(TYPES.KafkaProducer, new Producer(new KafkaClient()))
-    container.bind<KafkaClient>(TYPES.KafkaProducer, new KafkaClient())
-    container.bind<IEventRegistry>(
-      TYPES.EventRegistry,
-      resolver => new EventRegistry(resolver.resolve(TYPES.KafkaProducer)),
-    )
-    container.bind<ICommandRegistry>(
-      TYPES.CommandRegistry,
-      resolver =>
-        new CommandRegistry(
-          resolver.resolve(TYPES.EventRegistry),
-          resolver.resolve(TYPES.BrewerRepository),
-          resolver.resolve(TYPES.GrinderRepository),
-          resolver.resolve(TYPES.RecipeRepository),
-        ),
-    )
-
+    container = buildCommandTestContainer()
     container.bind<IBrewerRepository>(TYPES.BrewerRepository, new MockBrewerRepository())
     container.bind<IGrinderRepository>(TYPES.GrinderRepository, new MockGrinderRepository())
-    container.bind<IRecipeRepository>(TYPES.RecipeRepository, new InMemoryRecipeRepository())
   })
 
   afterEach(() => {

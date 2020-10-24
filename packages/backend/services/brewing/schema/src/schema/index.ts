@@ -2,6 +2,7 @@ import merge from 'lodash.merge'
 
 import {typeDefs as sharedTypeDefs} from '@luminate/graphql-utils'
 import {schema as brewerSchema} from './Brewer'
+import {schema as brewerGuideSchema} from './BrewGuide'
 import {loaders as cuppingSessionLoaders, CuppingSessionLoaders, schema as cuppingSessionSchema} from './CuppingSession'
 import {schema as deviceSchema} from './Device'
 import {schema as grinderSchema} from './Grinder'
@@ -15,6 +16,7 @@ export const schemas = [
   deviceSchema,
   scoreSheetSchema,
   brewerSchema,
+  brewerGuideSchema,
   grinderSchema,
   recipesSchema,
 ]

@@ -14,7 +14,14 @@ import {TYPES} from './utils'
 import {Producer, KafkaClient} from 'kafka-node'
 import {BrewersView, IBrewersView, IGrindersView, GrindersView} from './views'
 import {EventRegistry, IEventRegistry} from './infra'
-import {IBrewerRepository, InMemoryBrewerRepository, InMemoryRecipeRepository, IRecipeRepository} from './repositories'
+import {
+  IBrewerRepository,
+  InMemoryBrewerRepository,
+  IBrewGuideRepository,
+  InMemoryBrewGuideRepository,
+  InMemoryRecipeRepository,
+  IRecipeRepository,
+} from './repositories'
 import {InMemoryGrinderRepository} from './repositories/GrinderRepository'
 import {IGrinderRepository} from './repositories/IGrinderRepository'
 
@@ -41,6 +48,7 @@ class Server {
       client.createTopics(
         [
           {topic: 'brewers', partitions: 1, replicationFactor: 1},
+          {topic: 'brewGuides', partitions: 1, replicationFactor: 1},
           {topic: 'grinders', partitions: 1, replicationFactor: 1},
           {topic: 'recipes', partitions: 1, replicationFactor: 1},
         ],
@@ -61,6 +69,9 @@ class Server {
     this.container.bind<IBrewersView>(TYPES.BrewersView, new BrewersView())
     this.container.bind<IBrewerRepository>(TYPES.BrewerRepository, brewerRepository)
 
+    const brewGuideRepository = new InMemoryBrewGuideRepository()
+    this.container.bind<IBrewGuideRepository>(TYPES.BrewGuideRepository, brewGuideRepository)
+
     const grinderRepository = new InMemoryGrinderRepository()
     this.container.bind<IGrindersView>(TYPES.GrindersView, new GrindersView())
     this.container.bind<IGrinderRepository>(TYPES.GrinderRepository, grinderRepository)
@@ -74,8 +85,9 @@ class Server {
         new CommandRegistry(
           resolver.resolve(TYPES.EventRegistry),
           resolver.resolve(TYPES.BrewerRepository),
+          resolver.resolve(TYPES.BrewGuideRepository),
           resolver.resolve(TYPES.GrinderRepository),
-	  resolver.resolve(TYPES.RecipeRepository),
+          resolver.resolve(TYPES.RecipeRepository),
         ),
     )
 

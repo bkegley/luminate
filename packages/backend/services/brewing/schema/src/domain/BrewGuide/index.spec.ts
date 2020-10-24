@@ -41,7 +41,7 @@ describe('BrewGuide', () => {
     expect(updatedEvent).toBeDefined()
   })
 
-  it.skip('deletes and registers a deleted event', () => {
+  it('deletes and registers a deleted event', () => {
     const brewGuide = BrewGuide.create({name: BrewGuideName.create({value: 'Test Brew Guide'})})
     brewGuide.delete()
 

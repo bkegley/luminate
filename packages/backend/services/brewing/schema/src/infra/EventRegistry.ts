@@ -6,6 +6,7 @@ import {BrewerCreatedEvent, BrewerUpdatedEvent, BrewerDeletedEvent} from '../dom
 import {IGrinderCreatedEvent, IGrinderUpdatedEvent, GrinderDeletedEvent} from '../domain/Grinder/events'
 import {IRecipeCreatedEvent, IRecipeDeletedEvent, IRecipeUpdatedEvent} from '../domain/Recipe/events'
 import {Producer} from 'kafka-node'
+import {IBrewGuideCreatedEvent, IBrewGuideUpdatedEvent, IBrewGuideDeletedEvent} from '../domain/BrewGuide/events'
 
 export class EventRegistry implements IEventRegistry {
   private markedAggregates = new Map<string, AggregateRoot<any>>()
@@ -26,6 +27,18 @@ export class EventRegistry implements IEventRegistry {
 
     this.eventHandlers.set(EventType.BREWER_DELETED_EVENT, (event: IEvent<BrewerDeletedEvent>) => {
       this.publishEvent(event, 'brewers')
+    })
+
+    this.eventHandlers.set(EventType.BREW_GUIDE_CREATED_EVENT, (event: IBrewGuideCreatedEvent) => {
+      this.publishEvent(event, 'brewGuides')
+    })
+
+    this.eventHandlers.set(EventType.BREW_GUIDE_UPDATED_EVENT, (event: IBrewGuideUpdatedEvent) => {
+      this.publishEvent(event, 'brewGuides')
+    })
+
+    this.eventHandlers.set(EventType.BREW_GUIDE_DELETED_EVENT, (event: IBrewGuideDeletedEvent) => {
+      this.publishEvent(event, 'brewGuides')
     })
 
     this.eventHandlers.set(EventType.GRINDER_CREATED_EVENT, (event: IGrinderCreatedEvent) => {
