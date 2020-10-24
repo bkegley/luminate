@@ -1,5 +1,6 @@
 export const TYPES = {
   BrewersView: Symbol('BrewersView'),
+  BrewGuidesView: Symbol('BrewGuidesView'),
   GrindersView: Symbol('GrindersView'),
   CommandRegistry: Symbol('CommandRegistry'),
   EventRegistry: Symbol('EventRegistry'),

@@ -12,7 +12,7 @@ import {parseUserFromRequest} from '@luminate/graphql-utils'
 import {ICommandRegistry, CommandRegistry} from './commands'
 import {TYPES} from './utils'
 import {Producer, KafkaClient} from 'kafka-node'
-import {BrewersView, IBrewersView, IGrindersView, GrindersView} from './views'
+import {BrewersView, IBrewersView, IGrindersView, GrindersView, BrewGuidesView, IBrewGuidesView} from './views'
 import {EventRegistry, IEventRegistry} from './infra'
 import {
   IBrewerRepository,
@@ -70,6 +70,7 @@ class Server {
     this.container.bind<IBrewerRepository>(TYPES.BrewerRepository, brewerRepository)
 
     const brewGuideRepository = new InMemoryBrewGuideRepository()
+    this.container.bind<IBrewGuidesView>(TYPES.BrewGuidesView, new BrewGuidesView())
     this.container.bind<IBrewGuideRepository>(TYPES.BrewGuideRepository, brewGuideRepository)
 
     const grinderRepository = new InMemoryGrinderRepository()

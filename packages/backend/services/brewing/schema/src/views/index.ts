@@ -1,4 +1,6 @@
+export * from './BrewerGuidesView'
 export * from './BrewersView'
 export * from './GrindersView'
+export * from './IBrewerGuidesView'
 export * from './IBrewersView'
 export * from './IGrindersView'

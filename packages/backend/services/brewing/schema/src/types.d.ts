@@ -57,6 +57,7 @@ export type BrewGuideConnection = {
 export type BrewGuideEdge = {
   __typename?: 'BrewGuideEdge'
   cursor: Scalars['String']
+  node: BrewGuide
 }
 
 export enum BurrSet {
@@ -835,6 +836,7 @@ export type BrewGuideEdgeResolvers<
   ParentType extends ResolversParentTypes['BrewGuideEdge'] = ResolversParentTypes['BrewGuideEdge']
 > = ResolversObject<{
   cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  node?: Resolver<ResolversTypes['BrewGuide'], ParentType, ContextType>
 }>
 
 export type BrewGuideResolvers<

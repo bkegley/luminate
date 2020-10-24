@@ -2,6 +2,7 @@ import {gql} from 'apollo-server-express'
 import {Resolvers} from '../types'
 import {ICommandRegistry, CommandType, CreateBrewGuideCommand} from '../commands'
 import {TYPES} from '../utils'
+import {IBrewGuidesView} from '../views'
 
 const typeDefs = gql`
   type BrewGuide {
@@ -16,6 +17,7 @@ const typeDefs = gql`
 
   type BrewGuideEdge {
     cursor: String!
+    node: BrewGuide!
   }
 
   extend type Query {
@@ -39,7 +41,16 @@ const typeDefs = gql`
 `
 
 const resolvers: Resolvers = {
-  Query: {},
+  Query: {
+    listBrewGuides: async (parent, args, {container}) => {
+      const brewGuidesView = container.resolve<IBrewGuidesView>(TYPES.BrewGuidesView)
+      return brewGuidesView.listBrewGuides()
+    },
+    getBrewGuide: async (parent, {id}, {container}) => {
+      const brewGuidesView = container.resolve<IBrewGuidesView>(TYPES.BrewGuidesView)
+      return brewGuidesView.getBrewGuideById(id)
+    },
+  },
   Mutation: {
     createBrewGuide: async (parent, {input}, {container}) => {
       const createBrewGuideCommand = new CreateBrewGuideCommand(input)
