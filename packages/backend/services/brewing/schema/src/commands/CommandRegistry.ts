@@ -1,25 +1,21 @@
-import {
-  CommandType,
-  ICommandHandler,
-  ICommandRegistry,
-  CreateBrewerCommandHandler,
-  DeleteBrewerCommandHandler,
-  UpdateBrewerCommandHandler,
-} from '.'
+import {CommandType, ICommandHandler, ICommandRegistry} from '.'
+import {CreateBrewerCommandHandler, DeleteBrewerCommandHandler, UpdateBrewerCommandHandler} from './Brewer'
+import {CreateBrewGuideCommandHander} from './BrewGuide'
+import {CreateGrinderCommandHandler, UpdateGrinderCommandHandler, DeleteGrinderCommandHandler} from './Grinder'
+import {CreateRecipeCommandHandler} from './Recipe'
 import {IEventRegistry} from '../infra'
-import {IBrewerRepository} from '../repositories/IBrewerRepository'
+import {IBrewerRepository, IGrinderRepository, IRecipeRepository, IBrewGuideRepository} from '../repositories'
 
 export class CommandRegistry implements ICommandRegistry {
-  private eventRegistry: IEventRegistry
-  private brewerRepo: IBrewerRepository
-
   private handlerRegistry: Map<CommandType, any> = new Map()
 
-  constructor(eventRegistry: IEventRegistry, brewerRepo: IBrewerRepository) {
-    this.eventRegistry = eventRegistry
-    this.brewerRepo = brewerRepo
-
-    // register the handlers
+  constructor(
+    private eventRegistry: IEventRegistry,
+    private brewerRepo: IBrewerRepository,
+    private brewGuideRepo: IBrewGuideRepository,
+    private grinderRepo: IGrinderRepository,
+    private recipeRepo: IRecipeRepository,
+  ) {
     this.registerHandlers()
   }
 
@@ -36,6 +32,32 @@ export class CommandRegistry implements ICommandRegistry {
     this.handlerRegistry.set(
       CommandType.DELETE_BREWER_COMMAND,
       new DeleteBrewerCommandHandler(this.eventRegistry, this.brewerRepo),
+    )
+
+    // Brew Guide Handlers
+    this.handlerRegistry.set(
+      CommandType.CREATE_BREW_GUIDE_COMMAND,
+      new CreateBrewGuideCommandHander(this.eventRegistry, this.brewGuideRepo),
+    )
+
+    // Grinder Handlers
+    this.handlerRegistry.set(
+      CommandType.CREATE_GRINDER_COMMAND,
+      new CreateGrinderCommandHandler(this.eventRegistry, this.grinderRepo),
+    )
+    this.handlerRegistry.set(
+      CommandType.UPDATE_GRINDER_COMMAND,
+      new UpdateGrinderCommandHandler(this.eventRegistry, this.grinderRepo),
+    )
+    this.handlerRegistry.set(
+      CommandType.DELETE_GRINDER_COMMAND,
+      new DeleteGrinderCommandHandler(this.eventRegistry, this.grinderRepo),
+    )
+
+    // Recipe Handlers
+    this.handlerRegistry.set(
+      CommandType.CREATE_RECIPE_COMMAND,
+      new CreateRecipeCommandHandler(this.eventRegistry, this.recipeRepo, this.brewerRepo, this.grinderRepo),
     )
   }
 

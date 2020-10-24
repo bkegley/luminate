@@ -1,9 +1,9 @@
 import {EntityId} from '../shared'
 import {Brewer} from '../domain/Brewer'
-import {BrewerName} from '../domain/BrewerName'
+import {BrewerName} from '../domain/Brewer/BrewerName'
 import {BrewerDTO} from '../dtos'
-import {BrewerDescription} from '../domain/BrewerDescription'
-import {BrewerType, BrewerTypeEnum} from '../domain/BrewerType'
+import {BrewerDescription} from '../domain/Brewer/BrewerDescription'
+import {BrewerType, BrewerTypeEnum} from '../domain/Brewer/BrewerType'
 import {BrewerType as BrewerTypeDTO} from '../types'
 
 export class BrewerMapper {
@@ -14,6 +14,7 @@ export class BrewerMapper {
         description: brewerDTO.description ? BrewerDescription.create({value: brewerDTO.description}) : null,
         type: brewerDTO.type ? BrewerType.create({value: (brewerDTO.type as unknown) as BrewerTypeEnum}) : null,
       },
+      //TODO: I'm not sure if this should check for provided id
       EntityId.create(brewerDTO.id),
     )
   }

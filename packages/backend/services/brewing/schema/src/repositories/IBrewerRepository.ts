@@ -1,6 +1,6 @@
 import {EntityId} from '../shared'
 import {Brewer} from '../domain/Brewer'
-import {BrewerName} from '../domain/BrewerName'
+import {BrewerName} from '../domain/Brewer/BrewerName'
 import {IRepository} from './IRepository'
 
 export interface IBrewerRepository extends IRepository {

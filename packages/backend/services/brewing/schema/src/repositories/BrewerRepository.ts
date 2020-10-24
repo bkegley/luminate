@@ -1,11 +1,12 @@
 import {IBrewerRepository} from './IBrewerRepository'
 import {EntityId} from '../shared'
 import {Brewer} from '../domain/Brewer'
-import {BrewerName} from '../domain/BrewerName'
+import {BrewerName} from '../domain/Brewer/BrewerName'
 import {BrewerDTO} from '../dtos'
 import {BrewerMapper} from '../mappers'
 import {KafkaClient, Consumer} from 'kafka-node'
-import {EventType, BrewerCreatedEvent, BrewerUpdatedEvent, BrewerDeletedEvent} from '../domain/events'
+import {BrewerCreatedEvent, BrewerUpdatedEvent, BrewerDeletedEvent} from '../domain/Brewer/events'
+import {EventType} from '../domain/EventType'
 
 export class InMemoryBrewerRepository implements IBrewerRepository {
   // TODO: Saving these as BrewerDTO[] is a temp solution

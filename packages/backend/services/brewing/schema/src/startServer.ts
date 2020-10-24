@@ -12,9 +12,18 @@ import {parseUserFromRequest} from '@luminate/graphql-utils'
 import {ICommandRegistry, CommandRegistry} from './commands'
 import {TYPES} from './utils'
 import {Producer, KafkaClient} from 'kafka-node'
-import {BrewersView, IBrewersView} from './views'
+import {BrewersView, IBrewersView, IGrindersView, GrindersView, BrewGuidesView, IBrewGuidesView} from './views'
 import {EventRegistry, IEventRegistry} from './infra'
-import {IBrewerRepository, InMemoryBrewerRepository} from './repositories'
+import {
+  IBrewerRepository,
+  InMemoryBrewerRepository,
+  IBrewGuideRepository,
+  InMemoryBrewGuideRepository,
+  InMemoryRecipeRepository,
+  IRecipeRepository,
+} from './repositories'
+import {InMemoryGrinderRepository} from './repositories/GrinderRepository'
+import {IGrinderRepository} from './repositories/IGrinderRepository'
 
 export interface Context {
   services: any
@@ -36,26 +45,51 @@ class Server {
     })
 
     await new Promise<Producer>((resolve, reject) => {
-      client.createTopics([{topic: 'brewers', partitions: 1, replicationFactor: 1}], async err => {
-        if (err) {
-          console.error({err})
-          reject(err)
-        }
-        const producer = new Producer(client)
+      client.createTopics(
+        [
+          {topic: 'brewers', partitions: 1, replicationFactor: 1},
+          {topic: 'brewGuides', partitions: 1, replicationFactor: 1},
+          {topic: 'grinders', partitions: 1, replicationFactor: 1},
+          {topic: 'recipes', partitions: 1, replicationFactor: 1},
+        ],
+        async err => {
+          if (err) {
+            console.error({err})
+            reject(err)
+          }
+          const producer = new Producer(client)
 
-        this.container.bind<Producer>(TYPES.KafkaProducer, producer)
-        resolve(producer)
-      })
+          this.container.bind<Producer>(TYPES.KafkaProducer, producer)
+          resolve(producer)
+        },
+      )
     })
 
     const brewerRepository = new InMemoryBrewerRepository()
-
     this.container.bind<IBrewersView>(TYPES.BrewersView, new BrewersView())
     this.container.bind<IBrewerRepository>(TYPES.BrewerRepository, brewerRepository)
 
+    const brewGuideRepository = new InMemoryBrewGuideRepository()
+    this.container.bind<IBrewGuidesView>(TYPES.BrewGuidesView, new BrewGuidesView())
+    this.container.bind<IBrewGuideRepository>(TYPES.BrewGuideRepository, brewGuideRepository)
+
+    const grinderRepository = new InMemoryGrinderRepository()
+    this.container.bind<IGrindersView>(TYPES.GrindersView, new GrindersView())
+    this.container.bind<IGrinderRepository>(TYPES.GrinderRepository, grinderRepository)
+
+    const recipeRepository = new InMemoryRecipeRepository()
+    this.container.bind<IRecipeRepository>(TYPES.RecipeRepository, recipeRepository)
+
     this.container.bind<ICommandRegistry>(
       TYPES.CommandRegistry,
-      resolver => new CommandRegistry(resolver.resolve(TYPES.EventRegistry), resolver.resolve(TYPES.BrewerRepository)),
+      resolver =>
+        new CommandRegistry(
+          resolver.resolve(TYPES.EventRegistry),
+          resolver.resolve(TYPES.BrewerRepository),
+          resolver.resolve(TYPES.BrewGuideRepository),
+          resolver.resolve(TYPES.GrinderRepository),
+          resolver.resolve(TYPES.RecipeRepository),
+        ),
     )
 
     this.container.bind<IEventRegistry>(
