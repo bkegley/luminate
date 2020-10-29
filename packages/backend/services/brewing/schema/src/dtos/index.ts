@@ -1,4 +1,5 @@
-export * from './BrewerDTO'
 export * from './BrewGuideDTO'
+export * from './BrewerDTO'
+export * from './BrewingSessionDTO'
 export * from './GrinderDTO'
 export * from './RecipeDTO'

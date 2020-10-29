@@ -27,6 +27,10 @@ export class BrewGuide extends AggregateRoot<BrewGuideAttributes> {
     return this.attrs.overview
   }
 
+  public get recipeId() {
+    return this.attrs.recipeId
+  }
+
   public get instructions() {
     return this.attrs.instructions
   }

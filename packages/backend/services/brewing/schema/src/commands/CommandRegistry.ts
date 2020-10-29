@@ -5,6 +5,8 @@ import {CreateGrinderCommandHandler, UpdateGrinderCommandHandler, DeleteGrinderC
 import {CreateRecipeCommandHandler} from './Recipe'
 import {IEventRegistry} from '../infra'
 import {IBrewerRepository, IGrinderRepository, IRecipeRepository, IBrewGuideRepository} from '../repositories'
+import {CreateBrewingSessionCommandHandler} from './BrewingSession'
+import {IBrewingSessionRepository} from '../repositories/IBrewingSessionRepository'
 
 export class CommandRegistry implements ICommandRegistry {
   private handlerRegistry: Map<CommandType, any> = new Map()
@@ -13,6 +15,7 @@ export class CommandRegistry implements ICommandRegistry {
     private eventRegistry: IEventRegistry,
     private brewerRepo: IBrewerRepository,
     private brewGuideRepo: IBrewGuideRepository,
+    private brewingSessionRepo: IBrewingSessionRepository,
     private grinderRepo: IGrinderRepository,
     private recipeRepo: IRecipeRepository,
   ) {
@@ -37,7 +40,13 @@ export class CommandRegistry implements ICommandRegistry {
     // Brew Guide Handlers
     this.handlerRegistry.set(
       CommandType.CREATE_BREW_GUIDE_COMMAND,
-      new CreateBrewGuideCommandHander(this.eventRegistry, this.brewGuideRepo),
+      new CreateBrewGuideCommandHander(this.eventRegistry, this.brewGuideRepo, this.recipeRepo),
+    )
+
+    // BrewingSession Handlers
+    this.handlerRegistry.set(
+      CommandType.CREATE_BREWING_SESSION_COMMAND,
+      new CreateBrewingSessionCommandHandler(this.eventRegistry, this.brewingSessionRepo),
     )
 
     // Grinder Handlers

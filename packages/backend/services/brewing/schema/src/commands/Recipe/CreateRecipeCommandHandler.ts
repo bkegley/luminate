@@ -51,8 +51,8 @@ export class CreateRecipeCommandHandler implements ICommandHandler<CreateRecipeC
         name: RecipeName.create({value: command.name}),
         brewerId: BrewerId.create(EntityId.create(command.brewerId)),
         grinderId: GrinderId.create(EntityId.create(command.grinderId)),
-	waterWeight: WaterWeight.create({value: Weight.create({amount: 10, unit: 'g'})}),
-	coffeeWeight: CoffeeWeight.create({value: Weight.create({amount: 10, unit: 'g'})}),
+        waterWeight: WaterWeight.create({value: Weight.create({amount: 10, unit: 'g'})}),
+        coffeeWeight: CoffeeWeight.create({value: Weight.create({amount: 10, unit: 'g'})}),
       }
 
       if (command.grindSetting) {

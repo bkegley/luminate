@@ -5,12 +5,22 @@ import {ICommandRegistry, CommandType, CreateBrewGuideDTO, CreateBrewGuideComman
 import {CreateBrewGuideInput} from '../src/types'
 import {EventType} from '../src/domain/EventType'
 import {buildCommandTestContainer} from './buildCommandTestContainer'
+import {InMemoryRecipeRepository, IRecipeRepository} from '../src/repositories'
+import {EntityId} from '../src/shared'
+import {Recipe} from '../src/domain/Recipe'
+
+class MockRecipeRepository extends InMemoryRecipeRepository {
+  async getById(id: EntityId | string) {
+    return ('I exist' as unknown) as Recipe
+  }
+}
 
 describe('CreateBrewGuideCommand', () => {
   let container: Container
 
   beforeEach(() => {
     container = buildCommandTestContainer()
+    container.bind<IRecipeRepository>(TYPES.RecipeRepository, new MockRecipeRepository())
   })
 
   afterEach(() => {
@@ -22,6 +32,7 @@ describe('CreateBrewGuideCommand', () => {
     const brewGuideName = 'Test BrewGuide'
     const input: CreateBrewGuideInput = {
       name: brewGuideName,
+      recipeId: '12345',
     }
 
     const createBrewGuideCommand = new CreateBrewGuideCommand(input)
@@ -45,6 +56,7 @@ describe('CreateBrewGuideCommand', () => {
             name: brewGuideName,
           },
         }
+
         expect(data).toMatchObject(expected)
       })
       .catch(err => {

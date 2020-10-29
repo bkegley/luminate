@@ -24,6 +24,8 @@ import {
 } from './repositories'
 import {InMemoryGrinderRepository} from './repositories/GrinderRepository'
 import {IGrinderRepository} from './repositories/IGrinderRepository'
+import {InMemoryBrewingSessionRepository} from './repositories/BrewingSessionRepository'
+import {IBrewingSessionRepository} from './repositories/IBrewingSessionRepository'
 
 export interface Context {
   services: any
@@ -49,6 +51,7 @@ class Server {
         [
           {topic: 'brewers', partitions: 1, replicationFactor: 1},
           {topic: 'brewGuides', partitions: 1, replicationFactor: 1},
+          {topic: 'brewingSession', partitions: 1, replicationFactor: 1},
           {topic: 'grinders', partitions: 1, replicationFactor: 1},
           {topic: 'recipes', partitions: 1, replicationFactor: 1},
         ],
@@ -73,6 +76,9 @@ class Server {
     this.container.bind<IBrewGuidesView>(TYPES.BrewGuidesView, new BrewGuidesView())
     this.container.bind<IBrewGuideRepository>(TYPES.BrewGuideRepository, brewGuideRepository)
 
+    const brewingSessionRepository = new InMemoryBrewingSessionRepository()
+    this.container.bind<IBrewingSessionRepository>(TYPES.BrewingSessionRepository, brewingSessionRepository)
+
     const grinderRepository = new InMemoryGrinderRepository()
     this.container.bind<IGrindersView>(TYPES.GrindersView, new GrindersView())
     this.container.bind<IGrinderRepository>(TYPES.GrinderRepository, grinderRepository)
@@ -86,6 +92,7 @@ class Server {
         new CommandRegistry(
           resolver.resolve(TYPES.EventRegistry),
           resolver.resolve(TYPES.BrewerRepository),
+          resolver.resolve(TYPES.BrewingSessionRepository),
           resolver.resolve(TYPES.BrewGuideRepository),
           resolver.resolve(TYPES.GrinderRepository),
           resolver.resolve(TYPES.RecipeRepository),

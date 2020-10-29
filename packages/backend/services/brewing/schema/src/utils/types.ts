@@ -7,6 +7,7 @@ export const TYPES = {
   KafkaProducer: Symbol('KafkaProducer'),
   BrewerRepository: Symbol('BrewerRepository'),
   BrewGuideRepository: Symbol('BrewGuideRepository'),
+  BrewingSessionRepository: Symbol('BrewingSessionRepository'),
   GrinderRepository: Symbol('GrinderRepository'),
   RecipeRepository: Symbol('RecipeRepository'),
 }

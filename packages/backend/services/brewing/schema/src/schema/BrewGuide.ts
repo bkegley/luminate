@@ -8,6 +8,7 @@ const typeDefs = gql`
   type BrewGuide {
     id: ID!
     name: String
+    recipe: Recipe
   }
 
   type BrewGuideConnection {
@@ -27,6 +28,7 @@ const typeDefs = gql`
 
   input CreateBrewGuideInput {
     name: String!
+    recipeId: ID!
   }
 
   input UpdateBrewGuideInput {
