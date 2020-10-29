@@ -1,17 +1,21 @@
 import {AggregateRoot, EntityId} from '../../shared'
 import {RecipeName} from './RecipeName'
-import {RecipeInstructions} from './RecipeInstructions'
 import {GrinderGrindSetting} from './GrinderGrindSetting'
 import {RecipeDeletedEvent, RecipeUpdatedEvent, RecipeCreatedEvent} from './events'
 import {BrewerId} from '../Brewer/BrewerId'
 import {GrinderId} from '../Grinder/GrinderId'
+import {CoffeeWeight} from './CoffeeWeight'
+import {WaterWeight} from './WaterWeight'
+import {RecipeNote} from './RecipeNote'
 
 export interface RecipeAttributes {
   name: RecipeName
   grinderId: GrinderId
   grindSetting?: GrinderGrindSetting
   brewerId: BrewerId
-  instructions?: RecipeInstructions
+  coffeeWeight: CoffeeWeight
+  waterWeight: WaterWeight
+  note?: RecipeNote
 }
 
 export class Recipe extends AggregateRoot<RecipeAttributes> {
@@ -39,8 +43,8 @@ export class Recipe extends AggregateRoot<RecipeAttributes> {
     return this.attrs.brewerId
   }
 
-  get instructions() {
-    return this.attrs.instructions
+  get note() {
+    return this.attrs.note
   }
 
   public delete() {
@@ -69,9 +73,9 @@ export class Recipe extends AggregateRoot<RecipeAttributes> {
       this.markedFields.set('grindSetting', this.attrs.grindSetting.value)
     }
 
-    if (attrs.instructions) {
-      this.attrs.instructions = attrs.instructions
-      this.markedFields.set('instructions', this.attrs.instructions.value)
+    if (attrs.note) {
+      this.attrs.note = attrs.note
+      this.markedFields.set('note', this.attrs.note.value)
     }
 
     this.registerEvent(new RecipeUpdatedEvent(this))

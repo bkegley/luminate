@@ -9,6 +9,10 @@ export abstract class Entity<T> {
     this.attrs = attrs
   }
 
+  // TODO: possibly add abstract value method
+  // Breaks AggregateRoot
+  //public abstract get value(): any
+
   public equals(entity?: Entity<T>) {
     if (!entity) {
       return false

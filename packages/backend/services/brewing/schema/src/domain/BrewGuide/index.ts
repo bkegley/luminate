@@ -3,9 +3,15 @@ import {BrewGuideName} from './BrewGuideName'
 import {BrewGuideCreatedEvent} from './events/BrewGuideCreatedEvent'
 import {BrewGuideUpdatedEvent} from './events/BrewGuideUpdatedEvent'
 import {BrewGuideDeletedEvent} from './events/BrewGuideDeletedEvent'
+import {RecipeId} from '../Recipe/RecipeId'
+import {BrewGuideInstructions} from './BrewGuideInstructions'
+import {BrewGuideOverview} from './BrewGuideOverview'
 
 export interface BrewGuideAttributes {
   name: BrewGuideName
+  overview?: BrewGuideOverview
+  recipeId: RecipeId
+  instructions?: BrewGuideInstructions
 }
 
 export class BrewGuide extends AggregateRoot<BrewGuideAttributes> {
@@ -17,11 +23,22 @@ export class BrewGuide extends AggregateRoot<BrewGuideAttributes> {
     return this.attrs.name
   }
 
+  public get overview() {
+    return this.attrs.overview
+  }
+
+  public get instructions() {
+    return this.attrs.instructions
+  }
+
   public update(attrs: Partial<BrewGuideAttributes>) {
-    if (attrs.name) {
-      this.attrs.name = attrs.name
-      this.markedFields.set('name', this.attrs.name)
-    }
+    ;(Object.keys(attrs) as Array<keyof Partial<BrewGuideAttributes>>).map(key => {
+      // TODO: possibly fix this
+      // @ts-ignore
+      this.attrs[key] = attrs[key]
+      this.markedFields.set(key, this.attrs[key])
+    })
+
     this.registerEvent(new BrewGuideUpdatedEvent(this))
   }
 

@@ -5,6 +5,9 @@ import {EventType} from '../EventType'
 import {GrinderId} from '../Grinder/GrinderId'
 import {BrewerId} from '../Brewer/BrewerId'
 import {RecipeCreatedEvent, RecipeUpdatedEvent} from './events'
+import {CoffeeWeight} from './CoffeeWeight'
+import {Weight} from '../Weight'
+import {WaterWeight} from './WaterWeight'
 
 describe('Recipe Aggregate', () => {
   it('can be created with default values and registers a created event', () => {
@@ -13,7 +16,10 @@ describe('Recipe Aggregate', () => {
       name,
       grinderId: GrinderId.create(EntityId.create()),
       brewerId: BrewerId.create(EntityId.create()),
+      coffeeWeight: CoffeeWeight.create({value: Weight.create({amount: 10, unit: 'g'})}),
+      waterWeight: WaterWeight.create({value: Weight.create({amount: 10, unit: 'g'})}),
     })
+
     expect(recipe).toBeDefined()
     const createdEvent = recipe.events.find(event => event.event === EventType.RECIPE_CREATED_EVENT) as
       | RecipeCreatedEvent
@@ -21,7 +27,7 @@ describe('Recipe Aggregate', () => {
     expect(createdEvent).toBeDefined()
 
     expect(createdEvent.data.name).toBeDefined()
-    expect(createdEvent.data.instructions).toBeUndefined()
+    expect(createdEvent.data.note).toBeUndefined()
   })
 
   it('requires a grinderId to be provided', () => {
@@ -53,6 +59,8 @@ describe('Recipe Aggregate', () => {
         name,
         grinderId: GrinderId.create(EntityId.create()),
         brewerId: BrewerId.create(EntityId.create()),
+        coffeeWeight: CoffeeWeight.create({value: Weight.create({amount: 10, unit: 'g'})}),
+        waterWeight: WaterWeight.create({value: Weight.create({amount: 10, unit: 'g'})}),
       },
       EntityId.create(),
     )
@@ -82,6 +90,8 @@ describe('Recipe Aggregate', () => {
         name: RecipeName.create({value: 'Test Recipe'}),
         grinderId: GrinderId.create(EntityId.create()),
         brewerId: BrewerId.create(EntityId.create()),
+        coffeeWeight: CoffeeWeight.create({value: Weight.create({amount: 10, unit: 'g'})}),
+        waterWeight: WaterWeight.create({value: Weight.create({amount: 10, unit: 'g'})}),
       },
       EntityId.create(),
     )

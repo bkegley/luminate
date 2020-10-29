@@ -101,7 +101,7 @@ export type CreateRecipeInput = {
   brewerId: Scalars['ID']
   grinderId: Scalars['ID']
   grindSetting?: Maybe<Scalars['Int']>
-  instructions?: Maybe<Array<Maybe<Scalars['String']>>>
+  note?: Maybe<Scalars['String']>
 }
 
 export type CreateScoreSheetInput = {
@@ -422,7 +422,7 @@ export type Recipe = {
   grinder: Grinder
   grindSetting?: Maybe<Scalars['Int']>
   brewer: Brewer
-  instructions?: Maybe<Array<Maybe<Scalars['String']>>>
+  note?: Maybe<Scalars['String']>
 }
 
 export type RecipeConnection = {
@@ -502,7 +502,7 @@ export type UpdateRecipeInput = {
   brewerId: Scalars['ID']
   grinderId: Scalars['ID']
   grindSetting?: Maybe<Scalars['Int']>
-  instructions?: Maybe<Array<Maybe<Scalars['String']>>>
+  note?: Maybe<Scalars['String']>
 }
 
 export type UpdateScoreSheetInput = {
@@ -1031,7 +1031,7 @@ export type RecipeResolvers<
   grinder?: Resolver<ResolversTypes['Grinder'], ParentType, ContextType>
   grindSetting?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
   brewer?: Resolver<ResolversTypes['Brewer'], ParentType, ContextType>
-  instructions?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>
+  note?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
 }>
 
 export type MutationResolvers<

@@ -1,6 +1,6 @@
-import {Entity, EntityId} from '../../shared'
+import {EntityId, Entity} from '../../shared'
 
-export class BrewerId extends Entity<EntityId> {
+export class RecipeId extends Entity<EntityId> {
   private constructor(id?: EntityId) {
     super(id)
   }
@@ -14,6 +14,6 @@ export class BrewerId extends Entity<EntityId> {
   }
 
   public static create(id?: EntityId) {
-    return new BrewerId(id)
+    return new RecipeId(id)
   }
 }

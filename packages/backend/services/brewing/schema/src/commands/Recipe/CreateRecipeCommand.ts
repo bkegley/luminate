@@ -5,14 +5,14 @@ export class CreateRecipeCommand {
   brewerId: string
   grinderId: string
   grindSetting?: number
-  instructions?: string[]
+  note?: string
 
   constructor(input: CreateRecipeInput) {
     this.name = input.name
     this.brewerId = input.brewerId
     this.grinderId = input.grinderId
-    if (input.instructions) {
-      this.instructions = input.instructions
+    if (input.note) {
+      this.note = input.note
     }
     if (input.grindSetting) {
       this.grindSetting = input.grindSetting
