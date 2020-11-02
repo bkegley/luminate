@@ -1,10 +1,21 @@
 import {CommandType, ICommandHandler, ICommandRegistry} from '.'
 import {CreateBrewerCommandHandler, DeleteBrewerCommandHandler, UpdateBrewerCommandHandler} from './Brewer'
 import {CreateBrewGuideCommandHander} from './BrewGuide'
+import {
+  CreateEvaluationCommandHandler,
+  UpdateEvaluationCommandHandler,
+  DeleteEvaluationCommandHandler,
+} from './Evaluation'
 import {CreateGrinderCommandHandler, UpdateGrinderCommandHandler, DeleteGrinderCommandHandler} from './Grinder'
 import {CreateRecipeCommandHandler} from './Recipe'
 import {IEventRegistry} from '../infra'
-import {IBrewerRepository, IGrinderRepository, IRecipeRepository, IBrewGuideRepository} from '../repositories'
+import {
+  IBrewerRepository,
+  IGrinderRepository,
+  IRecipeRepository,
+  IBrewGuideRepository,
+  IEvaluationRepository,
+} from '../repositories'
 import {CreateBrewingSessionCommandHandler} from './BrewingSession'
 import {IBrewingSessionRepository} from '../repositories/IBrewingSessionRepository'
 
@@ -16,6 +27,7 @@ export class CommandRegistry implements ICommandRegistry {
     private brewerRepo: IBrewerRepository,
     private brewGuideRepo: IBrewGuideRepository,
     private brewingSessionRepo: IBrewingSessionRepository,
+    private evaluationRepo: IEvaluationRepository,
     private grinderRepo: IGrinderRepository,
     private recipeRepo: IRecipeRepository,
   ) {
@@ -61,6 +73,22 @@ export class CommandRegistry implements ICommandRegistry {
     this.handlerRegistry.set(
       CommandType.DELETE_GRINDER_COMMAND,
       new DeleteGrinderCommandHandler(this.eventRegistry, this.grinderRepo),
+    )
+
+    // Evaluation Handlers
+    this.handlerRegistry.set(
+      CommandType.CREATE_EVALUATION_COMMAND,
+      new CreateEvaluationCommandHandler(this.eventRegistry, this.evaluationRepo),
+    )
+
+    this.handlerRegistry.set(
+      CommandType.UPDATE_EVALUATION_COMMAND,
+      new UpdateEvaluationCommandHandler(this.eventRegistry, this.evaluationRepo),
+    )
+
+    this.handlerRegistry.set(
+      CommandType.DELETE_EVALUATION_COMMAND,
+      new DeleteEvaluationCommandHandler(this.eventRegistry, this.evaluationRepo),
     )
 
     // Recipe Handlers

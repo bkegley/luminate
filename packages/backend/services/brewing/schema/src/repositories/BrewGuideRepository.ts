@@ -5,7 +5,11 @@ import {BrewGuideName} from '../domain/BrewGuide/BrewGuideName'
 import {BrewGuideDTO} from '../dtos'
 import {BrewGuideMapper} from '../mappers'
 import {KafkaClient, Consumer} from 'kafka-node'
-import {BrewGuideCreatedEvent, BrewGuideUpdatedEvent, BrewGuideDeletedEvent} from '../domain/BrewGuide/events'
+import {
+  IBrewGuideUpdatedEventData,
+  IBrewGuideCreatedEventData,
+  IBrewGuideDeletedEventData,
+} from '../domain/BrewGuide/events'
 import {EventType} from '../domain/EventType'
 
 export class InMemoryBrewGuideRepository implements IBrewGuideRepository {
@@ -32,20 +36,21 @@ export class InMemoryBrewGuideRepository implements IBrewGuideRepository {
 
       switch (data.event) {
         case EventType.BREWER_CREATED_EVENT: {
-          const eventData = data.data as BrewGuideCreatedEvent['data']
+          const eventData = data.data as IBrewGuideCreatedEventData
           // @ts-ignore
           const brewGuide = BrewGuideMapper.toDomain(eventData)
           await this.save(brewGuide)
           break
         }
         case EventType.BREWER_UPDATED_EVENT: {
-          const eventData = data.data as BrewGuideUpdatedEvent['data']
+          const eventData = data.data as IBrewGuideUpdatedEventData
+          // @ts-ignore
           const brewGuide = BrewGuideMapper.toDomain(eventData)
           await this.save(brewGuide, brewGuide.getEntityId())
           break
         }
         case EventType.BREWER_DELETED_EVENT: {
-          const eventData = data.data as BrewGuideDeletedEvent['data']
+          const eventData = data.data as IBrewGuideDeletedEventData
           await this.delete(eventData.id)
           break
         }

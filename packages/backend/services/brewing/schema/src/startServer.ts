@@ -21,6 +21,8 @@ import {
   InMemoryBrewGuideRepository,
   InMemoryRecipeRepository,
   IRecipeRepository,
+  InMemoryEvaluationRepository,
+  IEvaluationRepository,
 } from './repositories'
 import {InMemoryGrinderRepository} from './repositories/GrinderRepository'
 import {IGrinderRepository} from './repositories/IGrinderRepository'
@@ -51,7 +53,8 @@ class Server {
         [
           {topic: 'brewers', partitions: 1, replicationFactor: 1},
           {topic: 'brewGuides', partitions: 1, replicationFactor: 1},
-          {topic: 'brewingSession', partitions: 1, replicationFactor: 1},
+          {topic: 'brewingSessions', partitions: 1, replicationFactor: 1},
+          {topic: 'evaluations', partitions: 1, replicationFactor: 1},
           {topic: 'grinders', partitions: 1, replicationFactor: 1},
           {topic: 'recipes', partitions: 1, replicationFactor: 1},
         ],
@@ -79,6 +82,9 @@ class Server {
     const brewingSessionRepository = new InMemoryBrewingSessionRepository()
     this.container.bind<IBrewingSessionRepository>(TYPES.BrewingSessionRepository, brewingSessionRepository)
 
+    const evaluationRepository = new InMemoryEvaluationRepository()
+    this.container.bind<IEvaluationRepository>(TYPES.EvaluationRepository, evaluationRepository)
+
     const grinderRepository = new InMemoryGrinderRepository()
     this.container.bind<IGrindersView>(TYPES.GrindersView, new GrindersView())
     this.container.bind<IGrinderRepository>(TYPES.GrinderRepository, grinderRepository)
@@ -94,6 +100,7 @@ class Server {
           resolver.resolve(TYPES.BrewerRepository),
           resolver.resolve(TYPES.BrewingSessionRepository),
           resolver.resolve(TYPES.BrewGuideRepository),
+          resolver.resolve(TYPES.EvaluationRepository),
           resolver.resolve(TYPES.GrinderRepository),
           resolver.resolve(TYPES.RecipeRepository),
         ),

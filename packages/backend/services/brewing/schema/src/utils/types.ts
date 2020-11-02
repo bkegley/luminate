@@ -8,6 +8,7 @@ export const TYPES = {
   BrewerRepository: Symbol('BrewerRepository'),
   BrewGuideRepository: Symbol('BrewGuideRepository'),
   BrewingSessionRepository: Symbol('BrewingSessionRepository'),
+  EvaluationRepository: Symbol('EvaluationRepository'),
   GrinderRepository: Symbol('GrinderRepository'),
   RecipeRepository: Symbol('RecipeRepository'),
 }

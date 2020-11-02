@@ -1,6 +1,7 @@
 export * from './BrewGuideMapper'
 export * from './BrewerMapper'
 export * from './BrewingSessionMapper'
+export * from './EvaluationMapper'
 export * from './GrinderMapper'
 export * from './IMapper'
 export * from './RecipeMapper'

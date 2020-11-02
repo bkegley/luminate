@@ -1,5 +1,4 @@
 import {BrewingSession} from '.'
-import {DateEntity} from '../Date'
 import {BrewingSessionDescription} from './BrewingSessionDescription'
 import {EventType} from '../EventType'
 import {EntityId} from '../../shared'

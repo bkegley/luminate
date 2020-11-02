@@ -116,6 +116,10 @@ export type CreateDeviceInput = {
   name: Scalars['String']
 }
 
+export type CreateEvaluationInput = {
+  date?: Maybe<Scalars['String']>
+}
+
 export type CreateGrinderInput = {
   name?: Maybe<Scalars['String']>
   description?: Maybe<Scalars['String']>
@@ -200,6 +204,24 @@ export type DeviceEdge = {
   node: Device
 }
 
+export type Evaluation = {
+  __typename?: 'Evaluation'
+  id: Scalars['ID']
+  date?: Maybe<Scalars['String']>
+}
+
+export type EvaluationConnection = {
+  __typename?: 'EvaluationConnection'
+  pageInfo?: Maybe<PageInfo>
+  edges?: Maybe<Array<Maybe<EvaluationEdge>>>
+}
+
+export type EvaluationEdge = {
+  __typename?: 'EvaluationEdge'
+  cursor?: Maybe<Scalars['String']>
+  node?: Maybe<Evaluation>
+}
+
 export type Grinder = {
   __typename?: 'Grinder'
   id: Scalars['ID']
@@ -239,6 +261,9 @@ export type Mutation = {
   createDevice?: Maybe<Device>
   updateDevice?: Maybe<Device>
   deleteDevice?: Maybe<Device>
+  createEvaluation?: Maybe<Evaluation>
+  updateEvaluation?: Maybe<Evaluation>
+  deleteEvaluation?: Maybe<Scalars['Boolean']>
   createGrinder?: Maybe<Grinder>
   updateGrinder?: Maybe<Grinder>
   deleteGrinder?: Maybe<Scalars['Boolean']>
@@ -324,6 +349,19 @@ export type MutationDeleteDeviceArgs = {
   id: Scalars['ID']
 }
 
+export type MutationCreateEvaluationArgs = {
+  input?: Maybe<CreateEvaluationInput>
+}
+
+export type MutationUpdateEvaluationArgs = {
+  id: Scalars['ID']
+  input?: Maybe<UpdateEvaluationInput>
+}
+
+export type MutationDeleteEvaluationArgs = {
+  id: Scalars['ID']
+}
+
 export type MutationCreateGrinderArgs = {
   input: CreateGrinderInput
 }
@@ -396,6 +434,8 @@ export type Query = {
   getCuppingSessionCoffee?: Maybe<SessionCoffee>
   listDevices: DeviceConnection
   getDevice?: Maybe<Device>
+  listEvaluations?: Maybe<EvaluationConnection>
+  getEvaluation?: Maybe<Evaluation>
   listGrinders: GrinderConnection
   getGrinder?: Maybe<Grinder>
   listRecipes: RecipeConnection
@@ -437,6 +477,10 @@ export type QueryListDevicesArgs = {
 }
 
 export type QueryGetDeviceArgs = {
+  id: Scalars['ID']
+}
+
+export type QueryGetEvaluationArgs = {
   id: Scalars['ID']
 }
 
@@ -542,6 +586,10 @@ export type UpdateCuppingSessionInput = {
 
 export type UpdateDeviceInput = {
   name?: Maybe<Scalars['String']>
+}
+
+export type UpdateEvaluationInput = {
+  date?: Maybe<Scalars['String']>
 }
 
 export type UpdateGrinderInput = {
@@ -692,6 +740,9 @@ export type ResolversTypes = ResolversObject<{
   DeviceConnection: ResolverTypeWrapper<DeviceConnection>
   DeviceEdge: ResolverTypeWrapper<DeviceEdge>
   Device: ResolverTypeWrapper<Device>
+  EvaluationConnection: ResolverTypeWrapper<EvaluationConnection>
+  EvaluationEdge: ResolverTypeWrapper<EvaluationEdge>
+  Evaluation: ResolverTypeWrapper<Evaluation>
   GrinderConnection: ResolverTypeWrapper<GrinderConnection>
   GrinderEdge: ResolverTypeWrapper<GrinderEdge>
   RecipeConnection: ResolverTypeWrapper<RecipeConnection>
@@ -708,6 +759,8 @@ export type ResolversTypes = ResolversObject<{
   SessionCoffeeInput: SessionCoffeeInput
   CreateDeviceInput: CreateDeviceInput
   UpdateDeviceInput: UpdateDeviceInput
+  CreateEvaluationInput: CreateEvaluationInput
+  UpdateEvaluationInput: UpdateEvaluationInput
   CreateGrinderInput: CreateGrinderInput
   UpdateGrinderInput: UpdateGrinderInput
   CreateRecipeInput: CreateRecipeInput
@@ -755,6 +808,9 @@ export type ResolversParentTypes = ResolversObject<{
   DeviceConnection: DeviceConnection
   DeviceEdge: DeviceEdge
   Device: Device
+  EvaluationConnection: EvaluationConnection
+  EvaluationEdge: EvaluationEdge
+  Evaluation: Evaluation
   GrinderConnection: GrinderConnection
   GrinderEdge: GrinderEdge
   RecipeConnection: RecipeConnection
@@ -771,6 +827,8 @@ export type ResolversParentTypes = ResolversObject<{
   SessionCoffeeInput: SessionCoffeeInput
   CreateDeviceInput: CreateDeviceInput
   UpdateDeviceInput: UpdateDeviceInput
+  CreateEvaluationInput: CreateEvaluationInput
+  UpdateEvaluationInput: UpdateEvaluationInput
   CreateGrinderInput: CreateGrinderInput
   UpdateGrinderInput: UpdateGrinderInput
   CreateRecipeInput: CreateRecipeInput
@@ -829,6 +887,13 @@ export type QueryResolvers<
     ParentType,
     ContextType,
     RequireFields<QueryGetDeviceArgs, 'id'>
+  >
+  listEvaluations?: Resolver<Maybe<ResolversTypes['EvaluationConnection']>, ParentType, ContextType>
+  getEvaluation?: Resolver<
+    Maybe<ResolversTypes['Evaluation']>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryGetEvaluationArgs, 'id'>
   >
   listGrinders?: Resolver<ResolversTypes['GrinderConnection'], ParentType, ContextType>
   getGrinder?: Resolver<
@@ -1098,6 +1163,30 @@ export type DeviceResolvers<
   updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>
 }>
 
+export type EvaluationConnectionResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['EvaluationConnection'] = ResolversParentTypes['EvaluationConnection']
+> = ResolversObject<{
+  pageInfo?: Resolver<Maybe<ResolversTypes['PageInfo']>, ParentType, ContextType>
+  edges?: Resolver<Maybe<Array<Maybe<ResolversTypes['EvaluationEdge']>>>, ParentType, ContextType>
+}>
+
+export type EvaluationEdgeResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['EvaluationEdge'] = ResolversParentTypes['EvaluationEdge']
+> = ResolversObject<{
+  cursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  node?: Resolver<Maybe<ResolversTypes['Evaluation']>, ParentType, ContextType>
+}>
+
+export type EvaluationResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['Evaluation'] = ResolversParentTypes['Evaluation']
+> = ResolversObject<{
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
+  date?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+}>
+
 export type GrinderConnectionResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['GrinderConnection'] = ResolversParentTypes['GrinderConnection']
@@ -1236,6 +1325,24 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationDeleteDeviceArgs, 'id'>
   >
+  createEvaluation?: Resolver<
+    Maybe<ResolversTypes['Evaluation']>,
+    ParentType,
+    ContextType,
+    MutationCreateEvaluationArgs
+  >
+  updateEvaluation?: Resolver<
+    Maybe<ResolversTypes['Evaluation']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationUpdateEvaluationArgs, 'id'>
+  >
+  deleteEvaluation?: Resolver<
+    Maybe<ResolversTypes['Boolean']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationDeleteEvaluationArgs, 'id'>
+  >
   createGrinder?: Resolver<
     Maybe<ResolversTypes['Grinder']>,
     ParentType,
@@ -1313,6 +1420,9 @@ export type Resolvers<ContextType = Context> = ResolversObject<{
   DeviceConnection?: DeviceConnectionResolvers<ContextType>
   DeviceEdge?: DeviceEdgeResolvers<ContextType>
   Device?: DeviceResolvers<ContextType>
+  EvaluationConnection?: EvaluationConnectionResolvers<ContextType>
+  EvaluationEdge?: EvaluationEdgeResolvers<ContextType>
+  Evaluation?: EvaluationResolvers<ContextType>
   GrinderConnection?: GrinderConnectionResolvers<ContextType>
   GrinderEdge?: GrinderEdgeResolvers<ContextType>
   RecipeConnection?: RecipeConnectionResolvers<ContextType>
