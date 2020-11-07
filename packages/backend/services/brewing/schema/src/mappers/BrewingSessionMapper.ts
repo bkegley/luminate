@@ -21,7 +21,7 @@ export class BrewingSessionMapper {
   public static toDTO(brewingSession: BrewingSession): BrewingSessionDTO {
     return {
       id: brewingSession.id.toString(),
-      date: brewingSession.date.value.toString(),
+      date: brewingSession.date.value?.toString(),
       description: brewingSession.description?.value,
     }
   }
@@ -29,7 +29,7 @@ export class BrewingSessionMapper {
   public static toPersistence(brewingSession: BrewingSession): any {
     return {
       id: brewingSession.id.toString(),
-      date: brewingSession.date.value.toString(),
+      date: brewingSession.date?.value.toString(),
       description: brewingSession.description?.value,
     }
   }

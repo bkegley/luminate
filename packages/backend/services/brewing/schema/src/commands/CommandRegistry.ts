@@ -16,8 +16,9 @@ import {
   IBrewGuideRepository,
   IEvaluationRepository,
 } from '../repositories'
-import {CreateBrewingSessionCommandHandler} from './BrewingSession'
+import {CreateBrewingSessionCommandHandler, DeleteBrewingSessionCommandHandler} from './BrewingSession'
 import {IBrewingSessionRepository} from '../repositories/IBrewingSessionRepository'
+import {UpdateBrewingSessionCommandHandler} from './BrewingSession/UpdateBrewingSessionCommandHandler'
 
 export class CommandRegistry implements ICommandRegistry {
   private handlerRegistry: Map<CommandType, any> = new Map()
@@ -59,6 +60,16 @@ export class CommandRegistry implements ICommandRegistry {
     this.handlerRegistry.set(
       CommandType.CREATE_BREWING_SESSION_COMMAND,
       new CreateBrewingSessionCommandHandler(this.eventRegistry, this.brewingSessionRepo),
+    )
+
+    this.handlerRegistry.set(
+      CommandType.UPDATE_BREWING_SESSION_COMMAND,
+      new UpdateBrewingSessionCommandHandler(this.eventRegistry, this.brewingSessionRepo),
+    )
+
+    this.handlerRegistry.set(
+      CommandType.DELETE_BREWING_SESSION_COMMAND,
+      new DeleteBrewingSessionCommandHandler(this.eventRegistry, this.brewingSessionRepo),
     )
 
     // Grinder Handlers

@@ -1,31 +1,38 @@
-import {CreateBrewingSessionCommand} from './CreateBrewingSessionCommand'
+import {UpdateBrewingSessionCommand} from './UpdateBrewingSessionCommand'
 import {ICommandHandler} from '../ICommandHandler'
-import {IEventRegistry} from '../../infra'
-import {IBrewingSessionRepository} from '../../repositories/IBrewingSessionRepository'
 import {BrewingSession, BrewingSessionAttributes} from '../../domain/BrewingSession'
+import {IEventRegistry} from '../../infra'
+import {IBrewingSessionRepository} from '../../repositories'
 import {DateEntity} from '../../domain/Date'
 import {BrewingSessionDescription} from '../../domain/BrewingSession/BrewingSessionDescription'
 
-// TODO: update types
-export class CreateBrewingSessionCommandHandler
-  implements ICommandHandler<CreateBrewingSessionCommand, BrewingSession> {
+export class UpdateBrewingSessionCommandHandler
+  implements ICommandHandler<UpdateBrewingSessionCommand, BrewingSession> {
   constructor(private eventRegistry: IEventRegistry, private brewingSessionRepo: IBrewingSessionRepository) {}
 
-  public async handle(command: CreateBrewingSessionCommand) {
-    return new Promise<BrewingSession>((resolve, reject) => {
-      const brewingSessionArgs: BrewingSessionAttributes = {}
+  public handle(command: UpdateBrewingSessionCommand) {
+    return new Promise<BrewingSession>(async (resolve, reject) => {
+      const brewingSession = await this.brewingSessionRepo.getById(command.id)
+
+      if (!brewingSession) {
+        reject('BrewingSession does not exist')
+        return
+      }
+
+      const attrs: BrewingSessionAttributes = {}
 
       if (command.date) {
         const date = DateEntity.create({value: command.date})
-        brewingSessionArgs.date = date
+        attrs.date = date
       }
 
       if (command.description) {
         const description = BrewingSessionDescription.create({value: command.description})
-        brewingSessionArgs.description = description
+        attrs.description = description
       }
 
-      const brewingSession = BrewingSession.create(brewingSessionArgs)
+      brewingSession.update(attrs)
+
       this.brewingSessionRepo
         .save(brewingSession)
         .then(() => {

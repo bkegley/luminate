@@ -30,20 +30,20 @@ export class InMemoryEvaluationRepository implements IEvaluationRepository {
       const data = JSON.parse(message.value as string)
 
       switch (data.event) {
-        case EventType.BREWER_CREATED_EVENT: {
+        case EventType.EVALUATION_CREATED_EVENT: {
           const eventData = data.data as EvaluationCreatedEvent['data']
           // @ts-ignore
           const evaluation = EvaluationMapper.toDomain(eventData)
           await this.save(evaluation)
           break
         }
-        case EventType.BREWER_UPDATED_EVENT: {
+        case EventType.EVALUATION_UPDATED_EVENT: {
           const eventData = data.data as EvaluationUpdatedEvent['data']
           const evaluation = EvaluationMapper.toDomain(eventData)
           await this.save(evaluation, evaluation.getEntityId())
           break
         }
-        case EventType.BREWER_DELETED_EVENT: {
+        case EventType.EVALUATION_DELETED_EVENT: {
           const eventData = data.data as EvaluationDeletedEvent['data']
           await this.delete(eventData.id)
           break

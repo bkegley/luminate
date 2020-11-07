@@ -1,4 +1,16 @@
 import {gql} from 'apollo-server-express'
+import {Resolvers} from '../types'
+import {
+  CreateBrewingSessionCommand,
+  ICommandRegistry,
+  CommandType,
+  UpdateBrewingSessionCommand,
+  DeleteBrewingSessionCommand,
+} from '../commands'
+import {TYPES} from '../utils'
+import {BrewingSession} from '../domain/BrewingSession'
+import {BrewingSessionMapper} from '../mappers'
+import {IBrewingSessionsView} from '../views'
 
 const typeDefs = gql`
   type BrewingSession {
@@ -39,4 +51,48 @@ const typeDefs = gql`
   }
 `
 
-export const schema = {typeDefs}
+const resolvers: Resolvers = {
+  Query: {
+    listBrewingSessions: async (parent, args, {container}) => {
+      const brewingSessionsView = container.resolve<IBrewingSessionsView>(TYPES.BrewingSessionsView)
+      return brewingSessionsView.listBrewingSessions()
+    },
+    getBrewingSession: async (parent, {id}, {container}) => {
+      const brewingSessionsView = container.resolve<IBrewingSessionsView>(TYPES.BrewingSessionsView)
+      return brewingSessionsView.getBrewingSessionById(id)
+    },
+  },
+  Mutation: {
+    createBrewingSession: async (parent, {input}, {container}) => {
+      const createBrewingSessionCommand = new CreateBrewingSessionCommand(input)
+      const brewingSession = await container
+        .resolve<ICommandRegistry>(TYPES.CommandRegistry)
+        .process<CreateBrewingSessionCommand, BrewingSession>(
+          CommandType.CREATE_BREWING_SESSION_COMMAND,
+          createBrewingSessionCommand,
+        )
+      return BrewingSessionMapper.toDTO(brewingSession)
+    },
+    updateBrewingSession: async (parent, {id, input}, {container}) => {
+      const updateBrewingSessionCommand = new UpdateBrewingSessionCommand(id, input)
+      const brewingSession = await container
+        .resolve<ICommandRegistry>(TYPES.CommandRegistry)
+        .process<UpdateBrewingSessionCommand, BrewingSession>(
+          CommandType.UPDATE_BREWING_SESSION_COMMAND,
+          updateBrewingSessionCommand,
+        )
+      return BrewingSessionMapper.toDTO(brewingSession)
+    },
+    deleteBrewingSession: async (parent, {id}, {container}) => {
+      const deleteBrewingSessionCommand = new DeleteBrewingSessionCommand(id)
+      return container
+        .resolve<ICommandRegistry>(TYPES.CommandRegistry)
+        .process<UpdateBrewingSessionCommand, boolean>(
+          CommandType.DELETE_BREWING_SESSION_COMMAND,
+          deleteBrewingSessionCommand,
+        )
+    },
+  },
+}
+
+export const schema = {typeDefs, resolvers}

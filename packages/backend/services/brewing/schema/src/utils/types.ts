@@ -1,7 +1,10 @@
 export const TYPES = {
   BrewersView: Symbol('BrewersView'),
   BrewGuidesView: Symbol('BrewGuidesView'),
+  BrewingSessionsView: Symbol('BrewingSessionsView'),
+  EvaluationsView: Symbol('EvaluationsView'),
   GrindersView: Symbol('GrindersView'),
+  RecipesView: Symbol('RecipesView'),
   CommandRegistry: Symbol('CommandRegistry'),
   EventRegistry: Symbol('EventRegistry'),
   KafkaProducer: Symbol('KafkaProducer'),

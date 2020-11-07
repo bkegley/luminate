@@ -1,2 +1,6 @@
 export * from './CreateBrewingSessionCommand'
 export * from './CreateBrewingSessionCommandHandler'
+export * from './DeleteBrewingSessionCommand'
+export * from './DeleteBrewingSessionCommandHandler'
+export * from './UpdateBrewingSessionCommand'
+export * from './UpdateBrewingSessionCommandHandler'

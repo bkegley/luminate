@@ -10,6 +10,7 @@ import {
 import {TYPES} from '../utils'
 import {Evaluation} from '../domain/Evaluation'
 import {EvaluationMapper} from '../mappers'
+import {IEvaluationsView} from '../views'
 
 const typeDefs = gql`
   type Evaluation {
@@ -48,7 +49,16 @@ const typeDefs = gql`
 `
 
 const resolvers: Resolvers = {
-  Query: {},
+  Query: {
+    listEvaluations: async (parent, args, {container}) => {
+      const evaluationsView = container.resolve<IEvaluationsView>(TYPES.EvaluationsView)
+      return evaluationsView.listEvaluations()
+    },
+    getEvaluation: async (parent, {id}, {container}) => {
+      const evaluationsView = container.resolve<IEvaluationsView>(TYPES.EvaluationsView)
+      return evaluationsView.getEvaluation(id)
+    },
+  },
   Mutation: {
     createEvaluation: async (parent, {input}, {container}) => {
       const createEvaluationCommand = new CreateEvaluationCommand(input)
