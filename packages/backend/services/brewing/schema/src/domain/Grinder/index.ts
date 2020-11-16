@@ -34,7 +34,7 @@ export class Grinder extends AggregateRoot<any> {
   }
 
   public delete() {
-    this.registerEvent(new GrinderDeletedEvent(this.id.toString()))
+    this.registerEvent(new GrinderDeletedEvent(this))
   }
 
   public update(attrs: Partial<GrinderAttributes>) {
