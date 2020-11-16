@@ -54,11 +54,7 @@ export class Recipe extends AggregateRoot<RecipeAttributes> {
       // @ts-ignore
       this.attrs[key] = attrs[key]
 
-      if (key === 'brewerId' || key === 'grinderId') {
-        this.markedFields.set(key, this.attrs[key].toString())
-      } else {
-        this.markedFields.set(key, this.attrs[key].value)
-      }
+      this.markedFields.set(key, this.attrs[key].value)
     })
 
     this.registerEvent(new RecipeUpdatedEvent(this))
@@ -69,11 +65,7 @@ export class Recipe extends AggregateRoot<RecipeAttributes> {
 
     if (isNew) {
       ;(Object.keys(attrs) as Array<keyof RecipeAttributes>).map(key => {
-        if (key === 'brewerId' || key === 'grinderId') {
-          recipe.markedFields.set(key, recipe.attrs[key].toString())
-        } else {
-          recipe.markedFields.set(key, recipe.attrs[key].value)
-        }
+        recipe.markedFields.set(key, recipe.attrs[key].value)
       })
       recipe.registerEvent(new RecipeCreatedEvent(recipe))
     }

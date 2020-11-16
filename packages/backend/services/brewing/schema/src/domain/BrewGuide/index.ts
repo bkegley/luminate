@@ -43,11 +43,7 @@ export class BrewGuide extends AggregateRoot<BrewGuideAttributes> {
       // @ts-ignore
       this.attrs[key] = attrs[key]
 
-      if (key === 'recipeId') {
-        this.markedFields.set(key, this.attrs[key].toString())
-      } else {
-        this.markedFields.set(key, this.attrs[key].value)
-      }
+      this.markedFields.set(key, this.attrs[key].value)
     })
 
     this.registerEvent(new BrewGuideUpdatedEvent(this))
@@ -59,11 +55,7 @@ export class BrewGuide extends AggregateRoot<BrewGuideAttributes> {
 
     if (isNew) {
       ;(Object.keys(attrs) as Array<keyof BrewGuideAttributes>).map(key => {
-        if (key === 'recipeId') {
-          brewGuide.markedFields.set(key, attrs[key].toString())
-        } else {
-          brewGuide.markedFields.set(key, attrs[key].value)
-        }
+        brewGuide.markedFields.set(key, attrs[key].value)
       })
       brewGuide.registerEvent(new BrewGuideCreatedEvent(brewGuide))
     }
