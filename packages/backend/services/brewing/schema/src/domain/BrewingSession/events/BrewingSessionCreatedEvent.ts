@@ -9,7 +9,6 @@ export class BrewingSessionCreatedEvent implements IBrewingSessionCreatedEvent {
 
   constructor(brewingSession: BrewingSession) {
     const createdFields = Object.fromEntries([...brewingSession.markedFields])
-    // @ts-ignore
     this.data = {
       id: brewingSession.id,
       ...createdFields,

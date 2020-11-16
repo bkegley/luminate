@@ -3,7 +3,7 @@ import {BrewerTypeEnum} from '../BrewerType'
 
 export interface IBrewerUpdatedEventData {
   id: string
-  name: string
+  name?: string
   description?: string
   type?: BrewerTypeEnum
 }

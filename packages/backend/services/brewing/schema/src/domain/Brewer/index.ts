@@ -32,7 +32,7 @@ export class Brewer extends AggregateRoot<BrewerAttributes> {
   }
 
   delete() {
-    this.registerEvent(new BrewerDeletedEvent(this.id.toString()))
+    this.registerEvent(new BrewerDeletedEvent(this))
   }
 
   public update(attrs: Partial<BrewerAttributes>) {

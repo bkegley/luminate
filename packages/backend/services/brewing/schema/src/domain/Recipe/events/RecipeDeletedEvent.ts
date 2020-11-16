@@ -1,11 +1,11 @@
-import {IRecipeDeletedEvent} from './IRecipeDeletedEvent'
+import {IRecipeDeletedEvent, IRecipeDeletedEventData} from './IRecipeDeletedEvent'
 import {EventType} from '../../EventType'
 import {Recipe} from '..'
 
 export class RecipeDeletedEvent implements IRecipeDeletedEvent {
   timestamp = new Date()
   event = EventType.RECIPE_DELETED_EVENT
-  data: any
+  data: IRecipeDeletedEventData
 
   constructor(recipe: Recipe) {
     this.data = {

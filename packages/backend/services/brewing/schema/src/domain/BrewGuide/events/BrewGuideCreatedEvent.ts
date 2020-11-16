@@ -9,9 +9,10 @@ export class BrewGuideCreatedEvent implements IBrewGuideCreatedEvent {
 
   constructor(brewGuide: BrewGuide) {
     const createdFields = Object.fromEntries([...brewGuide.markedFields])
-    // @ts-ignore
     this.data = {
-      id: brewGuide.id,
+      id: brewGuide.id.toString(),
+      name: brewGuide.name.value,
+      recipeId: brewGuide.recipeId.toString(),
       ...createdFields,
     }
   }

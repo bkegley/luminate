@@ -9,9 +9,9 @@ export class GrinderCreatedEvent implements IGrinderCreatedEvent {
 
   constructor(grinder: Grinder) {
     const createdFields = Object.fromEntries([...grinder.markedFields])
-    // @ts-ignore
     this.data = {
       id: grinder.id.toString(),
+      name: grinder.name.value,
       ...createdFields,
     }
   }
