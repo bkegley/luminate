@@ -8,9 +8,8 @@ import {
   IGrinderRepository,
   InMemoryGrinderRepository,
 } from '../src/repositories'
-import {CreateRecipeCommand} from '../src/commands/Recipe/CreateRecipeCommand'
+import {CreateRecipeCommand, CreateRecipeDTO} from '../src/commands/Recipe'
 import {CreateRecipeInput} from '../src/types'
-import {CreateRecipeDTO} from '../src/commands/Recipe/CreateRecipeDTO'
 import {Brewer} from '../src/domain/Brewer'
 import {BrewerName} from '../src/domain/Brewer/BrewerName'
 import {EntityId} from '../src/shared'
