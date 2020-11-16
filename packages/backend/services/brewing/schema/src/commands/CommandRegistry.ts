@@ -1,10 +1,33 @@
-import {CommandType, ICommandHandler, ICommandRegistry} from '.'
-import {CreateBrewerCommandHandler, DeleteBrewerCommandHandler, UpdateBrewerCommandHandler} from './Brewer'
-import {CreateBrewGuideCommandHander} from './BrewGuide'
-import {CreateGrinderCommandHandler, UpdateGrinderCommandHandler, DeleteGrinderCommandHandler} from './Grinder'
-import {CreateRecipeCommandHandler} from './Recipe'
+import {
+  CommandType,
+  CreateBrewGuideCommandHander,
+  CreateBrewerCommandHandler,
+  CreateBrewingSessionCommandHandler,
+  CreateEvaluationCommandHandler,
+  CreateGrinderCommandHandler,
+  CreateRecipeCommandHandler,
+  DeleteBrewGuideCommandHandler,
+  DeleteBrewerCommandHandler,
+  DeleteBrewingSessionCommandHandler,
+  DeleteEvaluationCommandHandler,
+  DeleteGrinderCommandHandler,
+  ICommandHandler,
+  ICommandRegistry,
+  UpdateBrewGuideCommandHandler,
+  UpdateBrewerCommandHandler,
+  UpdateBrewingSessionCommandHandler,
+  UpdateEvaluationCommandHandler,
+  UpdateGrinderCommandHandler,
+} from '.'
 import {IEventRegistry} from '../infra'
-import {IBrewerRepository, IGrinderRepository, IRecipeRepository, IBrewGuideRepository} from '../repositories'
+import {
+  IBrewerRepository,
+  IGrinderRepository,
+  IRecipeRepository,
+  IBrewGuideRepository,
+  IEvaluationRepository,
+  IBrewingSessionRepository,
+} from '../repositories'
 
 export class CommandRegistry implements ICommandRegistry {
   private handlerRegistry: Map<CommandType, any> = new Map()
@@ -13,6 +36,8 @@ export class CommandRegistry implements ICommandRegistry {
     private eventRegistry: IEventRegistry,
     private brewerRepo: IBrewerRepository,
     private brewGuideRepo: IBrewGuideRepository,
+    private brewingSessionRepo: IBrewingSessionRepository,
+    private evaluationRepo: IEvaluationRepository,
     private grinderRepo: IGrinderRepository,
     private recipeRepo: IRecipeRepository,
   ) {
@@ -37,7 +62,33 @@ export class CommandRegistry implements ICommandRegistry {
     // Brew Guide Handlers
     this.handlerRegistry.set(
       CommandType.CREATE_BREW_GUIDE_COMMAND,
-      new CreateBrewGuideCommandHander(this.eventRegistry, this.brewGuideRepo),
+      new CreateBrewGuideCommandHander(this.eventRegistry, this.brewGuideRepo, this.recipeRepo),
+    )
+
+    this.handlerRegistry.set(
+      CommandType.UPDATE_BREW_GUIDE_COMMAND,
+      new UpdateBrewGuideCommandHandler(this.eventRegistry, this.brewGuideRepo),
+    )
+
+    this.handlerRegistry.set(
+      CommandType.DELETE_BREW_GUIDE_COMMAND,
+      new DeleteBrewGuideCommandHandler(this.eventRegistry, this.brewGuideRepo),
+    )
+
+    // BrewingSession Handlers
+    this.handlerRegistry.set(
+      CommandType.CREATE_BREWING_SESSION_COMMAND,
+      new CreateBrewingSessionCommandHandler(this.eventRegistry, this.brewingSessionRepo),
+    )
+
+    this.handlerRegistry.set(
+      CommandType.UPDATE_BREWING_SESSION_COMMAND,
+      new UpdateBrewingSessionCommandHandler(this.eventRegistry, this.brewingSessionRepo),
+    )
+
+    this.handlerRegistry.set(
+      CommandType.DELETE_BREWING_SESSION_COMMAND,
+      new DeleteBrewingSessionCommandHandler(this.eventRegistry, this.brewingSessionRepo),
     )
 
     // Grinder Handlers
@@ -52,6 +103,22 @@ export class CommandRegistry implements ICommandRegistry {
     this.handlerRegistry.set(
       CommandType.DELETE_GRINDER_COMMAND,
       new DeleteGrinderCommandHandler(this.eventRegistry, this.grinderRepo),
+    )
+
+    // Evaluation Handlers
+    this.handlerRegistry.set(
+      CommandType.CREATE_EVALUATION_COMMAND,
+      new CreateEvaluationCommandHandler(this.eventRegistry, this.evaluationRepo),
+    )
+
+    this.handlerRegistry.set(
+      CommandType.UPDATE_EVALUATION_COMMAND,
+      new UpdateEvaluationCommandHandler(this.eventRegistry, this.evaluationRepo),
+    )
+
+    this.handlerRegistry.set(
+      CommandType.DELETE_EVALUATION_COMMAND,
+      new DeleteEvaluationCommandHandler(this.eventRegistry, this.evaluationRepo),
     )
 
     // Recipe Handlers

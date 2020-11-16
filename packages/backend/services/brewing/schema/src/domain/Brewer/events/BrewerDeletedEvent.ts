@@ -1,13 +1,15 @@
-import {EntityId} from '../../../shared'
 import {EventType} from '../../EventType'
-import {IEvent} from '../../IEvent'
+import {IBrewerDeletedEvent, IBrewerDeletedEventData} from './IBrewerDeletedEvent'
+import {Brewer} from '..'
 
-export class BrewerDeletedEvent implements IEvent<{id: string}> {
+export class BrewerDeletedEvent implements IBrewerDeletedEvent {
   timestamp = new Date()
   event = EventType.BREWER_DELETED_EVENT
-  data: {id: string}
+  data: IBrewerDeletedEventData
 
-  constructor(id: EntityId | string) {
-    this.data = {id: id instanceof EntityId ? id.toString() : id}
+  constructor(brewer: Brewer) {
+    this.data = {
+      id: brewer.id.toString(),
+    }
   }
 }

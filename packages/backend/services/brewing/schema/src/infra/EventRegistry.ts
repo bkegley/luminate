@@ -2,65 +2,85 @@ import {AggregateRoot} from '../shared'
 import {IEventRegistry} from '.'
 import {EventType} from '../domain/EventType'
 import {IEvent} from '../domain/IEvent'
+import {Producer} from 'kafka-node'
 import {BrewerCreatedEvent, BrewerUpdatedEvent, BrewerDeletedEvent} from '../domain/Brewer/events'
+import {IBrewGuideCreatedEvent, IBrewGuideUpdatedEvent, IBrewGuideDeletedEvent} from '../domain/BrewGuide/events'
+import {
+  IBrewingSessionCreatedEvent,
+  IBrewingSessionUpdatedEvent,
+  IBrewingSessionDeletedEvent,
+} from '../domain/BrewingSession/events'
+import {IEvaluationCreatedEvent, IEvaluationUpdatedEvent, IEvaluationDeletedEvent} from '../domain/Evaluation/events'
 import {IGrinderCreatedEvent, IGrinderUpdatedEvent, GrinderDeletedEvent} from '../domain/Grinder/events'
 import {IRecipeCreatedEvent, IRecipeDeletedEvent, IRecipeUpdatedEvent} from '../domain/Recipe/events'
-import {Producer} from 'kafka-node'
-import {IBrewGuideCreatedEvent, IBrewGuideUpdatedEvent, IBrewGuideDeletedEvent} from '../domain/BrewGuide/events'
 
 export class EventRegistry implements IEventRegistry {
   private markedAggregates = new Map<string, AggregateRoot<any>>()
-  private producer: Producer
-
   private eventHandlers = new Map<EventType, (event: IEvent<any>) => void>()
 
-  constructor(producer: Producer) {
-    this.producer = producer
-
+  constructor(private producer: Producer) {
+    // Brewer Events
     this.eventHandlers.set(EventType.BREWER_CREATED_EVENT, (event: IEvent<BrewerCreatedEvent>) => {
       this.publishEvent(event, 'brewers')
     })
-
     this.eventHandlers.set(EventType.BREWER_UPDATED_EVENT, (event: IEvent<BrewerUpdatedEvent>) => {
       this.publishEvent(event, 'brewers')
     })
-
     this.eventHandlers.set(EventType.BREWER_DELETED_EVENT, (event: IEvent<BrewerDeletedEvent>) => {
       this.publishEvent(event, 'brewers')
     })
 
+    // BrewGuide Events
     this.eventHandlers.set(EventType.BREW_GUIDE_CREATED_EVENT, (event: IBrewGuideCreatedEvent) => {
       this.publishEvent(event, 'brewGuides')
     })
-
     this.eventHandlers.set(EventType.BREW_GUIDE_UPDATED_EVENT, (event: IBrewGuideUpdatedEvent) => {
       this.publishEvent(event, 'brewGuides')
     })
-
     this.eventHandlers.set(EventType.BREW_GUIDE_DELETED_EVENT, (event: IBrewGuideDeletedEvent) => {
       this.publishEvent(event, 'brewGuides')
     })
 
+    // BrewingSession Events
+    this.eventHandlers.set(EventType.BREWING_SESSION_CREATED_EVENT, (event: IBrewingSessionCreatedEvent) => {
+      this.publishEvent(event, 'brewingSessions')
+    })
+    this.eventHandlers.set(EventType.BREWING_SESSION_UPDATED_EVENT, (event: IBrewingSessionUpdatedEvent) => {
+      this.publishEvent(event, 'brewingSessions')
+    })
+    this.eventHandlers.set(EventType.BREWING_SESSION_DELETED_EVENT, (event: IBrewingSessionDeletedEvent) => {
+      this.publishEvent(event, 'brewingSessions')
+    })
+
+    // Evaluation Events
+    this.eventHandlers.set(EventType.EVALUATION_CREATED_EVENT, (event: IEvaluationCreatedEvent) => {
+      this.publishEvent(event, 'evaluations')
+    })
+    this.eventHandlers.set(EventType.EVALUATION_UPDATED_EVENT, (event: IEvaluationUpdatedEvent) => {
+      this.publishEvent(event, 'evaluations')
+    })
+    this.eventHandlers.set(EventType.EVALUATION_DELETED_EVENT, (event: IEvaluationDeletedEvent) => {
+      this.publishEvent(event, 'evaluations')
+    })
+
+    // Grinder Events
     this.eventHandlers.set(EventType.GRINDER_CREATED_EVENT, (event: IGrinderCreatedEvent) => {
       this.publishEvent(event, 'grinders')
     })
-
     this.eventHandlers.set(EventType.GRINDER_UPDATED_EVENT, (event: IGrinderUpdatedEvent) => {
       this.publishEvent(event, 'grinders')
     })
-
     this.eventHandlers.set(EventType.GRINDER_DELETED_EVENT, (event: IEvent<GrinderDeletedEvent>) => {
       this.publishEvent(event, 'grinders')
     })
 
+    // Recipe Events
     this.eventHandlers.set(EventType.RECIPE_CREATED_EVENT, (event: IRecipeCreatedEvent) => {
       this.publishEvent(event, 'recipes')
     })
-
     this.eventHandlers.set(EventType.RECIPE_UPDATED_EVENT, (event: IRecipeUpdatedEvent) => {
       this.publishEvent(event, 'recipes')
     })
-
     this.eventHandlers.set(EventType.RECIPE_DELETED_EVENT, (event: IRecipeDeletedEvent) => {
       this.publishEvent(event, 'recipes')
     })

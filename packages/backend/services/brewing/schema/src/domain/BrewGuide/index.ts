@@ -3,9 +3,14 @@ import {BrewGuideName} from './BrewGuideName'
 import {BrewGuideCreatedEvent} from './events/BrewGuideCreatedEvent'
 import {BrewGuideUpdatedEvent} from './events/BrewGuideUpdatedEvent'
 import {BrewGuideDeletedEvent} from './events/BrewGuideDeletedEvent'
+import {BrewGuideInstructions} from './BrewGuideInstructions'
+import {BrewGuideOverview} from './BrewGuideOverview'
 
 export interface BrewGuideAttributes {
   name: BrewGuideName
+  overview?: BrewGuideOverview
+  recipeId: EntityId
+  instructions?: BrewGuideInstructions
 }
 
 export class BrewGuide extends AggregateRoot<BrewGuideAttributes> {
@@ -17,20 +22,35 @@ export class BrewGuide extends AggregateRoot<BrewGuideAttributes> {
     return this.attrs.name
   }
 
-  public update(attrs: Partial<BrewGuideAttributes>) {
-    if (attrs.name) {
-      this.attrs.name = attrs.name
-      this.markedFields.set('name', this.attrs.name)
-    }
-    this.registerEvent(new BrewGuideUpdatedEvent(this))
+  public get overview() {
+    return this.attrs.overview
+  }
+
+  public get recipeId() {
+    return this.attrs.recipeId
+  }
+
+  public get instructions() {
+    return this.attrs.instructions
   }
 
   public delete() {
     this.registerEvent(new BrewGuideDeletedEvent(this))
   }
 
+  public update(attrs: Partial<BrewGuideAttributes>) {
+    ;(Object.keys(attrs) as Array<keyof BrewGuideAttributes>).forEach(key => {
+      // @ts-ignore
+      this.attrs[key] = attrs[key]
+
+      this.markedFields.set(key, this.attrs[key].value)
+    })
+
+    this.registerEvent(new BrewGuideUpdatedEvent(this))
+  }
+
   public static create(attrs: BrewGuideAttributes, id?: EntityId) {
-    const brewGuide = new BrewGuide(attrs)
+    const brewGuide = new BrewGuide(attrs, id)
     const isNew = !!id === false
 
     if (isNew) {

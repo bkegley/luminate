@@ -5,5 +5,5 @@ export interface CreateRecipeDTO {
   brewer: Brewer
   grinder: Grinder
   grindSetting?: number
-  instructions?: string[]
+  note?: string
 }

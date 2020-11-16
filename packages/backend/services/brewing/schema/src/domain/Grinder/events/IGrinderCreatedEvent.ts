@@ -1,6 +1,7 @@
 import {IEvent} from '../../IEvent'
 
 export interface IGrinderCreatedEventData {
+  id: string
   name: string
   description?: string
   burrSet?: any

@@ -4,5 +4,5 @@ export interface RecipeDTO {
   brewerId: string
   grinderId: string
   grindSetting?: number
-  instructions?: string[]
+  note?: string
 }

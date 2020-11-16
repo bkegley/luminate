@@ -1,17 +1,19 @@
 import {AggregateRoot, EntityId} from '../../shared'
 import {RecipeName} from './RecipeName'
-import {RecipeInstructions} from './RecipeInstructions'
 import {GrinderGrindSetting} from './GrinderGrindSetting'
 import {RecipeDeletedEvent, RecipeUpdatedEvent, RecipeCreatedEvent} from './events'
-import {BrewerId} from '../Brewer/BrewerId'
-import {GrinderId} from '../Grinder/GrinderId'
+import {CoffeeWeight} from './CoffeeWeight'
+import {WaterWeight} from './WaterWeight'
+import {RecipeNote} from './RecipeNote'
 
 export interface RecipeAttributes {
   name: RecipeName
-  grinderId: GrinderId
+  grinderId: EntityId
   grindSetting?: GrinderGrindSetting
-  brewerId: BrewerId
-  instructions?: RecipeInstructions
+  brewerId: EntityId
+  coffeeWeight: CoffeeWeight
+  waterWeight: WaterWeight
+  note?: RecipeNote
 }
 
 export class Recipe extends AggregateRoot<RecipeAttributes> {
@@ -39,54 +41,25 @@ export class Recipe extends AggregateRoot<RecipeAttributes> {
     return this.attrs.brewerId
   }
 
-  get instructions() {
-    return this.attrs.instructions
+  get note() {
+    return this.attrs.note
   }
 
   public delete() {
     this.registerEvent(new RecipeDeletedEvent(this))
-    return this
   }
 
   public update(attrs: Partial<RecipeAttributes>) {
-    if (attrs.name) {
-      this.attrs.name = attrs.name
-      this.markedFields.set('name', this.attrs.name.value)
-    }
+    ;(Object.keys(attrs) as Array<keyof RecipeAttributes>).forEach(key => {
+      // @ts-ignore
+      this.attrs[key] = attrs[key]
 
-    if (attrs.brewerId) {
-      this.attrs.brewerId = attrs.brewerId
-      this.markedFields.set('brewerId', this.attrs.brewerId.id.toString())
-    }
-
-    if (attrs.grinderId) {
-      this.attrs.grinderId = attrs.grinderId
-      this.markedFields.set('grinderId', this.attrs.grinderId.id.toString())
-    }
-
-    if (attrs.grindSetting) {
-      this.attrs.grindSetting = attrs.grindSetting
-      this.markedFields.set('grindSetting', this.attrs.grindSetting.value)
-    }
-
-    if (attrs.instructions) {
-      this.attrs.instructions = attrs.instructions
-      this.markedFields.set('instructions', this.attrs.instructions.value)
-    }
+      this.markedFields.set(key, this.attrs[key].value)
+    })
 
     this.registerEvent(new RecipeUpdatedEvent(this))
-    return this
   }
   public static create(attrs: RecipeAttributes, id?: EntityId) {
-    // handle validation here
-    if (!attrs.grinderId) {
-      throw new Error('Grinder required')
-    }
-
-    if (!attrs.brewerId) {
-      throw new Error('Brewer required')
-    }
-
     const recipe = new Recipe(attrs, id)
     const isNew = !!id === false
 

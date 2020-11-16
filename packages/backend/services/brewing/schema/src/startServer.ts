@@ -12,7 +12,18 @@ import {parseUserFromRequest} from '@luminate/graphql-utils'
 import {ICommandRegistry, CommandRegistry} from './commands'
 import {TYPES} from './utils'
 import {Producer, KafkaClient} from 'kafka-node'
-import {BrewersView, IBrewersView, IGrindersView, GrindersView, BrewGuidesView, IBrewGuidesView} from './views'
+import {
+  BrewersView,
+  IBrewersView,
+  IGrindersView,
+  GrindersView,
+  BrewGuidesView,
+  IBrewGuidesView,
+  EvaluationsView,
+  IEvaluationsView,
+  IBrewingSessionsView,
+  BrewingSessionsView,
+} from './views'
 import {EventRegistry, IEventRegistry} from './infra'
 import {
   IBrewerRepository,
@@ -21,9 +32,13 @@ import {
   InMemoryBrewGuideRepository,
   InMemoryRecipeRepository,
   IRecipeRepository,
+  InMemoryEvaluationRepository,
+  IEvaluationRepository,
 } from './repositories'
 import {InMemoryGrinderRepository} from './repositories/GrinderRepository'
 import {IGrinderRepository} from './repositories/IGrinderRepository'
+import {InMemoryBrewingSessionRepository} from './repositories/BrewingSessionRepository'
+import {IBrewingSessionRepository} from './repositories/IBrewingSessionRepository'
 
 export interface Context {
   services: any
@@ -49,6 +64,8 @@ class Server {
         [
           {topic: 'brewers', partitions: 1, replicationFactor: 1},
           {topic: 'brewGuides', partitions: 1, replicationFactor: 1},
+          {topic: 'brewingSessions', partitions: 1, replicationFactor: 1},
+          {topic: 'evaluations', partitions: 1, replicationFactor: 1},
           {topic: 'grinders', partitions: 1, replicationFactor: 1},
           {topic: 'recipes', partitions: 1, replicationFactor: 1},
         ],
@@ -73,6 +90,14 @@ class Server {
     this.container.bind<IBrewGuidesView>(TYPES.BrewGuidesView, new BrewGuidesView())
     this.container.bind<IBrewGuideRepository>(TYPES.BrewGuideRepository, brewGuideRepository)
 
+    const brewingSessionRepository = new InMemoryBrewingSessionRepository()
+    this.container.bind<IBrewingSessionRepository>(TYPES.BrewingSessionRepository, brewingSessionRepository)
+    this.container.bind<IBrewingSessionsView>(TYPES.BrewingSessionsView, new BrewingSessionsView())
+
+    const evaluationRepository = new InMemoryEvaluationRepository()
+    this.container.bind<IEvaluationRepository>(TYPES.EvaluationRepository, evaluationRepository)
+    this.container.bind<IEvaluationsView>(TYPES.EvaluationsView, new EvaluationsView())
+
     const grinderRepository = new InMemoryGrinderRepository()
     this.container.bind<IGrindersView>(TYPES.GrindersView, new GrindersView())
     this.container.bind<IGrinderRepository>(TYPES.GrinderRepository, grinderRepository)
@@ -87,6 +112,8 @@ class Server {
           resolver.resolve(TYPES.EventRegistry),
           resolver.resolve(TYPES.BrewerRepository),
           resolver.resolve(TYPES.BrewGuideRepository),
+          resolver.resolve(TYPES.BrewingSessionRepository),
+          resolver.resolve(TYPES.EvaluationRepository),
           resolver.resolve(TYPES.GrinderRepository),
           resolver.resolve(TYPES.RecipeRepository),
         ),

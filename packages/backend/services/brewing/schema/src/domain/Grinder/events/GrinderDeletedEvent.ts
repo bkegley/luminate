@@ -1,13 +1,15 @@
-import {EntityId} from '../../../shared'
 import {EventType} from '../../EventType'
-import {IEvent} from '../../IEvent'
+import {IGrinderDeletedEvent, IGrinderDeletedEventData} from './IGrinderDeletedEvent'
+import {Grinder} from '..'
 
-export class GrinderDeletedEvent implements IEvent<{id: string}> {
+export class GrinderDeletedEvent implements IGrinderDeletedEvent {
   timestamp = new Date()
   event = EventType.GRINDER_DELETED_EVENT
-  data: {id: string}
+  data: IGrinderDeletedEventData
 
-  constructor(id: EntityId | string) {
-    this.data = {id: id instanceof EntityId ? id.toString() : id}
+  constructor(grinder: Grinder) {
+    this.data = {
+      id: grinder.id.toString(),
+    }
   }
 }

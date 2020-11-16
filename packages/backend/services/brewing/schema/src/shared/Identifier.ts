@@ -1,7 +1,5 @@
 export class Identifier<T> {
-  constructor(private value: T) {
-    this.value = value
-  }
+  constructor(private _value: T) {}
 
   equals(id?: Identifier<T>): boolean {
     if (id === null || id === undefined) {
@@ -12,14 +10,14 @@ export class Identifier<T> {
       return false
     }
 
-    return id.toValue() === this.value
+    return id.toValue() === this._value
   }
 
   toString() {
-    return String(this.value)
+    return String(this._value)
   }
 
   toValue() {
-    return this.value
+    return this._value
   }
 }

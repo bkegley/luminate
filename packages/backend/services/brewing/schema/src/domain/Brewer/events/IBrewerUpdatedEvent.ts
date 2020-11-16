@@ -2,7 +2,8 @@ import {IEvent} from '../../IEvent'
 import {BrewerTypeEnum} from '../BrewerType'
 
 export interface IBrewerUpdatedEventData {
-  name: string
+  id: string
+  name?: string
   description?: string
   type?: BrewerTypeEnum
 }

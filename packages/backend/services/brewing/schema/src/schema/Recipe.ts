@@ -13,7 +13,7 @@ const typeDefs = gql`
     grinder: Grinder!
     grindSetting: Int
     brewer: Brewer!
-    instructions: [String]
+    note: String
   }
 
   type RecipeConnection {
@@ -31,7 +31,7 @@ const typeDefs = gql`
     brewerId: ID!
     grinderId: ID!
     grindSetting: Int
-    instructions: [String]
+    note: String
   }
 
   input UpdateRecipeInput {
@@ -39,7 +39,7 @@ const typeDefs = gql`
     brewerId: ID!
     grinderId: ID!
     grindSetting: Int
-    instructions: [String]
+    note: String
   }
 
   extend type Query {

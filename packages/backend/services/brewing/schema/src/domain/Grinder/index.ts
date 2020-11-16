@@ -4,6 +4,7 @@ import {GrinderDescription} from './GrinderDescription'
 import {GrinderCreatedEvent} from './events/GrinderCreatedEvent'
 import {GrinderBurrSet} from './GrinderBurrSet'
 import {GrinderDeletedEvent} from './events/GrinderDeletedEvent'
+import {GrinderUpdatedEvent} from './events'
 
 export interface GrinderAttributes {
   name: GrinderName
@@ -33,25 +34,16 @@ export class Grinder extends AggregateRoot<any> {
   }
 
   public delete() {
-    this.registerEvent(new GrinderDeletedEvent(this.id.toString()))
-    return this
+    this.registerEvent(new GrinderDeletedEvent(this))
   }
 
-  public update(attrs: GrinderAttributes) {
-    if (attrs.name) {
-      this.attrs.name = attrs.name
-      this.markedFields.set('name', this.attrs.name.value)
-    }
+  public update(attrs: Partial<GrinderAttributes>) {
+    ;(Object.keys(attrs) as Array<keyof GrinderAttributes>).forEach(key => {
+      this.attrs[key] = attrs[key]
 
-    if (attrs.description) {
-      this.attrs.description = attrs.description
-      this.markedFields.set('description', this.attrs.description.value)
-    }
-
-    if (attrs.burrSet) {
-      this.attrs.burrSet = attrs.burrSet
-      this.markedFields.set('burrSet', this.attrs.burrSet.value)
-    }
+      this.markedFields.set(key, attrs[key].value)
+    })
+    this.registerEvent(new GrinderUpdatedEvent(this))
   }
 
   public static create(attrs: GrinderAttributes, id?: EntityId) {

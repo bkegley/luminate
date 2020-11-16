@@ -9,6 +9,7 @@ export class BrewGuideUpdatedEvent implements IBrewGuideUpdatedEvent {
 
   constructor(brewGuide: BrewGuide) {
     const updatedFields = Object.fromEntries([...brewGuide.markedFields])
+
     this.data = {
       id: brewGuide.id,
       ...updatedFields,

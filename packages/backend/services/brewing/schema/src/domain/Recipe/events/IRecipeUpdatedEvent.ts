@@ -6,7 +6,7 @@ export interface IRecipeUpdatedEventData {
   grinderId?: string | number
   grindSetting?: number
   brewerId?: string | number
-  instructions?: string[]
+  note?: string
 }
 
 export interface IRecipeUpdatedEvent extends IEvent<IRecipeUpdatedEventData> {}

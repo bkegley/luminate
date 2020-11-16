@@ -11,7 +11,11 @@ import {
   InMemoryBrewGuideRepository,
   IGrinderRepository,
   IRecipeRepository,
+  IEvaluationRepository,
+  InMemoryEvaluationRepository,
 } from '../src/repositories'
+import {IBrewingSessionRepository} from '../src/repositories/IBrewingSessionRepository'
+import {InMemoryBrewingSessionRepository} from '../src/repositories/BrewingSessionRepository'
 
 /**
  *
@@ -40,6 +44,8 @@ export const buildCommandTestContainer = () => {
         resolver.resolve(TYPES.EventRegistry),
         resolver.resolve(TYPES.BrewerRepository),
         resolver.resolve(TYPES.BrewGuideRepository),
+        resolver.resolve(TYPES.BrewingSessionRepository),
+        resolver.resolve(TYPES.EvaluationRepository),
         resolver.resolve(TYPES.GrinderRepository),
         resolver.resolve(TYPES.RecipeRepository),
       ),
@@ -47,6 +53,8 @@ export const buildCommandTestContainer = () => {
 
   container.bind<IBrewerRepository>(TYPES.BrewerRepository, new InMemoryBrewerRepository())
   container.bind<IBrewGuideRepository>(TYPES.BrewGuideRepository, new InMemoryBrewGuideRepository())
+  container.bind<IBrewingSessionRepository>(TYPES.BrewingSessionRepository, new InMemoryBrewingSessionRepository())
+  container.bind<IEvaluationRepository>(TYPES.EvaluationRepository, new InMemoryEvaluationRepository())
   container.bind<IGrinderRepository>(TYPES.GrinderRepository, new InMemoryGrinderRepository())
   container.bind<IRecipeRepository>(TYPES.RecipeRepository, new InMemoryRecipeRepository())
 
