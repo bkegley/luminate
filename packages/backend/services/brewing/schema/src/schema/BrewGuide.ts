@@ -33,6 +33,7 @@ const typeDefs = gql`
 
   input UpdateBrewGuideInput {
     name: String
+    recipeId: ID
   }
 
   extend type Mutation {

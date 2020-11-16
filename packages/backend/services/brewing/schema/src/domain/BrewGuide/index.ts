@@ -3,14 +3,13 @@ import {BrewGuideName} from './BrewGuideName'
 import {BrewGuideCreatedEvent} from './events/BrewGuideCreatedEvent'
 import {BrewGuideUpdatedEvent} from './events/BrewGuideUpdatedEvent'
 import {BrewGuideDeletedEvent} from './events/BrewGuideDeletedEvent'
-import {RecipeId} from '../Recipe/RecipeId'
 import {BrewGuideInstructions} from './BrewGuideInstructions'
 import {BrewGuideOverview} from './BrewGuideOverview'
 
 export interface BrewGuideAttributes {
   name: BrewGuideName
   overview?: BrewGuideOverview
-  recipeId: RecipeId
+  recipeId: EntityId
   instructions?: BrewGuideInstructions
 }
 
@@ -35,19 +34,23 @@ export class BrewGuide extends AggregateRoot<BrewGuideAttributes> {
     return this.attrs.instructions
   }
 
+  public delete() {
+    this.registerEvent(new BrewGuideDeletedEvent(this))
+  }
+
   public update(attrs: Partial<BrewGuideAttributes>) {
-    ;(Object.keys(attrs) as Array<keyof Partial<BrewGuideAttributes>>).map(key => {
-      // TODO: possibly fix this
+    ;(Object.keys(attrs) as Array<keyof BrewGuideAttributes>).forEach(key => {
       // @ts-ignore
       this.attrs[key] = attrs[key]
-      this.markedFields.set(key, this.attrs[key])
+
+      if (key === 'recipeId') {
+        this.markedFields.set(key, this.attrs[key].toString())
+      } else {
+        this.markedFields.set(key, this.attrs[key].value)
+      }
     })
 
     this.registerEvent(new BrewGuideUpdatedEvent(this))
-  }
-
-  public delete() {
-    this.registerEvent(new BrewGuideDeletedEvent(this))
   }
 
   public static create(attrs: BrewGuideAttributes, id?: EntityId) {
@@ -56,7 +59,11 @@ export class BrewGuide extends AggregateRoot<BrewGuideAttributes> {
 
     if (isNew) {
       ;(Object.keys(attrs) as Array<keyof BrewGuideAttributes>).map(key => {
-        brewGuide.markedFields.set(key, attrs[key].value)
+        if (key === 'recipeId') {
+          brewGuide.markedFields.set(key, attrs[key].toString())
+        } else {
+          brewGuide.markedFields.set(key, attrs[key].value)
+        }
       })
       brewGuide.registerEvent(new BrewGuideCreatedEvent(brewGuide))
     }

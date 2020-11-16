@@ -19,6 +19,7 @@ import {
 import {CreateBrewingSessionCommandHandler, DeleteBrewingSessionCommandHandler} from './BrewingSession'
 import {IBrewingSessionRepository} from '../repositories/IBrewingSessionRepository'
 import {UpdateBrewingSessionCommandHandler} from './BrewingSession/UpdateBrewingSessionCommandHandler'
+import {UpdateBrewGuideCommandHandler} from './BrewGuide/UpdateBrewGuideCommandHandler'
 
 export class CommandRegistry implements ICommandRegistry {
   private handlerRegistry: Map<CommandType, any> = new Map()
@@ -55,6 +56,16 @@ export class CommandRegistry implements ICommandRegistry {
       CommandType.CREATE_BREW_GUIDE_COMMAND,
       new CreateBrewGuideCommandHander(this.eventRegistry, this.brewGuideRepo, this.recipeRepo),
     )
+
+    this.handlerRegistry.set(
+      CommandType.UPDATE_BREW_GUIDE_COMMAND,
+      new UpdateBrewGuideCommandHandler(this.eventRegistry, this.brewGuideRepo),
+    )
+
+    //this.handlerRegistry.set(
+    //CommandType.DELETE_BREW_GUIDE_COMMAND,
+    //new DeleteBrewGuideCommandHandler(this.eventRegistry, this.brewGuideRepo),
+    //)
 
     // BrewingSession Handlers
     this.handlerRegistry.set(

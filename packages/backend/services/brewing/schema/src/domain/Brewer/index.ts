@@ -33,27 +33,17 @@ export class Brewer extends AggregateRoot<BrewerAttributes> {
 
   delete() {
     this.registerEvent(new BrewerDeletedEvent(this.id.toString()))
-    return this
   }
 
-  update(attrs: BrewerAttributes) {
-    if (attrs.name) {
-      this.attrs.name = attrs.name
-      this.markedFields.set('name', this.attrs.name.value)
-    }
+  public update(attrs: Partial<BrewerAttributes>) {
+    ;(Object.keys(attrs) as Array<keyof Partial<BrewerAttributes>>).forEach(key => {
+      // @ts-ignore
+      this.attrs[key] = attrs[key]
 
-    if (attrs.description) {
-      this.attrs.description = attrs.description
-      this.markedFields.set('description', this.attrs.description.value)
-    }
-
-    if (attrs.type) {
-      this.attrs.type = attrs.type
-      this.markedFields.set('type', this.attrs.type.value)
-    }
+      this.markedFields.set(key, this.attrs[key].value)
+    })
 
     this.registerEvent(new BrewerUpdatedEvent(this))
-    return this
   }
 
   public static create(attrs: BrewerAttributes, id?: EntityId) {
@@ -61,7 +51,7 @@ export class Brewer extends AggregateRoot<BrewerAttributes> {
     const isNew = !!id === false
 
     if (isNew) {
-      ;(Object.keys(attrs) as Array<keyof typeof attrs>).forEach(key => {
+      ;(Object.keys(attrs) as Array<keyof BrewerAttributes>).forEach(key => {
         brewer.markedFields.set(key, attrs[key].value)
       })
       brewer.registerEvent(new BrewerCreatedEvent(brewer))

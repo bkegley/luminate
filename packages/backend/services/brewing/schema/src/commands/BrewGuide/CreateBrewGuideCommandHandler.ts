@@ -5,7 +5,6 @@ import {IEventRegistry} from '../../infra'
 import {IBrewGuideRepository} from '../../repositories/IBrewGuideRepository'
 import {BrewGuide} from '../../domain/BrewGuide'
 import {BrewGuideName} from '../../domain/BrewGuide/BrewGuideName'
-import {RecipeId} from '../../domain/Recipe/RecipeId'
 import {EntityId} from '../../shared'
 import {IRecipeRepository} from '../../repositories'
 
@@ -35,7 +34,7 @@ export class CreateBrewGuideCommandHander implements ICommandHandler<CreateBrewG
 
       const brewGuide = BrewGuide.create({
         name: BrewGuideName.create({value: command.name}),
-        recipeId: RecipeId.create(EntityId.create(command.recipeId)),
+        recipeId: EntityId.create(command.recipeId),
       })
 
       this.brewGuideRepo

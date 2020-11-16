@@ -2,8 +2,6 @@ import {EntityId} from '../shared'
 import {Recipe} from '../domain/Recipe'
 import {RecipeName} from '../domain/Recipe/RecipeName'
 import {RecipeDTO} from '../dtos'
-import {BrewerId} from '../domain/Brewer/BrewerId'
-import {GrinderId} from '../domain/Grinder/GrinderId'
 import {RecipeNote} from '../domain/Recipe/RecipeNote'
 import {GrinderGrindSetting} from '../domain/Recipe/GrinderGrindSetting'
 import {WaterWeight} from '../domain/Recipe/WaterWeight'
@@ -15,8 +13,8 @@ export class RecipeMapper {
     return Recipe.create(
       {
         name: RecipeName.create({value: recipeDTO.name}),
-        brewerId: BrewerId.create(EntityId.create(recipeDTO.brewerId)),
-        grinderId: GrinderId.create(EntityId.create(recipeDTO.grinderId)),
+        brewerId: EntityId.create(recipeDTO.brewerId),
+        grinderId: EntityId.create(recipeDTO.grinderId),
         waterWeight: WaterWeight.create({value: Weight.create({amount: 10, unit: 'g'})}),
         coffeeWeight: CoffeeWeight.create({value: Weight.create({amount: 10, unit: 'g'})}),
         grindSetting: recipeDTO.grindSetting ? GrinderGrindSetting.create({value: recipeDTO.grindSetting}) : null,
@@ -31,8 +29,8 @@ export class RecipeMapper {
     return {
       id: recipe.id.toString(),
       name: recipe.name.value,
-      grinderId: recipe.grinderId.value,
-      brewerId: recipe.brewerId.value,
+      grinderId: recipe.grinderId.toString(),
+      brewerId: recipe.brewerId.toString(),
       grindSetting: recipe.grindSetting?.value,
       note: recipe.note?.value,
     }
@@ -42,8 +40,8 @@ export class RecipeMapper {
     return {
       id: recipe.id.toString(),
       name: recipe.name.value,
-      grinderId: recipe.grinderId.value,
-      brewerId: recipe.brewerId.value,
+      grinderId: recipe.grinderId.toString(),
+      brewerId: recipe.brewerId.toString(),
       grindSetting: recipe.grindSetting?.value,
       note: recipe.note?.value,
     }

@@ -24,6 +24,10 @@ export class Weight extends Entity<WeightAttributes> {
     super(attrs)
   }
 
+  public get value() {
+    return this.grams
+  }
+
   public get grams() {
     return this.attrs.grams
   }

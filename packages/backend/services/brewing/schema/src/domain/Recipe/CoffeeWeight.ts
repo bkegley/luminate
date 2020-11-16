@@ -11,7 +11,7 @@ export class CoffeeWeight extends Entity<CoffeeWeightAttributes> {
   }
 
   public get value() {
-    return this.attrs.value
+    return this.attrs.value.value
   }
 
   public static create(attrs: CoffeeWeightAttributes) {

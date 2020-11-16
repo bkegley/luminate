@@ -23,22 +23,19 @@ export class BrewingSession extends AggregateRoot<BrewingSessionAttributes> {
     return this.attrs.date
   }
 
-  public update(attrs: BrewingSessionAttributes) {
-    if (attrs.date) {
-      this.attrs.date = attrs.date
-      this.markedFields.set('date', attrs.date.value)
-    }
-
-    if (attrs.description) {
-      this.attrs.description = attrs.description
-      this.markedFields.set('description', attrs.description.value)
-    }
-
-    this.registerEvent(new BrewingSessionUpdatedEvent(this))
-  }
-
   public delete() {
     this.registerEvent(new BrewingSessionDeletedEvent(this))
+  }
+
+  public update(attrs: Partial<BrewingSessionAttributes>) {
+    ;(Object.keys(attrs) as Array<keyof BrewingSessionAttributes>).forEach(key => {
+      // @ts-ignore
+      this.attrs[key] = attrs[key]
+
+      this.markedFields.set(key, this.attrs[key].value)
+    })
+
+    this.registerEvent(new BrewingSessionUpdatedEvent(this))
   }
 
   public static create(attrs: BrewingSessionAttributes, id?: EntityId) {

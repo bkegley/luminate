@@ -11,7 +11,7 @@ export class WaterWeight extends Entity<WaterWeightAttributes> {
   }
 
   public get value() {
-    return this.attrs.value
+    return this.attrs.value.value
   }
 
   public static create(attrs: WaterWeightAttributes) {

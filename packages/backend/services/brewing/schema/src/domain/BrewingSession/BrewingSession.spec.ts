@@ -2,6 +2,7 @@ import {BrewingSession} from '.'
 import {BrewingSessionDescription} from './BrewingSessionDescription'
 import {EventType} from '../EventType'
 import {EntityId} from '../../shared'
+import {BrewingSessionCreatedEvent, BrewingSessionUpdatedEvent} from './events'
 
 describe('BrewingSession', () => {
   it('should be created with default values and register a created event', () => {
@@ -11,11 +12,20 @@ describe('BrewingSession', () => {
       description: BrewingSessionDescription.create({value: description}),
     })
 
-    const createdEvent = brewingSession.events.find(event => event.event === EventType.BREWING_SESSION_CREATED_EVENT)
-    expect(createdEvent).toBeDefined()
+    const createdEvent = brewingSession.events.find(
+      event => event.event === EventType.BREWING_SESSION_CREATED_EVENT,
+    ) as BrewingSessionCreatedEvent | undefined
 
+    const expected = {
+      event: EventType.BREWING_SESSION_CREATED_EVENT,
+      data: {
+        description,
+      },
+    }
+
+    expect(createdEvent).toMatchObject(expected)
+    // created event should only have provided values
     expect(createdEvent.data.date).toBeUndefined()
-    expect(createdEvent.data.description).toBe(description)
   })
 
   it('should update and register an updated event', () => {
@@ -33,11 +43,26 @@ describe('BrewingSession', () => {
     brewingSession.update({description: BrewingSessionDescription.create({value: updatedDescription})})
     expect(brewingSession.description.value).toBe(updatedDescription)
 
-    const updatedEvent = brewingSession.events.find(event => event.event === EventType.BREWING_SESSION_UPDATED_EVENT)
-    const createdEvent = brewingSession.events.find(event => event.event === EventType.BREWING_SESSION_CREATED_EVENT)
-    expect(updatedEvent).toBeDefined()
+    const createdEvent = brewingSession.events.find(
+      event => event.event === EventType.BREWING_SESSION_CREATED_EVENT,
+    ) as BrewingSessionCreatedEvent | undefined
+
     expect(createdEvent).toBeUndefined()
-    expect(updatedEvent.data.description).toBe(updatedDescription)
+
+    const updatedEvent = brewingSession.events.find(
+      event => event.event === EventType.BREWING_SESSION_UPDATED_EVENT,
+    ) as BrewingSessionUpdatedEvent | undefined
+
+    const expected = {
+      event: EventType.BREWING_SESSION_UPDATED_EVENT,
+      data: {
+        description: updatedDescription,
+      },
+    }
+
+    expect(updatedEvent).toMatchObject(expected)
+    // updated event should only have provided values
+    expect(updatedEvent.data.date).toBeUndefined()
   })
 
   it('should delete and register a deleted event', () => {

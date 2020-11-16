@@ -5,11 +5,9 @@ import {IEventRegistry} from '../../infra'
 import {Recipe} from '../../domain/Recipe'
 import {RecipeName} from '../../domain/Recipe/RecipeName'
 import {RecipeAttributes} from '../../domain/Recipe'
-import {BrewerId} from '../../domain/Brewer/BrewerId'
 import {EntityId} from '../../shared'
 import {GrinderGrindSetting} from '../../domain/Recipe/GrinderGrindSetting'
 import {RecipeNote} from '../../domain/Recipe/RecipeNote'
-import {GrinderId} from '../../domain/Grinder/GrinderId'
 import {CreateRecipeDTO} from './CreateRecipeDTO'
 import {BrewerMapper, RecipeMapper, GrinderMapper} from '../../mappers'
 import {WaterWeight} from '../../domain/Recipe/WaterWeight'
@@ -49,8 +47,8 @@ export class CreateRecipeCommandHandler implements ICommandHandler<CreateRecipeC
 
       let args: RecipeAttributes = {
         name: RecipeName.create({value: command.name}),
-        brewerId: BrewerId.create(EntityId.create(command.brewerId)),
-        grinderId: GrinderId.create(EntityId.create(command.grinderId)),
+        brewerId: EntityId.create(command.brewerId),
+        grinderId: EntityId.create(command.grinderId),
         waterWeight: WaterWeight.create({value: Weight.create({amount: 10, unit: 'g'})}),
         coffeeWeight: CoffeeWeight.create({value: Weight.create({amount: 10, unit: 'g'})}),
       }

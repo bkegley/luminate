@@ -15,16 +15,19 @@ export class Evaluation extends AggregateRoot<EvaluationAttributes> {
     return this.attrs.date
   }
 
-  public update(attrs: EvaluationAttributes) {
-    if (attrs.date) {
-      this.attrs.date = attrs.date
-      this.markedFields.set('date', attrs.date.value)
-    }
-    this.registerEvent(new EvaluationUpdatedEvent(this))
-  }
-
   public delete() {
     this.registerEvent(new EvaluationDeletedEvent(this))
+  }
+
+  public update(attrs: Partial<EvaluationAttributes>) {
+    ;(Object.keys(attrs) as Array<keyof EvaluationAttributes>).forEach(key => {
+      // @ts-ignore
+      this.attrs[key] = attrs[key]
+
+      this.markedFields.set(key, this.attrs[key].value)
+    })
+
+    this.registerEvent(new EvaluationUpdatedEvent(this))
   }
 
   public static create(attrs: EvaluationAttributes, id?: EntityId) {

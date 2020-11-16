@@ -2,8 +2,6 @@ import {Recipe} from './index'
 import {RecipeName} from './RecipeName'
 import {EntityId} from '../../shared'
 import {EventType} from '../EventType'
-import {GrinderId} from '../Grinder/GrinderId'
-import {BrewerId} from '../Brewer/BrewerId'
 import {RecipeCreatedEvent, RecipeUpdatedEvent} from './events'
 import {CoffeeWeight} from './CoffeeWeight'
 import {Weight} from '../Weight'
@@ -11,43 +9,36 @@ import {WaterWeight} from './WaterWeight'
 
 describe('Recipe Aggregate', () => {
   it('can be created with default values and registers a created event', () => {
-    const name = RecipeName.create({value: 'Test Recipe'})
+    const name = 'Test Recipe'
+    const coffeeWeight = CoffeeWeight.create({value: Weight.create({amount: 10, unit: 'g'})})
+    const waterWeight = WaterWeight.create({value: Weight.create({amount: 10, unit: 'g'})})
+
     const recipe = Recipe.create({
-      name,
-      grinderId: GrinderId.create(EntityId.create()),
-      brewerId: BrewerId.create(EntityId.create()),
-      coffeeWeight: CoffeeWeight.create({value: Weight.create({amount: 10, unit: 'g'})}),
-      waterWeight: WaterWeight.create({value: Weight.create({amount: 10, unit: 'g'})}),
+      name: RecipeName.create({value: name}),
+      grinderId: EntityId.create(),
+      brewerId: EntityId.create(),
+      coffeeWeight,
+      waterWeight,
     })
 
     expect(recipe).toBeDefined()
+
     const createdEvent = recipe.events.find(event => event.event === EventType.RECIPE_CREATED_EVENT) as
       | RecipeCreatedEvent
       | undefined
-    expect(createdEvent).toBeDefined()
 
-    expect(createdEvent.data.name).toBeDefined()
+    const expected = {
+      event: EventType.RECIPE_CREATED_EVENT,
+      data: {
+        name,
+        coffeeWeight: coffeeWeight.value,
+        waterWeight: waterWeight.value,
+      },
+    }
+
+    expect(createdEvent).toMatchObject(expected)
+    // created event should only have provided fields
     expect(createdEvent.data.note).toBeUndefined()
-  })
-
-  it('requires a grinderId to be provided', () => {
-    expect(() => {
-      // @ts-ignore
-      Recipe.create({
-        name: RecipeName.create({value: 'Test Recipe'}),
-        brewerId: BrewerId.create(EntityId.create()),
-      })
-    }).toThrowError()
-  })
-
-  it('requires a brewerId to be provided', () => {
-    expect(() => {
-      // @ts-ignore
-      Recipe.create({
-        name: RecipeName.create({value: 'Test Recipe'}),
-        grinderId: GrinderId.create(EntityId.create()),
-      })
-    }).toThrowError()
   })
 
   it('updates a Recipe and registers an updated event', () => {
@@ -57,8 +48,8 @@ describe('Recipe Aggregate', () => {
     const recipe = Recipe.create(
       {
         name,
-        grinderId: GrinderId.create(EntityId.create()),
-        brewerId: BrewerId.create(EntityId.create()),
+        grinderId: EntityId.create(),
+        brewerId: EntityId.create(),
         coffeeWeight: CoffeeWeight.create({value: Weight.create({amount: 10, unit: 'g'})}),
         waterWeight: WaterWeight.create({value: Weight.create({amount: 10, unit: 'g'})}),
       },
@@ -77,10 +68,15 @@ describe('Recipe Aggregate', () => {
       | RecipeUpdatedEvent
       | undefined
 
-    expect(updatedEvent).toBeDefined()
+    const expected = {
+      event: EventType.RECIPE_UPDATED_EVENT,
+      data: {
+        name: updatedName,
+      },
+    }
 
+    expect(updatedEvent).toMatchObject(expected)
     // update event only has updated fields stored
-    expect(updatedEvent.data.name).toBeDefined()
     expect(updatedEvent.data.brewerId).toBeUndefined()
   })
 
@@ -88,8 +84,8 @@ describe('Recipe Aggregate', () => {
     const recipe = Recipe.create(
       {
         name: RecipeName.create({value: 'Test Recipe'}),
-        grinderId: GrinderId.create(EntityId.create()),
-        brewerId: BrewerId.create(EntityId.create()),
+        grinderId: EntityId.create(),
+        brewerId: EntityId.create(),
         coffeeWeight: CoffeeWeight.create({value: Weight.create({amount: 10, unit: 'g'})}),
         waterWeight: WaterWeight.create({value: Weight.create({amount: 10, unit: 'g'})}),
       },
@@ -97,6 +93,7 @@ describe('Recipe Aggregate', () => {
     )
 
     recipe.delete()
-    expect(recipe.events.find(event => event.event === EventType.RECIPE_DELETED_EVENT))
+    const deletedEvent = recipe.events.find(event => event.event === EventType.RECIPE_DELETED_EVENT)
+    expect(deletedEvent).toBeDefined()
   })
 })

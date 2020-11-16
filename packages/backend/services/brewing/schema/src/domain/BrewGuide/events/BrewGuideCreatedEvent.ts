@@ -1,6 +1,6 @@
 import {IBrewGuideCreatedEvent, IBrewGuideCreatedEventData} from './IBrewGuideCreatedEvent'
 import {EventType} from '../../EventType'
-import {BrewGuide, BrewGuideAttributes} from '..'
+import {BrewGuide} from '..'
 
 export class BrewGuideCreatedEvent implements IBrewGuideCreatedEvent {
   timestamp = new Date()

@@ -2,6 +2,7 @@ import {EvaluationAttributes, Evaluation} from '.'
 import {DateEntity} from '../Date'
 import {EventType} from '../EventType'
 import {EntityId} from '../../shared'
+import {EvaluationCreatedEvent, EvaluationUpdatedEvent} from './events'
 
 describe('Evaluation', () => {
   it('can be created with defaults and registers a created event', () => {
@@ -11,10 +12,18 @@ describe('Evaluation', () => {
     }
 
     const evaluation = Evaluation.create(input)
-    const createdEvent = evaluation.events.find(event => event.event === EventType.EVALUATION_CREATED_EVENT)
+    const createdEvent = evaluation.events.find(event => event.event === EventType.EVALUATION_CREATED_EVENT) as
+      | EvaluationCreatedEvent
+      | undefined
 
-    expect(createdEvent).toBeDefined()
-    expect(createdEvent.data.date).toBe(date.value)
+    const expected = {
+      event: EventType.EVALUATION_CREATED_EVENT,
+      data: {
+        date: date.value,
+      },
+    }
+
+    expect(createdEvent).toMatchObject(expected)
   })
 
   it('can update and register an updated event', () => {
@@ -28,19 +37,28 @@ describe('Evaluation', () => {
 
     const evaluation = Evaluation.create(input, entityId)
 
-    expect(evaluation.date.value).toBe(initialDate.value)
-
     evaluation.update({date: updatedDate})
 
     expect(evaluation.date.value).toBe(updatedDate.value)
 
-    const createdEvent = evaluation.events.find(event => event.event === EventType.EVALUATION_CREATED_EVENT)
-    const updatedEvent = evaluation.events.find(event => event.event === EventType.EVALUATION_UPDATED_EVENT)
+    const createdEvent = evaluation.events.find(event => event.event === EventType.EVALUATION_CREATED_EVENT) as
+      | EvaluationCreatedEvent
+      | undefined
 
     expect(createdEvent).toBeUndefined()
-    expect(updatedDate).toBeDefined()
 
-    expect(updatedEvent.data.date).toBe(updatedDate.value)
+    const updatedEvent = evaluation.events.find(event => event.event === EventType.EVALUATION_UPDATED_EVENT) as
+      | EvaluationUpdatedEvent
+      | undefined
+
+    const expected = {
+      event: EventType.EVALUATION_UPDATED_EVENT,
+      data: {
+        date: updatedDate.value,
+      },
+    }
+
+    expect(updatedEvent).toMatchObject(expected)
   })
 
   it('can be deleted and register a deleted event', () => {

@@ -6,6 +6,10 @@ export class EntityId extends Identifier<string | number> {
     super(id ? id : uuid())
   }
 
+  public get id() {
+    return this.toString()
+  }
+
   public static create(id?: string | number) {
     return new EntityId(id)
   }

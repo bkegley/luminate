@@ -572,6 +572,7 @@ export type UpdateBrewerInput = {
 
 export type UpdateBrewGuideInput = {
   name?: Maybe<Scalars['String']>
+  recipeId?: Maybe<Scalars['ID']>
 }
 
 export type UpdateBrewingSessionInput = {

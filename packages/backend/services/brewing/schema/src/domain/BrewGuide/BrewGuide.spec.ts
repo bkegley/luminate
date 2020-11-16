@@ -1,37 +1,44 @@
-import {BrewGuide, BrewGuideAttributes} from '.'
+import {BrewGuide} from '.'
 import {BrewGuideName} from './BrewGuideName'
 import {EventType} from '../EventType'
 import {BrewGuideCreatedEvent} from './events/BrewGuideCreatedEvent'
 import {BrewGuideUpdatedEvent} from './events/BrewGuideUpdatedEvent'
 import {EntityId} from '../../shared'
-import {RecipeId} from '../Recipe/RecipeId'
 import {InstructionStep, BrewGuideInstructions} from './BrewGuideInstructions'
-import {BrewGuideOverview} from './BrewGuideOverview'
 
 describe('BrewGuide', () => {
   it('can be created with default values and registers a created event', () => {
-    const brewGuideName = 'Test Brew Guide'
+    const name = 'Test Brew Guide'
+    const recipeId = '12345'
+
     const brewGuide = BrewGuide.create({
-      name: BrewGuideName.create({value: brewGuideName}),
-      recipeId: RecipeId.create(),
+      name: BrewGuideName.create({value: name}),
+      recipeId: EntityId.create(recipeId),
     })
 
-    const brewGuideCreatedEvent = brewGuide.events.find(event => event.event === EventType.BREW_GUIDE_CREATED_EVENT) as
+    const createdEvent = brewGuide.events.find(event => event.event === EventType.BREW_GUIDE_CREATED_EVENT) as
       | BrewGuideCreatedEvent
       | undefined
 
-    expect(brewGuideCreatedEvent).toBeDefined()
-    expect(brewGuideCreatedEvent.data.name).toBe(brewGuideName)
+    const expected = {
+      event: EventType.BREW_GUIDE_CREATED_EVENT,
+      data: {
+        name,
+        recipeId,
+      },
+    }
+
+    expect(createdEvent).toMatchObject(expected)
+    // created event only has provided fields stored
+    expect(createdEvent.data.overview).toBeUndefined()
   })
 
   it('updates and registers an updated event', () => {
-    const brewGuideName = 'Test Brew Guide'
+    const name = 'Test Brew Guide'
     const brewGuide = BrewGuide.create(
-      {name: BrewGuideName.create({value: brewGuideName}), recipeId: RecipeId.create()},
+      {name: BrewGuideName.create({value: name}), recipeId: EntityId.create()},
       EntityId.create(),
     )
-
-    expect(brewGuide.name.value).toBe(brewGuideName)
 
     const updatedName = 'Updated Brew Guide'
     brewGuide.update({name: BrewGuideName.create({value: updatedName})})
@@ -47,32 +54,28 @@ describe('BrewGuide', () => {
     const updatedEvent = brewGuide.events.find(event => event.event === EventType.BREW_GUIDE_UPDATED_EVENT) as
       | BrewGuideUpdatedEvent
       | undefined
-    expect(updatedEvent).toBeDefined()
+
+    const expected = {
+      event: EventType.BREW_GUIDE_UPDATED_EVENT,
+      data: {
+        name: updatedName,
+      },
+    }
+
+    expect(updatedEvent).toMatchObject(expected)
+    // updated event only has updated fields stored
+    expect(updatedEvent.data.overview).toBeUndefined()
   })
 
   it('deletes and registers a deleted event', () => {
     const brewGuide = BrewGuide.create({
       name: BrewGuideName.create({value: 'Test Brew Guide'}),
-      recipeId: RecipeId.create(),
+      recipeId: EntityId.create(),
     })
     brewGuide.delete()
 
     const deletedEvent = brewGuide.events.find(event => event.event === EventType.BREW_GUIDE_DELETED_EVENT)
     expect(deletedEvent).toBeDefined()
-  })
-
-  it('should mark all fields when created', () => {
-    const input: Required<BrewGuideAttributes> = {
-      name: BrewGuideName.create({value: 'Test BrewGuide'}),
-      recipeId: RecipeId.create(EntityId.create()),
-      overview: BrewGuideOverview.create({value: 'This is an overview'}),
-      instructions: BrewGuideInstructions.create({value: [{type: 'time', note: 'Step 1'}]}),
-    }
-
-    const brewGuide = BrewGuide.create(input)
-    ;(Object.keys(input) as Array<keyof typeof input>).forEach(key => {
-      expect(brewGuide.markedFields.get(key)).toBeDefined()
-    })
   })
 
   it('can be created with instructions', () => {
@@ -85,14 +88,20 @@ describe('BrewGuide', () => {
 
     const brewGuide = BrewGuide.create({
       name: BrewGuideName.create({value: 'Test BrewGuide'}),
-      recipeId: RecipeId.create(EntityId.create()),
+      recipeId: EntityId.create(),
       instructions: BrewGuideInstructions.create({value: instructions}),
     })
 
     expect(brewGuide.instructions.value).toBe(instructions)
-    expect(brewGuide.markedFields.get('instructions')).toBe(instructions)
 
     const createdEvent = brewGuide.events.find(event => event.event === EventType.BREW_GUIDE_CREATED_EVENT)
-    expect(createdEvent.data.instructions).toBe(instructions)
+
+    const expected = {
+      event: EventType.BREW_GUIDE_CREATED_EVENT,
+      data: {
+        instructions,
+      },
+    }
+    expect(createdEvent).toMatchObject(expected)
   })
 })
