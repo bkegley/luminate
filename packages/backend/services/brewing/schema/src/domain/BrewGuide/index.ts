@@ -50,7 +50,7 @@ export class BrewGuide extends AggregateRoot<BrewGuideAttributes> {
   }
 
   public static create(attrs: BrewGuideAttributes, id?: EntityId) {
-    const brewGuide = new BrewGuide(attrs)
+    const brewGuide = new BrewGuide(attrs, id)
     const isNew = !!id === false
 
     if (isNew) {

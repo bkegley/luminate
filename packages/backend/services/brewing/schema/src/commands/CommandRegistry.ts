@@ -1,13 +1,24 @@
-import {CommandType, ICommandHandler, ICommandRegistry} from '.'
-import {CreateBrewerCommandHandler, DeleteBrewerCommandHandler, UpdateBrewerCommandHandler} from './Brewer'
-import {CreateBrewGuideCommandHander} from './BrewGuide'
 import {
+  CommandType,
+  CreateBrewGuideCommandHander,
+  CreateBrewerCommandHandler,
+  CreateBrewingSessionCommandHandler,
   CreateEvaluationCommandHandler,
-  UpdateEvaluationCommandHandler,
+  CreateGrinderCommandHandler,
+  CreateRecipeCommandHandler,
+  DeleteBrewGuideCommandHandler,
+  DeleteBrewerCommandHandler,
+  DeleteBrewingSessionCommandHandler,
   DeleteEvaluationCommandHandler,
-} from './Evaluation'
-import {CreateGrinderCommandHandler, UpdateGrinderCommandHandler, DeleteGrinderCommandHandler} from './Grinder'
-import {CreateRecipeCommandHandler} from './Recipe'
+  DeleteGrinderCommandHandler,
+  ICommandHandler,
+  ICommandRegistry,
+  UpdateBrewGuideCommandHandler,
+  UpdateBrewerCommandHandler,
+  UpdateBrewingSessionCommandHandler,
+  UpdateEvaluationCommandHandler,
+  UpdateGrinderCommandHandler,
+} from '.'
 import {IEventRegistry} from '../infra'
 import {
   IBrewerRepository,
@@ -15,11 +26,8 @@ import {
   IRecipeRepository,
   IBrewGuideRepository,
   IEvaluationRepository,
+  IBrewingSessionRepository,
 } from '../repositories'
-import {CreateBrewingSessionCommandHandler, DeleteBrewingSessionCommandHandler} from './BrewingSession'
-import {IBrewingSessionRepository} from '../repositories/IBrewingSessionRepository'
-import {UpdateBrewingSessionCommandHandler} from './BrewingSession/UpdateBrewingSessionCommandHandler'
-import {UpdateBrewGuideCommandHandler} from './BrewGuide/UpdateBrewGuideCommandHandler'
 
 export class CommandRegistry implements ICommandRegistry {
   private handlerRegistry: Map<CommandType, any> = new Map()
@@ -62,10 +70,10 @@ export class CommandRegistry implements ICommandRegistry {
       new UpdateBrewGuideCommandHandler(this.eventRegistry, this.brewGuideRepo),
     )
 
-    //this.handlerRegistry.set(
-    //CommandType.DELETE_BREW_GUIDE_COMMAND,
-    //new DeleteBrewGuideCommandHandler(this.eventRegistry, this.brewGuideRepo),
-    //)
+    this.handlerRegistry.set(
+      CommandType.DELETE_BREW_GUIDE_COMMAND,
+      new DeleteBrewGuideCommandHandler(this.eventRegistry, this.brewGuideRepo),
+    )
 
     // BrewingSession Handlers
     this.handlerRegistry.set(
