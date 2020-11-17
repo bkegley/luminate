@@ -1,5 +1,5 @@
 export interface BrewGuideDTO {
-  id?: string
+  id: string
   name?: string
   recipeId: string
 }

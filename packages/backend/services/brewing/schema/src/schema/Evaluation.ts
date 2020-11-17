@@ -6,9 +6,11 @@ import {
   CommandType,
   UpdateEvaluationCommand,
   DeleteEvaluationCommand,
+  ICreateEvaluationCommandHandler,
+  IUpdateEvaluationCommandHandler,
+  IDeleteEvaluationCommandHandler,
 } from '../commands'
 import {TYPES} from '../utils'
-import {Evaluation} from '../domain/Evaluation'
 import {EvaluationMapper} from '../mappers'
 import {IEvaluationsView} from '../views'
 
@@ -64,21 +66,23 @@ const resolvers: Resolvers = {
       const createEvaluationCommand = new CreateEvaluationCommand(input)
       const evaluation = await container
         .resolve<ICommandRegistry>(TYPES.CommandRegistry)
-        .process<CreateEvaluationCommand, Evaluation>(CommandType.CREATE_EVALUATION_COMMAND, createEvaluationCommand)
+        .process<ICreateEvaluationCommandHandler>(CommandType.CREATE_EVALUATION_COMMAND, createEvaluationCommand)
       return EvaluationMapper.toDTO(evaluation)
     },
     updateEvaluation: async (parent, {id, input}, {container}) => {
       const updateEvaluationCommand = new UpdateEvaluationCommand(id, input)
       const evaluation = await container
         .resolve<ICommandRegistry>(TYPES.CommandRegistry)
-        .process<CreateEvaluationCommand, Evaluation>(CommandType.UPDATE_EVALUATION_COMMAND, updateEvaluationCommand)
+        .process<IUpdateEvaluationCommandHandler>(CommandType.UPDATE_EVALUATION_COMMAND, updateEvaluationCommand)
       return EvaluationMapper.toDTO(evaluation)
     },
     deleteEvaluation: async (parent, {id}, {container}) => {
       const deleteEvaluationCommand = new DeleteEvaluationCommand(id)
-      return container
+      const evaluation = await container
         .resolve<ICommandRegistry>(TYPES.CommandRegistry)
-        .process<DeleteEvaluationCommand, boolean>(CommandType.DELETE_EVALUATION_COMMAND, deleteEvaluationCommand)
+        .process<IDeleteEvaluationCommandHandler>(CommandType.DELETE_EVALUATION_COMMAND, deleteEvaluationCommand)
+
+      return !!evaluation
     },
   },
 }

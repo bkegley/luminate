@@ -6,9 +6,11 @@ import {
   CreateGrinderCommand,
   UpdateGrinderCommand,
   DeleteGrinderCommand,
+  ICreateGrinderCommandHandler,
+  IUpdateGrinderCommandHandler,
+  IDeleteGrinderCommandHandler,
 } from '../commands'
 import {TYPES} from '../utils'
-import {Grinder} from '../domain/Grinder'
 import {GrinderMapper} from '../mappers'
 import {IGrindersView} from '../views'
 
@@ -77,7 +79,7 @@ const resolvers: Resolvers = {
 
       const grinder = await container
         .resolve<ICommandRegistry>(TYPES.CommandRegistry)
-        .process<CreateGrinderCommand, Grinder>(CommandType.CREATE_GRINDER_COMMAND, createGrinderCommand)
+        .process<ICreateGrinderCommandHandler>(CommandType.CREATE_GRINDER_COMMAND, createGrinderCommand)
 
       return GrinderMapper.toDTO(grinder)
     },
@@ -86,7 +88,7 @@ const resolvers: Resolvers = {
 
       const grinder = await container
         .resolve<ICommandRegistry>(TYPES.CommandRegistry)
-        .process<UpdateGrinderCommand, Grinder>(CommandType.UPDATE_GRINDER_COMMAND, updateGrinderCommand)
+        .process<IUpdateGrinderCommandHandler>(CommandType.UPDATE_GRINDER_COMMAND, updateGrinderCommand)
 
       return GrinderMapper.toDTO(grinder)
     },
@@ -95,12 +97,9 @@ const resolvers: Resolvers = {
 
       const grinder = await container
         .resolve<ICommandRegistry>(TYPES.CommandRegistry)
-        .process(CommandType.DELETE_GRINDER_COMMAND, deleteGrinderCommand)
+        .process<IDeleteGrinderCommandHandler>(CommandType.DELETE_GRINDER_COMMAND, deleteGrinderCommand)
 
-      if (!grinder) {
-        return false
-      }
-      return true
+      return !!grinder
     },
   },
 }

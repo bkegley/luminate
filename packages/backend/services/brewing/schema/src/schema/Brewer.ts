@@ -1,9 +1,17 @@
 import {gql} from 'apollo-server-express'
 import {Resolvers} from '../types'
-import {ICommandRegistry, CommandType, CreateBrewerCommand, UpdateBrewerCommand, DeleteBrewerCommand} from '../commands'
+import {
+  ICommandRegistry,
+  CommandType,
+  CreateBrewerCommand,
+  UpdateBrewerCommand,
+  DeleteBrewerCommand,
+  ICreateBrewerCommandHandler,
+  IUpdateBrewerCommandHandler,
+  IDeleteBrewerCommandHandler,
+} from '../commands'
 import {TYPES} from '../utils'
 import {IBrewersView} from '../views'
-import {Brewer} from '../domain/Brewer'
 import {BrewerMapper} from '../mappers/BrewerMapper'
 
 const typeDefs = gql`
@@ -72,7 +80,7 @@ const resolvers: Resolvers = {
 
       const brewer = await container
         .resolve<ICommandRegistry>(TYPES.CommandRegistry)
-        .process<CreateBrewerCommand, Brewer>(CommandType.CREATE_BREWER_COMMAND, createBrewerCommand)
+        .process<ICreateBrewerCommandHandler>(CommandType.CREATE_BREWER_COMMAND, createBrewerCommand)
 
       return BrewerMapper.toDTO(brewer)
     },
@@ -81,7 +89,7 @@ const resolvers: Resolvers = {
 
       const brewer = await container
         .resolve<ICommandRegistry>(TYPES.CommandRegistry)
-        .process<UpdateBrewerCommand, Brewer>(CommandType.UPDATE_BREWER_COMMAND, updateBrewerCommand)
+        .process<IUpdateBrewerCommandHandler>(CommandType.UPDATE_BREWER_COMMAND, updateBrewerCommand)
 
       return BrewerMapper.toDTO(brewer)
     },
@@ -90,7 +98,7 @@ const resolvers: Resolvers = {
 
       const brewer = await container
         .resolve<ICommandRegistry>(TYPES.CommandRegistry)
-        .process(CommandType.DELETE_BREWER_COMMAND, deleteBrewerCommand)
+        .process<IDeleteBrewerCommandHandler>(CommandType.DELETE_BREWER_COMMAND, deleteBrewerCommand)
 
       if (!brewer) {
         return false

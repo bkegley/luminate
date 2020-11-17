@@ -1,6 +1,6 @@
 import {gql} from 'apollo-server-express'
 import {Resolvers} from '../types'
-import {ICommandRegistry, CommandType} from '../commands'
+import {ICommandRegistry, CommandType, ICreateRecipeCommandHandler} from '../commands'
 import {TYPES} from '../utils'
 import {CreateRecipeCommand} from '../commands/Recipe/CreateRecipeCommand'
 import {RecipeMapper} from '../mappers'
@@ -69,12 +69,11 @@ const resolvers: Resolvers = {
     },
   },
   Mutation: {
-    //@ts-ignore
     createRecipe: async (parent, {input}, {container}) => {
       const createRecipeCommand = new CreateRecipeCommand(input)
       return container
         .resolve<ICommandRegistry>(TYPES.CommandRegistry)
-        .process<CreateRecipeCommand, Recipe>(CommandType.CREATE_RECIPE_COMMAND, createRecipeCommand)
+        .process<ICreateRecipeCommandHandler>(CommandType.CREATE_RECIPE_COMMAND, createRecipeCommand)
     },
   },
 }

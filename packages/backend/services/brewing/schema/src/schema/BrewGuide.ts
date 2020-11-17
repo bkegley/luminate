@@ -1,8 +1,9 @@
 import {gql} from 'apollo-server-express'
 import {Resolvers} from '../types'
-import {ICommandRegistry, CommandType, CreateBrewGuideCommand} from '../commands'
+import {ICommandRegistry, CommandType, CreateBrewGuideCommand, ICreateBrewGuideCommandHandler} from '../commands'
 import {TYPES} from '../utils'
 import {IBrewGuidesView} from '../views'
+import {BrewGuideMapper} from '../mappers'
 
 const typeDefs = gql`
   type BrewGuide {
@@ -57,9 +58,11 @@ const resolvers: Resolvers = {
   Mutation: {
     createBrewGuide: async (parent, {input}, {container}) => {
       const createBrewGuideCommand = new CreateBrewGuideCommand(input)
-      return container
+      const brewGuide = await container
         .resolve<ICommandRegistry>(TYPES.CommandRegistry)
-        .process(CommandType.CREATE_BREW_GUIDE_COMMAND, createBrewGuideCommand)
+        .process<ICreateBrewGuideCommandHandler>(CommandType.CREATE_BREW_GUIDE_COMMAND, createBrewGuideCommand)
+
+      return BrewGuideMapper.toDTO(brewGuide)
     },
   },
 }

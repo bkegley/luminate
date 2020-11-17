@@ -6,9 +6,11 @@ import {
   CommandType,
   UpdateBrewingSessionCommand,
   DeleteBrewingSessionCommand,
+  IUpdateBrewingSessionCommandHandler,
+  ICreateBrewingSessionCommandHandler,
+  IDeleteBrewingSessionCommandHandler,
 } from '../commands'
 import {TYPES} from '../utils'
-import {BrewingSession} from '../domain/BrewingSession'
 import {BrewingSessionMapper} from '../mappers'
 import {IBrewingSessionsView} from '../views'
 
@@ -67,7 +69,7 @@ const resolvers: Resolvers = {
       const createBrewingSessionCommand = new CreateBrewingSessionCommand(input)
       const brewingSession = await container
         .resolve<ICommandRegistry>(TYPES.CommandRegistry)
-        .process<CreateBrewingSessionCommand, BrewingSession>(
+        .process<ICreateBrewingSessionCommandHandler>(
           CommandType.CREATE_BREWING_SESSION_COMMAND,
           createBrewingSessionCommand,
         )
@@ -77,7 +79,7 @@ const resolvers: Resolvers = {
       const updateBrewingSessionCommand = new UpdateBrewingSessionCommand(id, input)
       const brewingSession = await container
         .resolve<ICommandRegistry>(TYPES.CommandRegistry)
-        .process<UpdateBrewingSessionCommand, BrewingSession>(
+        .process<IUpdateBrewingSessionCommandHandler>(
           CommandType.UPDATE_BREWING_SESSION_COMMAND,
           updateBrewingSessionCommand,
         )
@@ -85,12 +87,13 @@ const resolvers: Resolvers = {
     },
     deleteBrewingSession: async (parent, {id}, {container}) => {
       const deleteBrewingSessionCommand = new DeleteBrewingSessionCommand(id)
-      return container
+      const brewingSession = await container
         .resolve<ICommandRegistry>(TYPES.CommandRegistry)
-        .process<UpdateBrewingSessionCommand, boolean>(
+        .process<IDeleteBrewingSessionCommandHandler>(
           CommandType.DELETE_BREWING_SESSION_COMMAND,
           deleteBrewingSessionCommand,
         )
+      return !!brewingSession
     },
   },
 }

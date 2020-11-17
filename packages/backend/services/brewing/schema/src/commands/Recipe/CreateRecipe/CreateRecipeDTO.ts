@@ -1,6 +1,7 @@
 import {Brewer, Grinder} from '../../../types'
 
 export interface CreateRecipeDTO {
+  id: string
   name: string
   brewer: Brewer
   grinder: Grinder
