@@ -1,7 +1,7 @@
 import {Container} from '../src/utils/Container'
 import {Producer} from 'kafka-node'
 import {TYPES} from '../src/utils/types'
-import {ICommandRegistry, CommandType, CreateEvaluationCommand} from '../src/commands'
+import {ICommandRegistry, CommandType, CreateEvaluationCommand, ICreateEvaluationCommandHandler} from '../src/commands'
 import {CreateEvaluationInput} from '../src/types'
 import {EventType} from '../src/domain/EventType'
 import {buildCommandTestContainer} from './buildCommandTestContainer'
@@ -30,7 +30,7 @@ describe('CreateEvaluationCommand', () => {
 
     await container
       .resolve<ICommandRegistry>(TYPES.CommandRegistry)
-      .process<CreateEvaluationCommand, any>(CommandType.CREATE_EVALUATION_COMMAND, createEvaluationCommand)
+      .process<ICreateEvaluationCommandHandler>(CommandType.CREATE_EVALUATION_COMMAND, createEvaluationCommand)
       .then(() => {
         const sentMessagePayloads = send.mock.calls[0][0]
         const data = JSON.parse(sentMessagePayloads[0].messages)

@@ -8,10 +8,11 @@ export class GrinderUpdatedEvent implements IGrinderUpdatedEvent {
   data: IGrinderUpdatedEventData
 
   constructor(grinder: Grinder) {
-    const updatedFields = Object.fromEntries([...grinder.markedFields])
     this.data = {
       id: grinder.id.toString(),
-      ...updatedFields,
+      name: grinder.name.value,
+      description: grinder.description?.value,
+      burrSet: grinder.burrSet?.value,
     }
   }
 }

@@ -1,10 +1,9 @@
-import {Brewer, Grinder} from '../../../types'
+import {Brewer} from '../../../domain/Brewer'
+import {Grinder} from '../../../domain/Grinder'
+import {Recipe} from '../../../domain/Recipe'
 
 export interface CreateRecipeDTO {
-  id: string
-  name: string
+  recipe: Recipe
   brewer: Brewer
   grinder: Grinder
-  grindSetting?: number
-  note?: string
 }

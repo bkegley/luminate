@@ -2,7 +2,7 @@ import {UpdateBrewerInput} from '../../../types'
 import {BrewerName} from '../../../domain/Brewer/BrewerName'
 import {EntityId} from '../../../shared'
 import {BrewerDescription} from '../../../domain/Brewer/BrewerDescription'
-import {BrewerType, BrewerTypeEnum} from '../../../domain/Brewer/BrewerType'
+import {BrewerType} from '../../../domain/Brewer/BrewerType'
 
 export class UpdateBrewerCommand {
   id: EntityId
@@ -22,7 +22,7 @@ export class UpdateBrewerCommand {
     }
 
     if (input.type) {
-      this.type = BrewerType.create({value: (input.type as unknown) as BrewerTypeEnum})
+      this.type = BrewerType.create({value: input.type})
     }
   }
 }

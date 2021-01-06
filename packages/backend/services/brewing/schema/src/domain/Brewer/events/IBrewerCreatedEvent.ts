@@ -1,11 +1,11 @@
 import {IEvent} from '../../IEvent'
-import {BrewerTypeEnum} from '../BrewerType'
+import {BrewerTypeOption} from '../BrewerType'
 
 export interface IBrewerCreatedEventData {
   id: string
   name: string
   description?: string
-  type?: BrewerTypeEnum
+  type?: BrewerTypeOption
 }
 
 export interface IBrewerCreatedEvent extends IEvent<IBrewerCreatedEventData> {}

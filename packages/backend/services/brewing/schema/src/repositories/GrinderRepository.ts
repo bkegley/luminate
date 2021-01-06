@@ -40,6 +40,7 @@ export class InMemoryGrinderRepository implements IGrinderRepository {
         }
         case EventType.BREWER_UPDATED_EVENT: {
           const eventData = data.data as GrinderUpdatedEvent['data']
+          // @ts-ignore
           const grinder = GrinderMapper.toDomain(eventData)
           await this.save(grinder, grinder.getEntityId())
           break

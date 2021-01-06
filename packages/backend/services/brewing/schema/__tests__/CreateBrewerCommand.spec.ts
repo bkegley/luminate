@@ -1,17 +1,12 @@
 import {Container} from '../src/utils/Container'
 import {Producer} from 'kafka-node'
 import {TYPES} from '../src/utils/types'
-import {
-  ICommandRegistry,
-  CommandType,
-  CreateBrewingSessionCommand,
-  ICreateBrewingSessionCommandHandler,
-} from '../src/commands'
-import {CreateBrewingSessionInput} from '../src/types'
+import {ICommandRegistry, CommandType, CreateBrewerCommand} from '../src/commands'
+import {CreateBrewerInput} from '../src/types'
 import {EventType} from '../src/domain/EventType'
 import {buildCommandTestContainer} from './buildCommandTestContainer'
 
-describe('CreateBrewingSessionCommand', () => {
+describe('CreateBrewerCommand', () => {
   let container: Container
 
   beforeEach(() => {
@@ -22,37 +17,36 @@ describe('CreateBrewingSessionCommand', () => {
     container = null
   })
 
-  it('correctly handles a CreateBrewingSessionCommand by publishing a BrewingSessionCreatedEvent', async () => {
+  it('correctly handles a CreateBrewerCommand by publishing a BrewerCommandEvent', async () => {
     expect.assertions(1)
-    const input: CreateBrewingSessionInput = {
-      date: '2020-10-29',
+    const brewerName = 'Test Brewer'
+    const input: CreateBrewerInput = {
+      name: brewerName,
     }
 
-    const createBrewingSessionCommand = new CreateBrewingSessionCommand(input)
+    const createBrewerCommand = new CreateBrewerCommand(input)
 
     const producer = container.resolve<Producer>(TYPES.KafkaProducer)
     const send = jest.spyOn(producer, 'send')
 
     await container
       .resolve<ICommandRegistry>(TYPES.CommandRegistry)
-      .process<ICreateBrewingSessionCommandHandler>(
-        CommandType.CREATE_BREWING_SESSION_COMMAND,
-        createBrewingSessionCommand,
-      )
+      .process(CommandType.CREATE_BREWER_COMMAND, createBrewerCommand)
       .then(() => {
         const sentMessagePayloads = send.mock.calls[0][0]
         const data = JSON.parse(sentMessagePayloads[0].messages)
 
         const expected = {
-          event: EventType.BREWING_SESSION_CREATED_EVENT,
+          event: EventType.BREWER_CREATED_EVENT,
           data: {
-            date: new Date(input.date).toString(),
+            name: brewerName,
           },
         }
 
         expect(data).toMatchObject(expected)
       })
       .catch(err => {
+        console.log({err})
         expect(err).toBeUndefined()
       })
   })

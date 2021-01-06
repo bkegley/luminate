@@ -4,6 +4,7 @@ import {EventType} from '../EventType'
 import {GrinderCreatedEvent} from './events/GrinderCreatedEvent'
 import {GrinderUpdatedEvent} from './events/GrinderUpdatedEvent'
 import {EntityId} from '../../shared'
+import {GrinderDescription} from './GrinderDescription'
 
 describe('Grinder', () => {
   it('can be created with default values and registers a created event', () => {
@@ -32,9 +33,12 @@ describe('Grinder', () => {
 
   it('updates and registers an updated event', () => {
     const name = 'Test Grinder'
-    const grinder = Grinder.create({name: GrinderName.create({value: name})}, EntityId.create())
+    const grinder = Grinder.create(
+      {name: GrinderName.create({value: name}), description: GrinderDescription.create({value: 'Test'})},
+      EntityId.create(),
+    )
 
-    const updatedName = 'Updated Brew'
+    const updatedName = 'Updated Grinder'
     grinder.update({name: GrinderName.create({value: updatedName})})
 
     expect(grinder.name.value).toBe(updatedName)
@@ -58,7 +62,8 @@ describe('Grinder', () => {
 
     expect(updatedEvent).toMatchObject(expected)
     // updated event only has updated fields stored
-    expect(updatedEvent.data.description).toBeUndefined()
+    // If we decide to not "markFields" this won't be true
+    //expect(updatedEvent.data.description).toBeUndefined()
   })
 
   it('deletes and registers a deleted event', () => {

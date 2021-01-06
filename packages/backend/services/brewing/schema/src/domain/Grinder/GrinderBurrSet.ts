@@ -1,13 +1,9 @@
 import {Entity} from '../../shared'
 
-export enum GrinderBurrSetEnum {
-  CONICAL_BURR = 'CONICAL_BURR',
-  FLAT_BURR = 'FLAT_BURR',
-  BLADE = 'BLADE',
-}
+export type GrinderBurrSetOption = 'CONICAL_BURR' | 'FLAT_BURR' | 'BLADE'
 
 export interface GrinderBurrSetAttributes {
-  value: GrinderBurrSetEnum
+  value: GrinderBurrSetOption
 }
 
 export class GrinderBurrSet extends Entity<GrinderBurrSetAttributes> {

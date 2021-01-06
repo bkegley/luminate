@@ -2,7 +2,7 @@ import {UpdateGrinderInput} from '../../../types'
 import {GrinderName} from '../../../domain/Grinder/GrinderName'
 import {EntityId} from '../../../shared'
 import {GrinderDescription} from '../../../domain/Grinder/GrinderDescription'
-import {GrinderBurrSet, GrinderBurrSetEnum} from '../../../domain/Grinder/GrinderBurrSet'
+import {GrinderBurrSet} from '../../../domain/Grinder/GrinderBurrSet'
 
 export class UpdateGrinderCommand {
   id: EntityId
@@ -22,7 +22,7 @@ export class UpdateGrinderCommand {
     }
 
     if (input.burrSet) {
-      this.burrSet = GrinderBurrSet.create({value: (input.burrSet as unknown) as GrinderBurrSetEnum})
+      this.burrSet = GrinderBurrSet.create({value: input.burrSet})
     }
   }
 }

@@ -8,7 +8,6 @@ import {EntityId} from '../../../shared'
 import {GrinderGrindSetting} from '../../../domain/Recipe/GrinderGrindSetting'
 import {RecipeNote} from '../../../domain/Recipe/RecipeNote'
 import {CreateRecipeDTO} from './CreateRecipeDTO'
-import {BrewerMapper, RecipeMapper, GrinderMapper} from '../../../mappers'
 import {WaterWeight} from '../../../domain/Recipe/WaterWeight'
 import {CoffeeWeight} from '../../../domain/Recipe/CoffeeWeight'
 import {Weight} from '../../../domain/Weight'
@@ -70,9 +69,9 @@ export class CreateRecipeCommandHandler implements ICreateRecipeCommandHandler {
           this.eventRegistry.markAggregateForPublish(recipe)
           this.eventRegistry.publishEvents()
           resolve({
-            ...RecipeMapper.toDTO(recipe),
-            brewer: BrewerMapper.toDTO(brewer),
-            grinder: GrinderMapper.toDTO(grinder),
+            recipe,
+            brewer,
+            grinder,
           })
         })
         .catch(reject)

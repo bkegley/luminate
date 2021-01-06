@@ -1,14 +1,9 @@
 import {Entity} from '../../shared'
 
-export enum BrewerTypeEnum {
-  POUROVER = 'POUROVER',
-  AUTODRIP = 'AUTODRIP',
-  FULL_IMMERSION = 'FULL_IMMERSION',
-  ESPRESSO = 'ESPRESSO',
-}
+export type BrewerTypeOption = 'AUTODRIP' | 'FULL_IMMERSION' | 'POUROVER' | 'ESPRESSO'
 
 export interface BrewerTypeAttributes {
-  value: BrewerTypeEnum
+  value: BrewerTypeOption
 }
 
 export class BrewerType extends Entity<BrewerTypeAttributes> {

@@ -1,10 +1,10 @@
 import {gql} from 'apollo-server-express'
 import {Resolvers} from '../types'
-import {ICommandRegistry, CommandType, ICreateRecipeCommandHandler} from '../commands'
+import {ICommandRegistry, CommandType, ICreateRecipeCommandHandler, CreateRecipeCommand} from '../commands'
 import {TYPES} from '../utils'
-import {CreateRecipeCommand} from '../commands/Recipe/CreateRecipeCommand'
-import {RecipeMapper} from '../mappers'
+import {RecipeMapper, BrewerMapper, GrinderMapper} from '../mappers'
 import {Recipe} from '../domain/Recipe'
+import {RecipeDTO} from '../dtos'
 
 const typeDefs = gql`
   type Recipe {
@@ -57,7 +57,6 @@ const typeDefs = gql`
 const resolvers: Resolvers = {
   Query: {
     listRecipes: async (parent, args, context) => {
-      console.log('we are here')
       return {
         pageInfo: {
           hasNextPage: false,
@@ -71,9 +70,21 @@ const resolvers: Resolvers = {
   Mutation: {
     createRecipe: async (parent, {input}, {container}) => {
       const createRecipeCommand = new CreateRecipeCommand(input)
-      return container
+      const response = await container
         .resolve<ICommandRegistry>(TYPES.CommandRegistry)
         .process<ICreateRecipeCommandHandler>(CommandType.CREATE_RECIPE_COMMAND, createRecipeCommand)
+
+      const [recipe, brewer, grinder] = [
+        RecipeMapper.toDTO(response.recipe),
+        BrewerMapper.toDTO(response.brewer),
+        GrinderMapper.toDTO(response.grinder),
+      ]
+
+      return {
+        ...(recipe as Required<RecipeDTO>),
+        grinder,
+        brewer,
+      }
     },
   },
 }
