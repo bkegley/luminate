@@ -1,7 +1,7 @@
 import {Container} from '../src/utils/Container'
 import {Producer} from 'kafka-node'
 import {TYPES} from '../src/utils/types'
-import {ICommandRegistry, CommandType, CreateBrewGuideDTO, CreateBrewGuideCommand} from '../src/commands'
+import {ICommandRegistry, CommandType, CreateBrewGuideCommand, ICreateBrewGuideCommandHandler} from '../src/commands'
 import {CreateBrewGuideInput} from '../src/types'
 import {EventType} from '../src/domain/EventType'
 import {buildCommandTestContainer} from './buildCommandTestContainer'
@@ -42,10 +42,7 @@ describe('CreateBrewGuideCommand', () => {
 
     await container
       .resolve<ICommandRegistry>(TYPES.CommandRegistry)
-      .process<CreateBrewGuideCommand, CreateBrewGuideDTO>(
-        CommandType.CREATE_BREW_GUIDE_COMMAND,
-        createBrewGuideCommand,
-      )
+      .process<ICreateBrewGuideCommandHandler>(CommandType.CREATE_BREW_GUIDE_COMMAND, createBrewGuideCommand)
       .then(() => {
         const sentMessagePayloads = send.mock.calls[0][0]
         const data = JSON.parse(sentMessagePayloads[0].messages)

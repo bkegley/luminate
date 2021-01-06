@@ -46,6 +46,7 @@ export class GrindersView implements IGrindersView {
   }
 
   private handleGrinderUpdateEvent(data: GrinderUpdatedEvent) {
+    // @ts-ignore
     this.grinders = this.grinders.map(grinder => (grinder.id === data.data.id ? {...grinder, ...data.data} : grinder))
   }
 

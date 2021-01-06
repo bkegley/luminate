@@ -8,7 +8,7 @@ import {
   IGrinderRepository,
   InMemoryGrinderRepository,
 } from '../src/repositories'
-import {CreateRecipeCommand, CreateRecipeDTO} from '../src/commands/Recipe'
+import {CreateRecipeCommand, ICreateRecipeCommandHandler} from '../src/commands/Recipe'
 import {CreateRecipeInput} from '../src/types'
 import {Brewer} from '../src/domain/Brewer'
 import {BrewerName} from '../src/domain/Brewer/BrewerName'
@@ -61,7 +61,7 @@ describe('CreateRecipeCommand', () => {
 
     await container
       .resolve<ICommandRegistry>(TYPES.CommandRegistry)
-      .process<CreateRecipeCommand, CreateRecipeDTO>(CommandType.CREATE_RECIPE_COMMAND, createRecipeCommand)
+      .process<ICreateRecipeCommandHandler>(CommandType.CREATE_RECIPE_COMMAND, createRecipeCommand)
       .then(() => {
         const sentMessagePayloads = send.mock.calls[0][0]
         const data = JSON.parse(sentMessagePayloads[0].messages)

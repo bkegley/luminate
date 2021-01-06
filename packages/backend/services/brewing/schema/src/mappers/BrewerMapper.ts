@@ -3,19 +3,18 @@ import {Brewer} from '../domain/Brewer'
 import {BrewerName} from '../domain/Brewer/BrewerName'
 import {BrewerDTO} from '../dtos'
 import {BrewerDescription} from '../domain/Brewer/BrewerDescription'
-import {BrewerType, BrewerTypeEnum} from '../domain/Brewer/BrewerType'
-import {BrewerType as BrewerTypeDTO} from '../types'
+import {BrewerType as BrewerTypeEntity} from '../domain/Brewer/BrewerType'
+import {BrewerType} from '../types'
 
 export class BrewerMapper {
-  public static toDomain(brewerDTO: BrewerDTO) {
+  public static toDomain(obj: any) {
     return Brewer.create(
       {
-        name: BrewerName.create({value: brewerDTO.name}),
-        description: brewerDTO.description ? BrewerDescription.create({value: brewerDTO.description}) : null,
-        type: brewerDTO.type ? BrewerType.create({value: (brewerDTO.type as unknown) as BrewerTypeEnum}) : null,
+        name: BrewerName.create({value: obj.name}),
+        description: obj.description ? BrewerDescription.create({value: obj.description}) : undefined,
+        type: obj.type ? BrewerTypeEntity.create({value: obj.type}) : undefined,
       },
-      //TODO: I'm not sure if this should check for provided id
-      EntityId.create(brewerDTO.id),
+      obj.id ? EntityId.create(obj.id) : undefined,
     )
   }
 
@@ -24,7 +23,7 @@ export class BrewerMapper {
       id: brewer.id.toString(),
       name: brewer.name.value,
       description: brewer.description?.value,
-      type: (brewer.type?.value as unknown) as BrewerTypeDTO,
+      type: (brewer.type?.value as unknown) as BrewerType,
     }
   }
 

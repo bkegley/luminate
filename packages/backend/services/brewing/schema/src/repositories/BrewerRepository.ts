@@ -33,7 +33,6 @@ export class InMemoryBrewerRepository implements IBrewerRepository {
       switch (data.event) {
         case EventType.BREWER_CREATED_EVENT: {
           const eventData = data.data as BrewerCreatedEvent['data']
-          // @ts-ignore
           const brewer = BrewerMapper.toDomain(eventData)
           await this.save(brewer)
           break

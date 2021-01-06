@@ -1,6 +1,6 @@
 import {Container, TYPES} from '../src/utils'
 import {buildCommandTestContainer} from './buildCommandTestContainer'
-import {DeleteBrewGuideCommand, ICommandRegistry, CommandType} from '../src/commands'
+import {DeleteBrewGuideCommand, ICommandRegistry, CommandType, IDeleteBrewGuideCommandHandler} from '../src/commands'
 import {Producer} from 'kafka-node'
 import {InMemoryBrewGuideRepository, IBrewGuideRepository} from '../src/repositories'
 import {EntityId} from '../src/shared'
@@ -43,7 +43,7 @@ describe('DeleteBrewGuideCommand', () => {
 
     await container
       .resolve<ICommandRegistry>(TYPES.CommandRegistry)
-      .process<DeleteBrewGuideCommand, boolean>(CommandType.DELETE_BREW_GUIDE_COMMAND, deleteBrewGuideCommand)
+      .process<IDeleteBrewGuideCommandHandler>(CommandType.DELETE_BREW_GUIDE_COMMAND, deleteBrewGuideCommand)
       .then(() => {
         const messagePayload = send.mock.calls[0][0]
         const message = JSON.parse(messagePayload[0].messages)
@@ -65,7 +65,7 @@ describe('DeleteBrewGuideCommand', () => {
 
     await container
       .resolve<ICommandRegistry>(TYPES.CommandRegistry)
-      .process<DeleteBrewGuideCommand, BrewGuide>(CommandType.DELETE_BREW_GUIDE_COMMAND, deleteBrewGuideCommand)
+      .process<IDeleteBrewGuideCommandHandler>(CommandType.DELETE_BREW_GUIDE_COMMAND, deleteBrewGuideCommand)
       .then(res => {
         expect(res).toBeUndefined()
       })

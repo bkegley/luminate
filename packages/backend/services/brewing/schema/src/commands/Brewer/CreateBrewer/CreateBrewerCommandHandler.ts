@@ -2,6 +2,7 @@ import {CreateBrewerCommand, ICreateBrewerCommandHandler} from '.'
 import {Brewer} from '../../../domain/Brewer'
 import {IEventRegistry} from '../../../infra'
 import {IBrewerRepository} from '../../../repositories/IBrewerRepository'
+import {BrewerMapper} from '../../../mappers'
 
 export class CreateBrewerCommandHandler implements ICreateBrewerCommandHandler {
   private eventRegistry: IEventRegistry
@@ -21,7 +22,7 @@ export class CreateBrewerCommandHandler implements ICreateBrewerCommandHandler {
         return
       }
 
-      const brewer = Brewer.create(command)
+      const brewer = BrewerMapper.toDomain(command)
 
       this.brewerRepo
         .save(brewer)

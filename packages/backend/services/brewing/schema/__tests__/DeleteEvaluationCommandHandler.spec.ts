@@ -1,6 +1,6 @@
 import {Container, TYPES} from '../src/utils'
 import {buildCommandTestContainer} from './buildCommandTestContainer'
-import {DeleteEvaluationCommand, ICommandRegistry, CommandType} from '../src/commands'
+import {DeleteEvaluationCommand, ICommandRegistry, CommandType, IDeleteEvaluationCommandHandler} from '../src/commands'
 import {Producer} from 'kafka-node'
 import {InMemoryEvaluationRepository, IEvaluationRepository} from '../src/repositories'
 import {EntityId} from '../src/shared'
@@ -36,7 +36,7 @@ describe('DeleteEvaluationCommand', () => {
 
     await container
       .resolve<ICommandRegistry>(TYPES.CommandRegistry)
-      .process<DeleteEvaluationCommand, boolean>(CommandType.DELETE_EVALUATION_COMMAND, deleteEvaluationCommand)
+      .process<IDeleteEvaluationCommandHandler>(CommandType.DELETE_EVALUATION_COMMAND, deleteEvaluationCommand)
       .then(() => {
         const messagePayload = send.mock.calls[0][0]
         const message = JSON.parse(messagePayload[0].messages)
@@ -58,7 +58,7 @@ describe('DeleteEvaluationCommand', () => {
 
     await container
       .resolve<ICommandRegistry>(TYPES.CommandRegistry)
-      .process<DeleteEvaluationCommand, boolean>(CommandType.DELETE_EVALUATION_COMMAND, deleteEvaluationCommand)
+      .process<IDeleteEvaluationCommandHandler>(CommandType.DELETE_EVALUATION_COMMAND, deleteEvaluationCommand)
       .then(res => {
         expect(res).toBeUndefined()
       })

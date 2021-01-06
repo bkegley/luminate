@@ -12,7 +12,7 @@ export interface GrinderAttributes {
   burrSet?: GrinderBurrSet
 }
 
-export class Grinder extends AggregateRoot<any> {
+export class Grinder extends AggregateRoot<GrinderAttributes> {
   private constructor(attrs: GrinderAttributes, id?: EntityId) {
     super(attrs, id)
   }
@@ -38,10 +38,16 @@ export class Grinder extends AggregateRoot<any> {
   }
 
   public update(attrs: Partial<GrinderAttributes>) {
-    ;(Object.keys(attrs) as Array<keyof GrinderAttributes>).forEach(key => {
-      this.attrs[key] = attrs[key]
+    // TODO: Figure out if we're going to use the concept of markedFields
 
-      this.markedFields.set(key, attrs[key].value)
+    //;(Object.keys(attrs) as Array<keyof GrinderAttributes>).forEach(key => {
+    //this.attrs[key] = attrs[key]
+
+    //this.markedFields.set(key, attrs[key].value)
+    //})
+    ;(Object.keys(attrs) as Array<keyof GrinderAttributes>).map(key => {
+      // @ts-ignore enum doesn't match the string union type
+      this.attrs[key] = attrs[key]
     })
     this.registerEvent(new GrinderUpdatedEvent(this))
   }

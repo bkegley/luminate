@@ -40,7 +40,9 @@ export class Brewer extends AggregateRoot<BrewerAttributes> {
       // @ts-ignore
       this.attrs[key] = attrs[key]
 
-      this.markedFields.set(key, this.attrs[key].value)
+      if (attrs[key]) {
+        this.markedFields.set(key, this.attrs[key].value)
+      }
     })
 
     this.registerEvent(new BrewerUpdatedEvent(this))
@@ -52,7 +54,9 @@ export class Brewer extends AggregateRoot<BrewerAttributes> {
 
     if (isNew) {
       ;(Object.keys(attrs) as Array<keyof BrewerAttributes>).forEach(key => {
-        brewer.markedFields.set(key, attrs[key].value)
+        if (attrs[key]) {
+          brewer.markedFields.set(key, attrs[key].value)
+        }
       })
       brewer.registerEvent(new BrewerCreatedEvent(brewer))
     }

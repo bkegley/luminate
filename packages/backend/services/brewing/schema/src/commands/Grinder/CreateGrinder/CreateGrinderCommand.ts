@@ -1,7 +1,7 @@
 import {CreateGrinderInput} from '../../../types'
 import {GrinderName} from '../../../domain/Grinder/GrinderName'
 import {GrinderDescription} from '../../../domain/Grinder/GrinderDescription'
-import {GrinderBurrSet, GrinderBurrSetEnum} from '../../../domain/Grinder/GrinderBurrSet'
+import {GrinderBurrSet} from '../../../domain/Grinder/GrinderBurrSet'
 
 export class CreateGrinderCommand {
   name: GrinderName
@@ -18,7 +18,7 @@ export class CreateGrinderCommand {
     }
 
     if (input.burrSet) {
-      this.burrSet = GrinderBurrSet.create({value: (input.burrSet as unknown) as GrinderBurrSetEnum})
+      this.burrSet = GrinderBurrSet.create({value: input.burrSet})
     }
   }
 }

@@ -46,6 +46,7 @@ export class BrewersView implements IBrewersView {
   }
 
   private handleBrewerUpdateEvent(data: BrewerUpdatedEvent) {
+    // @ts-ignore
     this.brewers = this.brewers.map(brewer => (brewer.id === data.data.id ? {...brewer, ...data.data} : brewer))
   }
 
