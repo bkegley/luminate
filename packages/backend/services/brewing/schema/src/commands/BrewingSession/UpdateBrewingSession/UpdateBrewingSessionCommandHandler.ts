@@ -1,23 +1,37 @@
 import {UpdateBrewingSessionCommand, IUpdateBrewingSessionCommandHandler} from '.'
 import {BrewingSession, BrewingSessionAttributes} from '../../../domain/BrewingSession'
 import {IEventRegistry} from '../../../infra'
-import {IBrewingSessionRepository} from '../../../repositories'
+import {IBrewingSessionRepository, IBrewGuideRepository} from '../../../repositories'
 import {DateEntity} from '../../../domain/Date'
 import {BrewingSessionDescription} from '../../../domain/BrewingSession/BrewingSessionDescription'
 
 export class UpdateBrewingSessionCommandHandler implements IUpdateBrewingSessionCommandHandler {
-  constructor(private eventRegistry: IEventRegistry, private brewingSessionRepo: IBrewingSessionRepository) {}
+  constructor(
+    private eventRegistry: IEventRegistry,
+    private brewingSessionRepo: IBrewingSessionRepository,
+    private brewGuideRepo: IBrewGuideRepository,
+  ) {}
 
   public handle(command: UpdateBrewingSessionCommand) {
     return new Promise<BrewingSession>(async (resolve, reject) => {
-      const brewingSession = await this.brewingSessionRepo.getById(command.id)
+      const [brewingSession, brewGuide] = await Promise.all([
+        this.brewingSessionRepo.getById(command.id),
+        this.brewGuideRepo.getById(command.brewGuideId),
+      ])
 
       if (!brewingSession) {
         reject('BrewingSession does not exist')
         return
       }
 
-      const attrs: BrewingSessionAttributes = {}
+      if (!brewGuide) {
+        reject('BrewGuide does not exist')
+        return
+      }
+
+      const attrs: BrewingSessionAttributes = {
+        brewGuideId: brewGuide.getEntityId(),
+      }
 
       if (command.date) {
         const date = DateEntity.create({value: command.date})

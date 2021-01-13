@@ -8,6 +8,7 @@ import {BrewingSessionCreatedEvent} from './events/BrewingSessionCreatedEvent'
 export interface BrewingSessionAttributes {
   date?: DateEntity
   description?: BrewingSessionDescription
+  brewGuideId: EntityId
 }
 
 export class BrewingSession extends AggregateRoot<BrewingSessionAttributes> {
@@ -21,6 +22,10 @@ export class BrewingSession extends AggregateRoot<BrewingSessionAttributes> {
 
   public get date() {
     return this.attrs.date
+  }
+
+  public get brewGuideId() {
+    return this.attrs.brewGuideId
   }
 
   public delete() {

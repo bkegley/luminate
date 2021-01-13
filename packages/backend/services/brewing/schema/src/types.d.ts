@@ -66,6 +66,7 @@ export type BrewingSession = {
   id: Scalars['ID']
   date?: Maybe<Scalars['String']>
   description?: Maybe<Scalars['String']>
+  brewGuide?: Maybe<BrewGuide>
 }
 
 export type BrewingSessionConnection = {
@@ -105,6 +106,7 @@ export type CreateBrewGuideInput = {
 export type CreateBrewingSessionInput = {
   date?: Maybe<Scalars['String']>
   description?: Maybe<Scalars['String']>
+  brewGuideId?: Maybe<Scalars['ID']>
 }
 
 export type CreateCuppingSessionInput = {
@@ -578,6 +580,7 @@ export type UpdateBrewGuideInput = {
 export type UpdateBrewingSessionInput = {
   date?: Maybe<Scalars['String']>
   description?: Maybe<Scalars['String']>
+  brewGuideId?: Maybe<Scalars['ID']>
 }
 
 export type UpdateCuppingSessionInput = {
@@ -1029,6 +1032,7 @@ export type BrewingSessionResolvers<
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
   date?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  brewGuide?: Resolver<Maybe<ResolversTypes['BrewGuide']>, ParentType, ContextType>
 }>
 
 export type CuppingSessionConnectionResolvers<
