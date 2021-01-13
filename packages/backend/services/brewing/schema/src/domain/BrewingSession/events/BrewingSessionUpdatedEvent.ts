@@ -12,6 +12,7 @@ export class BrewingSessionUpdatedEvent implements IBrewingSessionDeletedEvent {
     const updatedFields = Object.fromEntries([...brewingSession.markedFields])
     this.data = {
       id: brewingSession.id,
+      brewGuideId: brewingSession.brewGuideId.toString(),
       ...updatedFields,
     }
   }
