@@ -12,6 +12,7 @@ export class BrewingSessionMapper {
         description: brewingSessionDTO.description
           ? BrewingSessionDescription.create({value: brewingSessionDTO.description})
           : null,
+        brewGuideId: EntityId.create(brewingSessionDTO.brewGuideId),
       },
       //TODO: I'm not sure if this should check for provided id
       EntityId.create(brewingSessionDTO.id),
@@ -23,6 +24,7 @@ export class BrewingSessionMapper {
       id: brewingSession.id.toString(),
       date: brewingSession.date.value?.toString(),
       description: brewingSession.description?.value,
+      brewGuideId: brewingSession.brewGuideId.toString(),
     }
   }
 
