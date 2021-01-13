@@ -19,6 +19,7 @@ const typeDefs = gql`
     id: ID!
     date: String
     description: String
+    brewGuide: BrewGuide
   }
 
   type BrewingSessionConnection {
@@ -34,11 +35,13 @@ const typeDefs = gql`
   input CreateBrewingSessionInput {
     date: String
     description: String
+    brewGuideId: ID
   }
 
   input UpdateBrewingSessionInput {
     date: String
     description: String
+    brewGuideId: ID
   }
 
   extend type Query {

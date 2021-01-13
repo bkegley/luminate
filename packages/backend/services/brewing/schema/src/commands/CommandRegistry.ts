@@ -78,12 +78,12 @@ export class CommandRegistry implements ICommandRegistry {
     // BrewingSession Handlers
     this.handlerRegistry.set(
       CommandType.CREATE_BREWING_SESSION_COMMAND,
-      new CreateBrewingSessionCommandHandler(this.eventRegistry, this.brewingSessionRepo),
+      new CreateBrewingSessionCommandHandler(this.eventRegistry, this.brewingSessionRepo, this.brewGuideRepo),
     )
 
     this.handlerRegistry.set(
       CommandType.UPDATE_BREWING_SESSION_COMMAND,
-      new UpdateBrewingSessionCommandHandler(this.eventRegistry, this.brewingSessionRepo),
+      new UpdateBrewingSessionCommandHandler(this.eventRegistry, this.brewingSessionRepo, this.brewGuideRepo),
     )
 
     this.handlerRegistry.set(
