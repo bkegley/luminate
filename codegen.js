@@ -41,16 +41,16 @@ const serverGenerates = {
     plugins: ['typescript'],
   },
   'packages/backend/services/identity/schema/src/types.d.ts': {
-    schema: ['./packages/backend/services/identity/schema/src/schema/**/!(index.ts)*.ts'],
+    schema: ['./packages/backend/services/identity/schema/src/application/schema/**/!(index.ts)*.ts'],
     plugins: ['typescript', 'typescript-resolvers'],
     config: {
       contextType: './startServer#Context',
       useIndexSignature: true,
       federation: true,
       mappers: {
-        Role: './models#RoleDocument',
-        User: './models#UserDocument',
-        Me: './models#UserDocument',
+        Role: './infra/models#RoleDocument',
+        User: './infra/models#UserDocument',
+        Me: './infra/models#UserDocument',
       },
     },
   },

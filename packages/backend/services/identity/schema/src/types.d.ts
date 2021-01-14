@@ -1,5 +1,5 @@
 import {GraphQLResolveInfo} from 'graphql'
-import {RoleDocument, UserDocument} from './models'
+import {RoleDocument, UserDocument} from './infra/models'
 import {Context} from './startServer'
 export type Maybe<T> = T | null
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>

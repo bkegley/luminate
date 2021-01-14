@@ -6,7 +6,7 @@ import {ApolloServer} from 'apollo-server-express'
 import {buildFederatedSchema} from '@apollo/federation'
 import express from 'express'
 
-import {schemas} from './schema'
+import {schemas} from './application/schema'
 import {AccountService, RoleService, UserService} from './services'
 import {seedDatabase} from './seedDatabase'
 import {Container} from './utils'
@@ -15,7 +15,7 @@ import {parseUserFromRequest} from '@luminate/graphql-utils'
 import {KafkaClient, Producer} from 'kafka-node'
 const PORT = process.env.PORT || 3001
 import {TYPES} from './utils/types'
-import {ICommandRegistry, CommandRegistry} from './commands'
+import {ICommandRegistry, CommandRegistry} from './application/commands'
 import {
   IRolesProjection,
   RolesProjection,
@@ -23,8 +23,8 @@ import {
   UsersProjection,
   IAccountsProjection,
   IUsersProjection,
-} from './projections'
-import {AccountsRepo, IAccountsRepo, IUsersRepo, IRolesRepo, RolesRepo, UsersRepo} from './repos'
+} from './infra/projections'
+import {AccountsRepo, IAccountsRepo, IUsersRepo, IRolesRepo, RolesRepo, UsersRepo} from './infra/repos'
 
 export interface Context {
   res: express.Response

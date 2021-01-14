@@ -1,4 +1,4 @@
-import {RoleModel} from './models'
+import {RoleModel} from './infra/models'
 import {ScopeOperations, ScopeResources} from '@luminate/mongo-utils'
 
 export const seedDatabase = async () => {
