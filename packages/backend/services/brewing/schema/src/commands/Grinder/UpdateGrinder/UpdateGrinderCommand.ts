@@ -1,6 +1,6 @@
 import {UpdateGrinderInput} from '../../../types'
 import {GrinderName} from '../../../domain/Grinder/GrinderName'
-import {EntityId} from '../../../shared'
+import {EntityId} from '@luminate/services-shared'
 import {GrinderDescription} from '../../../domain/Grinder/GrinderDescription'
 import {GrinderBurrSet} from '../../../domain/Grinder/GrinderBurrSet'
 

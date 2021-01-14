@@ -3,7 +3,7 @@ import {BrewGuideName} from './BrewGuideName'
 import {EventType} from '../EventType'
 import {BrewGuideCreatedEvent} from './events/BrewGuideCreatedEvent'
 import {BrewGuideUpdatedEvent} from './events/BrewGuideUpdatedEvent'
-import {EntityId} from '../../shared'
+import {EntityId} from '@luminate/services-shared'
 import {InstructionStep, BrewGuideInstructions} from './BrewGuideInstructions'
 
 describe('BrewGuide', () => {

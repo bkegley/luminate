@@ -1,4 +1,4 @@
-import {Entity} from '../../shared'
+import {Entity} from '@luminate/services-shared'
 
 export type BrewerTypeOption = 'AUTODRIP' | 'FULL_IMMERSION' | 'POUROVER' | 'ESPRESSO'
 

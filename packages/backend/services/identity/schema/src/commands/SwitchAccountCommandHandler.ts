@@ -3,33 +3,25 @@ import {Producer} from 'kafka-node'
 import {SwitchAccountCommand} from './SwitchAccountCommand'
 import {AccountSwitchFailedEvent, AccountSwitchedEvent} from '../events'
 import jwt from 'jsonwebtoken'
-import {IUsersAggregate, IRolesAggregate, IAccountsAggregate} from '../aggregates'
+import {IAccountsRepo, IUsersRepo, IRolesRepo} from '../repos'
 
 const USER_AUTH_TOKEN = process.env.USER_AUTH_TOKEN || 'localsecrettoken'
 
 export class SwitchAccountCommandHandler implements ICommandHandler<SwitchAccountCommand, string | null> {
-  private producer: Producer
-  private accountsAggregate: IAccountsAggregate
-  private usersAggregate: IUsersAggregate
-  private rolesAggregate: IRolesAggregate
-
   constructor(
-    producer: Producer,
-    accountsAggregate: IAccountsAggregate,
-    usersAggregate: IUsersAggregate,
-    rolesAggregate: IRolesAggregate,
-  ) {
-    this.producer = producer
-    this.accountsAggregate = accountsAggregate
-    this.usersAggregate = usersAggregate
-    this.rolesAggregate = rolesAggregate
-  }
+    private producer: Producer,
+    private accountsRepo: IAccountsRepo,
+    private usersRepo: IUsersRepo,
+    private rolesRepo: IRolesRepo,
+  ) {}
 
   public async handle(command: SwitchAccountCommand) {
     const {user: token, accountId} = command
 
-    const user = await this.usersAggregate.getUser(token.jti)
+    const user = await this.usersRepo.getById(token.jti)
 
+    // TODO: fix after fixing repo return types
+    // @ts-ignore
     const newAccount = user?.accounts.find(account => account.toString() === accountId.toString())
 
     if (!user || !newAccount) {
@@ -46,21 +38,33 @@ export class SwitchAccountCommandHandler implements ICommandHandler<SwitchAccoun
       })
     }
 
+    // TODO: fix after fixing repo return types
+    // @ts-ignore
     const accountRoles = user.roles.find(role => role.account.toString() === accountId.toString())
 
     const [userAccounts, userRoles] = await Promise.all([
-      this.accountsAggregate.listAccounts({id: user.accounts}),
-      this.rolesAggregate.listRoles({id: accountRoles ? accountRoles.roles : []}),
+      this.accountsRepo.list({id: user.accounts}),
+      this.rolesRepo.list({id: accountRoles ? accountRoles.roles : []}),
     ])
 
+    // TODO: fix after fixing repo return types
+    // @ts-ignore
     const accounts = userAccounts?.map(account => ({id: account.id.toString() as string, name: account.name})) || []
+    // TODO: fix after fixing repo return types
+    // @ts-ignore
     const account = accounts?.find(account => account.id === newAccount.toString()) || {}
 
+    // TODO: fix after fixing repo return types
+    // @ts-ignore
     const roles = userRoles?.map(role => ({id: role.id.toString() as string, name: role.name}))
 
     const scopes =
+      // TODO: fix after fixing repo return types
+      // @ts-ignore
       userRoles?.reduce((acc, role) => {
         const scopes = role.scopes
+        // TODO: fix after fixing repo return types
+        // @ts-ignore
         const newScopes = scopes?.filter(scope => !acc.find(existingScope => existingScope === scope))
         return acc.concat(newScopes || [])
       }, [] as string[]) || []

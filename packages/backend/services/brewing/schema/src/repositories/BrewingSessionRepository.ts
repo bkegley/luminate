@@ -1,5 +1,5 @@
 import {IBrewingSessionRepository} from './IBrewingSessionRepository'
-import {EntityId} from '../shared'
+import {EntityId} from '@luminate/services-shared'
 import {BrewingSession} from '../domain/BrewingSession'
 import {BrewingSessionDTO} from '../dtos'
 import {BrewingSessionMapper} from '../mappers'
@@ -34,20 +34,20 @@ export class InMemoryBrewingSessionRepository implements IBrewingSessionReposito
       const data = JSON.parse(message.value as string)
 
       switch (data.event) {
-        case EventType.BREWING_SESSION_CREATED_EVENT: {
+        case EventType.BREWER_CREATED_EVENT: {
           const eventData = data.data as BrewingSessionCreatedEvent['data']
           // @ts-ignore
           const brewingSession = BrewingSessionMapper.toDomain(eventData)
           await this.save(brewingSession)
           break
         }
-        case EventType.BREWING_SESSION_UPDATED_EVENT: {
+        case EventType.BREWER_UPDATED_EVENT: {
           const eventData = data.data as BrewingSessionUpdatedEvent['data']
           const brewingSession = BrewingSessionMapper.toDomain(eventData)
           await this.save(brewingSession, brewingSession.getEntityId())
           break
         }
-        case EventType.BREWING_SESSION_DELETED_EVENT: {
+        case EventType.BREWER_DELETED_EVENT: {
           const eventData = data.data as BrewingSessionDeletedEvent['data']
           await this.delete(eventData.id)
           break

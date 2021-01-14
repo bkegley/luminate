@@ -1,23 +1,17 @@
 import {ICommandHandler} from './ICommandHandler'
 import {Producer} from 'kafka-node'
-import {IUsersAggregate} from '../aggregates'
 import {UserLoggedOutEvent, LogoutFailedEvent} from '../events'
 import {LogoutUserCommand} from './LogoutUserCommand'
+import {IUsersRepo} from '../repos'
 
 export class LogoutUserCommandHandler implements ICommandHandler<LogoutUserCommand, boolean> {
-  private producer: Producer
-  private usersAggregate: IUsersAggregate
-
-  constructor(producer: Producer, usersAggregate: IUsersAggregate) {
-    this.producer = producer
-    this.usersAggregate = usersAggregate
-  }
+  constructor(private producer: Producer, private usersRepo: IUsersRepo) {}
 
   public async handle(command: LogoutUserCommand) {
     const {username} = command
 
     // check for existing user
-    const user = await this.usersAggregate.getByUsername(username)
+    const user = await this.usersRepo.getByUsername(username)
     if (!user) {
       const logoutFailedEvent = new LogoutFailedEvent(username)
 

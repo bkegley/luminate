@@ -13,14 +13,6 @@ import {Container} from './utils'
 import {createMongoConnection, Token} from '@luminate/mongo-utils'
 import {parseUserFromRequest} from '@luminate/graphql-utils'
 import {KafkaClient, Producer} from 'kafka-node'
-import {
-  AccountsAggregate,
-  IAccountsAggregate,
-  RolesAggregate,
-  IRolesAggregate,
-  IUsersAggregate,
-  UsersAggregate,
-} from './aggregates'
 const PORT = process.env.PORT || 3001
 import {TYPES} from './utils/types'
 import {ICommandRegistry, CommandRegistry} from './commands'
@@ -32,6 +24,7 @@ import {
   IAccountsProjection,
   IUsersProjection,
 } from './projections'
+import {AccountsRepo, IAccountsRepo, IUsersRepo, IRolesRepo, RolesRepo, UsersRepo} from './repos'
 
 export interface Context {
   res: express.Response
@@ -81,13 +74,9 @@ class Server {
       )
     })
 
-    const accountsAggregate = new AccountsAggregate()
-    const usersAggregate = new UsersAggregate()
-    const rolesAggregate = new RolesAggregate()
-
-    this.container.bind<IAccountsAggregate>(TYPES.AccountsAggregate, accountsAggregate)
-    this.container.bind<IUsersAggregate>(TYPES.UsersAggregate, usersAggregate)
-    this.container.bind<IRolesAggregate>(TYPES.RolesAggregate, rolesAggregate)
+    this.container.bind<IAccountsRepo>(TYPES.AccountsRepo, () => new AccountsRepo())
+    this.container.bind<IUsersRepo>(TYPES.UsersRepo, () => new UsersRepo())
+    this.container.bind<IRolesRepo>(TYPES.RolesRepo, () => new RolesRepo())
 
     const accountsProjection = new AccountsProjection()
     const usersProjection = new UsersProjection()
@@ -99,12 +88,13 @@ class Server {
 
     this.container.bind<ICommandRegistry>(
       TYPES.CommandRegistry,
-      new CommandRegistry(
-        this.container.resolve(TYPES.KafkaProducer),
-        accountsAggregate,
-        usersAggregate,
-        rolesAggregate,
-      ),
+      resolver =>
+        new CommandRegistry(
+          this.container.resolve(TYPES.KafkaProducer),
+          resolver.resolve(TYPES.AccountsRepo),
+          resolver.resolve(TYPES.UsersRepo),
+          resolver.resolve(TYPES.RolesRepo),
+        ),
     )
 
     const server = new ApolloServer({
@@ -149,8 +139,8 @@ class Server {
         new AccountService(
           resolver.resolve(TYPES.User),
           resolver.resolve(TYPES.KafkaProducer),
-          resolver.resolve(TYPES.AccountsAggregate),
-          resolver.resolve(TYPES.UsersAggregate),
+          resolver.resolve(TYPES.AccountsRepo),
+          resolver.resolve(TYPES.UsersRepo),
         ),
     )
 

@@ -1,17 +1,11 @@
 import {ICommandHandler, DeleteUserCommand} from '.'
 import {Producer} from 'kafka-node'
-import {IUsersAggregate} from '../aggregates'
 import {UserDocument} from '../models'
 import {UserDeletedEvent} from '../events'
+import {IUsersRepo} from '../repos'
 
 export class DeleteUserCommandHandler implements ICommandHandler<DeleteUserCommand, UserDocument> {
-  private producer: Producer
-  private usersAggregate: IUsersAggregate
-
-  constructor(producer: Producer, usersAggregate: IUsersAggregate) {
-    this.producer = producer
-    this.usersAggregate = usersAggregate
-  }
+  constructor(private producer: Producer, private usersRepo: IUsersRepo) {}
 
   public async handle(command: DeleteUserCommand) {
     const {id} = command
@@ -27,7 +21,7 @@ export class DeleteUserCommandHandler implements ICommandHandler<DeleteUserComma
      * Query path and store necessary validation data in memory.
      */
 
-    const existingUser = await this.usersAggregate.getUser(id)
+    const existingUser = await this.usersRepo.getById(id)
 
     if (!existingUser) {
       throw new Error('User not found')

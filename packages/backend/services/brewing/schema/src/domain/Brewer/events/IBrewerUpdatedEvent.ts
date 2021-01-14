@@ -1,5 +1,5 @@
-import {IEvent} from '../../IEvent'
 import {BrewerTypeOption} from '../BrewerType'
+import {IDomainEvent} from '../../DomainEvent'
 
 export interface IBrewerUpdatedEventData {
   id: string
@@ -8,4 +8,4 @@ export interface IBrewerUpdatedEventData {
   type?: BrewerTypeOption
 }
 
-export interface IBrewerUpdatedEvent extends IEvent<IBrewerUpdatedEventData> {}
+export interface IBrewerUpdatedEvent extends IDomainEvent<IBrewerUpdatedEventData> {}

@@ -3,7 +3,7 @@ import {IEventRegistry} from '../../../infra'
 import {IBrewGuideRepository} from '../../../repositories/IBrewGuideRepository'
 import {BrewGuide} from '../../../domain/BrewGuide'
 import {BrewGuideName} from '../../../domain/BrewGuide/BrewGuideName'
-import {EntityId} from '../../../shared'
+import {EntityId} from '@luminate/services-shared'
 import {IRecipeRepository} from '../../../repositories'
 
 export class CreateBrewGuideCommandHander implements ICreateBrewGuideCommandHandler {

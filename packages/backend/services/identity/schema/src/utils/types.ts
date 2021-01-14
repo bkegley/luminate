@@ -1,16 +1,23 @@
 export const TYPES = {
-  AccountService: Symbol('AccountService'),
-  AccountsAggregate: Symbol('AccountsAggregate'),
-  AccountsProjection: Symbol('AccountsProjection'),
-  CommandRegistry: Symbol('CommandRegistry'),
+  // Infra
   KafkaClient: Symbol('KafkaClient'),
   KafkaProducer: Symbol('KafkaProducer'),
+  CommandRegistry: Symbol('CommandRegistry'),
+  User: Symbol('User'),
+
+  // Services
+  AccountService: Symbol('AccountService'),
   PersonService: Symbol('PersonService'),
   RoleService: Symbol('RoleService'),
-  RolesAggregate: Symbol('RolesAggregate'),
-  RolesProjection: Symbol('RolesProjection'),
-  User: Symbol('User'),
   UserService: Symbol('UserService'),
-  UsersAggregate: Symbol('UsersAggregate'),
+
+  // Projections
+  AccountsProjection: Symbol('AccountsProjection'),
+  RolesProjection: Symbol('RolesProjection'),
   UsersProjection: Symbol('UsersProjection'),
+
+  // Repos
+  AccountsRepo: Symbol('AccountsRepo'),
+  RolesRepo: Symbol('RolesRepo'),
+  UsersRepo: Symbol('UsersRepo'),
 }

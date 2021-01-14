@@ -1,7 +1,7 @@
-import {IEvent} from '../../IEvent'
+import {IDomainEvent} from '../../DomainEvent'
 
 export interface IGrinderDeletedEventData {
   id: string
 }
 
-export interface IGrinderDeletedEvent extends IEvent<IGrinderDeletedEventData> {}
+export interface IGrinderDeletedEvent extends IDomainEvent<IGrinderDeletedEventData> {}

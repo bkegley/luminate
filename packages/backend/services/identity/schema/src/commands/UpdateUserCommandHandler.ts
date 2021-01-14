@@ -1,17 +1,11 @@
 import {UpdateUserCommand, ICommandHandler} from '.'
 import {Producer} from 'kafka-node'
 import {UserDocument} from '../models'
-import {IUsersAggregate} from '../aggregates'
 import {UserUpdatedEvent} from '../events'
+import {IUsersRepo} from '../repos'
 
 export class UpdateUserCommandHandler implements ICommandHandler<UpdateUserCommand, UserDocument> {
-  private producer: Producer
-  private usersAggregate: IUsersAggregate
-
-  constructor(producer: Producer, usersAggregate: IUsersAggregate) {
-    this.producer = producer
-    this.usersAggregate = usersAggregate
-  }
+  constructor(private producer: Producer, private usersRepo: IUsersRepo) {}
 
   public async handle(command: UpdateUserCommand) {
     const {id, ...remainingUserFields} = command
@@ -26,7 +20,7 @@ export class UpdateUserCommandHandler implements ICommandHandler<UpdateUserComma
      * Query path and store necessary validation data in memory.
      */
 
-    const existingUser = await this.usersAggregate.getUser(command.id)
+    const existingUser = await this.usersRepo.getById(command.id)
 
     if (!existingUser) {
       throw new Error('User not found')

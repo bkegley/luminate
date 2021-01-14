@@ -1,9 +1,9 @@
 import {Entity} from './Entity'
 import {EntityId} from './EntityId'
-import {IEvent} from '../domain/IEvent'
+import {IEvent} from './IEvent'
 
 export abstract class AggregateRoot<T> extends Entity<T> {
-  public readonly events: IEvent<any>[] = []
+  public readonly events: IEvent<any, any>[] = []
 
   public markedFields = new Map<string, any>()
 
@@ -15,7 +15,7 @@ export abstract class AggregateRoot<T> extends Entity<T> {
     return this._id
   }
 
-  public registerEvent<K>(event: IEvent<K>) {
+  public registerEvent<T, K>(event: IEvent<T, K>) {
     this.events.push(event)
   }
 }

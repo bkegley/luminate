@@ -1,5 +1,5 @@
 import {IEvaluationRepository} from './IEvaluationRepository'
-import {EntityId} from '../shared'
+import {EntityId} from '@luminate/services-shared'
 import {Evaluation} from '../domain/Evaluation'
 import {EvaluationDTO} from '../dtos'
 import {EvaluationMapper} from '../mappers'

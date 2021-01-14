@@ -1,4 +1,4 @@
-import {EntityId} from '../shared'
+import {EntityId} from '@luminate/services-shared'
 
 export interface IRepository {
   save(obj: any, id?: EntityId | string): Promise<void>

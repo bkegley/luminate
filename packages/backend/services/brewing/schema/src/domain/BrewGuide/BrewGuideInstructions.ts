@@ -1,4 +1,4 @@
-import {Entity, EntityId} from '../../shared'
+import {Entity, EntityId} from '@luminate/services-shared'
 
 export interface BrewGuideInstructionsAttributes {
   value: InstructionStep[]

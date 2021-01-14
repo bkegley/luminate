@@ -1,7 +1,7 @@
 //import {BrewingSession} from '.'
 //import {BrewingSessionDescription} from './BrewingSessionDescription'
 //import {EventType} from '../EventType'
-//import {EntityId} from '../../shared'
+//import {EntityId} from '@luminate/services-shared'
 //import {BrewingSessionCreatedEvent, BrewingSessionUpdatedEvent} from './events'
 //import {InMemoryBrewGuideRepository, InMemoryRecipeRepository} from '../../repositories'
 //import {BrewGuide} from '../BrewGuide'

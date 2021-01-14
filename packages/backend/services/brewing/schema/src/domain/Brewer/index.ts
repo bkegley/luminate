@@ -1,5 +1,5 @@
 import {BrewerName} from './BrewerName'
-import {AggregateRoot, EntityId} from '../../shared'
+import {AggregateRoot, EntityId} from '@luminate/services-shared'
 import {BrewerCreatedEvent, BrewerDeletedEvent, BrewerUpdatedEvent} from './events'
 import {BrewerType} from './BrewerType'
 import {BrewerDescription} from './BrewerDescription'

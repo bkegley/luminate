@@ -1,5 +1,5 @@
 import {IRepository} from './IRepository'
-import {EntityId} from '../shared'
+import {EntityId} from '@luminate/services-shared'
 import {BrewGuide} from '../domain/BrewGuide'
 import {BrewGuideName} from '../domain/BrewGuide/BrewGuideName'
 

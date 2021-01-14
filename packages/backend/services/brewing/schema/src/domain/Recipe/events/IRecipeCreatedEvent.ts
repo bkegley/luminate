@@ -1,4 +1,4 @@
-import {IEvent} from '../../IEvent'
+import {IDomainEvent} from '../../DomainEvent'
 
 export interface IRecipeCreatedEventData {
   id: string
@@ -9,4 +9,4 @@ export interface IRecipeCreatedEventData {
   note?: string
 }
 
-export interface IRecipeCreatedEvent extends IEvent<IRecipeCreatedEventData> {}
+export interface IRecipeCreatedEvent extends IDomainEvent<IRecipeCreatedEventData> {}

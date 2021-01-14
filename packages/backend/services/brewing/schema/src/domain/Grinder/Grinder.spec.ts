@@ -3,7 +3,7 @@ import {GrinderName} from './GrinderName'
 import {EventType} from '../EventType'
 import {GrinderCreatedEvent} from './events/GrinderCreatedEvent'
 import {GrinderUpdatedEvent} from './events/GrinderUpdatedEvent'
-import {EntityId} from '../../shared'
+import {EntityId} from '@luminate/services-shared'
 import {GrinderDescription} from './GrinderDescription'
 
 describe('Grinder', () => {

@@ -1,6 +1,6 @@
 import {Evaluation} from '../types'
 import {KafkaClient, Consumer} from 'kafka-node'
-import {IEvent} from '../domain/IEvent'
+import {IEvent} from '@luminate/services-shared'
 import {EventType} from '../domain/EventType'
 import {IEvaluationCreatedEvent, IEvaluationUpdatedEvent, IEvaluationDeletedEvent} from '../domain/Evaluation/events'
 import {IEvaluationsView} from './IEvaluationsView'
@@ -26,7 +26,7 @@ export class EvaluationsView implements IEvaluationsView {
       {fromOffset: true},
     )
     consumer.on('message', event => {
-      const data = JSON.parse(event.value as string) as IEvent<any>['data']
+      const data = JSON.parse(event.value as string) as IEvent<any, any>['data']
       switch (data.event) {
         case EventType.EVALUATION_CREATED_EVENT: {
           this.handleEvaluationCreatedEvent(data)

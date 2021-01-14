@@ -1,4 +1,4 @@
-import {AggregateRoot, EntityId} from '../../shared'
+import {AggregateRoot, EntityId} from '@luminate/services-shared'
 import {DateEntity} from '../Date'
 import {EvaluationUpdatedEvent, EvaluationCreatedEvent, EvaluationDeletedEvent} from './events'
 

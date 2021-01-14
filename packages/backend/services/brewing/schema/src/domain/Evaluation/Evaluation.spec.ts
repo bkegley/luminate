@@ -1,7 +1,7 @@
 import {EvaluationAttributes, Evaluation} from '.'
 import {DateEntity} from '../Date'
 import {EventType} from '../EventType'
-import {EntityId} from '../../shared'
+import {EntityId} from '@luminate/services-shared'
 import {EvaluationCreatedEvent, EvaluationUpdatedEvent} from './events'
 
 describe('Evaluation', () => {

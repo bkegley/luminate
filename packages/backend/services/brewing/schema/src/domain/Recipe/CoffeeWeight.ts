@@ -1,4 +1,4 @@
-import {Entity} from '../../shared'
+import {Entity} from '@luminate/services-shared'
 import {Weight} from '../Weight'
 
 export interface CoffeeWeightAttributes {

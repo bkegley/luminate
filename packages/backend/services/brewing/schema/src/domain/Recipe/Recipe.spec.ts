@@ -1,6 +1,6 @@
 import {Recipe} from './index'
 import {RecipeName} from './RecipeName'
-import {EntityId} from '../../shared'
+import {EntityId} from '@luminate/services-shared'
 import {EventType} from '../EventType'
 import {RecipeCreatedEvent, RecipeUpdatedEvent} from './events'
 import {CoffeeWeight} from './CoffeeWeight'

@@ -1,18 +1,12 @@
 import {ICommandHandler} from './ICommandHandler'
 import {Producer} from 'kafka-node'
-import {IAccountsAggregate} from '../aggregates'
 import {DeleteAccountCommand} from './DeleteAccountCommand'
 import {AccountDeletedEvent} from '../events'
 import {AccountDocument} from '../models'
+import {IAccountsRepo} from '../repos'
 
 export class DeleteAccountCommandHandler implements ICommandHandler<DeleteAccountCommand, AccountDocument> {
-  private producer: Producer
-  private accountsAggregate: IAccountsAggregate
-
-  constructor(producer: Producer, accountsAggregate: IAccountsAggregate) {
-    this.producer = producer
-    this.accountsAggregate = accountsAggregate
-  }
+  constructor(private producer: Producer, private accountsRepo: IAccountsRepo) {}
 
   public async handle(command: DeleteAccountCommand) {
     const {id} = command
@@ -28,7 +22,7 @@ export class DeleteAccountCommandHandler implements ICommandHandler<DeleteAccoun
      * Query path and store necessary validation data in memory.
      */
 
-    const existingAccount = this.accountsAggregate.getAccount(id)
+    const existingAccount = this.accountsRepo.getById(id)
 
     if (!existingAccount) {
       throw new Error('Account not found')

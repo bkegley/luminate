@@ -3,7 +3,7 @@ import {IEventRegistry} from '../../../infra'
 import {IBrewGuideRepository} from '../../../repositories'
 import {BrewGuideAttributes, BrewGuide} from '../../../domain/BrewGuide'
 import {BrewGuideName} from '../../../domain/BrewGuide/BrewGuideName'
-import {EntityId} from '../../../shared'
+import {EntityId} from '@luminate/services-shared'
 
 export class UpdateBrewGuideCommandHandler implements IUpdateBrewGuideCommandHandler {
   constructor(private eventRegistry: IEventRegistry, private brewGuideRepo: IBrewGuideRepository) {}

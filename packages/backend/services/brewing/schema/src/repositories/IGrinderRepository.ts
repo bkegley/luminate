@@ -1,4 +1,4 @@
-import {EntityId} from '../shared'
+import {EntityId} from '@luminate/services-shared'
 import {Grinder} from '../domain/Grinder'
 import {GrinderName} from '../domain/Grinder/GrinderName'
 import {IRepository} from './IRepository'
