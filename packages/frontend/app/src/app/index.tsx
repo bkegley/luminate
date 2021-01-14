@@ -2,6 +2,7 @@ import React from 'react'
 import {Switch, Route, useRouteMatch, useLocation} from 'react-router-dom'
 import Home from './Home'
 import Account from './Account'
+import Brewers from './Brewers'
 import Coffees from './Coffees'
 import Countries from './Countries'
 import CuppingSessions from './CuppingSessions'
@@ -17,6 +18,9 @@ const AppRouter = () => {
       </Route>
       <Route path="/account">
         <Account />
+      </Route>
+      <Route path="/brewers">
+        <Brewers />
       </Route>
       <Route path="/coffees">
         <Coffees />
