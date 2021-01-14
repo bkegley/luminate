@@ -2,8 +2,8 @@ import {Producer} from 'kafka-node'
 import {CreateAccountWithOwnerCommand, ICommandHandler} from '.'
 import {IEvent, EventType} from '../events'
 import {AccountDocument, UserDocument, UserModel, AccountModel} from '../models'
-import {IAccountsAggregate, IUsersAggregate, IRolesAggregate} from '../aggregates'
 import bcrypt from 'bcryptjs'
+import {IAccountsRepo, IUsersRepo, IRolesRepo} from '../repos'
 
 const saltRounds = 10
 
@@ -11,26 +11,15 @@ type CreateAccountWithOwnerResponse = AccountDocument & {users: UserDocument[]}
 
 export class CreateAccountWithOwnerCommandHandler
   implements ICommandHandler<CreateAccountWithOwnerCommand, CreateAccountWithOwnerResponse> {
-  private producer: Producer
-  private accountsAggregate: IAccountsAggregate
-  private usersAggregate: IUsersAggregate
-  private rolesAggregate: IRolesAggregate
-
   constructor(
-    producer: Producer,
-    accountsAggregate: IAccountsAggregate,
-    usersAggregate: IUsersAggregate,
-    rolesAggregate: IRolesAggregate,
-  ) {
-    this.producer = producer
-    this.accountsAggregate = accountsAggregate
-    this.usersAggregate = usersAggregate
-    this.rolesAggregate = rolesAggregate
-  }
+    private producer: Producer,
+    private accountsRepo: IAccountsRepo,
+    private usersRepo: IUsersRepo,
+    private rolesRepo: IRolesRepo,
+  ) {}
 
   public async handle(command: CreateAccountWithOwnerCommand) {
     const {name, username, password} = command
-
     /*
      * Validation
      *
@@ -43,10 +32,12 @@ export class CreateAccountWithOwnerCommandHandler
      */
 
     const [existingAccount, existingUser, ownerRole] = await Promise.all([
-      this.accountsAggregate.getAccountByName(name),
-      this.usersAggregate.getByUsername(username),
-      this.rolesAggregate.getRoleByName('Owner'),
+      this.accountsRepo.getByName(name),
+      this.usersRepo.getByUsername(username),
+      this.rolesRepo.getByName('Owner'),
     ])
+
+    console.log({existingAccount, existingUser, ownerRole})
 
     if (existingAccount) {
       throw new Error('Account name taken')

@@ -1,4 +1,4 @@
-import {AggregateRoot, EntityId} from '../../shared'
+import {AggregateRoot, EntityId} from '@luminate/services-shared'
 import {BrewGuideName} from './BrewGuideName'
 import {BrewGuideCreatedEvent} from './events/BrewGuideCreatedEvent'
 import {BrewGuideUpdatedEvent} from './events/BrewGuideUpdatedEvent'

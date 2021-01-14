@@ -1,19 +1,11 @@
 import {ICommandHandler} from './ICommandHandler'
 import {Producer} from 'kafka-node'
-import {IAccountsAggregate, IUsersAggregate} from '../aggregates'
 import {AddUserToAccountCommand} from './AddUserToAccountCommand'
 import {UserAddedToAccountEvent} from '../events'
+import {IAccountsRepo, IUsersRepo} from '../repos'
 
 export class AddUserToAccountCommandHandler implements ICommandHandler<AddUserToAccountCommand, boolean> {
-  private producer: Producer
-  private accountsAggregate: IAccountsAggregate
-  private usersAggregate: IUsersAggregate
-
-  constructor(producer: Producer, accountsAggregate: IAccountsAggregate, usersAggregate: IUsersAggregate) {
-    this.producer = producer
-    this.accountsAggregate = accountsAggregate
-    this.usersAggregate = usersAggregate
-  }
+  constructor(private producer: Producer, private accountsRepo: IAccountsRepo, private usersRepo: IUsersRepo) {}
 
   public async handle(command: AddUserToAccountCommand) {
     const {accountId, userId} = command
@@ -30,8 +22,8 @@ export class AddUserToAccountCommandHandler implements ICommandHandler<AddUserTo
      */
 
     const [existingAccount, existingUser] = await Promise.all([
-      this.accountsAggregate.getAccount(accountId),
-      this.usersAggregate.getUser(userId),
+      this.accountsRepo.getById(accountId),
+      this.usersRepo.getById(userId),
     ])
 
     if (!existingAccount) {

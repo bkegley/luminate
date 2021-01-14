@@ -1,23 +1,17 @@
 import {ICommandHandler} from './ICommandHandler'
 import {Producer} from 'kafka-node'
-import {IRolesAggregate} from '../aggregates'
 import {DeleteRoleCommand} from './DeleteRoleCommand'
 import {RoleDeletedEvent} from '../events'
 import {RoleDocument} from '../models'
+import {IRolesRepo} from '../repos'
 
 export class DeleteRoleCommandHandler implements ICommandHandler<DeleteRoleCommand, RoleDocument> {
-  private producer: Producer
-  private rolesAggregate: IRolesAggregate
-
-  constructor(producer: Producer, rolesAggregate: IRolesAggregate) {
-    this.producer = producer
-    this.rolesAggregate = rolesAggregate
-  }
+  constructor(private producer: Producer, private rolesRepo: IRolesRepo) {}
 
   public async handle(command: DeleteRoleCommand) {
     const {id} = command
 
-    const existingRole = this.rolesAggregate.getRole(id)
+    const existingRole = this.rolesRepo.getById(id)
 
     if (!existingRole) {
       throw new Error('Role not found')

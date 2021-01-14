@@ -1,4 +1,4 @@
-import {EntityId} from '../shared'
+import {EntityId} from '@luminate/services-shared'
 import {BrewingSession} from '../domain/BrewingSession'
 import {BrewingSessionDTO} from '../dtos'
 import {BrewingSessionDescription} from '../domain/BrewingSession/BrewingSessionDescription'

@@ -1,6 +1,6 @@
 import {UpdateBrewerInput} from '../../../types'
 import {BrewerName} from '../../../domain/Brewer/BrewerName'
-import {EntityId} from '../../../shared'
+import {EntityId} from '@luminate/services-shared'
 import {BrewerDescription} from '../../../domain/Brewer/BrewerDescription'
 import {BrewerType} from '../../../domain/Brewer/BrewerType'
 

@@ -1,21 +1,15 @@
 import {ICommandHandler} from './ICommandHandler'
 import {Producer} from 'kafka-node'
-import {IUsersAggregate} from '../aggregates'
 import {UserDocument, UserModel} from '../models'
 import {CreateUserCommand} from './CreateUserCommand'
 import {UserCreatedEvent} from '../events'
 import bcrypt from 'bcryptjs'
+import {IUsersRepo} from '../repos'
 
 const saltRounds = 10
 
 export class CreateUserCommandHandler implements ICommandHandler<CreateUserCommand, UserDocument> {
-  private producer: Producer
-  private usersAggregate: IUsersAggregate
-
-  constructor(producer: Producer, usersAggregate: IUsersAggregate) {
-    this.producer = producer
-    this.usersAggregate = usersAggregate
-  }
+  constructor(private producer: Producer, private usersRepo: IUsersRepo) {}
 
   public async handle(command: CreateUserCommand) {
     /*
@@ -29,7 +23,7 @@ export class CreateUserCommandHandler implements ICommandHandler<CreateUserComma
      * Query path and store necessary validation data in memory.
      */
 
-    const existingUser = await this.usersAggregate.getByUsername(command.username)
+    const existingUser = await this.usersRepo.getByUsername(command.username)
 
     if (existingUser) {
       throw new Error('Username already exists')

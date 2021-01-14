@@ -1,5 +1,5 @@
 import {IGrinderRepository} from './IGrinderRepository'
-import {EntityId} from '../shared'
+import {EntityId} from '@luminate/services-shared'
 import {Grinder} from '../domain/Grinder'
 import {GrinderName} from '../domain/Grinder/GrinderName'
 import {GrinderDTO} from '../dtos'

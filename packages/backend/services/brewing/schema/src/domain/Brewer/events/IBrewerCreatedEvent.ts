@@ -1,4 +1,4 @@
-import {IEvent} from '../../IEvent'
+import {IDomainEvent} from '../../DomainEvent'
 import {BrewerTypeOption} from '../BrewerType'
 
 export interface IBrewerCreatedEventData {
@@ -8,4 +8,4 @@ export interface IBrewerCreatedEventData {
   type?: BrewerTypeOption
 }
 
-export interface IBrewerCreatedEvent extends IEvent<IBrewerCreatedEventData> {}
+export interface IBrewerCreatedEvent extends IDomainEvent<IBrewerCreatedEventData> {}

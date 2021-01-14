@@ -2,9 +2,8 @@ import {AccountDocument, AccountModel, RoleModel, UserModel} from '../models'
 import {AuthenticatedService, Token} from '@luminate/mongo-utils'
 import DataLoader from 'dataloader'
 import {Producer} from 'kafka-node'
-import {CreateAccountWithOwnerCommand} from '../commands'
-import {IAccountsAggregate, IUsersAggregate} from '../aggregates'
 import {CreateAccountInput} from '../types'
+import {IAccountsRepo, IUsersRepo} from '../repos'
 
 interface Loaders {
   byAccountId?: DataLoader<string, AccountDocument | null>
@@ -12,21 +11,16 @@ interface Loaders {
 
 export class AccountService extends AuthenticatedService<AccountDocument> {
   private loaders: Loaders = {}
-  private producer: Producer
-  private accountsAggregate: IAccountsAggregate
-  private usersAggregate: IUsersAggregate
 
   constructor(
     user: Token | null,
-    producer: Producer,
-    accountsAggregate: IAccountsAggregate,
-    usersAggregate: IUsersAggregate,
+    private producer: Producer,
+    private accountsRepo: IAccountsRepo,
+    private usersRepo: IUsersRepo,
   ) {
     super(AccountModel, user)
 
     this.producer = producer
-    this.accountsAggregate = accountsAggregate
-    this.usersAggregate = usersAggregate
 
     this.loaders.byAccountId = new DataLoader<string, AccountDocument | null>(async ids => {
       const accounts = await this.model.find({_id: ids, ...this.getReadConditionsForUser()})
@@ -62,7 +56,7 @@ export class AccountService extends AuthenticatedService<AccountDocument> {
 
   public async create(input: CreateAccountInput) {
     const {name, username, password} = input
-    const existingAccount = await this.accountsAggregate.getAccountByName(name)
+    const existingAccount = await this.accountsRepo.getByName(name)
     if (existingAccount) {
       throw new Error('Account name taken')
     }

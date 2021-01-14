@@ -1,4 +1,4 @@
-import {IEvent} from '../../IEvent'
+import {IDomainEvent} from '../../DomainEvent'
 import {InstructionStep} from '../BrewGuideInstructions'
 
 export interface IBrewGuideCreatedEventData {
@@ -9,4 +9,4 @@ export interface IBrewGuideCreatedEventData {
   instructions?: InstructionStep[]
 }
 
-export interface IBrewGuideCreatedEvent extends IEvent<IBrewGuideCreatedEventData> {}
+export interface IBrewGuideCreatedEvent extends IDomainEvent<IBrewGuideCreatedEventData> {}

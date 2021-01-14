@@ -1,7 +1,7 @@
-import {IEvent} from '../../IEvent'
+import {IDomainEvent} from '../../DomainEvent'
 
 export interface IBrewGuideDeletedEventData {
   id: string
 }
 
-export interface IBrewGuideDeletedEvent extends IEvent<IBrewGuideDeletedEventData> {}
+export interface IBrewGuideDeletedEvent extends IDomainEvent<IBrewGuideDeletedEventData> {}

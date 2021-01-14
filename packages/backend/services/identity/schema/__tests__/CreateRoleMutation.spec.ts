@@ -1,17 +1,10 @@
 import {Container} from '../src/utils/Container'
 import {TYPES} from '../src/utils/types'
 import {Producer, KafkaClient} from 'kafka-node'
-import {
-  IAccountsAggregate,
-  IRolesAggregate,
-  IUsersAggregate,
-  AccountsAggregate,
-  RolesAggregate,
-  UsersAggregate,
-} from '../src/aggregates'
 import {ICommandRegistry, CommandRegistry, CreateRoleCommand, CommandType} from '../src/commands'
 import {EventType} from '../src/events'
 import {Types} from 'mongoose'
+import {IAccountsRepo, IUsersRepo, IRolesRepo, AccountsRepo, RolesRepo, UsersRepo} from '../src/repos'
 
 describe('CreateRoleCommand', () => {
   let container: Container
@@ -25,14 +18,14 @@ describe('CreateRoleCommand', () => {
       resolver =>
         new CommandRegistry(
           resolver.resolve(TYPES.KafkaProducer),
-          resolver.resolve(TYPES.AccountsAggregate),
-          resolver.resolve(TYPES.UsersAggregate),
-          resolver.resolve(TYPES.RolesAggregate),
+          resolver.resolve(TYPES.AccountsRepo),
+          resolver.resolve(TYPES.UsersRepo),
+          resolver.resolve(TYPES.RolesRepo),
         ),
     )
-    container.bind<IAccountsAggregate>(TYPES.AccountsAggregate, new AccountsAggregate())
-    container.bind<IRolesAggregate>(TYPES.RolesAggregate, new RolesAggregate())
-    container.bind<IUsersAggregate>(TYPES.UsersAggregate, new UsersAggregate())
+    container.bind<IAccountsRepo>(TYPES.AccountsRepo, new AccountsRepo())
+    container.bind<IRolesRepo>(TYPES.RolesRepo, new RolesRepo())
+    container.bind<IUsersRepo>(TYPES.UsersRepo, new UsersRepo())
   })
 
   afterEach(() => {

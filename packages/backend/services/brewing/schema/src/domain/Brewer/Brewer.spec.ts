@@ -3,7 +3,7 @@ import {BrewerName} from './BrewerName'
 import {EventType} from '../EventType'
 import {BrewerCreatedEvent} from './events/BrewerCreatedEvent'
 import {BrewerUpdatedEvent} from './events/BrewerUpdatedEvent'
-import {EntityId} from '../../shared'
+import {EntityId} from '@luminate/services-shared'
 
 describe('Brewer', () => {
   it('can be created with default values and registers a created event', () => {

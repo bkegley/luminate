@@ -1,5 +1,5 @@
 import {IRecipeRepository} from './IRecipeRepository'
-import {EntityId} from '../shared'
+import {EntityId} from '@luminate/services-shared'
 import {Recipe} from '../domain/Recipe'
 import {RecipeName} from '../domain/Recipe/RecipeName'
 import {RecipeDTO} from '../dtos'

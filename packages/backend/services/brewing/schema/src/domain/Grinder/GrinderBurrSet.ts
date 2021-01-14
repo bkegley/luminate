@@ -1,4 +1,4 @@
-import {Entity} from '../../shared'
+import {Entity} from '@luminate/services-shared'
 
 export type GrinderBurrSetOption = 'CONICAL_BURR' | 'FLAT_BURR' | 'BLADE'
 

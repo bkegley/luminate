@@ -13,11 +13,11 @@ import {
   ICommandRegistry,
   CommandType,
 } from '../commands'
-import {IUsersAggregate, IAccountsAggregate, IRolesAggregate} from '../aggregates'
 import {UserDocument} from '../models'
 import jwt from 'jsonwebtoken'
 import {Token} from '@luminate/graphql-utils'
 import {IUsersProjection} from '../projections'
+import {IAccountsRepo, IRolesRepo} from '../repos'
 
 const USER_AUTH_TOKEN = process.env.USER_AUTH_TOKEN || 'localsecrettoken'
 
@@ -90,7 +90,6 @@ const typeDefs = gql`
 
   extend type Query {
     listUsers(cursor: String, limit: Int, query: [QueryInput!]): UserConnection!
-    listStations: [Station]
     getUser(id: ID!): User
     me: Me
   }
@@ -105,17 +104,6 @@ const typeDefs = gql`
     logout: Boolean!
     switchAccount(accountId: ID!): Boolean
     refreshToken: Boolean
-  }
-
-  type Station {
-    id: ID!
-    description: String
-    city: City
-  }
-
-  type City {
-    id: ID!
-    name: String
   }
 `
 
@@ -240,16 +228,14 @@ const resolvers: Resolvers = {
       if (!user || !user.account) {
         return null
       }
-      const accountsAggregate = container.resolve<IAccountsAggregate>(TYPES.AccountsAggregate)
-      return accountsAggregate.getAccount(user.account.id)
+      const accountsRepo = container.resolve<IAccountsRepo>(TYPES.AccountsRepo)
+      return accountsRepo.getById(user.account.id)
     },
     accounts: async (parent, args, {container, user}) => {
       if (!user || !user.accounts) {
         return null
       }
-      return container
-        .resolve<IAccountsAggregate>(TYPES.AccountsAggregate)
-        .listAccounts({id: user.accounts.map(account => account.id)})
+      return container.resolve<IAccountsRepo>(TYPES.AccountsRepo).list({id: user.accounts.map(account => account.id)})
     },
     roles: async (parent, args, {user, container}) => {
       console.log({user})
@@ -257,7 +243,7 @@ const resolvers: Resolvers = {
         return null
       }
 
-      return container.resolve<IRolesAggregate>(TYPES.RolesAggregate).listRoles({id: user.roles.map(role => role.id)})
+      return container.resolve<IRolesRepo>(TYPES.RolesRepo).list({id: user.roles.map(role => role.id)})
     },
     scopes: async (parent, args, {user, container}) => {
       return user.scopes ?? []
@@ -271,9 +257,9 @@ const resolvers: Resolvers = {
       return services.user.getById(parent.id)
     },
     accounts: async (parent, args, {container}) => {
-      const accountsAggregate = container.resolve<IAccountsAggregate>(TYPES.AccountsAggregate)
+      const accountsRepo = container.resolve<IAccountsRepo>(TYPES.AccountsRepo)
       const accounts = await Promise.all(
-        parent.accounts.map(async accountId => await accountsAggregate.getAccount((accountId as unknown) as string)),
+        parent.accounts.map(async accountId => await accountsRepo.getById((accountId as unknown) as string)),
       )
 
       return accounts.filter(Boolean)
@@ -285,8 +271,8 @@ const resolvers: Resolvers = {
         return []
       }
 
-      const rolesAggregate = container.resolve<IRolesAggregate>(TYPES.RolesAggregate)
-      return rolesAggregate.listRoles({id: roles.roles})
+      const rolesRepo = container.resolve<IRolesRepo>(TYPES.RolesRepo)
+      return rolesRepo.list({id: roles.roles})
     },
     scopes: async (parent, args, {user, container}) => {
       const accountRoles = parent.roles?.find(role => role.account === user.account?.id)
@@ -295,12 +281,16 @@ const resolvers: Resolvers = {
         return []
       }
 
-      const rolesAggregate = container.resolve<IRolesAggregate>(TYPES.RolesAggregate)
-      const roles = await rolesAggregate.listRoles({id: accountRoles.roles})
+      const rolesRepo = container.resolve<IRolesRepo>(TYPES.RolesRepo)
+      const roles = await rolesRepo.list({id: accountRoles.roles})
 
       return (
+        // TODO: fix this after fixing repo return types
+        // @ts-ignore
         roles?.reduce((acc, role) => {
           const scopes = role.scopes
+          // TODO: fix this after fixing repo return types
+          // @ts-ignore
           const newScopes = scopes?.filter(scope => !acc.find(existingScope => existingScope === scope))
           return acc.concat(newScopes || [])
         }, [] as string[]) || []

@@ -1,26 +1,22 @@
 import {UpdateUserRolesCommand, ICommandHandler} from '.'
 import {Producer} from 'kafka-node'
-import {IUsersAggregate} from '../aggregates'
 import {UserRolesUpdatedEvent} from '../events'
+import {IUsersRepo} from '../repos'
 
 export class UpdateUserRolesCommandHandler implements ICommandHandler<UpdateUserRolesCommand, boolean> {
-  private producer: Producer
-  private usersAggregate: IUsersAggregate
-
-  constructor(producer: Producer, usersAggregate: IUsersAggregate) {
-    this.producer = producer
-    this.usersAggregate = usersAggregate
-  }
+  constructor(private producer: Producer, private usersRepo: IUsersRepo) {}
 
   public async handle(command: UpdateUserRolesCommand) {
     const {id, roles, account} = command
 
-    const user = await this.usersAggregate.getUser(id)
+    const user = await this.usersRepo.getById(id)
 
     if (!user) return false
 
     const userRolesUpdatedEvent = new UserRolesUpdatedEvent({id, roles, account})
 
+    // TODO: fix this after updating repo return types
+    // @ts-ignore
     const updatedUser = {...user, roles: user.roles.map(role => (role.account === account ? {account, roles} : role))}
 
     return new Promise<boolean>((resolve, reject) => {

@@ -1,9 +1,8 @@
-import {AggregateRoot} from '../shared'
+import {AggregateRoot} from '@luminate/services-shared'
 import {IEventRegistry} from '.'
 import {EventType} from '../domain/EventType'
-import {IEvent} from '../domain/IEvent'
 import {Producer} from 'kafka-node'
-import {BrewerCreatedEvent, BrewerUpdatedEvent, BrewerDeletedEvent} from '../domain/Brewer/events'
+import {IBrewerCreatedEvent, IBrewerDeletedEvent, IBrewerUpdatedEvent} from '../domain/Brewer/events'
 import {IBrewGuideCreatedEvent, IBrewGuideUpdatedEvent, IBrewGuideDeletedEvent} from '../domain/BrewGuide/events'
 import {
   IBrewingSessionCreatedEvent,
@@ -11,22 +10,23 @@ import {
   IBrewingSessionDeletedEvent,
 } from '../domain/BrewingSession/events'
 import {IEvaluationCreatedEvent, IEvaluationUpdatedEvent, IEvaluationDeletedEvent} from '../domain/Evaluation/events'
-import {IGrinderCreatedEvent, IGrinderUpdatedEvent, GrinderDeletedEvent} from '../domain/Grinder/events'
+import {IGrinderCreatedEvent, IGrinderUpdatedEvent, IGrinderDeletedEvent} from '../domain/Grinder/events'
 import {IRecipeCreatedEvent, IRecipeDeletedEvent, IRecipeUpdatedEvent} from '../domain/Recipe/events'
+import {IDomainEvent} from '../domain/DomainEvent'
 
 export class EventRegistry implements IEventRegistry {
   private markedAggregates = new Map<string, AggregateRoot<any>>()
-  private eventHandlers = new Map<EventType, (event: IEvent<any>) => void>()
+  private eventHandlers = new Map<EventType, (event: IDomainEvent<any>) => void>()
 
   constructor(private producer: Producer) {
     // Brewer Events
-    this.eventHandlers.set(EventType.BREWER_CREATED_EVENT, (event: IEvent<BrewerCreatedEvent>) => {
+    this.eventHandlers.set(EventType.BREWER_CREATED_EVENT, (event: IBrewerCreatedEvent) => {
       this.publishEvent(event, 'brewers')
     })
-    this.eventHandlers.set(EventType.BREWER_UPDATED_EVENT, (event: IEvent<BrewerUpdatedEvent>) => {
+    this.eventHandlers.set(EventType.BREWER_UPDATED_EVENT, (event: IBrewerUpdatedEvent) => {
       this.publishEvent(event, 'brewers')
     })
-    this.eventHandlers.set(EventType.BREWER_DELETED_EVENT, (event: IEvent<BrewerDeletedEvent>) => {
+    this.eventHandlers.set(EventType.BREWER_DELETED_EVENT, (event: IBrewerDeletedEvent) => {
       this.publishEvent(event, 'brewers')
     })
 
@@ -70,7 +70,7 @@ export class EventRegistry implements IEventRegistry {
     this.eventHandlers.set(EventType.GRINDER_UPDATED_EVENT, (event: IGrinderUpdatedEvent) => {
       this.publishEvent(event, 'grinders')
     })
-    this.eventHandlers.set(EventType.GRINDER_DELETED_EVENT, (event: IEvent<GrinderDeletedEvent>) => {
+    this.eventHandlers.set(EventType.GRINDER_DELETED_EVENT, (event: IGrinderDeletedEvent) => {
       this.publishEvent(event, 'grinders')
     })
 
@@ -86,7 +86,7 @@ export class EventRegistry implements IEventRegistry {
     })
   }
 
-  private publishEvent<T>(event: IEvent<T>, topic: string) {
+  private publishEvent<T>(event: IDomainEvent<T>, topic: string) {
     return new Promise((resolve, reject) => {
       this.producer.send([{messages: JSON.stringify(event), topic}], (err, data) => {
         if (err) {

@@ -2,20 +2,14 @@ import {ICommandHandler} from './ICommandHandler'
 import {Producer} from 'kafka-node'
 import {UpdateAccountCommand} from './UpdateAccountCommand'
 import {AccountDocument} from '../models'
-import {IAccountsAggregate} from '../aggregates'
 import {AccountUpdatedEvent} from '../events'
+import {IAccountsRepo} from '../repos'
 
 type UpdateAccountCommandResponse = AccountDocument
 
 export class UpdateAccountCommandHandler
   implements ICommandHandler<UpdateAccountCommand, UpdateAccountCommandResponse> {
-  private producer: Producer
-  private accountsAggregate: IAccountsAggregate
-
-  constructor(producer: Producer, accountsAggregate: IAccountsAggregate) {
-    this.producer = producer
-    this.accountsAggregate = accountsAggregate
-  }
+  constructor(private producer: Producer, private accountsRepo: IAccountsRepo) {}
 
   public async handle(command: UpdateAccountCommand) {
     const {id, name} = command
@@ -32,8 +26,8 @@ export class UpdateAccountCommandHandler
      */
 
     const [existingAccount, existingAccountName] = await Promise.all([
-      this.accountsAggregate.getAccount(id),
-      this.accountsAggregate.getAccountByName(name),
+      this.accountsRepo.getById(id),
+      this.accountsRepo.getByName(name),
     ])
 
     if (existingAccountName) {

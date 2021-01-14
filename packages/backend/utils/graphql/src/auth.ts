@@ -53,7 +53,7 @@ export const parseUserFromRequest = (request: express.Request): Token | null => 
 }
 
 export const hasRole = (user: Token | null, roleName: string) => {
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     if (!user) {
       reject(new AuthenticationError('Please authenticate'))
       return
@@ -71,7 +71,7 @@ export const hasRole = (user: Token | null, roleName: string) => {
 type ValidScopes = keyof typeof scopes
 
 export const hasScopes = (user: Token | null, requiredScopes: ValidScopes[]) => {
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     if (!user) {
       reject(new AuthenticationError('Please authenticate'))
       return

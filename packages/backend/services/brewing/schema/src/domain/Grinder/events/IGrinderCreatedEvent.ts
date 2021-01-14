@@ -1,4 +1,4 @@
-import {IEvent} from '../../IEvent'
+import {IDomainEvent} from '../../DomainEvent'
 import {GrinderBurrSetOption} from '../GrinderBurrSet'
 
 export interface IGrinderCreatedEventData {
@@ -8,4 +8,4 @@ export interface IGrinderCreatedEventData {
   burrSet?: GrinderBurrSetOption
 }
 
-export interface IGrinderCreatedEvent extends IEvent<IGrinderCreatedEventData> {}
+export interface IGrinderCreatedEvent extends IDomainEvent<IGrinderCreatedEventData> {}

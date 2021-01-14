@@ -1,4 +1,4 @@
-import {AggregateRoot, EntityId} from '../../shared'
+import {AggregateRoot, EntityId} from '@luminate/services-shared'
 import {RecipeName} from './RecipeName'
 import {GrinderGrindSetting} from './GrinderGrindSetting'
 import {RecipeDeletedEvent, RecipeUpdatedEvent, RecipeCreatedEvent} from './events'

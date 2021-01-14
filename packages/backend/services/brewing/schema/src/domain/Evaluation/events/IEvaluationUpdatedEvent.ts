@@ -1,8 +1,8 @@
-import {IEvent} from '../../IEvent'
+import {IDomainEvent} from '../../DomainEvent'
 
 export interface IEvaluationUpdatedEventData {
   id: string
   date?: string
 }
 
-export interface IEvaluationUpdatedEvent extends IEvent<IEvaluationUpdatedEventData> {}
+export interface IEvaluationUpdatedEvent extends IDomainEvent<IEvaluationUpdatedEventData> {}

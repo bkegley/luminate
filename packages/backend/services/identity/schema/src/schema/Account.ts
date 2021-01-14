@@ -12,6 +12,7 @@ import {
 } from '../commands'
 import {AccountDocument, UserDocument} from '../models'
 import {IAccountsProjection} from '../projections'
+import {IUsersRepo} from '../repos'
 
 const typeDefs = gql`
   type Account {
@@ -98,7 +99,8 @@ const resolvers: Resolvers = {
   },
   Account: {
     users: async (parent, args, {container}) => {
-      return container.resolve<IUsersAggregate>(TYPES.UsersAggregate).listByAccount(parent.id)
+      // TODO: check if this is working
+      return container.resolve<IUsersRepo>(TYPES.UsersRepo).list({account: parent.id})
     },
   },
 }
