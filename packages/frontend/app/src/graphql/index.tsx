@@ -39,6 +39,84 @@ export type AccountEdge = {
   node: Account
 }
 
+export type Brewer = {
+  __typename: 'Brewer'
+  id: Scalars['ID']
+  name?: Maybe<Scalars['String']>
+  description?: Maybe<Scalars['String']>
+  type?: Maybe<BrewerType>
+}
+
+export type BrewerConnection = {
+  __typename: 'BrewerConnection'
+  pageInfo: PageInfo
+  edges: Array<BrewerEdge>
+}
+
+export type BrewerEdge = {
+  __typename: 'BrewerEdge'
+  cursor?: Maybe<Scalars['String']>
+  node?: Maybe<Brewer>
+}
+
+export enum BrewerType {
+  Autodrip = 'AUTODRIP',
+  FullImmersion = 'FULL_IMMERSION',
+  Pourover = 'POUROVER',
+  Espresso = 'ESPRESSO',
+}
+
+export type BrewGuide = {
+  __typename: 'BrewGuide'
+  id: Scalars['ID']
+  name?: Maybe<Scalars['String']>
+  recipe?: Maybe<Recipe>
+}
+
+export type BrewGuideConnection = {
+  __typename: 'BrewGuideConnection'
+  pageInfo: PageInfo
+  edges?: Maybe<Array<Maybe<BrewGuideEdge>>>
+}
+
+export type BrewGuideEdge = {
+  __typename: 'BrewGuideEdge'
+  cursor: Scalars['String']
+  node: BrewGuide
+}
+
+export type BrewingSession = {
+  __typename: 'BrewingSession'
+  id: Scalars['ID']
+  date?: Maybe<Scalars['String']>
+  description?: Maybe<Scalars['String']>
+  brewGuide?: Maybe<BrewGuide>
+}
+
+export type BrewingSessionConnection = {
+  __typename: 'BrewingSessionConnection'
+  pageInfo?: Maybe<PageInfo>
+  edges?: Maybe<Array<Maybe<BrewingSessionEdge>>>
+}
+
+export type BrewingSessionEdge = {
+  __typename: 'BrewingSessionEdge'
+  cursor?: Maybe<Scalars['String']>
+  node?: Maybe<BrewingSession>
+}
+
+export enum BurrSet {
+  ConicalBurr = 'CONICAL_BURR',
+  FlatBurr = 'FLAT_BURR',
+  Blade = 'BLADE',
+}
+
+export type City = {
+  __typename: 'City'
+  id: Scalars['ID']
+  name?: Maybe<Scalars['String']>
+}
+
 export type Coffee = {
   __typename: 'Coffee'
   id: Scalars['ID']
@@ -111,6 +189,23 @@ export type CreateAccountInput = {
   password: Scalars['String']
 }
 
+export type CreateBrewerInput = {
+  name?: Maybe<Scalars['String']>
+  description?: Maybe<Scalars['String']>
+  type?: Maybe<BrewerType>
+}
+
+export type CreateBrewGuideInput = {
+  name: Scalars['String']
+  recipeId: Scalars['ID']
+}
+
+export type CreateBrewingSessionInput = {
+  date?: Maybe<Scalars['String']>
+  description?: Maybe<Scalars['String']>
+  brewGuideId?: Maybe<Scalars['ID']>
+}
+
 export type CreateCoffeeInput = {
   name: Scalars['String']
   country?: Maybe<Scalars['String']>
@@ -131,6 +226,10 @@ export type CreateDeviceInput = {
   name: Scalars['String']
 }
 
+export type CreateEvaluationInput = {
+  date?: Maybe<Scalars['String']>
+}
+
 export type CreateFarmInput = {
   name?: Maybe<Scalars['String']>
   country?: Maybe<Scalars['String']>
@@ -141,10 +240,24 @@ export type CreateFarmZoneInput = {
   name: Scalars['String']
 }
 
+export type CreateGrinderInput = {
+  name?: Maybe<Scalars['String']>
+  description?: Maybe<Scalars['String']>
+  burrSet?: Maybe<BurrSet>
+}
+
 export type CreateNoteInput = {
   entityId: Scalars['ID']
   content: Scalars['String']
   field: Scalars['String']
+}
+
+export type CreateRecipeInput = {
+  name: Scalars['String']
+  brewerId: Scalars['ID']
+  grinderId: Scalars['ID']
+  grindSetting?: Maybe<Scalars['Int']>
+  note?: Maybe<Scalars['String']>
 }
 
 export type CreateRoleInput = {
@@ -234,6 +347,24 @@ export type DeviceEdge = {
   node: Device
 }
 
+export type Evaluation = {
+  __typename: 'Evaluation'
+  id: Scalars['ID']
+  date?: Maybe<Scalars['String']>
+}
+
+export type EvaluationConnection = {
+  __typename: 'EvaluationConnection'
+  pageInfo?: Maybe<PageInfo>
+  edges?: Maybe<Array<Maybe<EvaluationEdge>>>
+}
+
+export type EvaluationEdge = {
+  __typename: 'EvaluationEdge'
+  cursor?: Maybe<Scalars['String']>
+  node?: Maybe<Evaluation>
+}
+
 export type Farm = {
   __typename: 'Farm'
   id: Scalars['ID']
@@ -263,6 +394,26 @@ export type FarmZone = {
   name: Scalars['String']
 }
 
+export type Grinder = {
+  __typename: 'Grinder'
+  id: Scalars['ID']
+  name?: Maybe<Scalars['String']>
+  description?: Maybe<Scalars['String']>
+  burrSet?: Maybe<BurrSet>
+}
+
+export type GrinderConnection = {
+  __typename: 'GrinderConnection'
+  pageInfo: PageInfo
+  edges: Array<GrinderEdge>
+}
+
+export type GrinderEdge = {
+  __typename: 'GrinderEdge'
+  cursor?: Maybe<Scalars['String']>
+  node?: Maybe<Grinder>
+}
+
 export type Me = UserInterface & {
   __typename: 'Me'
   id: Scalars['ID']
@@ -288,6 +439,7 @@ export type Mutation = {
   deleteRole?: Maybe<Role>
   createUser?: Maybe<User>
   updateUser?: Maybe<User>
+  updateUserRoles?: Maybe<User>
   deleteUser?: Maybe<User>
   updatePassword: Scalars['Boolean']
   login?: Maybe<Scalars['Boolean']>
@@ -311,6 +463,15 @@ export type Mutation = {
   updateVariety?: Maybe<Variety>
   deleteVariety?: Maybe<Variety>
   makeVarietyPublic?: Maybe<Scalars['Boolean']>
+  createBrewer?: Maybe<Brewer>
+  updateBrewer?: Maybe<Brewer>
+  deleteBrewer?: Maybe<Scalars['Boolean']>
+  createBrewGuide?: Maybe<BrewGuide>
+  updateBrewGuide?: Maybe<BrewGuide>
+  deleteBrewGuide?: Maybe<Scalars['Boolean']>
+  createBrewingSession?: Maybe<BrewingSession>
+  updateBrewingSession?: Maybe<BrewingSession>
+  deleteBrewingSession?: Maybe<Scalars['Boolean']>
   createCuppingSession?: Maybe<CuppingSession>
   updateCuppingSession?: Maybe<CuppingSession>
   deleteCuppingSession?: Maybe<CuppingSession>
@@ -319,6 +480,15 @@ export type Mutation = {
   createDevice?: Maybe<Device>
   updateDevice?: Maybe<Device>
   deleteDevice?: Maybe<Device>
+  createEvaluation?: Maybe<Evaluation>
+  updateEvaluation?: Maybe<Evaluation>
+  deleteEvaluation?: Maybe<Scalars['Boolean']>
+  createGrinder?: Maybe<Grinder>
+  updateGrinder?: Maybe<Grinder>
+  deleteGrinder?: Maybe<Scalars['Boolean']>
+  createRecipe?: Maybe<Recipe>
+  updateRecipe?: Maybe<Recipe>
+  deleteRecipe?: Maybe<Scalars['Boolean']>
   createScoreSheet?: Maybe<ScoreSheet>
   updateScoreSheet?: Maybe<ScoreSheet>
   deleteScoreSheet?: Maybe<CuppingSession>
@@ -362,6 +532,11 @@ export type MutationCreateUserArgs = {
 export type MutationUpdateUserArgs = {
   id: Scalars['ID']
   input: UpdateUserInput
+}
+
+export type MutationUpdateUserRolesArgs = {
+  id: Scalars['ID']
+  roles?: Maybe<Array<Scalars['ID']>>
 }
 
 export type MutationDeleteUserArgs = {
@@ -458,6 +633,45 @@ export type MutationMakeVarietyPublicArgs = {
   id: Scalars['ID']
 }
 
+export type MutationCreateBrewerArgs = {
+  input: CreateBrewerInput
+}
+
+export type MutationUpdateBrewerArgs = {
+  id: Scalars['ID']
+  input: UpdateBrewerInput
+}
+
+export type MutationDeleteBrewerArgs = {
+  id: Scalars['ID']
+}
+
+export type MutationCreateBrewGuideArgs = {
+  input: CreateBrewGuideInput
+}
+
+export type MutationUpdateBrewGuideArgs = {
+  id: Scalars['ID']
+  input: UpdateBrewGuideInput
+}
+
+export type MutationDeleteBrewGuideArgs = {
+  id: Scalars['ID']
+}
+
+export type MutationCreateBrewingSessionArgs = {
+  input?: Maybe<CreateBrewingSessionInput>
+}
+
+export type MutationUpdateBrewingSessionArgs = {
+  id: Scalars['ID']
+  input?: Maybe<UpdateBrewingSessionInput>
+}
+
+export type MutationDeleteBrewingSessionArgs = {
+  id: Scalars['ID']
+}
+
 export type MutationCreateCuppingSessionArgs = {
   input: CreateCuppingSessionInput
 }
@@ -490,6 +704,45 @@ export type MutationUpdateDeviceArgs = {
 }
 
 export type MutationDeleteDeviceArgs = {
+  id: Scalars['ID']
+}
+
+export type MutationCreateEvaluationArgs = {
+  input?: Maybe<CreateEvaluationInput>
+}
+
+export type MutationUpdateEvaluationArgs = {
+  id: Scalars['ID']
+  input?: Maybe<UpdateEvaluationInput>
+}
+
+export type MutationDeleteEvaluationArgs = {
+  id: Scalars['ID']
+}
+
+export type MutationCreateGrinderArgs = {
+  input: CreateGrinderInput
+}
+
+export type MutationUpdateGrinderArgs = {
+  id: Scalars['ID']
+  input: UpdateGrinderInput
+}
+
+export type MutationDeleteGrinderArgs = {
+  id: Scalars['ID']
+}
+
+export type MutationCreateRecipeArgs = {
+  input?: Maybe<CreateRecipeInput>
+}
+
+export type MutationUpdateRecipeArgs = {
+  id: Scalars['ID']
+  input?: Maybe<UpdateRecipeInput>
+}
+
+export type MutationDeleteRecipeArgs = {
   id: Scalars['ID']
 }
 
@@ -548,6 +801,7 @@ export type Query = {
   listRoles: RoleConnection
   getRole?: Maybe<Role>
   listUsers: UserConnection
+  listStations?: Maybe<Array<Maybe<Station>>>
   getUser?: Maybe<User>
   me?: Maybe<Me>
   listCoffees: CoffeeConnection
@@ -560,11 +814,23 @@ export type Query = {
   getRegion?: Maybe<Region>
   listVarieties: VarietyConnection
   getVariety?: Maybe<Variety>
+  listBrewers: BrewerConnection
+  getBrewer?: Maybe<Brewer>
+  listBrewGuides: BrewGuideConnection
+  getBrewGuide?: Maybe<BrewGuide>
+  listBrewingSessions?: Maybe<BrewingSessionConnection>
+  getBrewingSession?: Maybe<BrewingSession>
   listCuppingSessions: CuppingSessionConnection
   getCuppingSession?: Maybe<CuppingSession>
   getCuppingSessionCoffee?: Maybe<SessionCoffee>
   listDevices: DeviceConnection
   getDevice?: Maybe<Device>
+  listEvaluations?: Maybe<EvaluationConnection>
+  getEvaluation?: Maybe<Evaluation>
+  listGrinders: GrinderConnection
+  getGrinder?: Maybe<Grinder>
+  listRecipes: RecipeConnection
+  getRecipe?: Maybe<Recipe>
   listScoreSheets?: Maybe<Array<Maybe<ScoreSheet>>>
   getScoreSheet?: Maybe<ScoreSheet>
 }
@@ -649,6 +915,18 @@ export type QueryGetVarietyArgs = {
   id: Scalars['ID']
 }
 
+export type QueryGetBrewerArgs = {
+  id: Scalars['ID']
+}
+
+export type QueryGetBrewGuideArgs = {
+  id: Scalars['ID']
+}
+
+export type QueryGetBrewingSessionArgs = {
+  id: Scalars['ID']
+}
+
 export type QueryListCuppingSessionsArgs = {
   cursor?: Maybe<Scalars['String']>
   limit?: Maybe<Scalars['Int']>
@@ -673,6 +951,18 @@ export type QueryGetDeviceArgs = {
   id: Scalars['ID']
 }
 
+export type QueryGetEvaluationArgs = {
+  id: Scalars['ID']
+}
+
+export type QueryGetGrinderArgs = {
+  id: Scalars['ID']
+}
+
+export type QueryGetRecipeArgs = {
+  id: Scalars['ID']
+}
+
 export type QueryListScoreSheetsArgs = {
   sessionCoffeeId: Scalars['ID']
 }
@@ -686,6 +976,28 @@ export type QueryInput = {
   field: Scalars['String']
   value?: Maybe<Scalars['String']>
   operator?: Maybe<OperatorEnum>
+}
+
+export type Recipe = {
+  __typename: 'Recipe'
+  id: Scalars['ID']
+  name: Scalars['String']
+  grinder: Grinder
+  grindSetting?: Maybe<Scalars['Int']>
+  brewer: Brewer
+  note?: Maybe<Scalars['String']>
+}
+
+export type RecipeConnection = {
+  __typename: 'RecipeConnection'
+  pageInfo?: Maybe<PageInfo>
+  edges?: Maybe<Array<Maybe<RecipeEdge>>>
+}
+
+export type RecipeEdge = {
+  __typename: 'RecipeEdge'
+  cursor?: Maybe<Scalars['String']>
+  node?: Maybe<Recipe>
 }
 
 export type Region = {
@@ -764,8 +1076,32 @@ export type SessionCoffeeInput = {
   coffee: Scalars['ID']
 }
 
+export type Station = {
+  __typename: 'Station'
+  id: Scalars['ID']
+  description?: Maybe<Scalars['String']>
+  city?: Maybe<City>
+}
+
 export type UpdateAccountInput = {
   name?: Maybe<Scalars['String']>
+}
+
+export type UpdateBrewerInput = {
+  name?: Maybe<Scalars['String']>
+  description?: Maybe<Scalars['String']>
+  type?: Maybe<BrewerType>
+}
+
+export type UpdateBrewGuideInput = {
+  name?: Maybe<Scalars['String']>
+  recipeId?: Maybe<Scalars['ID']>
+}
+
+export type UpdateBrewingSessionInput = {
+  date?: Maybe<Scalars['String']>
+  description?: Maybe<Scalars['String']>
+  brewGuideId?: Maybe<Scalars['ID']>
 }
 
 export type UpdateCoffeeInput = {
@@ -788,6 +1124,10 @@ export type UpdateDeviceInput = {
   name?: Maybe<Scalars['String']>
 }
 
+export type UpdateEvaluationInput = {
+  date?: Maybe<Scalars['String']>
+}
+
 export type UpdateFarmInput = {
   name?: Maybe<Scalars['String']>
   country?: Maybe<Scalars['String']>
@@ -796,6 +1136,12 @@ export type UpdateFarmInput = {
 
 export type UpdateFarmZoneInput = {
   name: Scalars['String']
+}
+
+export type UpdateGrinderInput = {
+  name?: Maybe<Scalars['String']>
+  description?: Maybe<Scalars['String']>
+  burrSet?: Maybe<BurrSet>
 }
 
 export type UpdateNoteInput = {
@@ -807,6 +1153,14 @@ export type UpdateNoteInput = {
 export type UpdatePasswordInput = {
   currentPassword: Scalars['String']
   newPassword: Scalars['String']
+}
+
+export type UpdateRecipeInput = {
+  name: Scalars['String']
+  brewerId: Scalars['ID']
+  grinderId: Scalars['ID']
+  grindSetting?: Maybe<Scalars['Int']>
+  note?: Maybe<Scalars['String']>
 }
 
 export type UpdateRoleInput = {
@@ -834,7 +1188,6 @@ export type UpdateUserInput = {
   firstName?: Maybe<Scalars['String']>
   lastName?: Maybe<Scalars['String']>
   username?: Maybe<Scalars['String']>
-  roles?: Maybe<Array<Scalars['ID']>>
 }
 
 export type UpdateVarietyInput = {
@@ -914,6 +1267,40 @@ export type AddUserToAccountMutationVariables = {
 }
 
 export type AddUserToAccountMutation = {__typename: 'Mutation'} & Pick<Mutation, 'addUserToAccount'>
+
+export type ListBrewersQueryVariables = {}
+
+export type ListBrewersQuery = {__typename: 'Query'} & {
+  listBrewers: {__typename: 'BrewerConnection'} & {
+    pageInfo: {__typename: 'PageInfo'} & Pick<PageInfo, 'hasNextPage' | 'nextCursor' | 'prevCursor'>
+    edges: Array<{__typename: 'BrewerEdge'} & {node: Maybe<{__typename: 'Brewer'} & BrewerFragmentFragment>}>
+  }
+}
+
+export type GetBrewerQueryVariables = {
+  id: Scalars['ID']
+}
+
+export type GetBrewerQuery = {__typename: 'Query'} & {getBrewer: Maybe<{__typename: 'Brewer'} & BrewerFragmentFragment>}
+
+export type CreateBrewerMutationVariables = {
+  input: CreateBrewerInput
+}
+
+export type CreateBrewerMutation = {__typename: 'Mutation'} & {
+  createBrewer: Maybe<{__typename: 'Brewer'} & BrewerFragmentFragment>
+}
+
+export type UpdateBrewerMutationVariables = {
+  id: Scalars['ID']
+  input: UpdateBrewerInput
+}
+
+export type UpdateBrewerMutation = {__typename: 'Mutation'} & {
+  updateBrewer: Maybe<{__typename: 'Brewer'} & BrewerFragmentFragment>
+}
+
+export type BrewerFragmentFragment = {__typename: 'Brewer'} & Pick<Brewer, 'id' | 'name' | 'description' | 'type'>
 
 export type ListCoffeesQueryVariables = {}
 
@@ -1342,6 +1729,14 @@ export type VarietyFragmentFragment = {__typename: 'Variety'} & Pick<
   'id' | 'name' | 'background' | 'createdAt' | 'updatedAt'
 > & {coffees: Maybe<Array<Maybe<{__typename: 'Coffee'} & Pick<Coffee, 'id' | 'name'>>>>}
 
+export const BrewerFragmentFragmentDoc = gql`
+  fragment BrewerFragment on Brewer {
+    id
+    name
+    description
+    type
+  }
+`
 export const CoffeeFragmentFragmentDoc = gql`
   fragment CoffeeFragment on Coffee {
     id
@@ -1586,6 +1981,179 @@ export type AddUserToAccountMutationResult = ApolloReactCommon.MutationResult<Ad
 export type AddUserToAccountMutationOptions = ApolloReactCommon.BaseMutationOptions<
   AddUserToAccountMutation,
   AddUserToAccountMutationVariables
+>
+export const ListBrewersDocument = gql`
+  query ListBrewers {
+    listBrewers {
+      pageInfo {
+        hasNextPage
+        nextCursor
+        prevCursor
+      }
+      edges {
+        node {
+          ...BrewerFragment
+        }
+      }
+    }
+  }
+  ${BrewerFragmentFragmentDoc}
+`
+
+/**
+ * __useListBrewersQuery__
+ *
+ * To run a query within a React component, call `useListBrewersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListBrewersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useListBrewersQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useListBrewersQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<ListBrewersQuery, ListBrewersQueryVariables>,
+) {
+  return ApolloReactHooks.useQuery<ListBrewersQuery, ListBrewersQueryVariables>(ListBrewersDocument, baseOptions)
+}
+export function useListBrewersLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ListBrewersQuery, ListBrewersQueryVariables>,
+) {
+  return ApolloReactHooks.useLazyQuery<ListBrewersQuery, ListBrewersQueryVariables>(ListBrewersDocument, baseOptions)
+}
+export type ListBrewersQueryHookResult = ReturnType<typeof useListBrewersQuery>
+export type ListBrewersLazyQueryHookResult = ReturnType<typeof useListBrewersLazyQuery>
+export type ListBrewersQueryResult = ApolloReactCommon.QueryResult<ListBrewersQuery, ListBrewersQueryVariables>
+export const GetBrewerDocument = gql`
+  query GetBrewer($id: ID!) {
+    getBrewer(id: $id) {
+      ...BrewerFragment
+    }
+  }
+  ${BrewerFragmentFragmentDoc}
+`
+
+/**
+ * __useGetBrewerQuery__
+ *
+ * To run a query within a React component, call `useGetBrewerQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetBrewerQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetBrewerQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetBrewerQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<GetBrewerQuery, GetBrewerQueryVariables>,
+) {
+  return ApolloReactHooks.useQuery<GetBrewerQuery, GetBrewerQueryVariables>(GetBrewerDocument, baseOptions)
+}
+export function useGetBrewerLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetBrewerQuery, GetBrewerQueryVariables>,
+) {
+  return ApolloReactHooks.useLazyQuery<GetBrewerQuery, GetBrewerQueryVariables>(GetBrewerDocument, baseOptions)
+}
+export type GetBrewerQueryHookResult = ReturnType<typeof useGetBrewerQuery>
+export type GetBrewerLazyQueryHookResult = ReturnType<typeof useGetBrewerLazyQuery>
+export type GetBrewerQueryResult = ApolloReactCommon.QueryResult<GetBrewerQuery, GetBrewerQueryVariables>
+export const CreateBrewerDocument = gql`
+  mutation CreateBrewer($input: CreateBrewerInput!) {
+    createBrewer(input: $input) {
+      ...BrewerFragment
+    }
+  }
+  ${BrewerFragmentFragmentDoc}
+`
+export type CreateBrewerMutationFn = ApolloReactCommon.MutationFunction<
+  CreateBrewerMutation,
+  CreateBrewerMutationVariables
+>
+
+/**
+ * __useCreateBrewerMutation__
+ *
+ * To run a mutation, you first call `useCreateBrewerMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateBrewerMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createBrewerMutation, { data, loading, error }] = useCreateBrewerMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateBrewerMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<CreateBrewerMutation, CreateBrewerMutationVariables>,
+) {
+  return ApolloReactHooks.useMutation<CreateBrewerMutation, CreateBrewerMutationVariables>(
+    CreateBrewerDocument,
+    baseOptions,
+  )
+}
+export type CreateBrewerMutationHookResult = ReturnType<typeof useCreateBrewerMutation>
+export type CreateBrewerMutationResult = ApolloReactCommon.MutationResult<CreateBrewerMutation>
+export type CreateBrewerMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  CreateBrewerMutation,
+  CreateBrewerMutationVariables
+>
+export const UpdateBrewerDocument = gql`
+  mutation UpdateBrewer($id: ID!, $input: UpdateBrewerInput!) {
+    updateBrewer(id: $id, input: $input) {
+      ...BrewerFragment
+    }
+  }
+  ${BrewerFragmentFragmentDoc}
+`
+export type UpdateBrewerMutationFn = ApolloReactCommon.MutationFunction<
+  UpdateBrewerMutation,
+  UpdateBrewerMutationVariables
+>
+
+/**
+ * __useUpdateBrewerMutation__
+ *
+ * To run a mutation, you first call `useUpdateBrewerMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateBrewerMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateBrewerMutation, { data, loading, error }] = useUpdateBrewerMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateBrewerMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateBrewerMutation, UpdateBrewerMutationVariables>,
+) {
+  return ApolloReactHooks.useMutation<UpdateBrewerMutation, UpdateBrewerMutationVariables>(
+    UpdateBrewerDocument,
+    baseOptions,
+  )
+}
+export type UpdateBrewerMutationHookResult = ReturnType<typeof useUpdateBrewerMutation>
+export type UpdateBrewerMutationResult = ApolloReactCommon.MutationResult<UpdateBrewerMutation>
+export type UpdateBrewerMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  UpdateBrewerMutation,
+  UpdateBrewerMutationVariables
 >
 export const ListCoffeesDocument = gql`
   query ListCoffees {

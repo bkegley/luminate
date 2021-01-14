@@ -1,0 +1,39 @@
+query ListBrewers {
+  listBrewers {
+    pageInfo {
+      hasNextPage
+      nextCursor
+      prevCursor
+    }
+    edges {
+      node {
+        ...BrewerFragment
+      }
+    }
+  }
+}
+
+query GetBrewer($id: ID!) {
+  getBrewer(id: $id) {
+    ...BrewerFragment
+  }
+}
+
+mutation CreateBrewer($input: CreateBrewerInput!) {
+  createBrewer(input: $input) {
+    ...BrewerFragment
+  }
+}
+
+mutation UpdateBrewer($id: ID!, $input: UpdateBrewerInput!) {
+  updateBrewer(id: $id, input: $input) {
+    ...BrewerFragment
+  }
+}
+
+fragment BrewerFragment on Brewer {
+  id
+  name
+  description
+  type
+}
