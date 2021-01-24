@@ -11,6 +11,7 @@ COPY ./packages/backend/services/identity/schema ./packages/backend/services/ide
 COPY ./packages/backend/services/encyclopedia/schema ./packages/backend/services/encyclopedia/schema
 COPY ./packages/backend/gateways/luminate ./packages/backend/gateways/luminate
 COPY ./packages/backend/services/brewing/schema ./packages/backend/services/brewing/schema
+COPY ./packages/backend/services/shared ./packages/backend/services/shared
 
 # frontend dependencies
 COPY ./packages/frontend/admin/package.json ./packages/frontend/admin/package.json
