@@ -3,8 +3,9 @@ import {CreateUserInput} from '../../types'
 export class CreateUserCommand {
   username: string
   password: string
-  firstName: string
-  lastName: string
+  account: string
+  firstName?: string
+  lastName?: string
   roles?: string[]
 
   constructor(input: CreateUserInput) {

@@ -1,9 +1,10 @@
 import {KafkaClient, Consumer} from 'kafka-node'
-import {EventType, RoleCreatedEvent, RoleDeletedEvent, RoleUpdatedEvent} from '../../../domain/events'
 import {RoleDocument, RoleModel} from '../../models'
 import {IRolesProjection} from './IRolesProjection'
 import {ScopeOperations, ScopeResources} from '@luminate/mongo-utils'
 import {QueryListRolesArgs, Role} from '../../../types'
+import {RoleCreatedEvent, RoleUpdatedEvent, RoleDeletedEvent} from '../../../domain/role/events'
+import {EventType} from '../../../domain/EventType'
 
 export class RolesProjection implements IRolesProjection {
   private rolesConsumer: Consumer
@@ -54,10 +55,10 @@ export class RolesProjection implements IRolesProjection {
   }
 
   private roleCreatedEventHandler(data: RoleCreatedEvent) {
-    console.log('projection receiving created event', data)
-    const {_id, ...role} = data.data
+    const {id, ...role} = data.data
+
     // @ts-ignore
-    this.roles.push({id: _id, ...role})
+    this.roles.push({id, ...role})
   }
 
   private roleUpdatedEventHandler(data: RoleUpdatedEvent) {

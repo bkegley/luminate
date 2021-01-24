@@ -13,7 +13,6 @@ import {UpdateUserCommandHandler} from './UpdateUserCommandHandler'
 import {DeleteUserCommandHandler} from './DeleteUserCommandHandler'
 import {UpdateUserPasswordCommandHandler} from './UpdateUserPasswordCommandHandler'
 import {LoginUserCommandHandler} from './LoginUserCommandHandler'
-import {LogoutUserCommandHandler} from './LogoutUserCommandHandler'
 import {SwitchAccountCommandHandler} from './SwitchAccountCommandHandler'
 import {CreateRoleCommandHandler} from './CreateRoleCommandHandler'
 import {UpdateUserRolesCommandHandler} from './UpdateUserRolesCommandHandler'
@@ -88,17 +87,15 @@ export class CommandRegistry implements ICommandRegistry {
     )
 
     this.handlerRegistry.set(
-      CommandType.LOGOUT_USER_COMMAND,
-      new LogoutUserCommandHandler(this.producer, this.usersRepo),
-    )
-
-    this.handlerRegistry.set(
       CommandType.SWITCH_ACCOUNT_COMMAND,
       new SwitchAccountCommandHandler(this.producer, this.accountsRepo, this.usersRepo, this.rolesRepo),
     )
 
     // Role Commands
-    this.handlerRegistry.set(CommandType.CREATE_ROLE_COMMAND, new CreateRoleCommandHandler(this.producer))
+    this.handlerRegistry.set(
+      CommandType.CREATE_ROLE_COMMAND,
+      new CreateRoleCommandHandler(this.producer, this.rolesRepo),
+    )
 
     this.handlerRegistry.set(
       CommandType.UPDATE_ROLE_COMMAND,

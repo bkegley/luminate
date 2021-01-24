@@ -3,15 +3,16 @@ import {KafkaClient, Consumer} from 'kafka-node'
 import {UserDocument} from '../../models'
 import {IListDocumentsArgs} from '@luminate/mongo-utils'
 import {User} from '../../../types'
+import {EventType} from '../../../domain/EventType'
 import {
-  IDomainEvent,
-  EventType,
-  UserAddedToAccountEvent,
-  UserUpdatedEvent,
+  IUserCreatedEvent,
+  UserRolesUpdatedEvent,
   UserDeletedEvent,
   UserPasswordUpdatedEvent,
-  UserRolesUpdatedEvent,
-} from '../../../domain/events'
+  UserAddedToAccountEvent,
+} from '../../../domain/user/events'
+import {IUserUpdatedEvent} from '../../../domain/user/events/IUserUpdatedEvent'
+import {IUserRolesUpdatedEvent} from '../../../domain/user/events/IUserRolesUpdatedEvent'
 
 export class UsersProjection implements IUsersProjection {
   private client: KafkaClient
@@ -61,13 +62,13 @@ export class UsersProjection implements IUsersProjection {
     })
   }
 
-  private userCreatedEventHandler(message: IDomainEvent<UserDocument>) {
-    const {_id, ...user} = message.data
+  private userCreatedEventHandler(message: IUserCreatedEvent) {
+    const {id, ...user} = message.data
     // @ts-ignore
-    this.users.push({id: _id, ...user})
+    this.users.push({id, ...user})
   }
 
-  private userUpdatedEventHandler(message: UserUpdatedEvent) {
+  private userUpdatedEventHandler(message: IUserUpdatedEvent) {
     // @ts-ignore -- see TODO
     this.users = this.users.map(user => {
       if (user.id === message.data.id) {
@@ -82,7 +83,7 @@ export class UsersProjection implements IUsersProjection {
     })
   }
 
-  private userRolesUpdatedEventHandler(message: UserRolesUpdatedEvent) {
+  private userRolesUpdatedEventHandler(message: IUserRolesUpdatedEvent) {
     // @ts-ignore -- see TODO
     this.users = this.users.map(user => {
       if (user.id === message.data.id) {
