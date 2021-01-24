@@ -1,14 +1,12 @@
 import {ICommandHandler} from './ICommandHandler'
+import jwt from 'jsonwebtoken'
 import {Producer} from 'kafka-node'
 import {LoginUserCommand} from './LoginUserCommand'
-import jwt from 'jsonwebtoken'
-import bcrypt from 'bcryptjs'
-import {UserLoggedInEvent, LoginFailedEvent} from '../../domain/events'
 import {IUsersRepo, IRolesRepo, IAccountsRepo} from '../../infra/repos'
 
-const USER_AUTH_TOKEN = process.env.USER_AUTH_TOKEN || 'localsecrettoken'
+const tokenSecret = process.env.USER_AUTH_TOKEN || 'supersecretpassword'
 
-export class LoginUserCommandHandler implements ICommandHandler<LoginUserCommand, boolean | string> {
+export class LoginUserCommandHandler implements ICommandHandler<LoginUserCommand, string | null> {
   constructor(
     private producer: Producer,
     private usersRepo: IUsersRepo,
@@ -21,106 +19,33 @@ export class LoginUserCommandHandler implements ICommandHandler<LoginUserCommand
 
     // check for existing user
     const user = await this.usersRepo.getByUsername(username)
-    if (!user) {
-      const loginFailedEvent = new LoginFailedEvent({username, password, reason: 'username does not exist'})
 
-      return new Promise<boolean>((resolve, reject) => {
-        this.producer.send([{messages: JSON.stringify(loginFailedEvent), topic: 'users'}], (err, data) => {
-          if (err) {
-            reject(err)
-          } else {
-            resolve(false)
-          }
-        })
-      })
+    const matches = user.comparePassword(password)
+
+    if (!matches) {
+      return null
     }
 
-    // check for password match
-    const passwordMatches = bcrypt.compareSync(password, user.password)
+    const defaultAccount = user.defaultAccount
 
-    if (!passwordMatches) {
-      const loginFailedEvent = new LoginFailedEvent({username, password, reason: 'password does not match'})
-
-      return new Promise<boolean>((resolve, reject) => {
-        this.producer.send([{messages: JSON.stringify(loginFailedEvent), topic: 'users'}], (err, data) => {
-          if (err) {
-            reject(err)
-          } else {
-            resolve(false)
-          }
-        })
-      })
-    }
-
-    // get default account
-    const defaultAccount = user.defaultAccount || user.accounts[0]
-
-    if (!defaultAccount) {
-      const loginFailedEvent = new LoginFailedEvent({username, password, reason: 'user has no account'})
-
-      return new Promise<boolean>((resolve, reject) => {
-        this.producer.send([{messages: JSON.stringify(loginFailedEvent), topic: 'users'}], (err, data) => {
-          if (err) {
-            reject(err)
-          } else {
-            resolve(false)
-          }
-        })
-      })
-    }
-
-    // TODO: fix this after fixing repo return types
-    // @ts-ignore
-    const accountRoles = user.roles.find(role => role.account === defaultAccount)
-
-    const [userAccounts, userRoles] = await Promise.all([
-      this.accountsRepo.list({id: user.accounts}),
-      accountRoles ? this.rolesRepo.list({id: accountRoles.roles}) : [],
-    ])
-
-    // TODO: fix this after fixing repo return types
-    // @ts-ignore
-    const accounts = userAccounts?.map(account => ({id: account.id.toString() as string, name: account.name}))
-    // TODO: fix this after fixing repo return types
-    // @ts-ignore
-    const account = accounts?.find(account => account.id === defaultAccount.toString())
-
-    // TODO: fix this after fixing repo return types
-    // @ts-ignore
-    const roles = userRoles?.map(role => ({id: role.id.toString() as string, name: role.name}))
+    const userRoles = await this.rolesRepo.list({_id: user.roles.map(role => role.toString())})
+    const accountRoles = userRoles.filter(role => role.account.toString() === defaultAccount.toString())
 
     const scopes =
-      // TODO: fix this after fixing repo return types
-      // @ts-ignore
-      userRoles?.reduce((acc, role) => {
+      accountRoles?.reduce((acc, role) => {
         const scopes = role.scopes
-        // TODO: fix this after fixing repo return types
-        // @ts-ignore
         const newScopes = scopes?.filter(scope => !acc.find(existingScope => existingScope === scope))
         return acc.concat(newScopes || [])
       }, [] as string[]) || []
 
     const input = {
-      jti: user.id.toString() as string,
-      sub: user.username,
-      accounts,
-      account,
-      roles,
+      jti: user.getEntityId().toString(),
+      sub: user.username.value,
+      aud: user.defaultAccount.toString(),
       scopes,
     }
 
-    const token = jwt.sign(input, USER_AUTH_TOKEN, {expiresIn: '10m'})
-
-    const userLoggedInEvent = new UserLoggedInEvent({id: user.id})
-
-    return new Promise<string>((resolve, reject) => {
-      this.producer.send([{messages: JSON.stringify(userLoggedInEvent), topic: 'users'}], (err, data) => {
-        if (err) {
-          reject(err)
-        } else {
-          resolve(token)
-        }
-      })
-    })
+    const token = jwt.sign(input, tokenSecret, {expiresIn: '10m'})
+    return token
   }
 }

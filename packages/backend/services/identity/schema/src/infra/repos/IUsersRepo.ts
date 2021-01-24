@@ -1,5 +1,6 @@
+import {UserAggregate} from '../../domain/user/User'
 import {IRepo} from './IRepo'
 
-export interface IUsersRepo extends IRepo<any> {
-  getByUsername(username: string): Promise<any>
+export interface IUsersRepo extends IRepo<UserAggregate> {
+  getByUsername(username: string): Promise<UserAggregate>
 }

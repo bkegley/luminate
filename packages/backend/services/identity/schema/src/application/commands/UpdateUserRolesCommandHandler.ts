@@ -1,9 +1,10 @@
 import {UpdateUserRolesCommand, ICommandHandler} from '.'
 import {Producer} from 'kafka-node'
-import {UserRolesUpdatedEvent} from '../../domain/events'
 import {IUsersRepo} from '../../infra/repos'
+import {EntityId} from '@luminate/services-shared'
+import {UserAggregate} from '../../domain/user/User'
 
-export class UpdateUserRolesCommandHandler implements ICommandHandler<UpdateUserRolesCommand, boolean> {
+export class UpdateUserRolesCommandHandler implements ICommandHandler<UpdateUserRolesCommand, UserAggregate> {
   constructor(private producer: Producer, private usersRepo: IUsersRepo) {}
 
   public async handle(command: UpdateUserRolesCommand) {
@@ -11,23 +12,13 @@ export class UpdateUserRolesCommandHandler implements ICommandHandler<UpdateUser
 
     const user = await this.usersRepo.getById(id)
 
-    if (!user) return false
+    if (!user) {
+      throw new Error('User not found')
+    }
 
-    const userRolesUpdatedEvent = new UserRolesUpdatedEvent({id, roles, account})
+    user.update({roles: roles.map(role => EntityId.create(role))})
 
-    // TODO: fix this after updating repo return types
-    // @ts-ignore
-    const updatedUser = {...user, roles: user.roles.map(role => (role.account === account ? {account, roles} : role))}
-
-    return new Promise<boolean>((resolve, reject) => {
-      this.producer.send([{messages: JSON.stringify(userRolesUpdatedEvent), topic: 'users'}], (err, data) => {
-        if (err) {
-          reject(err)
-        } else {
-          // @ts-ignore
-          resolve(updatedUser)
-        }
-      })
-    })
+    this.usersRepo.save(user)
+    return user
   }
 }
