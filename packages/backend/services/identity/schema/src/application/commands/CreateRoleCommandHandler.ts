@@ -1,41 +1,27 @@
 import {Producer} from 'kafka-node'
 import {CreateRoleCommand, ICommandHandler} from '.'
-import {RoleDocument, RoleAggregateModel} from '../../infra/models'
-import {RoleCreatedEvent} from '../../domain/events'
+import {IRolesRepo} from '../../infra/repos'
+import {RoleAggregate} from '../../domain/role/Role'
+import {EntityId} from '@luminate/services-shared'
+import {RoleScope} from '../../domain/role/RoleScope'
 
-type CreateRoleResponse = RoleDocument
-
-export class CreateRoleCommandHandler implements ICommandHandler<CreateRoleCommand, CreateRoleResponse> {
-  private producer: Producer
-
-  constructor(producer: Producer) {
-    this.producer = producer
-  }
+export class CreateRoleCommandHandler implements ICommandHandler<CreateRoleCommand, RoleAggregate> {
+  constructor(private producer: Producer, private rolesRepo: IRolesRepo) {}
 
   public async handle(command: CreateRoleCommand) {
-    const existingRole = await RoleAggregateModel.findOne({name: command.name})
+    const existingRole = await this.rolesRepo.getByName(command.name)
 
     if (existingRole) {
       throw new Error('Role name taken')
     }
 
-    const role = new RoleAggregateModel({
+    const role = RoleAggregate.create({
       name: command.name,
-      accountId: command.account,
+      account: EntityId.create(command.account),
+      scopes: command.scopes as RoleScope[],
     })
 
-    await role.save()
-
-    const roleCreatedEvent = new RoleCreatedEvent({...role.toObject({getters: true}), scopes: command.scopes})
-
-    return new Promise<CreateRoleResponse>((resolve, reject) => {
-      this.producer.send([{messages: JSON.stringify(roleCreatedEvent), topic: 'roles'}], (err, data) => {
-        if (err) {
-          reject(err)
-        } else {
-          resolve({...role.toObject({getters: true}), scopes: command.scopes})
-        }
-      })
-    })
+    await this.rolesRepo.save(role)
+    return role
   }
 }

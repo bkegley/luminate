@@ -1,12 +1,9 @@
 import {UpdateUserPasswordCommand, ICommandHandler} from '.'
 import {Producer} from 'kafka-node'
-import {UserPasswordUpdatedEvent} from '../../domain/events'
 import {IUsersRepo} from '../../infra/repos'
-import bcrypt from 'bcryptjs'
+import {UserAggregate} from '../../domain/user/User'
 
-const saltRounds = 10
-
-export class UpdateUserPasswordCommandHandler implements ICommandHandler<UpdateUserPasswordCommand, boolean> {
+export class UpdateUserPasswordCommandHandler implements ICommandHandler<UpdateUserPasswordCommand, UserAggregate> {
   constructor(private producer: Producer, private usersRepo: IUsersRepo) {}
 
   public async handle(command: UpdateUserPasswordCommand) {
@@ -14,23 +11,16 @@ export class UpdateUserPasswordCommandHandler implements ICommandHandler<UpdateU
 
     const user = await this.usersRepo.getById(id)
 
-    if (!user || !user.password) return false
+    if (!user || !user.password) {
+      throw new Error('There was an error updating your password')
+    }
 
-    const currentPasswordMatches = await bcrypt.compare(currentPassword, user.password)
+    const isUpdated = user.updatePassword(currentPassword, newPassword)
+    if (!isUpdated) {
+      throw new Error('There was an error updating your password')
+    }
 
-    if (!currentPasswordMatches) return false
-
-    const newHashedPassword = bcrypt.hashSync(newPassword, saltRounds)
-    const userPasswordUpdatedEvent = new UserPasswordUpdatedEvent({id, password: newHashedPassword})
-
-    return new Promise<boolean>((resolve, reject) => {
-      this.producer.send([{messages: JSON.stringify(userPasswordUpdatedEvent), topic: 'users'}], (err, data) => {
-        if (err) {
-          reject(err)
-        } else {
-          resolve(true)
-        }
-      })
-    })
+    this.usersRepo.save(user)
+    return user
   }
 }

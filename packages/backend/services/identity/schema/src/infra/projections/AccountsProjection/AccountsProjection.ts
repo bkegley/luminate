@@ -1,9 +1,10 @@
 import {KafkaClient, Consumer} from 'kafka-node'
 import {AccountDocument} from '../../models'
-import {EventType, IDomainEvent, AccountUpdatedEvent, AccountDeletedEvent} from '../../../domain/events'
 import {IAccountsProjection} from './IAccountsProjection'
 import {IListDocumentsArgs} from '@luminate/mongo-utils'
 import {Account, AccountConnection} from '../../../types'
+import {EventType} from '../../../domain/EventType'
+import {IAccountCreatedEvent, IAccountUpdatedEvent, AccountDeletedEvent} from '../../../domain/account/events'
 
 export class AccountsProjection implements IAccountsProjection {
   private client: KafkaClient
@@ -42,13 +43,13 @@ export class AccountsProjection implements IAccountsProjection {
     })
   }
 
-  private accountCreatedEventHandler(message: IDomainEvent<AccountDocument>) {
-    const {_id, ...account} = message.data
+  private accountCreatedEventHandler(message: IAccountCreatedEvent) {
+    const {id, ...account} = message.data
     // @ts-ignore
-    this.accounts.push({id: _id, ...account})
+    this.accounts.push({id, ...account})
   }
 
-  private accountUpdatedEventHandler(event: AccountUpdatedEvent) {
+  private accountUpdatedEventHandler(event: IAccountUpdatedEvent) {
     const {id, ...updatedAccount} = event.data
     // @ts-ignore
     this.accounts = this.accounts.map(account => (account.id === id ? {...account, ...updatedAccount} : account))

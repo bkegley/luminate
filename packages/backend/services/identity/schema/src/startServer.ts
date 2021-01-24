@@ -7,7 +7,6 @@ import {buildFederatedSchema} from '@apollo/federation'
 import express from 'express'
 
 import {schemas} from './application/schema'
-import {AccountService, RoleService, UserService} from './services'
 import {seedDatabase} from './seedDatabase'
 import {Container} from './utils'
 import {createMongoConnection, Token} from '@luminate/mongo-utils'
@@ -30,11 +29,6 @@ export interface Context {
   res: express.Response
   container: Container
   user: Token | null
-  services: {
-    account: AccountService
-    role: RoleService
-    user: UserService
-  }
 }
 
 class Server {
@@ -45,8 +39,6 @@ class Server {
   public async start() {
     await createMongoConnection(process.env.MONGO_URL)
     await seedDatabase()
-
-    this.registerServices()
 
     const client = new KafkaClient({
       kafkaHost: process.env.KAFKA_HOST || 'http://localhost:9092',
@@ -100,15 +92,8 @@ class Server {
     const server = new ApolloServer({
       schema: buildFederatedSchema(schemas),
       context: ({req, res}): Context => {
-        const services = {
-          account: this.container.resolve<AccountService>(TYPES.AccountService),
-          role: this.container.resolve<RoleService>(TYPES.RoleService),
-          user: this.container.resolve<UserService>(TYPES.UserService),
-        }
-
         return {
           res,
-          services,
           user: parseUserFromRequest(req),
           container: this.container,
         }
@@ -130,23 +115,6 @@ class Server {
     this.app.listen({port: this.port}, () =>
       console.log(`🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`),
     )
-  }
-
-  private registerServices() {
-    this.container.bind<AccountService>(
-      TYPES.AccountService,
-      resolver =>
-        new AccountService(
-          resolver.resolve(TYPES.User),
-          resolver.resolve(TYPES.KafkaProducer),
-          resolver.resolve(TYPES.AccountsRepo),
-          resolver.resolve(TYPES.UsersRepo),
-        ),
-    )
-
-    this.container.bind<RoleService>(TYPES.RoleService, resolver => new RoleService(resolver.resolve(TYPES.User)))
-
-    this.container.bind<UserService>(TYPES.UserService, resolver => new UserService(resolver.resolve(TYPES.User)))
   }
 }
 

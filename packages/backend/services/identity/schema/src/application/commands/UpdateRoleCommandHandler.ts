@@ -1,10 +1,10 @@
 import {ICommandHandler, UpdateRoleCommand} from '.'
 import {Producer} from 'kafka-node'
-import {RoleDocument} from '../../infra/models'
 import {IRolesRepo} from '../../infra/repos'
-import {RoleUpdatedEvent} from '../../domain/events'
+import {RoleAggregate, RoleAggregateAttributes} from '../../domain/role/Role'
+import {RoleScope} from '../../domain/role/RoleScope'
 
-export class UpdateRoleCommandHandler implements ICommandHandler<UpdateRoleCommand, RoleDocument> {
+export class UpdateRoleCommandHandler implements ICommandHandler<UpdateRoleCommand, RoleAggregate> {
   constructor(private producer: Producer, private rolesRepo: IRolesRepo) {}
 
   public async handle(command: UpdateRoleCommand) {
@@ -14,24 +14,17 @@ export class UpdateRoleCommandHandler implements ICommandHandler<UpdateRoleComma
       return null
     }
 
-    const updatedRole = Object.assign(
-      {},
-      ...((Object.keys(command) as unknown) as Array<keyof UpdateRoleCommand>).map(key =>
-        command[key] === null || command[key] ? {[key]: command[key]} : null,
-      ),
-    )
+    let attrs: Partial<RoleAggregateAttributes> = {}
+    if (command.name) {
+      attrs.name = command.name
+    }
+    if (command.scopes) {
+      attrs.scopes = (command.scopes as unknown) as RoleScope[]
+    }
 
-    const roleUpdatedEvent = new RoleUpdatedEvent(updatedRole)
+    existingRole.update(attrs)
 
-    return new Promise<RoleDocument>((resolve, reject) => {
-      this.producer.send([{messages: JSON.stringify(roleUpdatedEvent), topic: 'roles'}], (err, data) => {
-        if (err) {
-          reject(err)
-        } else {
-          // @ts-ignore
-          resolve({...existingRole, ...updatedRole})
-        }
-      })
-    })
+    this.rolesRepo.save(existingRole)
+    return existingRole
   }
 }

@@ -17,7 +17,7 @@ import {UserDocument} from '../../infra/models'
 import jwt from 'jsonwebtoken'
 import {Token} from '@luminate/graphql-utils'
 import {IUsersProjection} from '../../infra/projections'
-import {IAccountsRepo, IRolesRepo} from '../../infra/repos'
+import {IAccountsRepo, IRolesRepo, IUsersRepo} from '../../infra/repos'
 
 const USER_AUTH_TOKEN = process.env.USER_AUTH_TOKEN || 'localsecrettoken'
 
@@ -122,7 +122,7 @@ const resolvers: Resolvers = {
     },
   },
   Mutation: {
-    createUser: async (parent, {input}, {container, services}) => {
+    createUser: async (parent, {input}, {container}) => {
       const createUserCommand = new CreateUserCommand(input)
       return container
         .resolve<ICommandRegistry>(TYPES.CommandRegistry)
@@ -177,11 +177,6 @@ const resolvers: Resolvers = {
       if (!user) {
         return false
       }
-      const logoutUserCommand = new LogoutUserCommand(user.sub)
-
-      await container
-        .resolve<ICommandRegistry>(TYPES.CommandRegistry)
-        .process<LogoutUserCommand, boolean>(CommandType.LOGOUT_USER_COMMAND, logoutUserCommand)
 
       res.cookie('id', '', {
         expires: new Date(0),
@@ -251,10 +246,9 @@ const resolvers: Resolvers = {
   },
   User: {
     // @ts-ignore
-    __resolveReference: async (parent, {services}) => {
-      const user = await services.user.getById(parent.id)
-      console.log({user})
-      return services.user.getById(parent.id)
+    __resolveReference: async (parent, {container}) => {
+      const usersRepo = container.resolve<IUsersRepo>(TYPES.UsersRepo)
+      return usersRepo.getById(parent.id)
     },
     // TODO: not sure if this is right
     // @ts-ignore
