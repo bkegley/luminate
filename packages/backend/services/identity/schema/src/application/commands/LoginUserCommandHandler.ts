@@ -20,6 +20,10 @@ export class LoginUserCommandHandler implements ICommandHandler<LoginUserCommand
     // check for existing user
     const user = await this.usersRepo.getByUsername(username)
 
+    if (!user) {
+      return null
+    }
+
     const matches = user.comparePassword(password)
 
     if (!matches) {

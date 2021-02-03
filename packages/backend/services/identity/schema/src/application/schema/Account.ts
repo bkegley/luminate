@@ -12,6 +12,9 @@ import {
 import {AccountDocument, UserDocument} from '../../infra/models'
 import {IAccountsProjection} from '../../infra/projections'
 import {IUsersRepo} from '../../infra/repos'
+import {AccountAggregate} from '../../domain/account/Account'
+import {AccountMapper} from '../../infra/mappers/AccountMapper'
+import {UserMapper} from '../../infra/mappers/UserMapper'
 
 const typeDefs = gql`
   type Account {
@@ -68,14 +71,16 @@ const resolvers: Resolvers = {
     },
   },
   Mutation: {
+    // @ts-ignore
     createAccount: async (parent, {input}, {container}) => {
       const command = new CreateAccountWithOwnerCommand(input)
-      return container
+      const account = await container
         .resolve<ICommandRegistry>(TYPES.CommandRegistry)
-        .process<CreateAccountWithOwnerCommand, AccountDocument & {users: UserDocument[]}>(
-          CommandType.CREATE_ACCOUNT_COMMAND,
-          command,
-        )
+        .process<CreateAccountWithOwnerCommand, AccountAggregate>(CommandType.CREATE_ACCOUNT_COMMAND, command)
+
+      console.log({account})
+
+      return AccountMapper.toDTO(account)
     },
     updateAccount: async (parent, {id, input}, {container}) => {
       const command = new UpdateAccountCommand(id, input)
@@ -97,9 +102,10 @@ const resolvers: Resolvers = {
     },
   },
   Account: {
+    // @ts-ignore
     users: async (parent, args, {container}) => {
-      // TODO: check if this is working
-      return container.resolve<IUsersRepo>(TYPES.UsersRepo).list({account: parent.id})
+      const users = await container.resolve<IUsersRepo>(TYPES.UsersRepo).list({account: parent.id})
+      return users.map(user => UserMapper.toDTO(user))
     },
   },
 }

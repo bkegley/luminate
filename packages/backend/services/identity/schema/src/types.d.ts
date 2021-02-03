@@ -1,8 +1,6 @@
 import {GraphQLResolveInfo} from 'graphql'
-import {RoleDocument, UserDocument} from './infra/models'
 import {Context} from './startServer'
 export type Maybe<T> = T | null
-export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
 export type RequireFields<T, K extends keyof T> = {[X in Exclude<keyof T, K>]?: T[X]} & {[P in K]-?: NonNullable<T[P]>}
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -80,7 +78,7 @@ export type Mutation = {
   createUser?: Maybe<User>
   updateUser?: Maybe<User>
   updateUserRoles?: Maybe<User>
-  deleteUser?: Maybe<User>
+  deleteUser?: Maybe<Scalars['Boolean']>
   updatePassword: Scalars['Boolean']
   login?: Maybe<Scalars['Boolean']>
   logout: Scalars['Boolean']
@@ -376,27 +374,20 @@ export type ResolversTypes = ResolversObject<{
   Int: ResolverTypeWrapper<Scalars['Int']>
   QueryInput: QueryInput
   OperatorEnum: OperatorEnum
-  AccountConnection: ResolverTypeWrapper<
-    Omit<AccountConnection, 'edges'> & {edges: Array<ResolversTypes['AccountEdge']>}
-  >
+  AccountConnection: ResolverTypeWrapper<AccountConnection>
   PageInfo: ResolverTypeWrapper<PageInfo>
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>
-  AccountEdge: ResolverTypeWrapper<Omit<AccountEdge, 'node'> & {node: ResolversTypes['Account']}>
-  Account: ResolverTypeWrapper<Omit<Account, 'users'> & {users?: Maybe<Array<ResolversTypes['User']>>}>
+  AccountEdge: ResolverTypeWrapper<AccountEdge>
+  Account: ResolverTypeWrapper<Account>
   ID: ResolverTypeWrapper<Scalars['ID']>
-  User: ResolverTypeWrapper<UserDocument>
-  UserInterface: ResolverTypeWrapper<
-    Omit<UserInterface, 'accounts' | 'roles'> & {
-      accounts: Array<ResolversTypes['Account']>
-      roles: Array<ResolversTypes['Role']>
-    }
-  >
-  Role: ResolverTypeWrapper<RoleDocument>
-  RoleConnection: ResolverTypeWrapper<Omit<RoleConnection, 'edges'> & {edges: Array<ResolversTypes['RoleEdge']>}>
-  RoleEdge: ResolverTypeWrapper<Omit<RoleEdge, 'node'> & {node: ResolversTypes['Role']}>
-  UserConnection: ResolverTypeWrapper<Omit<UserConnection, 'edges'> & {edges: Array<ResolversTypes['UserEdge']>}>
-  UserEdge: ResolverTypeWrapper<Omit<UserEdge, 'node'> & {node: ResolversTypes['User']}>
-  Me: ResolverTypeWrapper<UserDocument>
+  User: ResolverTypeWrapper<User>
+  UserInterface: ResolverTypeWrapper<UserInterface>
+  Role: ResolverTypeWrapper<Role>
+  RoleConnection: ResolverTypeWrapper<RoleConnection>
+  RoleEdge: ResolverTypeWrapper<RoleEdge>
+  UserConnection: ResolverTypeWrapper<UserConnection>
+  UserEdge: ResolverTypeWrapper<UserEdge>
+  Me: ResolverTypeWrapper<Me>
   Mutation: ResolverTypeWrapper<{}>
   CreateAccountInput: CreateAccountInput
   UpdateAccountInput: UpdateAccountInput
@@ -414,23 +405,20 @@ export type ResolversParentTypes = ResolversObject<{
   Int: Scalars['Int']
   QueryInput: QueryInput
   OperatorEnum: OperatorEnum
-  AccountConnection: Omit<AccountConnection, 'edges'> & {edges: Array<ResolversParentTypes['AccountEdge']>}
+  AccountConnection: AccountConnection
   PageInfo: PageInfo
   Boolean: Scalars['Boolean']
-  AccountEdge: Omit<AccountEdge, 'node'> & {node: ResolversParentTypes['Account']}
-  Account: Omit<Account, 'users'> & {users?: Maybe<Array<ResolversParentTypes['User']>>}
+  AccountEdge: AccountEdge
+  Account: Account
   ID: Scalars['ID']
-  User: UserDocument
-  UserInterface: Omit<UserInterface, 'accounts' | 'roles'> & {
-    accounts: Array<ResolversParentTypes['Account']>
-    roles: Array<ResolversParentTypes['Role']>
-  }
-  Role: RoleDocument
-  RoleConnection: Omit<RoleConnection, 'edges'> & {edges: Array<ResolversParentTypes['RoleEdge']>}
-  RoleEdge: Omit<RoleEdge, 'node'> & {node: ResolversParentTypes['Role']}
-  UserConnection: Omit<UserConnection, 'edges'> & {edges: Array<ResolversParentTypes['UserEdge']>}
-  UserEdge: Omit<UserEdge, 'node'> & {node: ResolversParentTypes['User']}
-  Me: UserDocument
+  User: User
+  UserInterface: UserInterface
+  Role: Role
+  RoleConnection: RoleConnection
+  RoleEdge: RoleEdge
+  UserConnection: UserConnection
+  UserEdge: UserEdge
+  Me: Me
   Mutation: {}
   CreateAccountInput: CreateAccountInput
   UpdateAccountInput: UpdateAccountInput
@@ -655,7 +643,7 @@ export type MutationResolvers<
     RequireFields<MutationUpdateUserRolesArgs, 'id'>
   >
   deleteUser?: Resolver<
-    Maybe<ResolversTypes['User']>,
+    Maybe<ResolversTypes['Boolean']>,
     ParentType,
     ContextType,
     RequireFields<MutationDeleteUserArgs, 'id'>
