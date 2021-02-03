@@ -1,9 +1,9 @@
-import {v4 as uuid} from 'uuid'
 import {Identifier} from './Identifier'
+import {Types} from 'mongoose'
 
-export class EntityId extends Identifier<string | number> {
-  private constructor(id?: string | number) {
-    super(id ? id : uuid())
+export class EntityId extends Identifier<string> {
+  private constructor(id?: string) {
+    super(id ? id : new Types.ObjectId().toHexString())
   }
 
   public get value() {
@@ -14,7 +14,7 @@ export class EntityId extends Identifier<string | number> {
     return this.toString()
   }
 
-  public static create(id?: string | number) {
+  public static create(id?: string) {
     return new EntityId(id)
   }
 }

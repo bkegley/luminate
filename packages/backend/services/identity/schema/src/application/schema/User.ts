@@ -5,7 +5,6 @@ import {
   CreateUserCommand,
   DeleteUserCommand,
   LoginUserCommand,
-  LogoutUserCommand,
   UpdateUserCommand,
   UpdateUserPasswordCommand,
   SwitchAccountCommand,
@@ -13,11 +12,14 @@ import {
   ICommandRegistry,
   CommandType,
 } from '../../application/commands'
-import {UserDocument} from '../../infra/models'
 import jwt from 'jsonwebtoken'
 import {Token} from '@luminate/graphql-utils'
 import {IUsersProjection} from '../../infra/projections'
 import {IAccountsRepo, IRolesRepo, IUsersRepo} from '../../infra/repos'
+import {AccountMapper} from '../../infra/mappers/AccountMapper'
+import {RoleMapper} from '../../infra/mappers/RoleMapper'
+import {UserAggregate} from '../../domain/user/User'
+import {UserMapper} from '../../infra/mappers/UserMapper'
 
 const USER_AUTH_TOKEN = process.env.USER_AUTH_TOKEN || 'localsecrettoken'
 
@@ -98,7 +100,7 @@ const typeDefs = gql`
     createUser(input: CreateUserInput!): User
     updateUser(id: ID!, input: UpdateUserInput!): User
     updateUserRoles(id: ID!, roles: [ID!]): User
-    deleteUser(id: ID!): User
+    deleteUser(id: ID!): Boolean
     updatePassword(id: ID!, input: UpdatePasswordInput!): Boolean!
     login(username: String!, password: String!): Boolean
     logout: Boolean!
@@ -109,46 +111,57 @@ const typeDefs = gql`
 
 const resolvers: Resolvers = {
   Query: {
+    // TODO: fix this
     // @ts-ignore
     listUsers: async (parent, args, {container}) => {
       const usersProjection = container.resolve<IUsersProjection>(TYPES.UsersProjection)
       return usersProjection.getConnectionResults(args)
     },
+    // TODO: fix this
+    // @ts-ignore
     getUser: async (parent, {id}, {container}) => {
       return container.resolve<IUsersProjection>(TYPES.UsersProjection).getUser(id)
     },
+    // TODO: fix this
+    // @ts-ignore
     me: async (parent, args, {user, container}) => {
       return container.resolve<IUsersProjection>(TYPES.UsersProjection).getUser(user.jti)
     },
   },
   Mutation: {
+    // @ts-ignore
     createUser: async (parent, {input}, {container}) => {
       const createUserCommand = new CreateUserCommand(input)
-      return container
+      const user = await container
         .resolve<ICommandRegistry>(TYPES.CommandRegistry)
-        .process<CreateUserCommand, UserDocument>(CommandType.CREATE_USER_COMMAND, createUserCommand)
+        .process<CreateUserCommand, UserAggregate>(CommandType.CREATE_USER_COMMAND, createUserCommand)
+      return UserMapper.toDTO(user)
     },
+    // @ts-ignore
     updateUser: async (parent, {id, input}, {container}) => {
       const updateUserCommand = new UpdateUserCommand(id, input)
-      return container
+      const user = await container
         .resolve<ICommandRegistry>(TYPES.CommandRegistry)
-        .process<UpdateUserCommand, UserDocument>(CommandType.UPDATE_USER_COMMAND, updateUserCommand)
+        .process<UpdateUserCommand, UserAggregate>(CommandType.UPDATE_USER_COMMAND, updateUserCommand)
+      return UserMapper.toDTO(user)
     },
+    // @ts-ignore
     updateUserRoles: async (parent, {id, roles}, {user, container}) => {
       if (!user) {
         return null
       }
       const updateUserRolesCommand = new UpdateUserRolesCommand({id, roles, account: user.account.id})
 
-      return container
+      const userAggregate = await container
         .resolve<ICommandRegistry>(TYPES.CommandRegistry)
-        .process<UpdateUserRolesCommand, UserDocument>(CommandType.UPDATE_USER_ROLES_COMMAND, updateUserRolesCommand)
+        .process<UpdateUserRolesCommand, UserAggregate>(CommandType.UPDATE_USER_ROLES_COMMAND, updateUserRolesCommand)
+      return UserMapper.toDTO(userAggregate)
     },
     deleteUser: async (parent, {id}, {container}) => {
       const deleteUserCommand = new DeleteUserCommand(id)
       return container
         .resolve<ICommandRegistry>(TYPES.CommandRegistry)
-        .process<DeleteUserCommand, UserDocument>(CommandType.DELETE_USER_COMMAND, deleteUserCommand)
+        .process<DeleteUserCommand, boolean>(CommandType.DELETE_USER_COMMAND, deleteUserCommand)
     },
     updatePassword: async (parent, {id, input}, {container}) => {
       const updateUserPasswordCommand = new UpdateUserPasswordCommand(id, input)
@@ -219,26 +232,30 @@ const resolvers: Resolvers = {
     },
   },
   Me: {
-    account: (parent, args, {container, user}) => {
+    account: async (parent, args, {container, user}) => {
       if (!user || !user.account) {
         return null
       }
       const accountsRepo = container.resolve<IAccountsRepo>(TYPES.AccountsRepo)
-      return accountsRepo.getById(user.account.id)
+      const accountAggregate = await accountsRepo.getById(user.account.id)
+      return AccountMapper.toDTO(accountAggregate)
     },
     accounts: async (parent, args, {container, user}) => {
       if (!user || !user.accounts) {
         return null
       }
-      return container.resolve<IAccountsRepo>(TYPES.AccountsRepo).list({id: user.accounts.map(account => account.id)})
+      const accounts = await container
+        .resolve<IAccountsRepo>(TYPES.AccountsRepo)
+        .list({id: user.accounts.map(account => account.id)})
+      return accounts.map(account => AccountMapper.toDTO(account))
     },
     roles: async (parent, args, {user, container}) => {
-      console.log({user})
       if (!user || !user.roles) {
         return null
       }
 
-      return container.resolve<IRolesRepo>(TYPES.RolesRepo).list({id: user.roles.map(role => role.id)})
+      const roles = await container.resolve<IRolesRepo>(TYPES.RolesRepo).list({id: user.roles.map(role => role.id)})
+      return roles.map(role => RoleMapper.toDTO(role))
     },
     scopes: async (parent, args, {user, container}) => {
       return user.scopes ?? []
@@ -261,14 +278,15 @@ const resolvers: Resolvers = {
       return accounts.filter(Boolean)
     },
     roles: async (parent, args, {user, container}) => {
-      const roles = parent.roles?.find((role: any) => role.account === user.account?.id)
+      const roles = parent.roles?.filter((role: any) => role.account === user.account?.id)
 
       if (!roles) {
         return []
       }
 
       const rolesRepo = container.resolve<IRolesRepo>(TYPES.RolesRepo)
-      return rolesRepo.list({id: roles.roles})
+      const roleAggregates = await rolesRepo.list({id: roles.map(role => role.id)})
+      return roleAggregates.map(role => RoleMapper.toDTO(role))
     },
     scopes: async (parent, args, {user, container}) => {
       const accountRoles = parent.roles?.find((role: any) => role.account === user.account?.id)
@@ -278,15 +296,11 @@ const resolvers: Resolvers = {
       }
 
       const rolesRepo = container.resolve<IRolesRepo>(TYPES.RolesRepo)
-      const roles = await rolesRepo.list({id: accountRoles.roles})
+      const roles = await rolesRepo.list({id: accountRoles})
 
       return (
-        // TODO: fix this after fixing repo return types
-        // @ts-ignore
         roles?.reduce((acc, role) => {
           const scopes = role.scopes
-          // TODO: fix this after fixing repo return types
-          // @ts-ignore
           const newScopes = scopes?.filter(scope => !acc.find(existingScope => existingScope === scope))
           return acc.concat(newScopes || [])
         }, [] as string[]) || []
