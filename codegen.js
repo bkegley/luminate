@@ -47,11 +47,11 @@ const serverGenerates = {
       contextType: './startServer#Context',
       useIndexSignature: true,
       federation: true,
-      mappers: {
-        Role: './infra/models#RoleDocument',
-        User: './infra/models#UserDocument',
-        Me: './infra/models#UserDocument',
-      },
+      //mappers: {
+      //Role: './infra/models#RoleDocument',
+      //User: './infra/models#UserDocument',
+      //Me: './infra/models#UserDocument',
+      //},
     },
   },
   'packages/backend/services/encyclopedia/schema/src/types.d.ts': {

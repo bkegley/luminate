@@ -1,3 +1,4 @@
+import {Account} from '../../types'
 import {AccountAggregate} from '../../domain/account/Account'
 
 export class AccountMapper {
@@ -10,6 +11,19 @@ export class AccountMapper {
     return {
       id: account.getEntityId().toString(),
       name: account.name.value,
+    }
+  }
+
+  public static toDTO(account: AccountAggregate): Account {
+    const now = new Date()
+    return {
+      id: account.getEntityId().toString(),
+      name: account.name.value,
+      // TODO: fix users
+      users: [],
+      // TODO: fix timestamps
+      createdAt: now.toDateString(),
+      updatedAt: now.toDateString(),
     }
   }
 }

@@ -32,7 +32,7 @@ export class UsersRepo implements IUsersRepo {
 
   public async save(user: UserAggregate) {
     const {id, ...userObj} = UserMapper.toPersistence(user)
-    UserModel.findByIdAndUpdate(id, userObj, {upsert: true})
+    await UserModel.findByIdAndUpdate(id, userObj, {upsert: true})
   }
 
   public async delete(id: string) {
