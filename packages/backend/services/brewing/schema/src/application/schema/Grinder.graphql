@@ -1,0 +1,45 @@
+type Grinder {
+  id: ID!
+  name: String
+  description: String
+  burrSet: BurrSet
+}
+
+enum BurrSet {
+  CONICAL_BURR
+  FLAT_BURR
+  BLADE
+}
+
+type GrinderConnection {
+  pageInfo: PageInfo!
+  edges: [GrinderEdge!]!
+}
+
+type GrinderEdge {
+  cursor: String
+  node: Grinder
+}
+
+input CreateGrinderInput {
+  name: String
+  description: String
+  burrSet: BurrSet
+}
+
+input UpdateGrinderInput {
+  name: String
+  description: String
+  burrSet: BurrSet
+}
+
+extend type Query {
+  listGrinders: GrinderConnection!
+  getGrinder(id: ID!): Grinder
+}
+
+extend type Mutation {
+  createGrinder(input: CreateGrinderInput!): Grinder
+  updateGrinder(id: ID!, input: UpdateGrinderInput!): Grinder
+  deleteGrinder(id: ID!): Boolean
+}

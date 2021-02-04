@@ -1,4 +1,4 @@
-import {DeviceModel, DeviceDocument} from '../models/Device'
+import {DeviceModel, DeviceDocument} from '../infra/models/Device'
 import {AuthenticatedService, Token} from '@luminate/mongo-utils'
 import DataLoader from 'dataloader'
 
