@@ -1,0 +1,60 @@
+type CuppingSession @key(fields: "id") {
+  id: ID!
+  internalId: ID
+  description: String
+  locked: Boolean
+  sessionCoffees: [SessionCoffee]
+  createdAt: String!
+  updatedAt: String!
+}
+
+type SessionCoffee {
+  id: ID!
+  sampleNumber: ID!
+  coffee: Coffee!
+  averageScore: Float
+  scoreSheets: [ScoreSheet]
+}
+
+extend type Coffee @key(fields: "id") {
+  id: ID! @external
+}
+
+type CuppingSessionConnection {
+  pageInfo: PageInfo!
+  edges: [CuppingSessionEdge!]!
+}
+
+type CuppingSessionEdge {
+  cursor: String!
+  node: CuppingSession!
+}
+
+input CreateCuppingSessionInput {
+  internalId: ID
+  description: String
+}
+
+input UpdateCuppingSessionInput {
+  internalId: ID
+  description: String
+}
+
+input SessionCoffeeInput {
+  sampleNumber: ID!
+  coffee: ID!
+}
+
+extend type Query {
+  listCuppingSessions(cursor: String, limit: Int): CuppingSessionConnection!
+  getCuppingSession(id: ID!): CuppingSession
+  getCuppingSessionCoffee(id: ID!): SessionCoffee
+}
+
+extend type Mutation {
+  createCuppingSession(input: CreateCuppingSessionInput!): CuppingSession
+  updateCuppingSession(id: ID!, input: UpdateCuppingSessionInput!): CuppingSession
+  deleteCuppingSession(id: ID!): CuppingSession
+  updateCuppingSessionCoffees(id: ID!, sessionCoffees: [SessionCoffeeInput!]!): CuppingSession
+  lockCuppingSession(id: ID!): CuppingSession
+}

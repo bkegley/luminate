@@ -3,7 +3,7 @@ import {
   CuppingSessionDocument,
   ScoreSheetDocument,
   SessionCoffeeDocument,
-} from '../models/CuppingSession'
+} from '../infra/models/CuppingSession'
 import {AuthenticatedService, Token} from '@luminate/mongo-utils'
 import DataLoader from 'dataloader'
 

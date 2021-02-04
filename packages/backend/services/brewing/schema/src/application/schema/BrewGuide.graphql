@@ -1,0 +1,36 @@
+type BrewGuide {
+  id: ID!
+  name: String
+  recipe: Recipe
+}
+
+type BrewGuideConnection {
+  pageInfo: PageInfo!
+  edges: [BrewGuideEdge]
+}
+
+type BrewGuideEdge {
+  cursor: String!
+  node: BrewGuide!
+}
+
+extend type Query {
+  listBrewGuides: BrewGuideConnection!
+  getBrewGuide(id: ID!): BrewGuide
+}
+
+input CreateBrewGuideInput {
+  name: String!
+  recipeId: ID!
+}
+
+input UpdateBrewGuideInput {
+  name: String
+  recipeId: ID
+}
+
+extend type Mutation {
+  createBrewGuide(input: CreateBrewGuideInput!): BrewGuide
+  updateBrewGuide(id: ID!, input: UpdateBrewGuideInput!): BrewGuide
+  deleteBrewGuide(id: ID!): Boolean
+}

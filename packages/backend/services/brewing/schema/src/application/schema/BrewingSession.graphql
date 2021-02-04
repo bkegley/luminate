@@ -1,0 +1,39 @@
+type BrewingSession {
+  id: ID!
+  date: String
+  description: String
+  brewGuide: BrewGuide
+}
+
+type BrewingSessionConnection {
+  pageInfo: PageInfo
+  edges: [BrewingSessionEdge]
+}
+
+type BrewingSessionEdge {
+  cursor: String
+  node: BrewingSession
+}
+
+input CreateBrewingSessionInput {
+  date: String
+  description: String
+  brewGuideId: ID
+}
+
+input UpdateBrewingSessionInput {
+  date: String
+  description: String
+  brewGuideId: ID
+}
+
+extend type Query {
+  listBrewingSessions: BrewingSessionConnection
+  getBrewingSession(id: ID!): BrewingSession
+}
+
+extend type Mutation {
+  createBrewingSession(input: CreateBrewingSessionInput): BrewingSession
+  updateBrewingSession(id: ID!, input: UpdateBrewingSessionInput): BrewingSession
+  deleteBrewingSession(id: ID!): Boolean
+}
