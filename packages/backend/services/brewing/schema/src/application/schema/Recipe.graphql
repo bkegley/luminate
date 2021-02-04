@@ -1,0 +1,45 @@
+type Recipe {
+  id: ID!
+  name: String!
+  grinder: Grinder!
+  grindSetting: Int
+  brewer: Brewer!
+  note: String
+}
+
+type RecipeConnection {
+  pageInfo: PageInfo
+  edges: [RecipeEdge]
+}
+
+type RecipeEdge {
+  cursor: String
+  node: Recipe
+}
+
+input CreateRecipeInput {
+  name: String!
+  brewerId: ID!
+  grinderId: ID!
+  grindSetting: Int
+  note: String
+}
+
+input UpdateRecipeInput {
+  name: String!
+  brewerId: ID!
+  grinderId: ID!
+  grindSetting: Int
+  note: String
+}
+
+extend type Query {
+  listRecipes: RecipeConnection!
+  getRecipe(id: ID!): Recipe
+}
+
+extend type Mutation {
+  createRecipe(input: CreateRecipeInput): Recipe
+  updateRecipe(id: ID!, input: UpdateRecipeInput): Recipe
+  deleteRecipe(id: ID!): Boolean
+}

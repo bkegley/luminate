@@ -6,21 +6,29 @@
   "license": "MIT",
   "scripts": {
     "develop": "nodemon --watch src/ --ignore src/index.d --ignore src/types.d -e ts --exec \"npm run start\"",
+    "nest:develop": "nodemon --watch src/ --ignore src/index.d --ignore src/types.d -e ts --exec \"ts-node src/startNestServer.ts\"",
     "build": "rimraf ./dist && tsc",
     "start": "node dist/startServer.js",
     "prestart": "yarn build",
-    "test": "jest"
+    "test": "jest",
+    "testnest": "ts-node src/BrewingModule.ts"
   },
   "dependencies": {
     "@apollo/federation": "^0.11.2",
     "@luminate/graphql-utils": "*",
     "@luminate/mongo-utils": "*",
     "@luminate/services-shared": "*",
+    "@nestjs/common": "^7.6.9",
+    "@nestjs/core": "^7.6.9",
+    "@nestjs/cqrs": "^7.0.1",
+    "@nestjs/graphql": "^7.9.8",
+    "@nestjs/platform-express": "^7.6.9",
     "apollo-server-express": "^2.15.0",
     "dataloader": "^2.0.0",
     "express": "^4.17.1",
     "kafka-node": "^5.0.0",
     "lodash.merge": "^4.6.2",
+    "reflect-metadata": "^0.1.13",
     "uuid": "^8.3.0"
   },
   "devDependencies": {

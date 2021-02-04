@@ -40,6 +40,9 @@ import {IGrinderRepository} from './repositories/IGrinderRepository'
 import {InMemoryBrewingSessionRepository} from './repositories/BrewingSessionRepository'
 import {IBrewingSessionRepository} from './repositories/IBrewingSessionRepository'
 
+import {Module} from '@nestjs/common'
+import {GraphQLModule} from '@nestjs/graphql'
+
 export interface Context {
   services: any
   container: Container

@@ -1,0 +1,33 @@
+type Evaluation {
+  id: ID!
+  date: String
+}
+
+type EvaluationConnection {
+  pageInfo: PageInfo
+  edges: [EvaluationEdge]
+}
+
+type EvaluationEdge {
+  cursor: String
+  node: Evaluation
+}
+
+input CreateEvaluationInput {
+  date: String
+}
+
+input UpdateEvaluationInput {
+  date: String
+}
+
+extend type Query {
+  listEvaluations: EvaluationConnection
+  getEvaluation(id: ID!): Evaluation
+}
+
+extend type Mutation {
+  createEvaluation(input: CreateEvaluationInput): Evaluation
+  updateEvaluation(id: ID!, input: UpdateEvaluationInput): Evaluation
+  deleteEvaluation(id: ID!): Boolean
+}

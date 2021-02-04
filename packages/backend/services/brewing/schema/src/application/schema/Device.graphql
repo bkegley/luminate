@@ -1,0 +1,35 @@
+type Device {
+  id: ID!
+  name: String!
+  createdAt: String!
+  updatedAt: String!
+}
+
+type DeviceConnection {
+  pageInfo: PageInfo!
+  edges: [DeviceEdge!]!
+}
+
+type DeviceEdge {
+  cursor: String!
+  node: Device!
+}
+
+input CreateDeviceInput {
+  name: String!
+}
+
+input UpdateDeviceInput {
+  name: String
+}
+
+extend type Query {
+  listDevices(cursor: String, limit: Int): DeviceConnection!
+  getDevice(id: ID!): Device
+}
+
+extend type Mutation {
+  createDevice(input: CreateDeviceInput!): Device
+  updateDevice(id: ID!, input: UpdateDeviceInput!): Device
+  deleteDevice(id: ID!): Device
+}

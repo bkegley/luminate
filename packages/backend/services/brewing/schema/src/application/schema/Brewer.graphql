@@ -1,0 +1,52 @@
+type PageInfo {
+  hasNextPage: Boolean
+  nextCursor: String
+  prevCursor: String
+}
+
+type Brewer {
+  id: ID!
+  name: String
+  description: String
+  type: BrewerType
+}
+
+enum BrewerType {
+  AUTODRIP
+  FULL_IMMERSION
+  POUROVER
+  ESPRESSO
+}
+
+type BrewerConnection {
+  pageInfo: PageInfo!
+  edges: [BrewerEdge!]!
+}
+
+type BrewerEdge {
+  cursor: String
+  node: Brewer
+}
+
+input CreateBrewerInput {
+  name: String
+  description: String
+  type: BrewerType
+}
+
+input UpdateBrewerInput {
+  name: String
+  description: String
+  type: BrewerType
+}
+
+type Query {
+  listBrewers(limit: Int, cursor: String): BrewerConnection!
+  getBrewer(id: ID!): Brewer
+}
+
+type Mutation {
+  createBrewer(input: CreateBrewerInput!): Brewer
+  updateBrewer(id: ID!, input: UpdateBrewerInput!): Brewer
+  deleteBrewer(id: ID!): Boolean
+}
