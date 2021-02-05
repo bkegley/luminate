@@ -54,6 +54,10 @@ export class InMemoryGrinderRepository implements IGrinderRepository {
     })
   }
 
+  public async list() {
+    return this.grinders
+  }
+
   public async getById(id: EntityId | string) {
     const grinderId = id instanceof EntityId ? id.toString() : id
     const grinder = this.grinders.find(grinder => grinder.id === grinderId)

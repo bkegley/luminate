@@ -3,11 +3,13 @@ export interface ListQueryArgs {
   cursor: string
 }
 export abstract class ListQuery {
-  limit: number
-  cursor: string
+  limit?: number
+  cursor?: string
 
-  constructor(args: ListQueryArgs) {
-    this.limit = args.limit
-    this.cursor = args.cursor
+  constructor(args?: ListQueryArgs) {
+    if (args) {
+      this.limit = args.limit
+      this.cursor = args.cursor
+    }
   }
 }

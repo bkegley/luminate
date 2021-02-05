@@ -42,26 +42,3 @@ export class BrewGuideResolvers {
     return this.commandBus.execute(command)
   }
 }
-
-//const resolvers: Resolvers = {
-//Query: {
-//listBrewGuides: async (parent, args, {container}) => {
-//const brewGuidesView = container.resolve<IBrewGuidesView>(TYPES.BrewGuidesView)
-//return brewGuidesView.listBrewGuides()
-//},
-//getBrewGuide: async (parent, {id}, {container}) => {
-//const brewGuidesView = container.resolve<IBrewGuidesView>(TYPES.BrewGuidesView)
-//return brewGuidesView.getBrewGuideById(id)
-//},
-//},
-//Mutation: {
-//createBrewGuide: async (parent, {input}, {container}) => {
-//const createBrewGuideCommand = new CreateBrewGuideCommand(input)
-//const brewGuide = await container
-//.resolve<ICommandRegistry>(TYPES.CommandRegistry)
-//.process<ICreateBrewGuideCommandHandler>(CommandType.CREATE_BREW_GUIDE_COMMAND, createBrewGuideCommand)
-
-//return BrewGuideMapper.toDTO(brewGuide)
-//},
-//},
-//}
