@@ -1,7 +1,10 @@
 import {CommandBus, QueryBus} from '@nestjs/cqrs'
 import {Args, Mutation, Query, Resolver} from '@nestjs/graphql'
 import {BrewerMapper, GrinderMapper, RecipeMapper} from '../../infra/mappers'
+import {UpdateRecipeInput} from '../../types'
 import {CreateRecipeCommand} from '../commands'
+import {DeleteRecipeCommand} from '../commands/Recipe/DeleteRecipe'
+import {UpdateRecipeCommand} from '../commands/Recipe/UpdateRecipe'
 import {GetRecipeQuery} from '../queries/Recipe/GetRecipeQuery'
 import {ListRecipesQuery} from '../queries/Recipe/ListRecipesQuery'
 
@@ -32,5 +35,19 @@ export class RecipeResolvers {
       grinder: GrinderMapper.toDTO(response.grinder),
       brewer: BrewerMapper.toDTO(response.brewer),
     }
+  }
+
+  @Mutation('updateRecipe')
+  async updateRecipe(@Args('id') id: string, @Args('input') input: UpdateRecipeInput) {
+    const command = new UpdateRecipeCommand(id, input)
+    const recipe = await this.commandBus.execute(command)
+
+    return RecipeMapper.toDTO(recipe)
+  }
+
+  @Mutation('deleteRecipe')
+  async deleteRecipe(@Args('id') id: string) {
+    const command = new DeleteRecipeCommand(id)
+    return await this.commandBus.execute(command)
   }
 }

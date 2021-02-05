@@ -56,6 +56,10 @@ export class InMemoryBrewingSessionRepository implements IBrewingSessionReposito
     })
   }
 
+  public async list() {
+    return this.brewingSessions
+  }
+
   public async getById(id: EntityId | string) {
     const brewingSessionId = id instanceof EntityId ? id.toString() : id
     const brewingSession = this.brewingSessions.find(brewingSession => brewingSession.id === brewingSessionId)

@@ -52,6 +52,10 @@ export class InMemoryEvaluationRepository implements IEvaluationRepository {
     })
   }
 
+  public async list() {
+    return this.evaluations
+  }
+
   public async getById(id: EntityId | string) {
     const evaluationId = id instanceof EntityId ? id.toString() : id
     const evaluation = this.evaluations.find(evaluation => evaluation.id === evaluationId)
