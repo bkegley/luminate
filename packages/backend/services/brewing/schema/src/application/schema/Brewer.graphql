@@ -40,12 +40,12 @@ input UpdateBrewerInput {
   type: BrewerType
 }
 
-type Query {
+extend type Query {
   listBrewers(limit: Int, cursor: String): BrewerConnection!
   getBrewer(id: ID!): Brewer
 }
 
-type Mutation {
+extend type Mutation {
   createBrewer(input: CreateBrewerInput!): Brewer
   updateBrewer(id: ID!, input: UpdateBrewerInput!): Brewer
   deleteBrewer(id: ID!): Boolean

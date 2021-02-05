@@ -5,13 +5,12 @@
   "author": "Bryan Kegley <hi@bryankegley.me>",
   "license": "MIT",
   "scripts": {
-    "develop": "nodemon --watch src/ --ignore src/index.d --ignore src/types.d -e ts --exec \"npm run start\"",
-    "nest:develop": "nodemon --watch src/ --ignore src/index.d --ignore src/types.d -e ts --exec \"ts-node src/startNestServer.ts\"",
-    "build": "rimraf ./dist && tsc",
-    "start": "node dist/startServer.js",
+    "develop": "nest start --watch",
+    "debug": "nest start --debug --watch",
+    "build": "nest build",
+    "start": "nest start",
     "prestart": "yarn build",
-    "test": "jest",
-    "testnest": "ts-node src/BrewingModule.ts"
+    "test": "jest"
   },
   "dependencies": {
     "@apollo/federation": "^0.11.2",
@@ -32,6 +31,7 @@
     "uuid": "^8.3.0"
   },
   "devDependencies": {
+    "@nestjs/cli": "^7.5.4",
     "@types/lodash.merge": "^4.6.6",
     "nodemon": "^2.0.2"
   }

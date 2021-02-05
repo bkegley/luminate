@@ -1,62 +1,47 @@
-import {gql} from 'apollo-server-express'
-import {Resolvers} from '../../types'
-import {
-  CreateBrewingSessionCommand,
-  ICommandRegistry,
-  CommandType,
-  UpdateBrewingSessionCommand,
-  DeleteBrewingSessionCommand,
-  IUpdateBrewingSessionCommandHandler,
-  ICreateBrewingSessionCommandHandler,
-  IDeleteBrewingSessionCommandHandler,
-} from '../commands'
-import {TYPES} from '../../utils'
+import {CommandBus, QueryBus} from '@nestjs/cqrs'
+import {Resolver, Query, Args, Mutation} from '@nestjs/graphql'
 import {BrewingSessionMapper} from '../../infra/mappers'
-import {IBrewingSessionsView} from '../../infra/views'
+import {GetBrewingSessionQuery, ListBrewingSessionsQuery} from '../queries/BrewingSession'
+import {CreateBrewingSessionCommand, UpdateBrewingSessionCommand, DeleteBrewingSessionCommand} from '../commands'
 
-const resolvers: Resolvers = {
-  Query: {
-    listBrewingSessions: async (parent, args, {container}) => {
-      const brewingSessionsView = container.resolve<IBrewingSessionsView>(TYPES.BrewingSessionsView)
-      return brewingSessionsView.listBrewingSessions()
-    },
-    getBrewingSession: async (parent, {id}, {container}) => {
-      const brewingSessionsView = container.resolve<IBrewingSessionsView>(TYPES.BrewingSessionsView)
-      return brewingSessionsView.getBrewingSessionById(id)
-    },
-  },
-  Mutation: {
-    createBrewingSession: async (parent, {input}, {container}) => {
-      const createBrewingSessionCommand = new CreateBrewingSessionCommand(input)
-      const brewingSession = await container
-        .resolve<ICommandRegistry>(TYPES.CommandRegistry)
-        .process<ICreateBrewingSessionCommandHandler>(
-          CommandType.CREATE_BREWING_SESSION_COMMAND,
-          createBrewingSessionCommand,
-        )
-      return BrewingSessionMapper.toDTO(brewingSession)
-    },
-    updateBrewingSession: async (parent, {id, input}, {container}) => {
-      const updateBrewingSessionCommand = new UpdateBrewingSessionCommand(id, input)
-      const brewingSession = await container
-        .resolve<ICommandRegistry>(TYPES.CommandRegistry)
-        .process<IUpdateBrewingSessionCommandHandler>(
-          CommandType.UPDATE_BREWING_SESSION_COMMAND,
-          updateBrewingSessionCommand,
-        )
-      return BrewingSessionMapper.toDTO(brewingSession)
-    },
-    deleteBrewingSession: async (parent, {id}, {container}) => {
-      const deleteBrewingSessionCommand = new DeleteBrewingSessionCommand(id)
-      const brewingSession = await container
-        .resolve<ICommandRegistry>(TYPES.CommandRegistry)
-        .process<IDeleteBrewingSessionCommandHandler>(
-          CommandType.DELETE_BREWING_SESSION_COMMAND,
-          deleteBrewingSessionCommand,
-        )
-      return !!brewingSession
-    },
-  },
+@Resolver('BrewingSession')
+export class BrewingSessionResolvers {
+  constructor(private readonly queryBus: QueryBus, private readonly commandBus: CommandBus) {}
+
+  @Query('listBrewingSessions')
+  async listBrewingSessions() {
+    const query = new ListBrewingSessionsQuery()
+    return this.queryBus.execute(query)
+  }
+
+  @Query('getBrewingSession')
+  async getBrewingSession(@Args('id') id: string) {
+    const query = new GetBrewingSessionQuery(id)
+    const brewingSession = await this.queryBus.execute(query)
+    return BrewingSessionMapper.toDTO(brewingSession)
+  }
+
+  @Mutation('createBrewingSession')
+  async createBrewingSession(@Args('input') input: any) {
+    const command = new CreateBrewingSessionCommand(input)
+    const brewingSession = await this.commandBus.execute(command)
+
+    return BrewingSessionMapper.toDTO(brewingSession)
+  }
+
+  @Mutation('updateBrewingSession')
+  async updateBrewingSession(@Args('id') id: string, @Args('input') input: any) {
+    const command = new UpdateBrewingSessionCommand(id, input)
+    const brewingSession = await this.commandBus.execute(command)
+
+    return BrewingSessionMapper.toDTO(brewingSession)
+  }
+
+  @Mutation('deleteBrewingSession')
+  async deleteBrewingSession(@Args('id') id: string) {
+    const command = new DeleteBrewingSessionCommand(id)
+    const brewingSession = await this.commandBus.execute(command)
+
+    return true
+  }
 }
-
-export const schema = {typeDefs, resolvers}

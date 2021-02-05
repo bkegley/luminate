@@ -5,11 +5,11 @@ require('dotenv').config({
 import {ApolloServer} from 'apollo-server-express'
 import {buildFederatedSchema} from '@apollo/federation'
 import express from 'express'
-import {schemas} from './schema'
+//import {schemas} from './schema'
 import {createMongoConnection, Token} from '@luminate/mongo-utils'
 import {Container} from './utils'
 import {parseUserFromRequest} from '@luminate/graphql-utils'
-import {ICommandRegistry, CommandRegistry} from './commands'
+import {ICommandRegistry, CommandRegistry} from './application/commands'
 import {TYPES} from './utils'
 import {Producer, KafkaClient} from 'kafka-node'
 import {
@@ -23,7 +23,7 @@ import {
   IEvaluationsView,
   IBrewingSessionsView,
   BrewingSessionsView,
-} from './views'
+} from './infra/views'
 import {EventRegistry, IEventRegistry} from './infra'
 import {
   IBrewerRepository,
@@ -34,14 +34,11 @@ import {
   IRecipeRepository,
   InMemoryEvaluationRepository,
   IEvaluationRepository,
-} from './repositories'
-import {InMemoryGrinderRepository} from './repositories/GrinderRepository'
-import {IGrinderRepository} from './repositories/IGrinderRepository'
-import {InMemoryBrewingSessionRepository} from './repositories/BrewingSessionRepository'
-import {IBrewingSessionRepository} from './repositories/IBrewingSessionRepository'
-
-import {Module} from '@nestjs/common'
-import {GraphQLModule} from '@nestjs/graphql'
+} from './infra/repositories'
+import {InMemoryGrinderRepository} from './infra/repositories/GrinderRepository'
+import {IGrinderRepository} from './infra/repositories/IGrinderRepository'
+import {InMemoryBrewingSessionRepository} from './infra/repositories/BrewingSessionRepository'
+import {IBrewingSessionRepository} from './infra/repositories/IBrewingSessionRepository'
 
 export interface Context {
   services: any
@@ -128,7 +125,7 @@ class Server {
     )
 
     const server = new ApolloServer({
-      schema: buildFederatedSchema(schemas),
+      //schema: buildFederatedSchema(schemas),
       context: ({req}) => {
         return {
           container: this.container,
@@ -152,8 +149,6 @@ class Server {
       console.log(`🚀 Server ready at http://localhost:${this.port}${server.graphqlPath}`),
     )
   }
-
-  private registerServices() {}
 }
 
 const server = new Server()
