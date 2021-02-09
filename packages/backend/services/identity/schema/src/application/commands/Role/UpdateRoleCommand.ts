@@ -1,4 +1,4 @@
-import {UpdateRoleInput} from '../../types'
+import {UpdateRoleInput} from '../../../types'
 
 export class UpdateRoleCommand {
   id: string

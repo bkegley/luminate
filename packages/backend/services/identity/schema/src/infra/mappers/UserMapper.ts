@@ -1,7 +1,7 @@
 import {UserAggregate} from '../../domain/user/User'
 import {User} from '../../types'
 
-interface IUserGraphQL extends Omit<User, 'accounts' | 'roles' | 'scopes'> {
+export interface IUserGraphQL extends Omit<User, 'accounts' | 'roles' | 'scopes'> {
   accounts: string[]
   roles?: string[]
   scopes?: string[]

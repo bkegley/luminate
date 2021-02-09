@@ -1,4 +1,4 @@
-import {CreateRoleInput} from '../../types'
+import {CreateRoleInput} from '../../../types'
 
 export class CreateRoleCommand {
   name: string

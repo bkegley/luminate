@@ -1,11 +1,11 @@
 import {CommandHandler, EventBus} from '@nestjs/cqrs'
 import {IDeleteAccountCommandHandler} from '.'
 import {DeleteAccountCommand} from './DeleteAccountCommand'
-import {IAccountsRepo} from '../../../infra/repos'
+import {AccountsRepo} from '../../../infra/repos'
 
 @CommandHandler(DeleteAccountCommand)
 export class DeleteAccountCommandHandler implements IDeleteAccountCommandHandler {
-  constructor(private eventBus: EventBus, private accountsRepo: IAccountsRepo) {}
+  constructor(private eventBus: EventBus, private accountsRepo: AccountsRepo) {}
 
   public async execute(command: DeleteAccountCommand) {
     const {id} = command
