@@ -1,4 +1,4 @@
-import {CreateAccountInput} from '../../types'
+import {CreateAccountInput} from '../../../types'
 
 export class CreateAccountWithOwnerCommand {
   name: string

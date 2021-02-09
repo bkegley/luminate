@@ -1,12 +1,13 @@
-import {ICommandHandler} from './ICommandHandler'
-import {Producer} from 'kafka-node'
+import {CommandHandler, EventBus} from '@nestjs/cqrs'
 import {AddUserToAccountCommand} from './AddUserToAccountCommand'
-import {IAccountsRepo, IUsersRepo} from '../../infra/repos'
+import {AccountsRepo, UsersRepo} from '../../../infra/repos'
+import {IAddUserToAccountCommandHandler} from './IAddUserToAccountCommandHandler'
 
-export class AddUserToAccountCommandHandler implements ICommandHandler<AddUserToAccountCommand, boolean> {
-  constructor(private producer: Producer, private accountsRepo: IAccountsRepo, private usersRepo: IUsersRepo) {}
+@CommandHandler(AddUserToAccountCommand)
+export class AddUserToAccountCommandHandler implements IAddUserToAccountCommandHandler {
+  constructor(private readonly eventBus: EventBus, private accountsRepo: AccountsRepo, private usersRepo: UsersRepo) {}
 
-  public async handle(command: AddUserToAccountCommand) {
+  public async execute(command: AddUserToAccountCommand) {
     const {accountId, userId} = command
 
     const [existingAccount, existingUser] = await Promise.all([
@@ -26,6 +27,7 @@ export class AddUserToAccountCommandHandler implements ICommandHandler<AddUserTo
 
     try {
       await this.usersRepo.save(existingUser)
+      existingUser.events.forEach(event => this.eventBus.publish(event))
       return true
     } catch (err) {
       console.log(err)

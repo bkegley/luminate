@@ -1,22 +1,22 @@
-import {Producer} from 'kafka-node'
-import {CreateAccountWithOwnerCommand, ICommandHandler} from '.'
-import {IAccountsRepo, IUsersRepo, IRolesRepo} from '../../infra/repos'
-import {AccountAggregate} from '../../domain/account/Account'
-import {AccountName} from '../../domain/account/AccountName'
-import {UserAggregate} from '../../domain/user/User'
-import {UserUsername} from '../../domain/user/UserUsername'
-import {UserPassword} from '../../domain/user/UserPassword'
+import {CommandHandler, EventBus} from '@nestjs/cqrs'
+import {CreateAccountWithOwnerCommand, ICreateAccountWithOwnerCommandHandler} from '.'
+import {AccountsRepo, UsersRepo, RolesRepo} from '../../../infra/repos'
+import {AccountAggregate} from '../../../domain/account/Account'
+import {AccountName} from '../../../domain/account/AccountName'
+import {UserAggregate} from '../../../domain/user/User'
+import {UserUsername} from '../../../domain/user/UserUsername'
+import {UserPassword} from '../../../domain/user/UserPassword'
 
-export class CreateAccountWithOwnerCommandHandler
-  implements ICommandHandler<CreateAccountWithOwnerCommand, AccountAggregate> {
+@CommandHandler(CreateAccountWithOwnerCommand)
+export class CreateAccountWithOwnerCommandHandler implements ICreateAccountWithOwnerCommandHandler {
   constructor(
-    private producer: Producer,
-    private accountsRepo: IAccountsRepo,
-    private usersRepo: IUsersRepo,
-    private rolesRepo: IRolesRepo,
+    private eventBus: EventBus,
+    private accountsRepo: AccountsRepo,
+    private usersRepo: UsersRepo,
+    private rolesRepo: RolesRepo,
   ) {}
 
-  public async handle(command: CreateAccountWithOwnerCommand) {
+  public async execute(command: CreateAccountWithOwnerCommand) {
     const {name, username, password} = command
 
     const [existingAccount, existingUser, ownerRole] = await Promise.all([
@@ -50,6 +50,8 @@ export class CreateAccountWithOwnerCommandHandler
       console.log({error})
       return null
     }
+
+    account.events.forEach(event => this.eventBus.publish(event))
 
     return account
   }
