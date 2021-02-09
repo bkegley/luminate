@@ -4,7 +4,7 @@ import {RoleMapper} from '../mappers/RoleMapper'
 import {RoleAggregate} from '../../domain/role/Role'
 
 export class RolesRepo implements IRolesRepo {
-  public async list(conditions: any) {
+  public async list(conditions?: any) {
     const roles = await RoleModel.find(conditions)
     if (!roles) {
       return null

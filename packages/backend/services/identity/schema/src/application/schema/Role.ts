@@ -1,90 +1,45 @@
-import {gql} from 'apollo-server-express'
-import {Resolvers} from '../../types'
-import {TYPES} from '../../utils/types'
-import {
-  CreateRoleCommand,
-  ICommandRegistry,
-  CommandType,
-  UpdateRoleCommand,
-  DeleteRoleCommand,
-} from '../../application/commands'
-import {RoleDocument} from '../../infra/models'
-import {IRolesProjection} from '../../infra/projections'
+import {Args, Context, Mutation, Query, Resolver} from '@nestjs/graphql'
+import {CommandBus, QueryBus} from '@nestjs/cqrs'
+import {CreateRoleCommand, UpdateRoleCommand, DeleteRoleCommand} from '../../application/commands'
+import {CreateRoleInput, UpdateRoleInput} from '../../types'
+import {RoleMapper} from '../../infra/mappers/RoleMapper'
+import {GetRoleQuery, ListRolesQuery} from '../queries/Role'
+import {Token} from '@luminate/mongo-utils'
 
-const typeDefs = gql`
-  type Role {
-    id: ID!
-    name: String!
-    scopes: [String!]!
-    createdAt: String!
-    updatedAt: String!
+@Resolver('Role')
+export class RoleResolvers {
+  constructor(private readonly queryBus: QueryBus, private readonly commandBus: CommandBus) {}
+
+  @Query('listRoles')
+  async listRoles() {
+    const query = new ListRolesQuery()
+    return this.queryBus.execute(query)
   }
 
-  type RoleConnection {
-    pageInfo: PageInfo!
-    edges: [RoleEdge!]!
+  @Query('getRoles')
+  async getRoles(@Args('id') id: string) {
+    const query = new GetRoleQuery(id)
+    const role = await this.queryBus.execute(query)
+    return RoleMapper.toDTO(role)
   }
 
-  type RoleEdge {
-    cursor: String!
-    node: Role!
+  @Mutation('createRole')
+  async createRole(@Args('input') input: CreateRoleInput, @Context('user') user: Token) {
+    const command = new CreateRoleCommand({...input, account: user.account.id})
+    const role = await this.commandBus.execute(command)
+    return RoleMapper.toDTO(role)
   }
 
-  input CreateRoleInput {
-    name: String!
-    scopes: [String!]
+  @Mutation('updateRole')
+  async updateRole(@Args('id') id: string, @Args('input') input: UpdateRoleInput) {
+    const command = new UpdateRoleCommand(id, input)
+    const role = await this.commandBus.execute(command)
+    return RoleMapper.toDTO(role)
   }
 
-  input UpdateRoleInput {
-    name: String
-    scopes: [String!]
+  @Mutation('deleteRole')
+  async deleteRole(@Args('id') id: string) {
+    const command = new DeleteRoleCommand(id)
+    return this.commandBus.execute(command)
   }
-
-  extend type Query {
-    listRoles(cursor: String, limit: Int, query: [QueryInput!]): RoleConnection!
-    getRole(id: ID!): Role
-  }
-
-  extend type Mutation {
-    createRole(input: CreateRoleInput!): Role
-    updateRole(id: ID!, input: UpdateRoleInput!): Role
-    deleteRole(id: ID!): Role
-  }
-`
-
-const resolvers: Resolvers = {
-  Query: {
-    // @ts-ignore
-    listRoles: async (_parent, args, {container}) => {
-      const rolesProjection = container.resolve<IRolesProjection>(TYPES.RolesProjection)
-      return rolesProjection.getConnectionResults(args)
-    },
-    getRole: async (_parent, {id}, {container}) => {
-      const rolesProjection = container.resolve<IRolesProjection>(TYPES.RolesProjection)
-      return rolesProjection.getRole(id)
-    },
-  },
-  Mutation: {
-    createRole: async (_parent, {input}, {container, user}) => {
-      const createRoleCommand = new CreateRoleCommand({...input, account: user.account.id})
-
-      return container
-        .resolve<ICommandRegistry>(TYPES.CommandRegistry)
-        .process<CreateRoleCommand, RoleDocument>(CommandType.CREATE_ROLE_COMMAND, createRoleCommand)
-    },
-    updateRole: async (_parent, {id, input}, {container}) => {
-      const updateRoleCommand = new UpdateRoleCommand(id, input)
-      return container
-        .resolve<ICommandRegistry>(TYPES.CommandRegistry)
-        .process<UpdateRoleCommand, RoleDocument>(CommandType.UPDATE_ROLE_COMMAND, updateRoleCommand)
-    },
-    deleteRole: async (_parent, {id}, {container}) => {
-      const deleteRoleCommand = new DeleteRoleCommand(id)
-      return container
-        .resolve<ICommandRegistry>(TYPES.CommandRegistry)
-        .process<DeleteRoleCommand, RoleDocument>(CommandType.DELETE_ROLE_COMMAND, deleteRoleCommand)
-    },
-  },
 }
-
-export const schema = {typeDefs, resolvers}

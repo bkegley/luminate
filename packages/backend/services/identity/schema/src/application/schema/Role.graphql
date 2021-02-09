@@ -1,0 +1,38 @@
+type Role {
+  id: ID!
+  name: String!
+  scopes: [String!]!
+  createdAt: String!
+  updatedAt: String!
+}
+
+type RoleConnection {
+  pageInfo: PageInfo!
+  edges: [RoleEdge!]!
+}
+
+type RoleEdge {
+  cursor: String!
+  node: Role!
+}
+
+input CreateRoleInput {
+  name: String!
+  scopes: [String!]
+}
+
+input UpdateRoleInput {
+  name: String
+  scopes: [String!]
+}
+
+extend type Query {
+  listRoles(cursor: String, limit: Int, query: [QueryInput!]): RoleConnection!
+  getRole(id: ID!): Role
+}
+
+extend type Mutation {
+  createRole(input: CreateRoleInput!): Role
+  updateRole(id: ID!, input: UpdateRoleInput!): Role
+  deleteRole(id: ID!): Role
+}

@@ -1,11 +1,17 @@
+import {Injectable} from '@nestjs/common'
+import {InjectModel} from '@nestjs/mongoose'
+import {Model} from 'mongoose'
 import {IAccountsRepo} from './IAccountsRepo'
 import {AccountModel} from '../models'
 import {AccountMapper} from '../mappers/AccountMapper'
 import {AccountAggregate} from '../../domain/account/Account'
 
+@Injectable()
 export class AccountsRepo implements IAccountsRepo {
-  public async list(conditions: any) {
-    const accounts = await AccountModel.find(conditions)
+  constructor(@InjectModel(AccountModel.name) private accountModel: Model<any>) {}
+
+  public async list(conditions?: any) {
+    const accounts = await this.accountModel.find(conditions)
     if (!accounts) {
       return null
     }
@@ -14,7 +20,7 @@ export class AccountsRepo implements IAccountsRepo {
   }
 
   public async getById(id: string) {
-    const account = await AccountModel.findById(id)
+    const account = await this.accountModel.findById(id)
     if (!account) {
       return null
     }
@@ -23,7 +29,7 @@ export class AccountsRepo implements IAccountsRepo {
   }
 
   public async getByName(name: string) {
-    const account = await AccountModel.findOne({name})
+    const account = await this.accountModel.findOne({name})
     if (!account) {
       return null
     }
@@ -33,10 +39,10 @@ export class AccountsRepo implements IAccountsRepo {
 
   public async save(account: AccountAggregate) {
     const {id, ...accountObj} = AccountMapper.toPersistence(account)
-    await AccountModel.findByIdAndUpdate(id, accountObj, {upsert: true})
+    await this.accountModel.findByIdAndUpdate(id, accountObj, {upsert: true})
   }
 
   public async delete(id: string) {
-    AccountModel.deleteOne({_id: id})
+    this.accountModel.deleteOne({_id: id})
   }
 }

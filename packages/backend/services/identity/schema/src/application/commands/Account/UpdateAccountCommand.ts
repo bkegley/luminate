@@ -1,4 +1,4 @@
-import {UpdateAccountInput} from '../../types'
+import {UpdateAccountInput} from '../../../types'
 
 export class UpdateAccountCommand {
   id: string

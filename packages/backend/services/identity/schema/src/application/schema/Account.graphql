@@ -1,0 +1,39 @@
+type Account {
+  id: ID!
+  name: String!
+  users: [User!]
+  createdAt: String!
+  updatedAt: String!
+}
+
+type AccountConnection {
+  pageInfo: PageInfo!
+  edges: [AccountEdge!]!
+}
+
+type AccountEdge {
+  cursor: String!
+  node: Account!
+}
+
+input CreateAccountInput {
+  name: String!
+  username: String!
+  password: String!
+}
+
+input UpdateAccountInput {
+  name: String
+}
+
+extend type Query {
+  listAccounts(cursor: String, limit: Int, query: [QueryInput!]): AccountConnection!
+  getAccount(id: ID!): Account
+}
+
+extend type Mutation {
+  createAccount(input: CreateAccountInput!): Account
+  updateAccount(id: ID!, input: UpdateAccountInput!): Account
+  deleteAccount(id: ID!): Account
+  addUserToAccount(accountId: ID!, userId: ID!): Boolean
+}

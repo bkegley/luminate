@@ -1,5 +1,8 @@
-import {gql} from 'apollo-server-express'
-import {Resolvers} from '../../types'
+import {Args, Context, Mutation, Query, Resolver} from '@nestjs/graphql'
+import {CommandBus, QueryBus} from '@nestjs/cqrs'
+import {Response} from 'express'
+import {Token} from '@luminate/graphql-utils'
+import {CreateUserInput, Resolvers, UpdatePasswordInput, UpdateUserInput} from '../../types'
 import {TYPES} from '../../utils/types'
 import {
   CreateUserCommand,
@@ -9,227 +12,246 @@ import {
   UpdateUserPasswordCommand,
   SwitchAccountCommand,
   UpdateUserRolesCommand,
-  ICommandRegistry,
-  CommandType,
 } from '../../application/commands'
 import jwt from 'jsonwebtoken'
-import {Token} from '@luminate/graphql-utils'
-import {IUsersProjection} from '../../infra/projections'
 import {IAccountsRepo, IRolesRepo, IUsersRepo} from '../../infra/repos'
 import {AccountMapper} from '../../infra/mappers/AccountMapper'
 import {RoleMapper} from '../../infra/mappers/RoleMapper'
-import {UserAggregate} from '../../domain/user/User'
 import {UserMapper} from '../../infra/mappers/UserMapper'
+import {ListUsersQuery} from '../queries/User/ListUsersQuery'
+import {GetUserQuery} from '../queries/User'
 
 const USER_AUTH_TOKEN = process.env.USER_AUTH_TOKEN || 'localsecrettoken'
 
-const typeDefs = gql`
-  interface UserInterface {
-    id: ID!
-    username: String!
-    firstName: String
-    lastName: String
-    accounts: [Account!]!
-    roles: [Role!]!
-    scopes: [String!]!
-    createdAt: String!
-    updatedAt: String!
+@Resolver('User')
+export class UserResolvers {
+  constructor(private readonly queryBus: QueryBus, private readonly commandBus: CommandBus) {}
+
+  @Query('listUsers')
+  async listUsers() {
+    const query = new ListUsersQuery()
+    return this.queryBus.execute(query)
   }
 
-  type User implements UserInterface @key(fields: "id") {
-    id: ID!
-    username: String!
-    firstName: String
-    lastName: String
-    accounts: [Account!]!
-    roles: [Role!]!
-    scopes: [String!]!
-    createdAt: String!
-    updatedAt: String!
+  @Query('getUser')
+  async getUser(@Args('id') id: string) {
+    const query = new GetUserQuery(id)
+    const user = await this.queryBus.execute(query)
+
+    return UserMapper.toDTO(user)
   }
 
-  type Me implements UserInterface {
-    id: ID!
-    username: String!
-    firstName: String
-    lastName: String
-    account: Account
-    accounts: [Account!]!
-    roles: [Role!]!
-    scopes: [String!]!
-    createdAt: String!
-    updatedAt: String!
+  @Mutation('createUser')
+  async createUser(@Args('input') input: CreateUserInput) {
+    const command = new CreateUserCommand(input)
+    const user = await this.commandBus.execute(command)
+
+    return UserMapper.toDTO(user)
   }
 
-  type UserConnection {
-    pageInfo: PageInfo!
-    edges: [UserEdge!]!
+  @Mutation('updateUser')
+  async updateUser(@Args('id') id: string, @Args('input') input: UpdateUserInput) {
+    const command = new UpdateUserCommand(id, input)
+    const user = await this.commandBus.execute(command)
+
+    return UserMapper.toDTO(user)
   }
 
-  type UserEdge {
-    cursor: String!
-    node: User!
+  @Mutation('updateUserRoles')
+  async updateUserRoles(@Args('id') id: string, @Args('roles') roles: string[], @Context('user') token: Token) {
+    const command = new UpdateUserRolesCommand({id, roles, account: token.account.id})
+    const user = await this.commandBus.execute(command)
+    return UserMapper.toDTO(user)
   }
 
-  input CreateUserInput {
-    firstName: String
-    lastName: String
-    username: String!
-    password: String!
-    roles: [ID!]
+  @Mutation('updatePassword')
+  async updatePassword(@Args('id') id: string, @Args('input') input: UpdatePasswordInput) {
+    const command = new UpdateUserPasswordCommand(id, input)
+    return this.commandBus.execute(command)
   }
 
-  input UpdateUserInput {
-    firstName: String
-    lastName: String
-    username: String
+  @Mutation('deleteUser')
+  async deleteUser(@Args('id') id: string) {
+    const command = new DeleteUserCommand(id)
+    return this.commandBus.execute(command)
   }
 
-  input UpdatePasswordInput {
-    currentPassword: String!
-    newPassword: String!
+  @Mutation('login')
+  async login(@Args('username') username: string, @Args('password') password: string, @Context('res') res: Response) {
+    const command = new LoginUserCommand(username, password)
+    const token = await this.commandBus.execute(command)
+
+    if (!token) return false
+
+    res.cookie('id', token, {
+      httpOnly: false,
+      secure: process.env.NODE_ENV === 'production',
+    })
+    return true
   }
 
-  extend type Query {
-    listUsers(cursor: String, limit: Int, query: [QueryInput!]): UserConnection!
-    getUser(id: ID!): User
-    me: Me
+  @Mutation('logout')
+  async logout(@Context('user') user: Token, @Context('res') res: Response) {
+    if (!user) {
+      return false
+    }
+
+    res.cookie('id', '', {
+      expires: new Date(0),
+    })
+
+    return true
   }
 
-  extend type Mutation {
-    createUser(input: CreateUserInput!): User
-    updateUser(id: ID!, input: UpdateUserInput!): User
-    updateUserRoles(id: ID!, roles: [ID!]): User
-    deleteUser(id: ID!): Boolean
-    updatePassword(id: ID!, input: UpdatePasswordInput!): Boolean!
-    login(username: String!, password: String!): Boolean
-    logout: Boolean!
-    switchAccount(accountId: ID!): Boolean
-    refreshToken: Boolean
-  }
-`
+  @Mutation('refreshToken')
+  async refreshToken(@Context('user') user: Token, @Context('res') res: Response) {
+    if (!user) return null
+    const {iat, exp, ...remainingToken} = user
+    const token = jwt.sign(remainingToken, USER_AUTH_TOKEN, {expiresIn: '10m'})
 
-const resolvers: Resolvers = {
-  Query: {
-    // TODO: fix this
-    // @ts-ignore
-    listUsers: async (parent, args, {container}) => {
-      const usersProjection = container.resolve<IUsersProjection>(TYPES.UsersProjection)
-      return usersProjection.getConnectionResults(args)
-    },
-    // TODO: fix this
-    // @ts-ignore
-    getUser: async (parent, {id}, {container}) => {
-      return container.resolve<IUsersProjection>(TYPES.UsersProjection).getUser(id)
-    },
-    // TODO: fix this
-    // @ts-ignore
-    me: async (parent, args, {user, container}) => {
-      return container.resolve<IUsersProjection>(TYPES.UsersProjection).getUser(user.jti)
-    },
-  },
-  Mutation: {
-    // @ts-ignore
-    createUser: async (parent, {input}, {container}) => {
-      const createUserCommand = new CreateUserCommand(input)
-      const user = await container
-        .resolve<ICommandRegistry>(TYPES.CommandRegistry)
-        .process<CreateUserCommand, UserAggregate>(CommandType.CREATE_USER_COMMAND, createUserCommand)
-      return UserMapper.toDTO(user)
-    },
-    // @ts-ignore
-    updateUser: async (parent, {id, input}, {container}) => {
-      const updateUserCommand = new UpdateUserCommand(id, input)
-      const user = await container
-        .resolve<ICommandRegistry>(TYPES.CommandRegistry)
-        .process<UpdateUserCommand, UserAggregate>(CommandType.UPDATE_USER_COMMAND, updateUserCommand)
-      return UserMapper.toDTO(user)
-    },
-    // @ts-ignore
-    updateUserRoles: async (parent, {id, roles}, {user, container}) => {
-      if (!user) {
-        return null
-      }
-      const updateUserRolesCommand = new UpdateUserRolesCommand({id, roles, account: user.account.id})
-
-      const userAggregate = await container
-        .resolve<ICommandRegistry>(TYPES.CommandRegistry)
-        .process<UpdateUserRolesCommand, UserAggregate>(CommandType.UPDATE_USER_ROLES_COMMAND, updateUserRolesCommand)
-      return UserMapper.toDTO(userAggregate)
-    },
-    deleteUser: async (parent, {id}, {container}) => {
-      const deleteUserCommand = new DeleteUserCommand(id)
-      return container
-        .resolve<ICommandRegistry>(TYPES.CommandRegistry)
-        .process<DeleteUserCommand, boolean>(CommandType.DELETE_USER_COMMAND, deleteUserCommand)
-    },
-    updatePassword: async (parent, {id, input}, {container}) => {
-      const updateUserPasswordCommand = new UpdateUserPasswordCommand(id, input)
-      return container
-        .resolve<ICommandRegistry>(TYPES.CommandRegistry)
-        .process<UpdateUserPasswordCommand, boolean>(
-          CommandType.UPDATE_USER_PASSWORD_COMMAND,
-          updateUserPasswordCommand,
-        )
-    },
-    login: async (parent, {username, password}, {container, res}) => {
-      const loginUserCommand = new LoginUserCommand(username, password)
-
-      const token = await container
-        .resolve<ICommandRegistry>(TYPES.CommandRegistry)
-        .process<LoginUserCommand, boolean>(CommandType.LOGIN_USER_COMMAND, loginUserCommand)
-
-      if (!token) return false
-      res.cookie('id', token, {
-        httpOnly: false,
-        secure: process.env.NODE_ENV === 'production',
-      })
-      return true
-    },
-    logout: async (parent, args, {res, container, user}) => {
-      if (!user) {
-        return false
-      }
-
+    if (!token) {
       res.cookie('id', '', {
         expires: new Date(0),
       })
+      return false
+    }
 
-      return true
-    },
-    refreshToken: (parent, args, {res, user}) => {
-      if (!user) return null
-      const {iat, exp, ...remainingToken} = user
-      const token = jwt.sign(remainingToken, USER_AUTH_TOKEN, {expiresIn: '10m'})
+    res.cookie('id', token, {
+      httpOnly: false,
+      secure: process.env.NODE_ENV === 'production',
+    })
+    return true
+  }
+  @Mutation('switchAccount')
+  async switchAccount(
+    @Args('acccountId') accountId: string,
+    @Context('user') user: Token,
+    @Context('res') res: Response,
+  ) {
+    const command = new SwitchAccountCommand(user, accountId)
+    const token = await this.commandBus.execute(command)
 
-      if (!token) {
-        res.cookie('id', '', {
-          expires: new Date(0),
-        })
-        return false
-      }
+    if (!token) return false
 
-      res.cookie('id', token, {
-        httpOnly: false,
-        secure: process.env.NODE_ENV === 'production',
-      })
-      return true
-    },
-    switchAccount: async (parent, {accountId}, {res, user, container}) => {
-      const switchAccountCommand = new SwitchAccountCommand(user, accountId)
+    res.cookie('id', token, {
+      httpOnly: false,
+      secure: process.env.NODE_ENV === 'production',
+    })
+    return true
+  }
+}
 
-      const token = await container
-        .resolve<ICommandRegistry>(TYPES.CommandRegistry)
-        .process<SwitchAccountCommand, Token>(CommandType.SWITCH_ACCOUNT_COMMAND, switchAccountCommand)
-
-      if (!token) return false
-
-      res.cookie('id', token, {
-        httpOnly: false,
-        secure: process.env.NODE_ENV === 'production',
-      })
-      return true
-    },
+const resolvers: Resolvers = {
+  Query: {
+    //    // TODO: fix this
+    //// @ts-ignore
+    //listUsers: async (parent, args, {container}) => {
+    //const usersProjection = container.resolve<IUsersProjection>(TYPES.UsersProjection)
+    //return usersProjection.getConnectionResults(args)
+    //},
+    //// TODO: fix this
+    //// @ts-ignore
+    //getUser: async (parent, {id}, {container}) => {
+    //return container.resolve<IUsersProjection>(TYPES.UsersProjection).getUser(id)
+    //},
+    //// TODO: fix this
+    //// @ts-ignore
+    //me: async (parent, args, {user, container}) => {
+    //return container.resolve<IUsersProjection>(TYPES.UsersProjection).getUser(user.jti)
+    //},
+  },
+  Mutation: {
+    //    // @ts-ignore
+    //createUser: async (parent, {input}, {container}) => {
+    //const createUserCommand = new CreateUserCommand(input)
+    //const user = await container
+    //.resolve<ICommandRegistry>(TYPES.CommandRegistry)
+    //.process<CreateUserCommand, UserAggregate>(CommandType.CREATE_USER_COMMAND, createUserCommand)
+    //return UserMapper.toDTO(user)
+    //},
+    //// @ts-ignore
+    //updateUser: async (parent, {id, input}, {container}) => {
+    //const updateUserCommand = new UpdateUserCommand(id, input)
+    //const user = await container
+    //.resolve<ICommandRegistry>(TYPES.CommandRegistry)
+    //.process<UpdateUserCommand, UserAggregate>(CommandType.UPDATE_USER_COMMAND, updateUserCommand)
+    //return UserMapper.toDTO(user)
+    //},
+    //// @ts-ignore
+    //updateUserRoles: async (parent, {id, roles}, {user, container}) => {
+    //if (!user) {
+    //return null
+    //}
+    //const updateUserRolesCommand = new UpdateUserRolesCommand({id, roles, account: user.account.id})
+    //const userAggregate = await container
+    //.resolve<ICommandRegistry>(TYPES.CommandRegistry)
+    //.process<UpdateUserRolesCommand, UserAggregate>(CommandType.UPDATE_USER_ROLES_COMMAND, updateUserRolesCommand)
+    //return UserMapper.toDTO(userAggregate)
+    //},
+    //deleteUser: async (parent, {id}, {container}) => {
+    //const deleteUserCommand = new DeleteUserCommand(id)
+    //return container
+    //.resolve<ICommandRegistry>(TYPES.CommandRegistry)
+    //.process<DeleteUserCommand, boolean>(CommandType.DELETE_USER_COMMAND, deleteUserCommand)
+    //},
+    //updatePassword: async (parent, {id, input}, {container}) => {
+    //const updateUserPasswordCommand = new UpdateUserPasswordCommand(id, input)
+    //return container
+    //.resolve<ICommandRegistry>(TYPES.CommandRegistry)
+    //.process<UpdateUserPasswordCommand, boolean>(
+    //CommandType.UPDATE_USER_PASSWORD_COMMAND,
+    //updateUserPasswordCommand,
+    //)
+    //},
+    //login: async (parent, {username, password}, {container, res}) => {
+    //const loginUserCommand = new LoginUserCommand(username, password)
+    //const token = await container
+    //.resolve<ICommandRegistry>(TYPES.CommandRegistry)
+    //.process<LoginUserCommand, boolean>(CommandType.LOGIN_USER_COMMAND, loginUserCommand)
+    //if (!token) return false
+    //res.cookie('id', token, {
+    //httpOnly: false,
+    //secure: process.env.NODE_ENV === 'production',
+    //})
+    //return true
+    //},
+    //logout: async (parent, args, {res, container, user}) => {
+    //if (!user) {
+    //return false
+    //}
+    //res.cookie('id', '', {
+    //expires: new Date(0),
+    //})
+    //return true
+    //},
+    //refreshToken: (parent, args, {res, user}) => {
+    //if (!user) return null
+    //const {iat, exp, ...remainingToken} = user
+    //const token = jwt.sign(remainingToken, USER_AUTH_TOKEN, {expiresIn: '10m'})
+    //if (!token) {
+    //res.cookie('id', '', {
+    //expires: new Date(0),
+    //})
+    //return false
+    //}
+    //res.cookie('id', token, {
+    //httpOnly: false,
+    //secure: process.env.NODE_ENV === 'production',
+    //})
+    //return true
+    //},
+    //switchAccount: async (parent, {accountId}, {res, user, container}) => {
+    //const switchAccountCommand = new SwitchAccountCommand(user, accountId)
+    //const token = await container
+    //.resolve<ICommandRegistry>(TYPES.CommandRegistry)
+    //.process<SwitchAccountCommand, Token>(CommandType.SWITCH_ACCOUNT_COMMAND, switchAccountCommand)
+    //if (!token) return false
+    //res.cookie('id', token, {
+    //httpOnly: false,
+    //secure: process.env.NODE_ENV === 'production',
+    //})
+    //return true
+    //},
   },
   Me: {
     account: async (parent, args, {container, user}) => {
@@ -309,4 +331,4 @@ const resolvers: Resolvers = {
   },
 }
 
-export const schema = {typeDefs, resolvers}
+export const schema = {resolvers}
