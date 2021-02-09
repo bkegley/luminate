@@ -17,14 +17,21 @@
     "@luminate/graphql-utils": "*",
     "@luminate/mongo-utils": "*",
     "@luminate/services-shared": "*",
+    "@nestjs/common": "^7.6.11",
+    "@nestjs/core": "^7.6.11",
+    "@nestjs/cqrs": "^7.0.1",
+    "@nestjs/graphql": "^7.9.8",
+    "@nestjs/platform-express": "^7.6.11",
     "apollo-server-express": "^2.15.0",
     "bcryptjs": "^2.4.3",
     "dataloader": "^2.0.0",
     "express": "^4.17.1",
     "kafka-node": "^5.0.0",
-    "lodash.merge": "^4.6.2"
+    "lodash.merge": "^4.6.2",
+    "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
+    "@nestjs/cli": "^7.5.4",
     "@types/bcryptjs": "^2.4.2",
     "@types/jest": "^26.0.13",
     "apollo-server-testing": "^2.17.0",

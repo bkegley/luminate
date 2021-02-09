@@ -1,4 +1,4 @@
-import {MutationAddUserToAccountArgs} from '../../types'
+import {MutationAddUserToAccountArgs} from '../../../types'
 
 export class AddUserToAccountCommand {
   accountId: string

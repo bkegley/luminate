@@ -1,20 +1,21 @@
-import {ICommandHandler} from './ICommandHandler'
 import jwt from 'jsonwebtoken'
-import {Producer} from 'kafka-node'
+import {CommandHandler, EventBus} from '@nestjs/cqrs'
 import {LoginUserCommand} from './LoginUserCommand'
-import {IUsersRepo, IRolesRepo, IAccountsRepo} from '../../infra/repos'
+import {ILoginUserCommandHandler} from '.'
+import {AccountsRepo, RolesRepo, UsersRepo} from '../../../infra/repos'
 
 const tokenSecret = process.env.USER_AUTH_TOKEN || 'supersecretpassword'
 
-export class LoginUserCommandHandler implements ICommandHandler<LoginUserCommand, string | null> {
+@CommandHandler(LoginUserCommand)
+export class LoginUserCommandHandler implements ILoginUserCommandHandler {
   constructor(
-    private producer: Producer,
-    private usersRepo: IUsersRepo,
-    private accountsRepo: IAccountsRepo,
-    private rolesRepo: IRolesRepo,
+    private eventBus: EventBus,
+    private usersRepo: UsersRepo,
+    private accountsRepo: AccountsRepo,
+    private rolesRepo: RolesRepo,
   ) {}
 
-  public async handle(command: LoginUserCommand) {
+  public async execute(command: LoginUserCommand) {
     const {username, password} = command
 
     // check for existing user
@@ -50,6 +51,8 @@ export class LoginUserCommandHandler implements ICommandHandler<LoginUserCommand
     }
 
     const token = jwt.sign(input, tokenSecret, {expiresIn: '10m'})
+
+    user.events.forEach(event => this.eventBus.publish(event))
     return token
   }
 }

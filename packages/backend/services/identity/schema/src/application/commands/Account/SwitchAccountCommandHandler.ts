@@ -1,21 +1,21 @@
-import {ICommandHandler} from './ICommandHandler'
-import {Producer} from 'kafka-node'
-import {SwitchAccountCommand} from './SwitchAccountCommand'
-import {AccountSwitchFailedEvent, AccountSwitchedEvent} from '../../domain/account/events'
 import jwt from 'jsonwebtoken'
-import {IAccountsRepo, IUsersRepo, IRolesRepo} from '../../infra/repos'
+import {CommandHandler, EventBus} from '@nestjs/cqrs'
+import {SwitchAccountCommand, ISwitchAccountCommandHandler} from '.'
+import {AccountSwitchFailedEvent, AccountSwitchedEvent} from '../../../domain/account/events'
+import {AccountsRepo, UsersRepo, RolesRepo} from '../../../infra/repos'
 
 const USER_AUTH_TOKEN = process.env.USER_AUTH_TOKEN || 'localsecrettoken'
 
-export class SwitchAccountCommandHandler implements ICommandHandler<SwitchAccountCommand, string | null> {
+@CommandHandler(SwitchAccountCommand)
+export class SwitchAccountCommandHandler implements ISwitchAccountCommandHandler {
   constructor(
-    private producer: Producer,
-    private accountsRepo: IAccountsRepo,
-    private usersRepo: IUsersRepo,
-    private rolesRepo: IRolesRepo,
+    private eventBus: EventBus,
+    private accountsRepo: AccountsRepo,
+    private usersRepo: UsersRepo,
+    private rolesRepo: RolesRepo,
   ) {}
 
-  public async handle(command: SwitchAccountCommand) {
+  public async execute(command: SwitchAccountCommand) {
     const {user: token, accountId} = command
 
     const user = await this.usersRepo.getById(token.jti)
@@ -24,16 +24,8 @@ export class SwitchAccountCommandHandler implements ICommandHandler<SwitchAccoun
 
     if (!user || !newAccount) {
       const accountSwitchFailedEvent = new AccountSwitchFailedEvent(user.username.value, accountId)
-
-      return new Promise<null>((resolve, reject) => {
-        this.producer.send([{messages: JSON.stringify(accountSwitchFailedEvent), topic: 'users'}], (err, data) => {
-          if (err) {
-            reject(err)
-          } else {
-            resolve(null)
-          }
-        })
-      })
+      this.eventBus.publish(accountSwitchFailedEvent)
+      return null
     }
 
     const [accountRoles, userAccounts] = await Promise.all([
@@ -69,14 +61,7 @@ export class SwitchAccountCommandHandler implements ICommandHandler<SwitchAccoun
 
     const accountSwitchedEvent = new AccountSwitchedEvent(user.username.value, accountId)
 
-    return new Promise<string>((resolve, reject) => {
-      this.producer.send([{messages: JSON.stringify(accountSwitchedEvent), topic: 'users'}], (err, data) => {
-        if (err) {
-          reject(err)
-        } else {
-          resolve(newToken)
-        }
-      })
-    })
+    this.eventBus.publish(accountSwitchedEvent)
+    return newToken
   }
 }
