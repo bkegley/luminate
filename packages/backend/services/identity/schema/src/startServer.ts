@@ -6,7 +6,7 @@ import {ApolloServer} from 'apollo-server-express'
 import {buildFederatedSchema} from '@apollo/federation'
 import express from 'express'
 
-import {schemas} from './application/schema'
+//import {schemas} from './application/schema'
 import {seedDatabase} from './seedDatabase'
 import {Container} from './utils'
 import {createMongoConnection, Token} from '@luminate/mongo-utils'
@@ -14,7 +14,7 @@ import {parseUserFromRequest} from '@luminate/graphql-utils'
 import {KafkaClient, Producer} from 'kafka-node'
 const PORT = process.env.PORT || 3001
 import {TYPES} from './utils/types'
-import {ICommandRegistry, CommandRegistry} from './application/commands'
+//import {ICommandRegistry, CommandRegistry} from './application/commands'
 import {
   IRolesProjection,
   RolesProjection,
@@ -66,7 +66,7 @@ class Server {
       )
     })
 
-    this.container.bind<IAccountsRepo>(TYPES.AccountsRepo, () => new AccountsRepo())
+    //this.container.bind<IAccountsRepo>(TYPES.AccountsRepo, () => new AccountsRepo())
     this.container.bind<IUsersRepo>(TYPES.UsersRepo, () => new UsersRepo())
     this.container.bind<IRolesRepo>(TYPES.RolesRepo, () => new RolesRepo())
 
@@ -78,19 +78,19 @@ class Server {
     this.container.bind<IUsersProjection>(TYPES.UsersProjection, usersProjection)
     this.container.bind<IRolesProjection>(TYPES.RolesProjection, rolesProjection)
 
-    this.container.bind<ICommandRegistry>(
-      TYPES.CommandRegistry,
-      resolver =>
-        new CommandRegistry(
-          this.container.resolve(TYPES.KafkaProducer),
-          resolver.resolve(TYPES.AccountsRepo),
-          resolver.resolve(TYPES.UsersRepo),
-          resolver.resolve(TYPES.RolesRepo),
-        ),
-    )
+    //this.container.bind<ICommandRegistry>(
+    //TYPES.CommandRegistry,
+    //resolver =>
+    //new CommandRegistry(
+    //this.container.resolve(TYPES.KafkaProducer),
+    //resolver.resolve(TYPES.AccountsRepo),
+    //resolver.resolve(TYPES.UsersRepo),
+    //resolver.resolve(TYPES.RolesRepo),
+    //),
+    //)
 
     const server = new ApolloServer({
-      schema: buildFederatedSchema(schemas),
+      //schema: buildFederatedSchema(schemas),
       context: ({req, res}): Context => {
         return {
           res,

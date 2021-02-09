@@ -1,0 +1,83 @@
+interface UserInterface {
+  id: ID!
+  username: String!
+  firstName: String
+  lastName: String
+  accounts: [Account!]!
+  roles: [Role!]!
+  scopes: [String!]!
+  createdAt: String!
+  updatedAt: String!
+}
+
+type User implements UserInterface @key(fields: "id") {
+  id: ID!
+  username: String!
+  firstName: String
+  lastName: String
+  accounts: [Account!]!
+  roles: [Role!]!
+  scopes: [String!]!
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Me implements UserInterface {
+  id: ID!
+  username: String!
+  firstName: String
+  lastName: String
+  account: Account
+  accounts: [Account!]!
+  roles: [Role!]!
+  scopes: [String!]!
+  createdAt: String!
+  updatedAt: String!
+}
+
+type UserConnection {
+  pageInfo: PageInfo!
+  edges: [UserEdge!]!
+}
+
+type UserEdge {
+  cursor: String!
+  node: User!
+}
+
+input CreateUserInput {
+  firstName: String
+  lastName: String
+  username: String!
+  password: String!
+  roles: [ID!]
+}
+
+input UpdateUserInput {
+  firstName: String
+  lastName: String
+  username: String
+}
+
+input UpdatePasswordInput {
+  currentPassword: String!
+  newPassword: String!
+}
+
+extend type Query {
+  listUsers(cursor: String, limit: Int, query: [QueryInput!]): UserConnection!
+  getUser(id: ID!): User
+  me: Me
+}
+
+extend type Mutation {
+  createUser(input: CreateUserInput!): User
+  updateUser(id: ID!, input: UpdateUserInput!): User
+  updateUserRoles(id: ID!, roles: [ID!]): User
+  deleteUser(id: ID!): Boolean
+  updatePassword(id: ID!, input: UpdatePasswordInput!): Boolean!
+  login(username: String!, password: String!): Boolean
+  logout: Boolean!
+  switchAccount(accountId: ID!): Boolean
+  refreshToken: Boolean
+}

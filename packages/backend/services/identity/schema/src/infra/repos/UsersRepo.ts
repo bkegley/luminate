@@ -4,7 +4,7 @@ import {UserMapper} from '../mappers/UserMapper'
 import {UserAggregate} from '../../domain/user/User'
 
 export class UsersRepo implements IUsersRepo {
-  public async list(conditions: any) {
+  public async list(conditions?: any) {
     const users = await UserModel.find(conditions)
     if (!users) {
       return null

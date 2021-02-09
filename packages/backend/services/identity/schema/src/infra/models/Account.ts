@@ -5,7 +5,7 @@ export interface AccountDocument extends AuthenticatedDocument {
   name: string
 }
 
-const Account = extendSchema(
+export const AccountSchema = extendSchema(
   BaseAuthenticatedSchema,
   {
     name: {
@@ -16,4 +16,4 @@ const Account = extendSchema(
   {timestamps: true},
 )
 
-export const AccountModel = model<AccountDocument>('account', Account)
+export const AccountModel = model<AccountDocument>('account', AccountSchema)
