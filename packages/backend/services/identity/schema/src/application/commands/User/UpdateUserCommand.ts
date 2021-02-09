@@ -1,4 +1,4 @@
-import {UpdateUserInput} from '../../types'
+import {UpdateUserInput} from '../../../types'
 
 export class UpdateUserCommand {
   id: string

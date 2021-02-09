@@ -1,4 +1,4 @@
-import {UpdatePasswordInput} from '../../types'
+import {UpdatePasswordInput} from '../../../types'
 
 export class UpdateUserPasswordCommand {
   id: string

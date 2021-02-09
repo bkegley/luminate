@@ -1,4 +1,4 @@
-import {CreateUserInput} from '../../types'
+import {CreateUserInput} from '../../../types'
 
 export class CreateUserCommand {
   username: string
