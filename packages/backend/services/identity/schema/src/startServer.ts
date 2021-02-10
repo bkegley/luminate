@@ -23,7 +23,7 @@ import {
   IAccountsProjection,
   IUsersProjection,
 } from './infra/projections'
-import {AccountsRepo, IAccountsRepo, IUsersRepo, IRolesRepo, RolesRepo, UsersRepo} from './infra/repos'
+//import {AccountsRepo, IAccountsRepo, IUsersRepo, IRolesRepo, RolesRepo, UsersRepo} from './infra/repos'
 
 export interface Context {
   res: express.Response
@@ -38,7 +38,7 @@ class Server {
 
   public async start() {
     await createMongoConnection(process.env.MONGO_URL)
-    await seedDatabase()
+    await seedDatabase({})
 
     const client = new KafkaClient({
       kafkaHost: process.env.KAFKA_HOST || 'http://localhost:9092',
@@ -67,8 +67,8 @@ class Server {
     })
 
     //this.container.bind<IAccountsRepo>(TYPES.AccountsRepo, () => new AccountsRepo())
-    this.container.bind<IUsersRepo>(TYPES.UsersRepo, () => new UsersRepo())
-    this.container.bind<IRolesRepo>(TYPES.RolesRepo, () => new RolesRepo())
+    //this.container.bind<IUsersRepo>(TYPES.UsersRepo, () => new UsersRepo())
+    //this.container.bind<IRolesRepo>(TYPES.RolesRepo, () => new RolesRepo())
 
     const accountsProjection = new AccountsProjection()
     const usersProjection = new UsersProjection()

@@ -31,6 +31,7 @@ export class AccountResolvers {
   async createAccount(@Args('input') input: CreateAccountInput) {
     const command = new CreateAccountWithOwnerCommand(input)
     const account = await this.commandBus.execute(command)
+    console.log({account})
     return AccountMapper.toDTO(account)
   }
 

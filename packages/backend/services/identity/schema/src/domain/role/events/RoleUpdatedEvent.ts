@@ -11,7 +11,7 @@ export class RoleUpdatedEvent implements IRoleUpdatedEvent {
     this.data = {
       id: role.getEntityId().toString(),
       name: role.name,
-      account: role.account.value,
+      account: role.account?.value,
       scopes: role.scopes,
     }
   }

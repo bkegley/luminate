@@ -1,3 +1,4 @@
+import mongoose from 'mongoose'
 import {UserAggregate} from '../../domain/user/User'
 import {User} from '../../types'
 
@@ -14,11 +15,11 @@ export class UserMapper {
 
   public static toPersistence(user: UserAggregate) {
     return {
-      id: user.getEntityId().toString(),
-      accounts: user.accounts.map(account => account.toString()),
+      id: mongoose.Types.ObjectId(user.getEntityId().toString()),
+      accounts: user.accounts.map(account => mongoose.Types.ObjectId(account.toString())),
       username: user.username.value,
       password: user.password,
-      roles: user.roles.map(role => role.toString()),
+      roles: user.roles.map(role => mongoose.Types.ObjectId(role.toString())),
     }
   }
 

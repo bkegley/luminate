@@ -1,3 +1,4 @@
+import mongoose from 'mongoose'
 import {RoleAggregate} from '../../domain/role/Role'
 import {Role} from '../../types'
 
@@ -8,7 +9,7 @@ export class RoleMapper {
 
   public static toPersistence(role: RoleAggregate) {
     return {
-      id: role.getEntityId().toString(),
+      id: mongoose.Types.ObjectId(role.getEntityId().toString()),
       name: role.name,
       scopes: role.scopes,
     }

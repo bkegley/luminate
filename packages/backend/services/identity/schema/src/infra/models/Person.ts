@@ -42,7 +42,7 @@ interface IPhone extends ContactInfo {
   contactType: ContactType
 }
 
-const PersonSchema = extendSchema(
+export const PersonSchema = extendSchema(
   BaseAuthenticatedSchema,
   {
     firstName: {

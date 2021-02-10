@@ -1,4 +1,5 @@
 import {IQueryHandler, QueryHandler} from '@nestjs/cqrs'
+import {AccountMapper} from '../../../infra/mappers/AccountMapper'
 import {AccountsRepo} from '../../../infra/repos'
 import {ListAccountsQuery} from './ListAccountsQuery'
 
@@ -8,7 +9,6 @@ export class ListAccountsQueryHandler implements IQueryHandler<ListAccountsQuery
 
   async execute(_query: ListAccountsQuery) {
     const accounts = await this.accountsRepo.list()
-    console.log({accounts})
     return {
       pageInfo: {
         hasNextPage: true,
@@ -16,7 +16,7 @@ export class ListAccountsQueryHandler implements IQueryHandler<ListAccountsQuery
       edges: accounts.map(account => {
         return {
           cursor: 'fakecursor',
-          node: account,
+          node: AccountMapper.toDTO(account),
         }
       }),
     }

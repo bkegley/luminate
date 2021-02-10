@@ -1,11 +1,17 @@
+import {Injectable} from '@nestjs/common'
+import {InjectModel} from '@nestjs/mongoose'
+import {Model} from 'mongoose'
 import {IRolesRepo} from './IRolesRepo'
-import {RoleModel} from '../models'
+import {RoleDocument} from '../models'
 import {RoleMapper} from '../mappers/RoleMapper'
 import {RoleAggregate} from '../../domain/role/Role'
 
+@Injectable()
 export class RolesRepo implements IRolesRepo {
+  constructor(@InjectModel('role') private roleModel: Model<RoleDocument>) {}
+
   public async list(conditions?: any) {
-    const roles = await RoleModel.find(conditions)
+    const roles = await this.roleModel.find(conditions)
     if (!roles) {
       return null
     }
@@ -14,7 +20,7 @@ export class RolesRepo implements IRolesRepo {
   }
 
   public async getById(id: string) {
-    const role = await RoleModel.findById(id)
+    const role = await this.roleModel.findById(id)
     if (!role) {
       return null
     }
@@ -23,7 +29,7 @@ export class RolesRepo implements IRolesRepo {
   }
 
   public async getByName(name: string) {
-    const role = await RoleModel.findOne({name})
+    const role = await this.roleModel.findOne({name})
     if (!role) {
       return null
     }
@@ -33,10 +39,10 @@ export class RolesRepo implements IRolesRepo {
 
   public async save(role: RoleAggregate) {
     const {id, ...roleObj} = RoleMapper.toPersistence(role)
-    RoleModel.findByIdAndUpdate(id, roleObj, {upsert: true})
+    await this.roleModel.findByIdAndUpdate(id, roleObj, {upsert: true})
   }
 
   public async delete(id: string) {
-    RoleModel.deleteOne({_id: id})
+    this.roleModel.deleteOne({_id: id})
   }
 }
