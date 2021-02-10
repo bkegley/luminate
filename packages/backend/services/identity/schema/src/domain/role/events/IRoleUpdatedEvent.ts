@@ -5,7 +5,8 @@ export interface IRoleUpdatedEventData {
   id: string
   name: string
   account: string
-  scopes: RoleScope[]
+  // TODO: fix RoleScope
+  scopes: string[]
 }
 
 export interface IRoleUpdatedEvent extends IDomainEvent<IRoleUpdatedEventData> {}

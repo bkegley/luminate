@@ -4,8 +4,9 @@ import {RoleUpdatedEvent} from './events'
 
 export interface RoleAggregateAttributes {
   name: string
-  account: EntityId
-  scopes: RoleScope[]
+  account?: EntityId
+  // TODO: build RoleScope enum
+  scopes: string[]
 }
 
 export class RoleAggregate extends AggregateRoot<RoleAggregateAttributes> {

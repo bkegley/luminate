@@ -1,3 +1,5 @@
+export * from './CreateOwnerRoleComand'
+export * from './CreateOwnerRoleCommandHandler'
 export * from './CreateRoleCommand'
 export * from './CreateRoleCommandHandler'
 export * from './DeleteRoleCommand'

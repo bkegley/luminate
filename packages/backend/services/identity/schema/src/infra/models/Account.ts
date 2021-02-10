@@ -13,7 +13,10 @@ export const AccountSchema = extendSchema(
       required: true,
     },
   },
-  {timestamps: true},
+  {
+    collection: 'accounts',
+    timestamps: true,
+  },
 )
 
-export const AccountModel = model<AccountDocument>('account', AccountSchema)
+export const AccountModel = model('account', AccountSchema)
