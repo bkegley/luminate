@@ -1,11 +1,17 @@
+import {Injectable} from '@nestjs/common'
+import {InjectModel} from '@nestjs/mongoose'
+import {Model} from 'mongoose'
 import {IUsersRepo} from './IUsersRepo'
-import {UserModel} from '../models'
+import {UserDocument} from '../models'
 import {UserMapper} from '../mappers/UserMapper'
 import {UserAggregate} from '../../domain/user/User'
 
+@Injectable()
 export class UsersRepo implements IUsersRepo {
+  constructor(@InjectModel('user') private userModel: Model<UserDocument>) {}
+
   public async list(conditions?: any) {
-    const users = await UserModel.find(conditions)
+    const users = await this.userModel.find(conditions)
     if (!users) {
       return null
     }
@@ -13,7 +19,7 @@ export class UsersRepo implements IUsersRepo {
   }
 
   public async getById(id: string) {
-    const user = await UserModel.findById(id)
+    const user = await this.userModel.findById(id)
     if (!user) {
       return null
     }
@@ -22,7 +28,7 @@ export class UsersRepo implements IUsersRepo {
   }
 
   public async getByUsername(username: string) {
-    const user = await UserModel.findOne({username})
+    const user = await this.userModel.findOne({username})
     if (!user) {
       return null
     }
@@ -32,10 +38,10 @@ export class UsersRepo implements IUsersRepo {
 
   public async save(user: UserAggregate) {
     const {id, ...userObj} = UserMapper.toPersistence(user)
-    await UserModel.findByIdAndUpdate(id, userObj, {upsert: true})
+    await this.userModel.updateOne({_id: id}, userObj, {upsert: true})
   }
 
   public async delete(id: string) {
-    UserModel.deleteOne({_id: id})
+    this.userModel.deleteOne({_id: id})
   }
 }

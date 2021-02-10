@@ -2,13 +2,13 @@ import {Injectable} from '@nestjs/common'
 import {InjectModel} from '@nestjs/mongoose'
 import {Model} from 'mongoose'
 import {IAccountsRepo} from './IAccountsRepo'
-import {AccountModel} from '../models'
+import {AccountDocument} from '../models'
 import {AccountMapper} from '../mappers/AccountMapper'
 import {AccountAggregate} from '../../domain/account/Account'
 
 @Injectable()
 export class AccountsRepo implements IAccountsRepo {
-  constructor(@InjectModel(AccountModel.name) private accountModel: Model<any>) {}
+  constructor(@InjectModel('account') private accountModel: Model<AccountDocument>) {}
 
   public async list(conditions?: any) {
     const accounts = await this.accountModel.find(conditions)
@@ -39,7 +39,7 @@ export class AccountsRepo implements IAccountsRepo {
 
   public async save(account: AccountAggregate) {
     const {id, ...accountObj} = AccountMapper.toPersistence(account)
-    await this.accountModel.findByIdAndUpdate(id, accountObj, {upsert: true})
+    await this.accountModel.updateOne({_id: id}, accountObj, {upsert: true})
   }
 
   public async delete(id: string) {

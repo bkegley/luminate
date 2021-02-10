@@ -6,7 +6,7 @@ export interface RoleDocument extends AuthenticatedDocument {
   scopes: string[]
 }
 
-const Role = extendSchema(
+export const RoleSchema = extendSchema(
   BaseAuthenticatedSchema,
   {
     name: {
@@ -19,4 +19,4 @@ const Role = extendSchema(
   {timestamps: true},
 )
 
-export const RoleModel = model<RoleDocument>('role', Role)
+export const RoleModel = model<RoleDocument>('role', RoleSchema)
