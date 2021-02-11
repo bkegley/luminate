@@ -42,7 +42,12 @@ export interface Token extends TokenInput {
 // }
 
 export const parseTokenFromRequest = (req: express.Request, secret: string) => {
-  const data = jwt.verify(req.cookies.id, secret)
+  if (!req.headers.authorization) return null
+  const [bearer, token] = req.headers.authorization.split(' ')
+
+  if (bearer !== 'Bearer') return null
+
+  const data = jwt.verify(token, secret)
   return data as Token
 }
 
