@@ -1,19 +1,14 @@
 import {Args, Context, Mutation, Query, Resolver} from '@nestjs/graphql'
 import {CommandBus, QueryBus} from '@nestjs/cqrs'
-import {Response} from 'express'
 import {Token} from '@luminate/graphql-utils'
-import {CreateUserInput, Resolvers, UpdatePasswordInput, UpdateUserInput} from '../../types'
+import {CreateUserInput, Resolvers, UpdateUserInput} from '../../types'
 import {TYPES} from '../../utils/types'
 import {
   CreateUserCommand,
   DeleteUserCommand,
-  LoginUserCommand,
   UpdateUserCommand,
-  UpdateUserPasswordCommand,
-  SwitchAccountCommand,
   UpdateUserRolesCommand,
 } from '../../application/commands'
-import jwt from 'jsonwebtoken'
 import {IAccountsRepo, IRolesRepo, IUsersRepo} from '../../infra/repos'
 import {AccountMapper} from '../../infra/mappers/AccountMapper'
 import {RoleMapper} from '../../infra/mappers/RoleMapper'
@@ -21,10 +16,9 @@ import {UserMapper} from '../../infra/mappers/UserMapper'
 import {ListUsersQuery} from '../queries/User/ListUsersQuery'
 import {GetUserQuery} from '../queries/User'
 import {UseGuards} from '@nestjs/common'
-import {AuthGuard} from '../guards'
+import {ScopeGuard, Scopes} from '../guards'
 
-const USER_AUTH_TOKEN = process.env.USER_AUTH_TOKEN || 'localsecrettoken'
-
+@UseGuards(ScopeGuard)
 @Resolver('User')
 export class UserResolvers {
   constructor(private readonly queryBus: QueryBus, private readonly commandBus: CommandBus) {}
@@ -35,6 +29,7 @@ export class UserResolvers {
     return this.queryBus.execute(query)
   }
 
+  @Scopes('read:user')
   @Query('getUser')
   async getUser(@Args('id') id: string) {
     const query = new GetUserQuery(id)
@@ -66,82 +61,10 @@ export class UserResolvers {
     return UserMapper.toDTO(user)
   }
 
-  @Mutation('updatePassword')
-  async updatePassword(@Args('id') id: string, @Args('input') input: UpdatePasswordInput) {
-    const command = new UpdateUserPasswordCommand(id, input)
-    return this.commandBus.execute(command)
-  }
-
   @Mutation('deleteUser')
   async deleteUser(@Args('id') id: string) {
     const command = new DeleteUserCommand(id)
     return this.commandBus.execute(command)
-  }
-
-  @Mutation('login')
-  async login(@Args('username') username: string, @Args('password') password: string, @Context('res') res: Response) {
-    const command = new LoginUserCommand(username, password)
-    const token = await this.commandBus.execute(command)
-
-    if (!token) return false
-
-    res.cookie('id', token, {
-      httpOnly: false,
-      secure: process.env.NODE_ENV === 'production',
-    })
-    return token
-  }
-
-  @UseGuards(AuthGuard)
-  @Mutation('logout')
-  async logout(@Context('user') user: Token, @Context('res') res: Response) {
-    console.log({user})
-    if (!user) {
-      return false
-    }
-
-    res.cookie('id', '', {
-      expires: new Date(0),
-    })
-
-    return true
-  }
-
-  @Mutation('refreshToken')
-  async refreshToken(@Context('user') user: Token, @Context('res') res: Response) {
-    if (!user) return null
-    const {iat, exp, ...remainingToken} = user
-    const token = jwt.sign(remainingToken, USER_AUTH_TOKEN, {expiresIn: '10m'})
-
-    if (!token) {
-      res.cookie('id', '', {
-        expires: new Date(0),
-      })
-      return false
-    }
-
-    res.cookie('id', token, {
-      httpOnly: false,
-      secure: process.env.NODE_ENV === 'production',
-    })
-    return true
-  }
-  @Mutation('switchAccount')
-  async switchAccount(
-    @Args('acccountId') accountId: string,
-    @Context('user') user: Token,
-    @Context('res') res: Response,
-  ) {
-    const command = new SwitchAccountCommand(user, accountId)
-    const token = await this.commandBus.execute(command)
-
-    if (!token) return false
-
-    res.cookie('id', token, {
-      httpOnly: false,
-      secure: process.env.NODE_ENV === 'production',
-    })
-    return true
   }
 }
 
