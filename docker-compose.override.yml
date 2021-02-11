@@ -32,7 +32,7 @@ services:
     build:
       target: install
     environment:
-      - MONGO_URL=mongodb://db:27017/luminate-encyclopedia
+      - DB_URL=mongodb://db:27017/luminate-encyclopedia
     user: 1000:1000
     volumes:
       - ./packages/backend/utils/mongo:/app/packages/backend/utils/mongo
@@ -77,11 +77,14 @@ services:
       - 3001:3000
     environment:
       - PORT=3000
-      - MONGO_URL=mongodb://db:27017/luminate-identity
+      - DB_URL=mongodb://db:27017/luminate-identity
       - KAFKA_HOST=kafka:9092
     user: 1000:1000
     depends_on:
       - kafka
+      - services-shared
+      - mongo-utils
+      - graphql-utils
     links:
       - kafka
     volumes:
@@ -96,7 +99,7 @@ services:
       - 3002:3000
     environment:
       - PORT=3000
-      - MONGO_URL=mongodb://db:27017/luminate-encyclopedia
+      - DB_URL=mongodb://db:27017/luminate-encyclopedia
     user: 1000:1000
     volumes:
       - ./:/app
@@ -109,7 +112,7 @@ services:
       - 3003:3000
     environment:
       - PORT=3000
-      - MONGO_URL=mongodb://db:27017/luminate-brewing
+      - DB_URL=mongodb://db:27017/luminate-brewing
       - KAFKA_HOST=kafka:9092
     user: 1000:1000
     volumes:
