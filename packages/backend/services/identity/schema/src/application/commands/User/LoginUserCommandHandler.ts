@@ -33,11 +33,11 @@ export class LoginUserCommandHandler implements ILoginUserCommandHandler {
 
     const defaultAccount = user.defaultAccount
 
-    const userRoles = await this.rolesRepo.list({_id: user.roles.map(role => role.toString())})
-    const accountRoles = userRoles.filter(role => role.account.toString() === defaultAccount.toString())
+    const accountRoles = user.roles.find(role => role.account.toString() === defaultAccount.toString())
+    const roles = await this.rolesRepo.list({_id: accountRoles?.roles})
 
     const scopes =
-      accountRoles?.reduce((acc, role) => {
+      roles?.reduce((acc, role) => {
         const scopes = role.scopes
         const newScopes = scopes?.filter(scope => !acc.find(existingScope => existingScope === scope))
         return acc.concat(newScopes || [])
@@ -46,7 +46,7 @@ export class LoginUserCommandHandler implements ILoginUserCommandHandler {
     const input = {
       jti: user.getEntityId().toString(),
       sub: user.username.value,
-      aud: user.defaultAccount.toString(),
+      aud: defaultAccount.toString(),
       scopes,
     }
 

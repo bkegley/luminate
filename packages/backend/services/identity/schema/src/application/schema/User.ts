@@ -20,6 +20,8 @@ import {RoleMapper} from '../../infra/mappers/RoleMapper'
 import {UserMapper} from '../../infra/mappers/UserMapper'
 import {ListUsersQuery} from '../queries/User/ListUsersQuery'
 import {GetUserQuery} from '../queries/User'
+import {UseGuards} from '@nestjs/common'
+import {AuthGuard} from '../guards'
 
 const USER_AUTH_TOKEN = process.env.USER_AUTH_TOKEN || 'localsecrettoken'
 
@@ -87,11 +89,13 @@ export class UserResolvers {
       httpOnly: false,
       secure: process.env.NODE_ENV === 'production',
     })
-    return true
+    return token
   }
 
+  @UseGuards(AuthGuard)
   @Mutation('logout')
   async logout(@Context('user') user: Token, @Context('res') res: Response) {
+    console.log({user})
     if (!user) {
       return false
     }

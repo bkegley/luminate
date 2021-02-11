@@ -41,8 +41,10 @@ export class CreateAccountWithOwnerCommandHandler implements ICreateAccountWithO
       username: UserUsername.create(username),
       accounts: [account.getEntityId()],
       password: UserPassword.create({value: password}),
-      roles: [ownerRole.getEntityId()],
+      roles: [{account: account.getEntityId(), roles: [ownerRole.getEntityId()]}],
     })
+
+    console.log('we are here')
 
     try {
       console.log('saving')

@@ -1,7 +1,7 @@
-import mongoose from 'mongoose'
 import {Account} from '../../types'
 import {AccountAggregate, AccountAggregateAttributes} from '../../domain/account/Account'
 import {AccountName} from '../../domain/account/AccountName'
+import {EntityId} from '@luminate/services-shared'
 
 export class AccountMapper {
   public static toDomain(obj: any) {
@@ -9,13 +9,13 @@ export class AccountMapper {
     let attrs: AccountAggregateAttributes = {
       name: AccountName.create(obj.name),
     }
-    const account = AccountAggregate.create(attrs, id)
+    const account = AccountAggregate.create(attrs, id ? EntityId.create(id) : null)
     return account
   }
 
   public static toPersistence(account: AccountAggregate) {
     return {
-      id: mongoose.Types.ObjectId(account.getEntityId().toString()),
+      id: account.getEntityId().toString(),
       name: account.name.value,
     }
   }
