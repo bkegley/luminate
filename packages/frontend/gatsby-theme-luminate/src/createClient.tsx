@@ -1,7 +1,9 @@
-import ApolloClient, {PresetConfig} from 'apollo-boost'
+import {ApolloClient, ApolloClientOptions, InMemoryCache} from '@apollo/client'
 
-const createClient = (config: PresetConfig) => {
-  return new ApolloClient({...config, credentials: 'include'})
+const cache = new InMemoryCache()
+
+const createClient = (config: ApolloClientOptions<any>) => {
+  return new ApolloClient({...config, cache})
 }
 
 export default createClient
