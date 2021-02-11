@@ -16,7 +16,7 @@ export class UpdateUserRolesCommandHandler implements IUpdateUserRolesCommandHan
       throw new Error('User not found')
     }
 
-    user.update({roles: roles.map(role => EntityId.create(role))})
+    user.updateRoles({account: EntityId.create(account), roles: roles.map(role => EntityId.create(role))})
 
     this.usersRepo.save(user)
 

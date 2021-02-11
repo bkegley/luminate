@@ -7,7 +7,10 @@ export interface UserAggregateAttributes {
   username: UserUsername
   accounts: EntityId[]
   defaultAccount?: EntityId
-  roles: EntityId[]
+  roles: Array<{
+    account: EntityId
+    roles: EntityId[]
+  }>
   password?: UserPassword
 }
 
@@ -46,6 +49,19 @@ export class UserAggregate extends AggregateRoot<UserAggregateAttributes> {
     }
 
     this.registerEvent(new UserUpdatedEvent(this))
+  }
+
+  public updateRoles({account, roles}: {account: EntityId; roles: EntityId[]}) {
+    this.attrs.roles = this.attrs.roles.map(role => {
+      if (role.account === account) {
+        return {
+          ...role,
+          roles,
+        }
+      }
+
+      return role
+    })
   }
 
   public updatePassword(existingPassword: string, newPlainTextPassword: string): boolean {

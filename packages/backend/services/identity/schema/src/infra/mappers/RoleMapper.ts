@@ -1,10 +1,12 @@
+import {EntityId} from '@luminate/services-shared'
 import mongoose from 'mongoose'
 import {RoleAggregate} from '../../domain/role/Role'
 import {Role} from '../../types'
 
 export class RoleMapper {
   public static toDomain(obj: any) {
-    return RoleAggregate.create(obj, obj.id)
+    const id = obj.id || obj._id
+    return RoleAggregate.create(obj, id ? EntityId.create(id) : null)
   }
 
   public static toPersistence(role: RoleAggregate) {
