@@ -1,12 +1,12 @@
 import {IQueryHandler, QueryHandler} from '@nestjs/cqrs'
-import {GetUserQuery} from '.'
 import {UsersRepo} from '../../../infra/repos'
+import {GetMeQuery} from '.'
 
-@QueryHandler(GetUserQuery)
-export class GetUserQueryHandler implements IQueryHandler<GetUserQuery> {
+@QueryHandler(GetMeQuery)
+export class GetMeQueryHandler implements IQueryHandler<GetMeQuery> {
   constructor(private readonly usersRepo: UsersRepo) {}
 
-  async execute(query: GetUserQuery) {
+  async execute(query: GetMeQuery) {
     return this.usersRepo.getById(query.id)
   }
 }
