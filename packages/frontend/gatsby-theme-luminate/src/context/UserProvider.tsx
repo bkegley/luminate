@@ -49,6 +49,7 @@ export const UserContext = React.createContext<IUserContext | undefined>(
 )
 
 interface Props {
+  setToken: React.Dispatch<string | undefined | ((prevState: string | undefined) => string | undefined)>
   children: React.ReactNode
 }
 
@@ -66,7 +67,7 @@ const parseJWT = (name: string) => {
   return false
 }
 
-const UserProvider = ({children}: Props) => {
+const UserProvider = ({children, setToken}: Props) => {
   const [shouldRefreshToken, setShouldRefreshToken] = React.useState(true)
   const [refreshToken, {error, loading, data, called}] = useRefreshTokenMutation()
   const [shouldStartRefreshTimer, setShouldStartRefreshTimer] = React.useState(true)
@@ -81,7 +82,7 @@ const UserProvider = ({children}: Props) => {
     const timeout = setTimeout(() => {
       refreshToken()
       setShouldStartRefreshTimer(true)
-    }, 1000 * 60 * 9)
+    }, 1000)
     setShouldStartRefreshTimer(false)
     return () => clearTimeout(timeout)
   }, [shouldStartRefreshTimer])

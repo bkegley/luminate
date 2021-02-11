@@ -1,6 +1,6 @@
 import React from 'react'
 import {UserProvider} from './src/context'
-import {ApolloProvider} from '@apollo/react-hooks'
+import {ApolloProvider} from '@apollo/client'
 import createClient from './src/createClient'
 import fetch from 'cross-fetch'
 
