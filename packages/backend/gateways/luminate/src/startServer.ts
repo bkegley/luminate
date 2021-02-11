@@ -12,7 +12,7 @@ const app = express()
 app.use(cookieParser())
 
 const PORT = process.env.PORT || 3000
-const USER_AUTH_TOKEN = process.env.USER_AUTH_TOKEN || 'localsecrettoken'
+const USER_AUTH_TOKEN = process.env.USER_AUTH_TOKEN || 'supersecretpassword'
 const DEPLOY_ENV = process.env.DEPLOY_ENV || 'development'
 
 const SERVER_AUTH_URL = process.env.SERVER_AUTH_URL || 'http://localhost:3001/graphql'
@@ -26,11 +26,10 @@ export interface Context {
 }
 
 class AuthenticatedDataSource extends RemoteGraphQLDataSource {
-  // add x-auth-user header to all service requests
+  // forward Authorization header to services
   willSendRequest({request, context}: {request: any; context: any}) {
-    const userString = JSON.stringify(context.user)
-    if (userString) {
-      request.http.headers.set('x-auth-user', Buffer.from(userString).toString('base64'))
+    if (context.headers) {
+      request.http.headers.set('Authorization', context.headers.authorization)
     }
   }
 
@@ -115,6 +114,7 @@ const startServer = async () => {
 
       return {
         res,
+        headers: req.headers,
         user,
       }
     },
