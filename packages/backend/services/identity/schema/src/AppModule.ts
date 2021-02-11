@@ -29,7 +29,8 @@ import {
 } from './application/commands'
 import {AccountResolvers, RoleResolvers, UserResolvers} from './application/schema'
 import {AccountsRepo, RolesRepo, UsersRepo} from './infra/repos'
-import {AccountModel, AccountSchema, RoleModel, RoleSchema, UserModel, UserSchema} from './infra/models'
+import {AccountSchema, RoleSchema, UserSchema} from './infra/models'
+import {AuthGuard} from './application/guards'
 
 const queryHandlers = [
   ListAccountsQueryHandler,
@@ -60,13 +61,22 @@ const commandHandlers = [
 
 const resolvers = [AccountResolvers, RoleResolvers, UserResolvers]
 const repos = [AccountsRepo, RolesRepo, UsersRepo]
+const guards = [AuthGuard]
 
 const mongoUrl = process.env.DB_URL || `mongodb://localhost:27017/luminate-identity`
 
 @Module({
   imports: [
     CqrsModule,
-    GraphQLFederationModule.forRoot({typePaths: ['./src/application/schema/*.graphql']}),
+    GraphQLFederationModule.forRoot({
+      typePaths: ['./src/application/schema/*.graphql'],
+      context: ({req, res}) => {
+        return {
+          headers: req.headers,
+          res,
+        }
+      },
+    }),
     MongooseModule.forRoot(mongoUrl, {useFindAndModify: false}),
     MongooseModule.forFeature([
       {
@@ -83,6 +93,6 @@ const mongoUrl = process.env.DB_URL || `mongodb://localhost:27017/luminate-ident
       },
     ]),
   ],
-  providers: [...queryHandlers, ...commandHandlers, ...resolvers, ...repos],
+  providers: [...queryHandlers, ...commandHandlers, ...resolvers, ...repos, ...guards],
 })
 export class AppModule {}

@@ -12,6 +12,7 @@ export class CreateUserCommandHandler implements ICreateUserCommandHandler {
   constructor(private eventBus: EventBus, private usersRepo: UsersRepo) {}
 
   public async execute(command: CreateUserCommand) {
+    // TODO: check that all provided roles are valid
     const existingUser = await this.usersRepo.getByUsername(command.username)
 
     if (existingUser) {
@@ -22,7 +23,12 @@ export class CreateUserCommandHandler implements ICreateUserCommandHandler {
       username: UserUsername.create(command.username),
       password: UserPassword.create({value: command.password}),
       accounts: [EntityId.create(command.account)],
-      roles: command.roles?.map(role => EntityId.create(role)) || [],
+      roles: [
+        {
+          account: EntityId.create(command.account),
+          roles: command.roles?.map(role => EntityId.create(role)) || [],
+        },
+      ],
     })
 
     await this.usersRepo.save(user)

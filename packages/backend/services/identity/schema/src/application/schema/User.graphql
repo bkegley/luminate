@@ -76,7 +76,7 @@ extend type Mutation {
   updateUserRoles(id: ID!, roles: [ID!]): User
   deleteUser(id: ID!): Boolean
   updatePassword(id: ID!, input: UpdatePasswordInput!): Boolean!
-  login(username: String!, password: String!): Boolean
+  login(username: String!, password: String!): String
   logout: Boolean!
   switchAccount(accountId: ID!): Boolean
   refreshToken: Boolean
