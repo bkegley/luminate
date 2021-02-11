@@ -8,6 +8,7 @@ import {
   ListRolesQueryHandler,
   GetRoleQueryHandler,
   ListUsersQueryHandler,
+  GetMeQueryHandler,
   GetUserQueryHandler,
 } from './application/queries'
 import {
@@ -27,7 +28,7 @@ import {
   UpdateUserPasswordCommandHandler,
   UpdateUserRolesCommandHandler,
 } from './application/commands'
-import {AccountResolvers, RoleResolvers, UserResolvers} from './application/schema'
+import {AccountResolvers, AuthResolvers, RoleResolvers, UserResolvers} from './application/schema'
 import {AccountsRepo, RolesRepo, UsersRepo} from './infra/repos'
 import {AccountSchema, RoleSchema, UserSchema} from './infra/models'
 import {AuthGuard} from './application/guards'
@@ -38,6 +39,7 @@ const queryHandlers = [
   ListRolesQueryHandler,
   GetRoleQueryHandler,
   ListUsersQueryHandler,
+  GetMeQueryHandler,
   GetUserQueryHandler,
 ]
 
@@ -59,9 +61,9 @@ const commandHandlers = [
   UpdateUserRolesCommandHandler,
 ]
 
-const resolvers = [AccountResolvers, RoleResolvers, UserResolvers]
+const resolvers = [AccountResolvers, AuthResolvers, RoleResolvers, UserResolvers]
 const repos = [AccountsRepo, RolesRepo, UsersRepo]
-const guards = [AuthGuard]
+const guards: any[] = [AuthGuard]
 
 const mongoUrl = process.env.DB_URL || `mongodb://localhost:27017/luminate-identity`
 

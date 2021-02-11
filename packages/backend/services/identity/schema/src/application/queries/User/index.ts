@@ -1,3 +1,5 @@
+export * from './GetMeQuery'
+export * from './GetMeQueryHandler'
 export * from './GetUserQuery'
 export * from './GetUserQueryHandler'
 export * from './ListUsersQueryHandler'
