@@ -1,7 +1,9 @@
-import gql from 'graphql-tag'
-import * as ApolloReactCommon from '@apollo/react-common'
-import * as ApolloReactHooks from '@apollo/react-hooks'
+import {gql} from '@apollo/client'
+import * as Apollo from '@apollo/client'
 export type Maybe<T> = T | null
+export type Exact<T extends {[key: string]: unknown}> = {[K in keyof T]: T[K]}
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {[SubKey in K]?: Maybe<T[SubKey]>}
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {[SubKey in K]: Maybe<T[SubKey]>}
 type ThenArg<T> = T extends PromiseLike<infer U> ? U : T
 export type MutationSuccessResponse<T extends (...args: any[]) => any[]> = ThenArg<
   ReturnType<ThenArg<ReturnType<T>>[0]>
@@ -13,7 +15,6 @@ export type Scalars = {
   Boolean: boolean
   Int: number
   Float: number
-  /** Valid cupping score input */
   ScoreFloat: any
   _FieldSet: any
 }
@@ -109,12 +110,6 @@ export enum BurrSet {
   ConicalBurr = 'CONICAL_BURR',
   FlatBurr = 'FLAT_BURR',
   Blade = 'BLADE',
-}
-
-export type City = {
-  __typename: 'City'
-  id: Scalars['ID']
-  name?: Maybe<Scalars['String']>
 }
 
 export type Coffee = {
@@ -222,10 +217,6 @@ export type CreateCuppingSessionInput = {
   description?: Maybe<Scalars['String']>
 }
 
-export type CreateDeviceInput = {
-  name: Scalars['String']
-}
-
 export type CreateEvaluationInput = {
   date?: Maybe<Scalars['String']>
 }
@@ -327,26 +318,6 @@ export type DefectScoreInput = {
   intensity?: Maybe<Scalars['Float']>
 }
 
-export type Device = {
-  __typename: 'Device'
-  id: Scalars['ID']
-  name: Scalars['String']
-  createdAt: Scalars['String']
-  updatedAt: Scalars['String']
-}
-
-export type DeviceConnection = {
-  __typename: 'DeviceConnection'
-  pageInfo: PageInfo
-  edges: Array<DeviceEdge>
-}
-
-export type DeviceEdge = {
-  __typename: 'DeviceEdge'
-  cursor: Scalars['String']
-  node: Device
-}
-
 export type Evaluation = {
   __typename: 'Evaluation'
   id: Scalars['ID']
@@ -440,9 +411,9 @@ export type Mutation = {
   createUser?: Maybe<User>
   updateUser?: Maybe<User>
   updateUserRoles?: Maybe<User>
-  deleteUser?: Maybe<User>
+  deleteUser?: Maybe<Scalars['Boolean']>
   updatePassword: Scalars['Boolean']
-  login?: Maybe<Scalars['Boolean']>
+  login?: Maybe<Scalars['String']>
   logout: Scalars['Boolean']
   switchAccount?: Maybe<Scalars['Boolean']>
   refreshToken?: Maybe<Scalars['Boolean']>
@@ -463,12 +434,12 @@ export type Mutation = {
   updateVariety?: Maybe<Variety>
   deleteVariety?: Maybe<Variety>
   makeVarietyPublic?: Maybe<Scalars['Boolean']>
-  createBrewer?: Maybe<Brewer>
-  updateBrewer?: Maybe<Brewer>
-  deleteBrewer?: Maybe<Scalars['Boolean']>
   createBrewGuide?: Maybe<BrewGuide>
   updateBrewGuide?: Maybe<BrewGuide>
   deleteBrewGuide?: Maybe<Scalars['Boolean']>
+  createBrewer?: Maybe<Brewer>
+  updateBrewer?: Maybe<Brewer>
+  deleteBrewer?: Maybe<Scalars['Boolean']>
   createBrewingSession?: Maybe<BrewingSession>
   updateBrewingSession?: Maybe<BrewingSession>
   deleteBrewingSession?: Maybe<Scalars['Boolean']>
@@ -477,9 +448,6 @@ export type Mutation = {
   deleteCuppingSession?: Maybe<CuppingSession>
   updateCuppingSessionCoffees?: Maybe<CuppingSession>
   lockCuppingSession?: Maybe<CuppingSession>
-  createDevice?: Maybe<Device>
-  updateDevice?: Maybe<Device>
-  deleteDevice?: Maybe<Device>
   createEvaluation?: Maybe<Evaluation>
   updateEvaluation?: Maybe<Evaluation>
   deleteEvaluation?: Maybe<Scalars['Boolean']>
@@ -633,19 +601,6 @@ export type MutationMakeVarietyPublicArgs = {
   id: Scalars['ID']
 }
 
-export type MutationCreateBrewerArgs = {
-  input: CreateBrewerInput
-}
-
-export type MutationUpdateBrewerArgs = {
-  id: Scalars['ID']
-  input: UpdateBrewerInput
-}
-
-export type MutationDeleteBrewerArgs = {
-  id: Scalars['ID']
-}
-
 export type MutationCreateBrewGuideArgs = {
   input: CreateBrewGuideInput
 }
@@ -656,6 +611,19 @@ export type MutationUpdateBrewGuideArgs = {
 }
 
 export type MutationDeleteBrewGuideArgs = {
+  id: Scalars['ID']
+}
+
+export type MutationCreateBrewerArgs = {
+  input: CreateBrewerInput
+}
+
+export type MutationUpdateBrewerArgs = {
+  id: Scalars['ID']
+  input: UpdateBrewerInput
+}
+
+export type MutationDeleteBrewerArgs = {
   id: Scalars['ID']
 }
 
@@ -691,19 +659,6 @@ export type MutationUpdateCuppingSessionCoffeesArgs = {
 }
 
 export type MutationLockCuppingSessionArgs = {
-  id: Scalars['ID']
-}
-
-export type MutationCreateDeviceArgs = {
-  input: CreateDeviceInput
-}
-
-export type MutationUpdateDeviceArgs = {
-  id: Scalars['ID']
-  input: UpdateDeviceInput
-}
-
-export type MutationDeleteDeviceArgs = {
   id: Scalars['ID']
 }
 
@@ -771,21 +726,21 @@ export type Note = {
 }
 
 export enum OperatorEnum {
+  Contains = 'contains',
+  ContainsSensitive = 'containsSensitive',
   Eq = 'eq',
-  Ne = 'ne',
   Gt = 'gt',
   Gte = 'gte',
   Lt = 'lt',
   Lte = 'lte',
-  Contains = 'contains',
-  ContainsSensitive = 'containsSensitive',
+  Ne = 'ne',
 }
 
 export type PageInfo = {
   __typename: 'PageInfo'
   hasNextPage?: Maybe<Scalars['Boolean']>
-  prevCursor?: Maybe<Scalars['String']>
   nextCursor?: Maybe<Scalars['String']>
+  prevCursor?: Maybe<Scalars['String']>
 }
 
 export enum PermissionTypeEnum {
@@ -801,7 +756,6 @@ export type Query = {
   listRoles: RoleConnection
   getRole?: Maybe<Role>
   listUsers: UserConnection
-  listStations?: Maybe<Array<Maybe<Station>>>
   getUser?: Maybe<User>
   me?: Maybe<Me>
   listCoffees: CoffeeConnection
@@ -814,17 +768,15 @@ export type Query = {
   getRegion?: Maybe<Region>
   listVarieties: VarietyConnection
   getVariety?: Maybe<Variety>
-  listBrewers: BrewerConnection
-  getBrewer?: Maybe<Brewer>
   listBrewGuides: BrewGuideConnection
   getBrewGuide?: Maybe<BrewGuide>
+  listBrewers: BrewerConnection
+  getBrewer?: Maybe<Brewer>
   listBrewingSessions?: Maybe<BrewingSessionConnection>
   getBrewingSession?: Maybe<BrewingSession>
   listCuppingSessions: CuppingSessionConnection
   getCuppingSession?: Maybe<CuppingSession>
   getCuppingSessionCoffee?: Maybe<SessionCoffee>
-  listDevices: DeviceConnection
-  getDevice?: Maybe<Device>
   listEvaluations?: Maybe<EvaluationConnection>
   getEvaluation?: Maybe<Evaluation>
   listGrinders: GrinderConnection
@@ -915,11 +867,16 @@ export type QueryGetVarietyArgs = {
   id: Scalars['ID']
 }
 
-export type QueryGetBrewerArgs = {
+export type QueryGetBrewGuideArgs = {
   id: Scalars['ID']
 }
 
-export type QueryGetBrewGuideArgs = {
+export type QueryListBrewersArgs = {
+  limit?: Maybe<Scalars['Int']>
+  cursor?: Maybe<Scalars['String']>
+}
+
+export type QueryGetBrewerArgs = {
   id: Scalars['ID']
 }
 
@@ -930,7 +887,6 @@ export type QueryGetBrewingSessionArgs = {
 export type QueryListCuppingSessionsArgs = {
   cursor?: Maybe<Scalars['String']>
   limit?: Maybe<Scalars['Int']>
-  query?: Maybe<Array<QueryInput>>
 }
 
 export type QueryGetCuppingSessionArgs = {
@@ -938,16 +894,6 @@ export type QueryGetCuppingSessionArgs = {
 }
 
 export type QueryGetCuppingSessionCoffeeArgs = {
-  id: Scalars['ID']
-}
-
-export type QueryListDevicesArgs = {
-  cursor?: Maybe<Scalars['String']>
-  limit?: Maybe<Scalars['Int']>
-  query?: Maybe<Array<QueryInput>>
-}
-
-export type QueryGetDeviceArgs = {
   id: Scalars['ID']
 }
 
@@ -974,8 +920,8 @@ export type QueryGetScoreSheetArgs = {
 
 export type QueryInput = {
   field: Scalars['String']
-  value?: Maybe<Scalars['String']>
   operator?: Maybe<OperatorEnum>
+  value?: Maybe<Scalars['String']>
 }
 
 export type Recipe = {
@@ -1076,13 +1022,6 @@ export type SessionCoffeeInput = {
   coffee: Scalars['ID']
 }
 
-export type Station = {
-  __typename: 'Station'
-  id: Scalars['ID']
-  description?: Maybe<Scalars['String']>
-  city?: Maybe<City>
-}
-
 export type UpdateAccountInput = {
   name?: Maybe<Scalars['String']>
 }
@@ -1118,10 +1057,6 @@ export type UpdateCoffeeInput = {
 export type UpdateCuppingSessionInput = {
   internalId?: Maybe<Scalars['ID']>
   description?: Maybe<Scalars['String']>
-}
-
-export type UpdateDeviceInput = {
-  name?: Maybe<Scalars['String']>
 }
 
 export type UpdateEvaluationInput = {
@@ -1253,9 +1188,9 @@ export type VarietyEdge = {
   node: Variety
 }
 
-export type ListRolesQueryVariables = {
+export type ListRolesQueryVariables = Exact<{
   cursor?: Maybe<Scalars['String']>
-}
+}>
 
 export type ListRolesQuery = {__typename: 'Query'} & {
   listRoles: {__typename: 'RoleConnection'} & {
@@ -1264,43 +1199,45 @@ export type ListRolesQuery = {__typename: 'Query'} & {
   }
 }
 
-export type GetRoleQueryVariables = {
+export type GetRoleQueryVariables = Exact<{
   id: Scalars['ID']
-}
+}>
 
-export type GetRoleQuery = {__typename: 'Query'} & {getRole: Maybe<{__typename: 'Role'} & RoleFragmentFragment>}
+export type GetRoleQuery = {__typename: 'Query'} & {getRole?: Maybe<{__typename: 'Role'} & RoleFragmentFragment>}
 
-export type CreateRoleMutationVariables = {
+export type CreateRoleMutationVariables = Exact<{
   input: CreateRoleInput
-}
+}>
 
 export type CreateRoleMutation = {__typename: 'Mutation'} & {
-  createRole: Maybe<{__typename: 'Role'} & RoleFragmentFragment>
+  createRole?: Maybe<{__typename: 'Role'} & RoleFragmentFragment>
 }
 
-export type UpdateRoleMutationVariables = {
+export type UpdateRoleMutationVariables = Exact<{
   id: Scalars['ID']
   input: UpdateRoleInput
-}
+}>
 
 export type UpdateRoleMutation = {__typename: 'Mutation'} & {
-  updateRole: Maybe<{__typename: 'Role'} & RoleFragmentFragment>
+  updateRole?: Maybe<{__typename: 'Role'} & RoleFragmentFragment>
 }
 
-export type DeleteRoleMutationVariables = {
+export type DeleteRoleMutationVariables = Exact<{
   id: Scalars['ID']
-}
+}>
 
-export type DeleteRoleMutation = {__typename: 'Mutation'} & {deleteRole: Maybe<{__typename: 'Role'} & Pick<Role, 'id'>>}
+export type DeleteRoleMutation = {__typename: 'Mutation'} & {
+  deleteRole?: Maybe<{__typename: 'Role'} & Pick<Role, 'id'>>
+}
 
 export type RoleFragmentFragment = {__typename: 'Role'} & Pick<
   Role,
   'id' | 'name' | 'scopes' | 'createdAt' | 'updatedAt'
 >
 
-export type ListUsersQueryVariables = {
+export type ListUsersQueryVariables = Exact<{
   cursor?: Maybe<Scalars['String']>
-}
+}>
 
 export type ListUsersQuery = {__typename: 'Query'} & {
   listUsers: {__typename: 'UserConnection'} & {
@@ -1309,34 +1246,34 @@ export type ListUsersQuery = {__typename: 'Query'} & {
   }
 }
 
-export type GetUserQueryVariables = {
+export type GetUserQueryVariables = Exact<{
   id: Scalars['ID']
-}
+}>
 
-export type GetUserQuery = {__typename: 'Query'} & {getUser: Maybe<{__typename: 'User'} & UserFragmentFragment>}
+export type GetUserQuery = {__typename: 'Query'} & {getUser?: Maybe<{__typename: 'User'} & UserFragmentFragment>}
 
-export type CreateUserMutationVariables = {
+export type CreateUserMutationVariables = Exact<{
   input: CreateUserInput
-}
+}>
 
 export type CreateUserMutation = {__typename: 'Mutation'} & {
-  createUser: Maybe<{__typename: 'User'} & UserFragmentFragment>
+  createUser?: Maybe<{__typename: 'User'} & UserFragmentFragment>
 }
 
-export type UpdateUserMutationVariables = {
+export type UpdateUserMutationVariables = Exact<{
   id: Scalars['ID']
   input: UpdateUserInput
-}
+}>
 
 export type UpdateUserMutation = {__typename: 'Mutation'} & {
-  updateUser: Maybe<{__typename: 'User'} & UserFragmentFragment>
+  updateUser?: Maybe<{__typename: 'User'} & UserFragmentFragment>
 }
 
-export type DeleteUserMutationVariables = {
+export type DeleteUserMutationVariables = Exact<{
   id: Scalars['ID']
-}
+}>
 
-export type DeleteUserMutation = {__typename: 'Mutation'} & {deleteUser: Maybe<{__typename: 'User'} & Pick<User, 'id'>>}
+export type DeleteUserMutation = {__typename: 'Mutation'} & Pick<Mutation, 'deleteUser'>
 
 export type UserFragmentFragment = {__typename: 'User'} & Pick<
   User,
@@ -1399,19 +1336,17 @@ export const ListRolesDocument = gql`
  *   },
  * });
  */
-export function useListRolesQuery(
-  baseOptions?: ApolloReactHooks.QueryHookOptions<ListRolesQuery, ListRolesQueryVariables>,
-) {
-  return ApolloReactHooks.useQuery<ListRolesQuery, ListRolesQueryVariables>(ListRolesDocument, baseOptions)
+export function useListRolesQuery(baseOptions?: Apollo.QueryHookOptions<ListRolesQuery, ListRolesQueryVariables>) {
+  return Apollo.useQuery<ListRolesQuery, ListRolesQueryVariables>(ListRolesDocument, baseOptions)
 }
 export function useListRolesLazyQuery(
-  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ListRolesQuery, ListRolesQueryVariables>,
+  baseOptions?: Apollo.LazyQueryHookOptions<ListRolesQuery, ListRolesQueryVariables>,
 ) {
-  return ApolloReactHooks.useLazyQuery<ListRolesQuery, ListRolesQueryVariables>(ListRolesDocument, baseOptions)
+  return Apollo.useLazyQuery<ListRolesQuery, ListRolesQueryVariables>(ListRolesDocument, baseOptions)
 }
 export type ListRolesQueryHookResult = ReturnType<typeof useListRolesQuery>
 export type ListRolesLazyQueryHookResult = ReturnType<typeof useListRolesLazyQuery>
-export type ListRolesQueryResult = ApolloReactCommon.QueryResult<ListRolesQuery, ListRolesQueryVariables>
+export type ListRolesQueryResult = Apollo.QueryResult<ListRolesQuery, ListRolesQueryVariables>
 export const GetRoleDocument = gql`
   query getRole($id: ID!) {
     getRole(id: $id) {
@@ -1437,17 +1372,15 @@ export const GetRoleDocument = gql`
  *   },
  * });
  */
-export function useGetRoleQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetRoleQuery, GetRoleQueryVariables>) {
-  return ApolloReactHooks.useQuery<GetRoleQuery, GetRoleQueryVariables>(GetRoleDocument, baseOptions)
+export function useGetRoleQuery(baseOptions: Apollo.QueryHookOptions<GetRoleQuery, GetRoleQueryVariables>) {
+  return Apollo.useQuery<GetRoleQuery, GetRoleQueryVariables>(GetRoleDocument, baseOptions)
 }
-export function useGetRoleLazyQuery(
-  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetRoleQuery, GetRoleQueryVariables>,
-) {
-  return ApolloReactHooks.useLazyQuery<GetRoleQuery, GetRoleQueryVariables>(GetRoleDocument, baseOptions)
+export function useGetRoleLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetRoleQuery, GetRoleQueryVariables>) {
+  return Apollo.useLazyQuery<GetRoleQuery, GetRoleQueryVariables>(GetRoleDocument, baseOptions)
 }
 export type GetRoleQueryHookResult = ReturnType<typeof useGetRoleQuery>
 export type GetRoleLazyQueryHookResult = ReturnType<typeof useGetRoleLazyQuery>
-export type GetRoleQueryResult = ApolloReactCommon.QueryResult<GetRoleQuery, GetRoleQueryVariables>
+export type GetRoleQueryResult = Apollo.QueryResult<GetRoleQuery, GetRoleQueryVariables>
 export const CreateRoleDocument = gql`
   mutation createRole($input: CreateRoleInput!) {
     createRole(input: $input) {
@@ -1456,7 +1389,7 @@ export const CreateRoleDocument = gql`
   }
   ${RoleFragmentFragmentDoc}
 `
-export type CreateRoleMutationFn = ApolloReactCommon.MutationFunction<CreateRoleMutation, CreateRoleMutationVariables>
+export type CreateRoleMutationFn = Apollo.MutationFunction<CreateRoleMutation, CreateRoleMutationVariables>
 
 /**
  * __useCreateRoleMutation__
@@ -1476,16 +1409,13 @@ export type CreateRoleMutationFn = ApolloReactCommon.MutationFunction<CreateRole
  * });
  */
 export function useCreateRoleMutation(
-  baseOptions?: ApolloReactHooks.MutationHookOptions<CreateRoleMutation, CreateRoleMutationVariables>,
+  baseOptions?: Apollo.MutationHookOptions<CreateRoleMutation, CreateRoleMutationVariables>,
 ) {
-  return ApolloReactHooks.useMutation<CreateRoleMutation, CreateRoleMutationVariables>(CreateRoleDocument, baseOptions)
+  return Apollo.useMutation<CreateRoleMutation, CreateRoleMutationVariables>(CreateRoleDocument, baseOptions)
 }
 export type CreateRoleMutationHookResult = ReturnType<typeof useCreateRoleMutation>
-export type CreateRoleMutationResult = ApolloReactCommon.MutationResult<CreateRoleMutation>
-export type CreateRoleMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  CreateRoleMutation,
-  CreateRoleMutationVariables
->
+export type CreateRoleMutationResult = Apollo.MutationResult<CreateRoleMutation>
+export type CreateRoleMutationOptions = Apollo.BaseMutationOptions<CreateRoleMutation, CreateRoleMutationVariables>
 export const UpdateRoleDocument = gql`
   mutation updateRole($id: ID!, $input: UpdateRoleInput!) {
     updateRole(id: $id, input: $input) {
@@ -1494,7 +1424,7 @@ export const UpdateRoleDocument = gql`
   }
   ${RoleFragmentFragmentDoc}
 `
-export type UpdateRoleMutationFn = ApolloReactCommon.MutationFunction<UpdateRoleMutation, UpdateRoleMutationVariables>
+export type UpdateRoleMutationFn = Apollo.MutationFunction<UpdateRoleMutation, UpdateRoleMutationVariables>
 
 /**
  * __useUpdateRoleMutation__
@@ -1515,16 +1445,13 @@ export type UpdateRoleMutationFn = ApolloReactCommon.MutationFunction<UpdateRole
  * });
  */
 export function useUpdateRoleMutation(
-  baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateRoleMutation, UpdateRoleMutationVariables>,
+  baseOptions?: Apollo.MutationHookOptions<UpdateRoleMutation, UpdateRoleMutationVariables>,
 ) {
-  return ApolloReactHooks.useMutation<UpdateRoleMutation, UpdateRoleMutationVariables>(UpdateRoleDocument, baseOptions)
+  return Apollo.useMutation<UpdateRoleMutation, UpdateRoleMutationVariables>(UpdateRoleDocument, baseOptions)
 }
 export type UpdateRoleMutationHookResult = ReturnType<typeof useUpdateRoleMutation>
-export type UpdateRoleMutationResult = ApolloReactCommon.MutationResult<UpdateRoleMutation>
-export type UpdateRoleMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  UpdateRoleMutation,
-  UpdateRoleMutationVariables
->
+export type UpdateRoleMutationResult = Apollo.MutationResult<UpdateRoleMutation>
+export type UpdateRoleMutationOptions = Apollo.BaseMutationOptions<UpdateRoleMutation, UpdateRoleMutationVariables>
 export const DeleteRoleDocument = gql`
   mutation deleteRole($id: ID!) {
     deleteRole(id: $id) {
@@ -1532,7 +1459,7 @@ export const DeleteRoleDocument = gql`
     }
   }
 `
-export type DeleteRoleMutationFn = ApolloReactCommon.MutationFunction<DeleteRoleMutation, DeleteRoleMutationVariables>
+export type DeleteRoleMutationFn = Apollo.MutationFunction<DeleteRoleMutation, DeleteRoleMutationVariables>
 
 /**
  * __useDeleteRoleMutation__
@@ -1552,16 +1479,13 @@ export type DeleteRoleMutationFn = ApolloReactCommon.MutationFunction<DeleteRole
  * });
  */
 export function useDeleteRoleMutation(
-  baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteRoleMutation, DeleteRoleMutationVariables>,
+  baseOptions?: Apollo.MutationHookOptions<DeleteRoleMutation, DeleteRoleMutationVariables>,
 ) {
-  return ApolloReactHooks.useMutation<DeleteRoleMutation, DeleteRoleMutationVariables>(DeleteRoleDocument, baseOptions)
+  return Apollo.useMutation<DeleteRoleMutation, DeleteRoleMutationVariables>(DeleteRoleDocument, baseOptions)
 }
 export type DeleteRoleMutationHookResult = ReturnType<typeof useDeleteRoleMutation>
-export type DeleteRoleMutationResult = ApolloReactCommon.MutationResult<DeleteRoleMutation>
-export type DeleteRoleMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  DeleteRoleMutation,
-  DeleteRoleMutationVariables
->
+export type DeleteRoleMutationResult = Apollo.MutationResult<DeleteRoleMutation>
+export type DeleteRoleMutationOptions = Apollo.BaseMutationOptions<DeleteRoleMutation, DeleteRoleMutationVariables>
 export const ListUsersDocument = gql`
   query listUsers($cursor: String) {
     listUsers(limit: 10, cursor: $cursor) {
@@ -1596,19 +1520,17 @@ export const ListUsersDocument = gql`
  *   },
  * });
  */
-export function useListUsersQuery(
-  baseOptions?: ApolloReactHooks.QueryHookOptions<ListUsersQuery, ListUsersQueryVariables>,
-) {
-  return ApolloReactHooks.useQuery<ListUsersQuery, ListUsersQueryVariables>(ListUsersDocument, baseOptions)
+export function useListUsersQuery(baseOptions?: Apollo.QueryHookOptions<ListUsersQuery, ListUsersQueryVariables>) {
+  return Apollo.useQuery<ListUsersQuery, ListUsersQueryVariables>(ListUsersDocument, baseOptions)
 }
 export function useListUsersLazyQuery(
-  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ListUsersQuery, ListUsersQueryVariables>,
+  baseOptions?: Apollo.LazyQueryHookOptions<ListUsersQuery, ListUsersQueryVariables>,
 ) {
-  return ApolloReactHooks.useLazyQuery<ListUsersQuery, ListUsersQueryVariables>(ListUsersDocument, baseOptions)
+  return Apollo.useLazyQuery<ListUsersQuery, ListUsersQueryVariables>(ListUsersDocument, baseOptions)
 }
 export type ListUsersQueryHookResult = ReturnType<typeof useListUsersQuery>
 export type ListUsersLazyQueryHookResult = ReturnType<typeof useListUsersLazyQuery>
-export type ListUsersQueryResult = ApolloReactCommon.QueryResult<ListUsersQuery, ListUsersQueryVariables>
+export type ListUsersQueryResult = Apollo.QueryResult<ListUsersQuery, ListUsersQueryVariables>
 export const GetUserDocument = gql`
   query getUser($id: ID!) {
     getUser(id: $id) {
@@ -1634,17 +1556,15 @@ export const GetUserDocument = gql`
  *   },
  * });
  */
-export function useGetUserQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetUserQuery, GetUserQueryVariables>) {
-  return ApolloReactHooks.useQuery<GetUserQuery, GetUserQueryVariables>(GetUserDocument, baseOptions)
+export function useGetUserQuery(baseOptions: Apollo.QueryHookOptions<GetUserQuery, GetUserQueryVariables>) {
+  return Apollo.useQuery<GetUserQuery, GetUserQueryVariables>(GetUserDocument, baseOptions)
 }
-export function useGetUserLazyQuery(
-  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetUserQuery, GetUserQueryVariables>,
-) {
-  return ApolloReactHooks.useLazyQuery<GetUserQuery, GetUserQueryVariables>(GetUserDocument, baseOptions)
+export function useGetUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUserQuery, GetUserQueryVariables>) {
+  return Apollo.useLazyQuery<GetUserQuery, GetUserQueryVariables>(GetUserDocument, baseOptions)
 }
 export type GetUserQueryHookResult = ReturnType<typeof useGetUserQuery>
 export type GetUserLazyQueryHookResult = ReturnType<typeof useGetUserLazyQuery>
-export type GetUserQueryResult = ApolloReactCommon.QueryResult<GetUserQuery, GetUserQueryVariables>
+export type GetUserQueryResult = Apollo.QueryResult<GetUserQuery, GetUserQueryVariables>
 export const CreateUserDocument = gql`
   mutation createUser($input: CreateUserInput!) {
     createUser(input: $input) {
@@ -1653,7 +1573,7 @@ export const CreateUserDocument = gql`
   }
   ${UserFragmentFragmentDoc}
 `
-export type CreateUserMutationFn = ApolloReactCommon.MutationFunction<CreateUserMutation, CreateUserMutationVariables>
+export type CreateUserMutationFn = Apollo.MutationFunction<CreateUserMutation, CreateUserMutationVariables>
 
 /**
  * __useCreateUserMutation__
@@ -1673,16 +1593,13 @@ export type CreateUserMutationFn = ApolloReactCommon.MutationFunction<CreateUser
  * });
  */
 export function useCreateUserMutation(
-  baseOptions?: ApolloReactHooks.MutationHookOptions<CreateUserMutation, CreateUserMutationVariables>,
+  baseOptions?: Apollo.MutationHookOptions<CreateUserMutation, CreateUserMutationVariables>,
 ) {
-  return ApolloReactHooks.useMutation<CreateUserMutation, CreateUserMutationVariables>(CreateUserDocument, baseOptions)
+  return Apollo.useMutation<CreateUserMutation, CreateUserMutationVariables>(CreateUserDocument, baseOptions)
 }
 export type CreateUserMutationHookResult = ReturnType<typeof useCreateUserMutation>
-export type CreateUserMutationResult = ApolloReactCommon.MutationResult<CreateUserMutation>
-export type CreateUserMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  CreateUserMutation,
-  CreateUserMutationVariables
->
+export type CreateUserMutationResult = Apollo.MutationResult<CreateUserMutation>
+export type CreateUserMutationOptions = Apollo.BaseMutationOptions<CreateUserMutation, CreateUserMutationVariables>
 export const UpdateUserDocument = gql`
   mutation updateUser($id: ID!, $input: UpdateUserInput!) {
     updateUser(id: $id, input: $input) {
@@ -1691,7 +1608,7 @@ export const UpdateUserDocument = gql`
   }
   ${UserFragmentFragmentDoc}
 `
-export type UpdateUserMutationFn = ApolloReactCommon.MutationFunction<UpdateUserMutation, UpdateUserMutationVariables>
+export type UpdateUserMutationFn = Apollo.MutationFunction<UpdateUserMutation, UpdateUserMutationVariables>
 
 /**
  * __useUpdateUserMutation__
@@ -1712,24 +1629,19 @@ export type UpdateUserMutationFn = ApolloReactCommon.MutationFunction<UpdateUser
  * });
  */
 export function useUpdateUserMutation(
-  baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateUserMutation, UpdateUserMutationVariables>,
+  baseOptions?: Apollo.MutationHookOptions<UpdateUserMutation, UpdateUserMutationVariables>,
 ) {
-  return ApolloReactHooks.useMutation<UpdateUserMutation, UpdateUserMutationVariables>(UpdateUserDocument, baseOptions)
+  return Apollo.useMutation<UpdateUserMutation, UpdateUserMutationVariables>(UpdateUserDocument, baseOptions)
 }
 export type UpdateUserMutationHookResult = ReturnType<typeof useUpdateUserMutation>
-export type UpdateUserMutationResult = ApolloReactCommon.MutationResult<UpdateUserMutation>
-export type UpdateUserMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  UpdateUserMutation,
-  UpdateUserMutationVariables
->
+export type UpdateUserMutationResult = Apollo.MutationResult<UpdateUserMutation>
+export type UpdateUserMutationOptions = Apollo.BaseMutationOptions<UpdateUserMutation, UpdateUserMutationVariables>
 export const DeleteUserDocument = gql`
   mutation deleteUser($id: ID!) {
-    deleteUser(id: $id) {
-      id
-    }
+    deleteUser(id: $id)
   }
 `
-export type DeleteUserMutationFn = ApolloReactCommon.MutationFunction<DeleteUserMutation, DeleteUserMutationVariables>
+export type DeleteUserMutationFn = Apollo.MutationFunction<DeleteUserMutation, DeleteUserMutationVariables>
 
 /**
  * __useDeleteUserMutation__
@@ -1749,13 +1661,10 @@ export type DeleteUserMutationFn = ApolloReactCommon.MutationFunction<DeleteUser
  * });
  */
 export function useDeleteUserMutation(
-  baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteUserMutation, DeleteUserMutationVariables>,
+  baseOptions?: Apollo.MutationHookOptions<DeleteUserMutation, DeleteUserMutationVariables>,
 ) {
-  return ApolloReactHooks.useMutation<DeleteUserMutation, DeleteUserMutationVariables>(DeleteUserDocument, baseOptions)
+  return Apollo.useMutation<DeleteUserMutation, DeleteUserMutationVariables>(DeleteUserDocument, baseOptions)
 }
 export type DeleteUserMutationHookResult = ReturnType<typeof useDeleteUserMutation>
-export type DeleteUserMutationResult = ApolloReactCommon.MutationResult<DeleteUserMutation>
-export type DeleteUserMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  DeleteUserMutation,
-  DeleteUserMutationVariables
->
+export type DeleteUserMutationResult = Apollo.MutationResult<DeleteUserMutation>
+export type DeleteUserMutationOptions = Apollo.BaseMutationOptions<DeleteUserMutation, DeleteUserMutationVariables>

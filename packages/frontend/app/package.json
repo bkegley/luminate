@@ -11,7 +11,7 @@
     "serve": "gatsby serve"
   },
   "dependencies": {
-    "@apollo/react-hooks": "^3.1.3",
+    "@apollo/client": "^3.3.9",
     "@luminate/gatsby-theme-luminate": "*",
     "date-fns": "^2.9.0",
     "formik": "^2.1.1",

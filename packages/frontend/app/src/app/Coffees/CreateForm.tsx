@@ -95,7 +95,6 @@ const CoffeeCreateForm = ({
       enableReinitialize
     >
       {({dirty, setFieldValue, values}) => {
-        console.log('i am here')
         return (
           <Form>
             <Card variant={isModal ? 'blank' : 'default'} className="p-3 overflow-visible">

@@ -32,9 +32,7 @@ mutation updateUser($id: ID!, $input: UpdateUserInput!) {
 }
 
 mutation deleteUser($id: ID!) {
-  deleteUser(id: $id) {
-    id
-  }
+  deleteUser(id: $id)
 }
 
 fragment UserFragment on User {

@@ -1,5 +1,5 @@
 import React from 'react'
-import {useApolloClient} from '@apollo/react-hooks'
+import {useApolloClient} from '@apollo/client'
 import {Select, useUser, Card, Heading, Combobox} from '@luminate/gatsby-theme-luminate/src'
 import {useUserSearchQuery, useAddUserToAccountMutation} from '../../graphql'
 

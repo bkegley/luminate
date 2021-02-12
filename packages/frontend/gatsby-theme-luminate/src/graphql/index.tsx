@@ -1,7 +1,9 @@
-import gql from 'graphql-tag'
-import * as ApolloReactCommon from '@apollo/react-common'
-import * as ApolloReactHooks from '@apollo/react-hooks'
+import {gql} from '@apollo/client'
+import * as Apollo from '@apollo/client'
 export type Maybe<T> = T | null
+export type Exact<T extends {[key: string]: unknown}> = {[K in keyof T]: T[K]}
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {[SubKey in K]?: Maybe<T[SubKey]>}
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {[SubKey in K]: Maybe<T[SubKey]>}
 type ThenArg<T> = T extends PromiseLike<infer U> ? U : T
 export type MutationSuccessResponse<T extends (...args: any[]) => any[]> = ThenArg<
   ReturnType<ThenArg<ReturnType<T>>[0]>
@@ -13,7 +15,6 @@ export type Scalars = {
   Boolean: boolean
   Int: number
   Float: number
-  /** Valid cupping score input */
   ScoreFloat: any
   _FieldSet: any
 }
@@ -109,12 +110,6 @@ export enum BurrSet {
   ConicalBurr = 'CONICAL_BURR',
   FlatBurr = 'FLAT_BURR',
   Blade = 'BLADE',
-}
-
-export type City = {
-  __typename: 'City'
-  id: Scalars['ID']
-  name?: Maybe<Scalars['String']>
 }
 
 export type Coffee = {
@@ -222,10 +217,6 @@ export type CreateCuppingSessionInput = {
   description?: Maybe<Scalars['String']>
 }
 
-export type CreateDeviceInput = {
-  name: Scalars['String']
-}
-
 export type CreateEvaluationInput = {
   date?: Maybe<Scalars['String']>
 }
@@ -327,26 +318,6 @@ export type DefectScoreInput = {
   intensity?: Maybe<Scalars['Float']>
 }
 
-export type Device = {
-  __typename: 'Device'
-  id: Scalars['ID']
-  name: Scalars['String']
-  createdAt: Scalars['String']
-  updatedAt: Scalars['String']
-}
-
-export type DeviceConnection = {
-  __typename: 'DeviceConnection'
-  pageInfo: PageInfo
-  edges: Array<DeviceEdge>
-}
-
-export type DeviceEdge = {
-  __typename: 'DeviceEdge'
-  cursor: Scalars['String']
-  node: Device
-}
-
 export type Evaluation = {
   __typename: 'Evaluation'
   id: Scalars['ID']
@@ -440,9 +411,9 @@ export type Mutation = {
   createUser?: Maybe<User>
   updateUser?: Maybe<User>
   updateUserRoles?: Maybe<User>
-  deleteUser?: Maybe<User>
+  deleteUser?: Maybe<Scalars['Boolean']>
   updatePassword: Scalars['Boolean']
-  login?: Maybe<Scalars['Boolean']>
+  login?: Maybe<Scalars['String']>
   logout: Scalars['Boolean']
   switchAccount?: Maybe<Scalars['Boolean']>
   refreshToken?: Maybe<Scalars['Boolean']>
@@ -463,12 +434,12 @@ export type Mutation = {
   updateVariety?: Maybe<Variety>
   deleteVariety?: Maybe<Variety>
   makeVarietyPublic?: Maybe<Scalars['Boolean']>
-  createBrewer?: Maybe<Brewer>
-  updateBrewer?: Maybe<Brewer>
-  deleteBrewer?: Maybe<Scalars['Boolean']>
   createBrewGuide?: Maybe<BrewGuide>
   updateBrewGuide?: Maybe<BrewGuide>
   deleteBrewGuide?: Maybe<Scalars['Boolean']>
+  createBrewer?: Maybe<Brewer>
+  updateBrewer?: Maybe<Brewer>
+  deleteBrewer?: Maybe<Scalars['Boolean']>
   createBrewingSession?: Maybe<BrewingSession>
   updateBrewingSession?: Maybe<BrewingSession>
   deleteBrewingSession?: Maybe<Scalars['Boolean']>
@@ -477,9 +448,6 @@ export type Mutation = {
   deleteCuppingSession?: Maybe<CuppingSession>
   updateCuppingSessionCoffees?: Maybe<CuppingSession>
   lockCuppingSession?: Maybe<CuppingSession>
-  createDevice?: Maybe<Device>
-  updateDevice?: Maybe<Device>
-  deleteDevice?: Maybe<Device>
   createEvaluation?: Maybe<Evaluation>
   updateEvaluation?: Maybe<Evaluation>
   deleteEvaluation?: Maybe<Scalars['Boolean']>
@@ -633,19 +601,6 @@ export type MutationMakeVarietyPublicArgs = {
   id: Scalars['ID']
 }
 
-export type MutationCreateBrewerArgs = {
-  input: CreateBrewerInput
-}
-
-export type MutationUpdateBrewerArgs = {
-  id: Scalars['ID']
-  input: UpdateBrewerInput
-}
-
-export type MutationDeleteBrewerArgs = {
-  id: Scalars['ID']
-}
-
 export type MutationCreateBrewGuideArgs = {
   input: CreateBrewGuideInput
 }
@@ -656,6 +611,19 @@ export type MutationUpdateBrewGuideArgs = {
 }
 
 export type MutationDeleteBrewGuideArgs = {
+  id: Scalars['ID']
+}
+
+export type MutationCreateBrewerArgs = {
+  input: CreateBrewerInput
+}
+
+export type MutationUpdateBrewerArgs = {
+  id: Scalars['ID']
+  input: UpdateBrewerInput
+}
+
+export type MutationDeleteBrewerArgs = {
   id: Scalars['ID']
 }
 
@@ -691,19 +659,6 @@ export type MutationUpdateCuppingSessionCoffeesArgs = {
 }
 
 export type MutationLockCuppingSessionArgs = {
-  id: Scalars['ID']
-}
-
-export type MutationCreateDeviceArgs = {
-  input: CreateDeviceInput
-}
-
-export type MutationUpdateDeviceArgs = {
-  id: Scalars['ID']
-  input: UpdateDeviceInput
-}
-
-export type MutationDeleteDeviceArgs = {
   id: Scalars['ID']
 }
 
@@ -771,21 +726,21 @@ export type Note = {
 }
 
 export enum OperatorEnum {
+  Contains = 'contains',
+  ContainsSensitive = 'containsSensitive',
   Eq = 'eq',
-  Ne = 'ne',
   Gt = 'gt',
   Gte = 'gte',
   Lt = 'lt',
   Lte = 'lte',
-  Contains = 'contains',
-  ContainsSensitive = 'containsSensitive',
+  Ne = 'ne',
 }
 
 export type PageInfo = {
   __typename: 'PageInfo'
   hasNextPage?: Maybe<Scalars['Boolean']>
-  prevCursor?: Maybe<Scalars['String']>
   nextCursor?: Maybe<Scalars['String']>
+  prevCursor?: Maybe<Scalars['String']>
 }
 
 export enum PermissionTypeEnum {
@@ -801,7 +756,6 @@ export type Query = {
   listRoles: RoleConnection
   getRole?: Maybe<Role>
   listUsers: UserConnection
-  listStations?: Maybe<Array<Maybe<Station>>>
   getUser?: Maybe<User>
   me?: Maybe<Me>
   listCoffees: CoffeeConnection
@@ -814,17 +768,15 @@ export type Query = {
   getRegion?: Maybe<Region>
   listVarieties: VarietyConnection
   getVariety?: Maybe<Variety>
-  listBrewers: BrewerConnection
-  getBrewer?: Maybe<Brewer>
   listBrewGuides: BrewGuideConnection
   getBrewGuide?: Maybe<BrewGuide>
+  listBrewers: BrewerConnection
+  getBrewer?: Maybe<Brewer>
   listBrewingSessions?: Maybe<BrewingSessionConnection>
   getBrewingSession?: Maybe<BrewingSession>
   listCuppingSessions: CuppingSessionConnection
   getCuppingSession?: Maybe<CuppingSession>
   getCuppingSessionCoffee?: Maybe<SessionCoffee>
-  listDevices: DeviceConnection
-  getDevice?: Maybe<Device>
   listEvaluations?: Maybe<EvaluationConnection>
   getEvaluation?: Maybe<Evaluation>
   listGrinders: GrinderConnection
@@ -915,11 +867,16 @@ export type QueryGetVarietyArgs = {
   id: Scalars['ID']
 }
 
-export type QueryGetBrewerArgs = {
+export type QueryGetBrewGuideArgs = {
   id: Scalars['ID']
 }
 
-export type QueryGetBrewGuideArgs = {
+export type QueryListBrewersArgs = {
+  limit?: Maybe<Scalars['Int']>
+  cursor?: Maybe<Scalars['String']>
+}
+
+export type QueryGetBrewerArgs = {
   id: Scalars['ID']
 }
 
@@ -930,7 +887,6 @@ export type QueryGetBrewingSessionArgs = {
 export type QueryListCuppingSessionsArgs = {
   cursor?: Maybe<Scalars['String']>
   limit?: Maybe<Scalars['Int']>
-  query?: Maybe<Array<QueryInput>>
 }
 
 export type QueryGetCuppingSessionArgs = {
@@ -938,16 +894,6 @@ export type QueryGetCuppingSessionArgs = {
 }
 
 export type QueryGetCuppingSessionCoffeeArgs = {
-  id: Scalars['ID']
-}
-
-export type QueryListDevicesArgs = {
-  cursor?: Maybe<Scalars['String']>
-  limit?: Maybe<Scalars['Int']>
-  query?: Maybe<Array<QueryInput>>
-}
-
-export type QueryGetDeviceArgs = {
   id: Scalars['ID']
 }
 
@@ -974,8 +920,8 @@ export type QueryGetScoreSheetArgs = {
 
 export type QueryInput = {
   field: Scalars['String']
-  value?: Maybe<Scalars['String']>
   operator?: Maybe<OperatorEnum>
+  value?: Maybe<Scalars['String']>
 }
 
 export type Recipe = {
@@ -1076,13 +1022,6 @@ export type SessionCoffeeInput = {
   coffee: Scalars['ID']
 }
 
-export type Station = {
-  __typename: 'Station'
-  id: Scalars['ID']
-  description?: Maybe<Scalars['String']>
-  city?: Maybe<City>
-}
-
 export type UpdateAccountInput = {
   name?: Maybe<Scalars['String']>
 }
@@ -1118,10 +1057,6 @@ export type UpdateCoffeeInput = {
 export type UpdateCuppingSessionInput = {
   internalId?: Maybe<Scalars['ID']>
   description?: Maybe<Scalars['String']>
-}
-
-export type UpdateDeviceInput = {
-  name?: Maybe<Scalars['String']>
 }
 
 export type UpdateEvaluationInput = {
@@ -1253,28 +1188,28 @@ export type VarietyEdge = {
   node: Variety
 }
 
-export type SwitchAccountMutationVariables = {
+export type SwitchAccountMutationVariables = Exact<{
   accountId: Scalars['ID']
-}
+}>
 
 export type SwitchAccountMutation = {__typename: 'Mutation'} & Pick<Mutation, 'switchAccount'>
 
-export type MeQueryVariables = {}
+export type MeQueryVariables = Exact<{[key: string]: never}>
 
-export type MeQuery = {__typename: 'Query'} & {me: Maybe<{__typename: 'Me'} & UserFragmentFragment>}
+export type MeQuery = {__typename: 'Query'} & {me?: Maybe<{__typename: 'Me'} & UserFragmentFragment>}
 
-export type RefreshTokenMutationVariables = {}
+export type RefreshTokenMutationVariables = Exact<{[key: string]: never}>
 
 export type RefreshTokenMutation = {__typename: 'Mutation'} & Pick<Mutation, 'refreshToken'>
 
-export type LoginMutationVariables = {
+export type LoginMutationVariables = Exact<{
   username: Scalars['String']
   password: Scalars['String']
-}
+}>
 
 export type LoginMutation = {__typename: 'Mutation'} & Pick<Mutation, 'login'>
 
-export type LogoutMutationVariables = {}
+export type LogoutMutationVariables = Exact<{[key: string]: never}>
 
 export type LogoutMutation = {__typename: 'Mutation'} & Pick<Mutation, 'logout'>
 
@@ -1282,7 +1217,7 @@ export type UserFragmentFragment = {__typename: 'Me'} & Pick<
   Me,
   'id' | 'username' | 'firstName' | 'lastName' | 'scopes'
 > & {
-    account: Maybe<{__typename: 'Account'} & Pick<Account, 'id' | 'name'>>
+    account?: Maybe<{__typename: 'Account'} & Pick<Account, 'id' | 'name'>>
     accounts: Array<{__typename: 'Account'} & Pick<Account, 'id' | 'name'>>
     roles: Array<{__typename: 'Role'} & Pick<Role, 'id' | 'name'>>
   }
@@ -1313,10 +1248,7 @@ export const SwitchAccountDocument = gql`
     switchAccount(accountId: $accountId)
   }
 `
-export type SwitchAccountMutationFn = ApolloReactCommon.MutationFunction<
-  SwitchAccountMutation,
-  SwitchAccountMutationVariables
->
+export type SwitchAccountMutationFn = Apollo.MutationFunction<SwitchAccountMutation, SwitchAccountMutationVariables>
 
 /**
  * __useSwitchAccountMutation__
@@ -1336,16 +1268,13 @@ export type SwitchAccountMutationFn = ApolloReactCommon.MutationFunction<
  * });
  */
 export function useSwitchAccountMutation(
-  baseOptions?: ApolloReactHooks.MutationHookOptions<SwitchAccountMutation, SwitchAccountMutationVariables>,
+  baseOptions?: Apollo.MutationHookOptions<SwitchAccountMutation, SwitchAccountMutationVariables>,
 ) {
-  return ApolloReactHooks.useMutation<SwitchAccountMutation, SwitchAccountMutationVariables>(
-    SwitchAccountDocument,
-    baseOptions,
-  )
+  return Apollo.useMutation<SwitchAccountMutation, SwitchAccountMutationVariables>(SwitchAccountDocument, baseOptions)
 }
 export type SwitchAccountMutationHookResult = ReturnType<typeof useSwitchAccountMutation>
-export type SwitchAccountMutationResult = ApolloReactCommon.MutationResult<SwitchAccountMutation>
-export type SwitchAccountMutationOptions = ApolloReactCommon.BaseMutationOptions<
+export type SwitchAccountMutationResult = Apollo.MutationResult<SwitchAccountMutation>
+export type SwitchAccountMutationOptions = Apollo.BaseMutationOptions<
   SwitchAccountMutation,
   SwitchAccountMutationVariables
 >
@@ -1373,24 +1302,21 @@ export const MeDocument = gql`
  *   },
  * });
  */
-export function useMeQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<MeQuery, MeQueryVariables>) {
-  return ApolloReactHooks.useQuery<MeQuery, MeQueryVariables>(MeDocument, baseOptions)
+export function useMeQuery(baseOptions?: Apollo.QueryHookOptions<MeQuery, MeQueryVariables>) {
+  return Apollo.useQuery<MeQuery, MeQueryVariables>(MeDocument, baseOptions)
 }
-export function useMeLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<MeQuery, MeQueryVariables>) {
-  return ApolloReactHooks.useLazyQuery<MeQuery, MeQueryVariables>(MeDocument, baseOptions)
+export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery, MeQueryVariables>) {
+  return Apollo.useLazyQuery<MeQuery, MeQueryVariables>(MeDocument, baseOptions)
 }
 export type MeQueryHookResult = ReturnType<typeof useMeQuery>
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>
-export type MeQueryResult = ApolloReactCommon.QueryResult<MeQuery, MeQueryVariables>
+export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>
 export const RefreshTokenDocument = gql`
   mutation refreshToken {
     refreshToken
   }
 `
-export type RefreshTokenMutationFn = ApolloReactCommon.MutationFunction<
-  RefreshTokenMutation,
-  RefreshTokenMutationVariables
->
+export type RefreshTokenMutationFn = Apollo.MutationFunction<RefreshTokenMutation, RefreshTokenMutationVariables>
 
 /**
  * __useRefreshTokenMutation__
@@ -1409,16 +1335,13 @@ export type RefreshTokenMutationFn = ApolloReactCommon.MutationFunction<
  * });
  */
 export function useRefreshTokenMutation(
-  baseOptions?: ApolloReactHooks.MutationHookOptions<RefreshTokenMutation, RefreshTokenMutationVariables>,
+  baseOptions?: Apollo.MutationHookOptions<RefreshTokenMutation, RefreshTokenMutationVariables>,
 ) {
-  return ApolloReactHooks.useMutation<RefreshTokenMutation, RefreshTokenMutationVariables>(
-    RefreshTokenDocument,
-    baseOptions,
-  )
+  return Apollo.useMutation<RefreshTokenMutation, RefreshTokenMutationVariables>(RefreshTokenDocument, baseOptions)
 }
 export type RefreshTokenMutationHookResult = ReturnType<typeof useRefreshTokenMutation>
-export type RefreshTokenMutationResult = ApolloReactCommon.MutationResult<RefreshTokenMutation>
-export type RefreshTokenMutationOptions = ApolloReactCommon.BaseMutationOptions<
+export type RefreshTokenMutationResult = Apollo.MutationResult<RefreshTokenMutation>
+export type RefreshTokenMutationOptions = Apollo.BaseMutationOptions<
   RefreshTokenMutation,
   RefreshTokenMutationVariables
 >
@@ -1427,7 +1350,7 @@ export const LoginDocument = gql`
     login(username: $username, password: $password)
   }
 `
-export type LoginMutationFn = ApolloReactCommon.MutationFunction<LoginMutation, LoginMutationVariables>
+export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutationVariables>
 
 /**
  * __useLoginMutation__
@@ -1447,20 +1370,18 @@ export type LoginMutationFn = ApolloReactCommon.MutationFunction<LoginMutation, 
  *   },
  * });
  */
-export function useLoginMutation(
-  baseOptions?: ApolloReactHooks.MutationHookOptions<LoginMutation, LoginMutationVariables>,
-) {
-  return ApolloReactHooks.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument, baseOptions)
+export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginMutation, LoginMutationVariables>) {
+  return Apollo.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument, baseOptions)
 }
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>
-export type LoginMutationResult = ApolloReactCommon.MutationResult<LoginMutation>
-export type LoginMutationOptions = ApolloReactCommon.BaseMutationOptions<LoginMutation, LoginMutationVariables>
+export type LoginMutationResult = Apollo.MutationResult<LoginMutation>
+export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>
 export const LogoutDocument = gql`
   mutation logout {
     logout
   }
 `
-export type LogoutMutationFn = ApolloReactCommon.MutationFunction<LogoutMutation, LogoutMutationVariables>
+export type LogoutMutationFn = Apollo.MutationFunction<LogoutMutation, LogoutMutationVariables>
 
 /**
  * __useLogoutMutation__
@@ -1478,11 +1399,9 @@ export type LogoutMutationFn = ApolloReactCommon.MutationFunction<LogoutMutation
  *   },
  * });
  */
-export function useLogoutMutation(
-  baseOptions?: ApolloReactHooks.MutationHookOptions<LogoutMutation, LogoutMutationVariables>,
-) {
-  return ApolloReactHooks.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument, baseOptions)
+export function useLogoutMutation(baseOptions?: Apollo.MutationHookOptions<LogoutMutation, LogoutMutationVariables>) {
+  return Apollo.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument, baseOptions)
 }
 export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>
-export type LogoutMutationResult = ApolloReactCommon.MutationResult<LogoutMutation>
-export type LogoutMutationOptions = ApolloReactCommon.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>
+export type LogoutMutationResult = Apollo.MutationResult<LogoutMutation>
+export type LogoutMutationOptions = Apollo.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>
