@@ -1,5 +1,5 @@
 query ListCuppingSessions($cursor: String, $limit: Int, $query: [QueryInput!]) {
-  listCuppingSessions(cursor: $cursor, limit: $limit, query: $query) {
+  listCuppingSessions(cursor: $cursor, limit: $limit) {
     edges {
       node {
         id
