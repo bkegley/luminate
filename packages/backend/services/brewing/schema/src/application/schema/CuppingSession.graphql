@@ -54,7 +54,7 @@ extend type Query {
 extend type Mutation {
   createCuppingSession(input: CreateCuppingSessionInput!): CuppingSession
   updateCuppingSession(id: ID!, input: UpdateCuppingSessionInput!): CuppingSession
-  deleteCuppingSession(id: ID!): CuppingSession
+  deleteCuppingSession(id: ID!): Boolean
   updateCuppingSessionCoffees(id: ID!, sessionCoffees: [SessionCoffeeInput!]!): CuppingSession
   lockCuppingSession(id: ID!): CuppingSession
 }

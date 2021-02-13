@@ -12,6 +12,9 @@ import {
   CreateBrewingSessionCommandHandler,
   UpdateBrewingSessionCommandHandler,
   DeleteBrewingSessionCommandHandler,
+  CreateCuppingSessionCommandHandler,
+  UpdateCuppingSessionCommandHandler,
+  DeleteCuppingSessionCommandHandler,
   CreateEvaluationCommandHandler,
   UpdateEvaluationCommandHandler,
   DeleteEvaluationCommandHandler,
@@ -24,17 +27,21 @@ import {
   ListBrewersQueryHandler,
   GetBrewerQueryHandler,
   ListBrewGuidesQueryHandler,
+  ListCuppingSessionQueryHandler,
   GetRecipeQueryHandler,
   ListRecipesQueryHandler,
+  GetCuppingSessionQueryHandler,
 } from './application/queries'
 import {BrewerResolvers} from './application/schema/Brewer'
 import {BrewGuideResolvers} from './application/schema/BrewGuide'
 import {RecipeResolvers} from './application/schema/Recipe'
 import {GrinderResolvers} from './application/schema/Grinder'
+import {CuppingSessionResolvers} from './application/schema/CuppingSession'
 import {
   InMemoryBrewerRepository,
   InMemoryBrewGuideRepository,
   InMemoryBrewingSessionRepository,
+  InMemoryCuppingSessionRepository,
   InMemoryEvaluationRepository,
   InMemoryGrinderRepository,
   InMemoryRecipeRepository,
@@ -44,6 +51,8 @@ const QueryHandlers = [
   ListBrewersQueryHandler,
   GetBrewerQueryHandler,
   ListBrewGuidesQueryHandler,
+  ListCuppingSessionQueryHandler,
+  GetCuppingSessionQueryHandler,
   ListRecipesQueryHandler,
   GetRecipeQueryHandler,
 ]
@@ -61,6 +70,9 @@ const CommandHandlers = [
   CreateBrewingSessionCommandHandler,
   UpdateBrewingSessionCommandHandler,
   DeleteBrewingSessionCommandHandler,
+  CreateCuppingSessionCommandHandler,
+  UpdateCuppingSessionCommandHandler,
+  DeleteCuppingSessionCommandHandler,
   CreateEvaluationCommandHandler,
   UpdateEvaluationCommandHandler,
   DeleteEvaluationCommandHandler,
@@ -69,12 +81,13 @@ const CommandHandlers = [
 
 const EventHandlers: any[] = []
 
-const Resolvers = [BrewerResolvers, BrewGuideResolvers, GrinderResolvers, RecipeResolvers]
+const Resolvers = [BrewerResolvers, BrewGuideResolvers, GrinderResolvers, RecipeResolvers, CuppingSessionResolvers]
 
 const Repos = [
   InMemoryBrewerRepository,
   InMemoryBrewGuideRepository,
   InMemoryBrewingSessionRepository,
+  InMemoryCuppingSessionRepository,
   InMemoryEvaluationRepository,
   InMemoryGrinderRepository,
   InMemoryRecipeRepository,

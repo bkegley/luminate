@@ -445,7 +445,7 @@ export type Mutation = {
   deleteBrewingSession?: Maybe<Scalars['Boolean']>
   createCuppingSession?: Maybe<CuppingSession>
   updateCuppingSession?: Maybe<CuppingSession>
-  deleteCuppingSession?: Maybe<CuppingSession>
+  deleteCuppingSession?: Maybe<Scalars['Boolean']>
   updateCuppingSessionCoffees?: Maybe<CuppingSession>
   lockCuppingSession?: Maybe<CuppingSession>
   createEvaluation?: Maybe<Evaluation>
@@ -1353,7 +1353,6 @@ export type CountryFragmentFragment = {__typename: 'Country'} & Pick<Country, 'i
 export type ListCuppingSessionsQueryVariables = Exact<{
   cursor?: Maybe<Scalars['String']>
   limit?: Maybe<Scalars['Int']>
-  query?: Maybe<Array<QueryInput> | QueryInput>
 }>
 
 export type ListCuppingSessionsQuery = {__typename: 'Query'} & {
@@ -1440,9 +1439,7 @@ export type DeleteCuppingSessionMutationVariables = Exact<{
   id: Scalars['ID']
 }>
 
-export type DeleteCuppingSessionMutation = {__typename: 'Mutation'} & {
-  deleteCuppingSession?: Maybe<{__typename: 'CuppingSession'} & CupppingSessionFragmentFragment>
-}
+export type DeleteCuppingSessionMutation = {__typename: 'Mutation'} & Pick<Mutation, 'deleteCuppingSession'>
 
 export type CreateScoreSheetMutationVariables = Exact<{
   sessionCoffeeId: Scalars['ID']
@@ -2534,7 +2531,7 @@ export type GetCountryQueryHookResult = ReturnType<typeof useGetCountryQuery>
 export type GetCountryLazyQueryHookResult = ReturnType<typeof useGetCountryLazyQuery>
 export type GetCountryQueryResult = Apollo.QueryResult<GetCountryQuery, GetCountryQueryVariables>
 export const ListCuppingSessionsDocument = gql`
-  query ListCuppingSessions($cursor: String, $limit: Int, $query: [QueryInput!]) {
+  query ListCuppingSessions($cursor: String, $limit: Int) {
     listCuppingSessions(cursor: $cursor, limit: $limit) {
       edges {
         node {
@@ -2564,7 +2561,6 @@ export const ListCuppingSessionsDocument = gql`
  *   variables: {
  *      cursor: // value for 'cursor'
  *      limit: // value for 'limit'
- *      query: // value for 'query'
  *   },
  * });
  */
@@ -2960,11 +2956,8 @@ export type LockCuppingSessionMutationOptions = Apollo.BaseMutationOptions<
 >
 export const DeleteCuppingSessionDocument = gql`
   mutation DeleteCuppingSession($id: ID!) {
-    deleteCuppingSession(id: $id) {
-      ...CupppingSessionFragment
-    }
+    deleteCuppingSession(id: $id)
   }
-  ${CupppingSessionFragmentFragmentDoc}
 `
 export type DeleteCuppingSessionMutationFn = Apollo.MutationFunction<
   DeleteCuppingSessionMutation,
