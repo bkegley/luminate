@@ -30,6 +30,7 @@ class AuthenticatedDataSource extends RemoteGraphQLDataSource {
   willSendRequest({request, context}: {request: any; context: any}) {
     if (context.headers) {
       request.http.headers.set('Authorization', context.headers.authorization)
+      request.http.headers.set('X-Refresh-Token', context.refresh_token)
     }
   }
 
@@ -108,6 +109,7 @@ const startServer = async () => {
     subscriptions: false,
     context: async ({req, res}) => {
       let user = null
+      console.log({cookies: req.cookies})
       try {
         user = parseTokenFromRequest(req, USER_AUTH_TOKEN)
       } catch {}
@@ -115,6 +117,7 @@ const startServer = async () => {
       return {
         res,
         headers: req.headers,
+        refresh_token: req.cookies.lmt_ref,
         user,
       }
     },

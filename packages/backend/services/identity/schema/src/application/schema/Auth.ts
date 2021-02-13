@@ -3,14 +3,12 @@ import {UseGuards} from '@nestjs/common'
 import {AuthGuard} from '../guards'
 import {QueryBus, CommandBus} from '@nestjs/cqrs'
 import {Response} from 'express'
-import jwt from 'jsonwebtoken'
 import {Token} from '@luminate/mongo-utils'
 import {GetMeQuery} from '../queries'
 import {UserMapper} from '../../infra/mappers/UserMapper'
-import {LoginUserCommand, UpdateUserPasswordCommand, SwitchAccountCommand} from '../commands'
+import {LoginUserCommand, UpdateUserPasswordCommand, SwitchAccountCommand, LogoutUserCommand} from '../commands'
 import {UpdatePasswordInput} from '../../types'
-
-const USER_AUTH_TOKEN = process.env.USER_AUTH_TOKEN || 'localsecrettoken'
+import {RefreshTokenCommand} from '../commands/User/RefreshTokenCommand'
 
 @Resolver('Auth')
 export class AuthResolvers {
@@ -28,50 +26,48 @@ export class AuthResolvers {
   @Mutation('login')
   async login(@Args('username') username: string, @Args('password') password: string, @Context('res') res: Response) {
     const command = new LoginUserCommand(username, password)
-    const token = await this.commandBus.execute(command)
+    const response = await this.commandBus.execute(command)
 
-    if (!token) return false
+    if (!response) return false
 
-    res.cookie('id', token, {
-      httpOnly: false,
+    const {jwtToken, refreshToken} = response
+
+    res.cookie('lmt_ref', refreshToken, {
+      httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
     })
-    return token
+
+    return jwtToken
+  }
+
+  @Mutation('logout')
+  async logout(@Context('headers') headers: any, @Context('res') res: Response) {
+    const token = headers['x-refresh-token']
+    if (!token) {
+      return false
+    }
+
+    const command = new LogoutUserCommand(token)
+    const response = await this.commandBus.execute(command)
+
+    res.clearCookie('lmnt_ref')
+
+    return response
   }
 
   @UseGuards(AuthGuard)
-  @Mutation('logout')
-  async logout(@Context('user') user: Token, @Context('res') res: Response) {
-    console.log({user})
-    if (!user) {
-      return false
-    }
-
-    res.cookie('id', '', {
-      expires: new Date(0),
-    })
-
-    return true
-  }
-
   @Mutation('refreshToken')
-  async refreshToken(@Context('user') user: Token, @Context('res') res: Response) {
-    if (!user) return null
-    const {iat, exp, ...remainingToken} = user
-    const token = jwt.sign(remainingToken, USER_AUTH_TOKEN, {expiresIn: '10m'})
+  async refreshToken(@Context('user') user: Token, @Context('headers') headers: any, @Context('res') res: Response) {
+    const refreshToken = headers['x-refresh-token']
+
+    const command = new RefreshTokenCommand(refreshToken, user)
+    const token = await this.commandBus.execute(command)
 
     if (!token) {
-      res.cookie('id', '', {
-        expires: new Date(0),
-      })
-      return false
+      res.clearCookie('lmnt_ref')
+      return null
     }
-
-    res.cookie('id', token, {
-      httpOnly: false,
-      secure: process.env.NODE_ENV === 'production',
-    })
-    return true
+    return token
   }
 
   @UseGuards(AuthGuard)
