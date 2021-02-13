@@ -109,7 +109,6 @@ const startServer = async () => {
     subscriptions: false,
     context: async ({req, res}) => {
       let user = null
-      console.log({cookies: req.cookies})
       try {
         user = parseTokenFromRequest(req, USER_AUTH_TOKEN)
       } catch {}

@@ -55,7 +55,6 @@ export class AuthResolvers {
     return response
   }
 
-  @UseGuards(AuthGuard)
   @Mutation('refreshToken')
   async refreshToken(@Context('user') user: Token, @Context('headers') headers: any, @Context('res') res: Response) {
     const refreshToken = headers['x-refresh-token']
