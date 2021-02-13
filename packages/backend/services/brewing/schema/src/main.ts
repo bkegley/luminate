@@ -20,6 +20,7 @@ async function bootstrap() {
         {topic: 'brewers', partitions: 1, replicationFactor: 1},
         {topic: 'brewGuides', partitions: 1, replicationFactor: 1},
         {topic: 'brewingSessions', partitions: 1, replicationFactor: 1},
+        {topic: 'cuppingSessions', partitions: 1, replicationFactor: 1},
         {topic: 'evaluations', partitions: 1, replicationFactor: 1},
         {topic: 'grinders', partitions: 1, replicationFactor: 1},
         {topic: 'recipes', partitions: 1, replicationFactor: 1},

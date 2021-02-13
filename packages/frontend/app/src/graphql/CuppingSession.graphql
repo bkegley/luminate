@@ -1,4 +1,4 @@
-query ListCuppingSessions($cursor: String, $limit: Int, $query: [QueryInput!]) {
+query ListCuppingSessions($cursor: String, $limit: Int) {
   listCuppingSessions(cursor: $cursor, limit: $limit) {
     edges {
       node {
@@ -62,9 +62,7 @@ mutation LockCuppingSession($id: ID!) {
 }
 
 mutation DeleteCuppingSession($id: ID!) {
-  deleteCuppingSession(id: $id) {
-    ...CupppingSessionFragment
-  }
+  deleteCuppingSession(id: $id)
 }
 
 mutation CreateScoreSheet($sessionCoffeeId: ID!, $input: CreateScoreSheetInput!) {

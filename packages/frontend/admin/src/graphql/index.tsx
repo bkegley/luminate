@@ -445,7 +445,7 @@ export type Mutation = {
   deleteBrewingSession?: Maybe<Scalars['Boolean']>
   createCuppingSession?: Maybe<CuppingSession>
   updateCuppingSession?: Maybe<CuppingSession>
-  deleteCuppingSession?: Maybe<CuppingSession>
+  deleteCuppingSession?: Maybe<Scalars['Boolean']>
   updateCuppingSessionCoffees?: Maybe<CuppingSession>
   lockCuppingSession?: Maybe<CuppingSession>
   createEvaluation?: Maybe<Evaluation>
