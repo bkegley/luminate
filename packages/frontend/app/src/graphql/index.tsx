@@ -416,7 +416,7 @@ export type Mutation = {
   login?: Maybe<Scalars['String']>
   logout: Scalars['Boolean']
   switchAccount?: Maybe<Scalars['Boolean']>
-  refreshToken?: Maybe<Scalars['Boolean']>
+  refreshToken?: Maybe<Scalars['String']>
   createNote?: Maybe<Note>
   updateNote?: Maybe<Note>
   deleteNote?: Maybe<Note>

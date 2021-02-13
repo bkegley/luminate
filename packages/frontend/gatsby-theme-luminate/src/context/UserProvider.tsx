@@ -1,7 +1,7 @@
 import React from 'react'
 import {useLoginMutation, useLogoutMutation, useSwitchAccountMutation, useRefreshTokenMutation} from '../graphql'
 
-interface TokenInput {
+export interface Token {
   jti: string
   sub: string
   account?: {
@@ -17,15 +17,12 @@ interface TokenInput {
     name: string
   }[]
   scopes?: string[]
-}
-
-export interface Token extends TokenInput {
   iat: number
   exp: number
 }
 
 interface IUserContext {
-  user: Token | null
+  user: Token | undefined
   login: ReturnType<typeof useLoginMutation>[0]
   loginMeta: ReturnType<typeof useLoginMutation>[1]
   logout: ReturnType<typeof useLogoutMutation>[0]
@@ -36,7 +33,8 @@ interface IUserContext {
 
 // add initial context for gatsby builds
 const initialContext = {
-  user: null,
+  // @ts-ignore
+  user: undefined,
   loginMeta: {},
   logoutMeta: {},
   login: () => {},
@@ -53,24 +51,16 @@ interface Props {
   children: React.ReactNode
 }
 
-const getCookie = (name: string) => {
-  if (typeof document === 'undefined') return null
-  const cookieString = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)')
-  return cookieString ? cookieString[2] : null
-}
-
-const parseJWT = (name: string) => {
-  const cookie = getCookie(name)
-  if (cookie) {
-    return JSON.parse(atob(cookie.split('.')[1]))
-  }
-  return false
+const parseToken = (tokenString: string): Token => {
+  return JSON.parse(atob(tokenString.split('.')[1]))
 }
 
 const UserProvider = ({children, setToken}: Props) => {
+  const [user, setUser] = React.useState<Token | undefined>(undefined)
   const [shouldRefreshToken, setShouldRefreshToken] = React.useState(true)
   const [refreshToken, {error, loading, data, called}] = useRefreshTokenMutation()
   const [shouldStartRefreshTimer, setShouldStartRefreshTimer] = React.useState(true)
+  const [hasCheckedCookie, setHasCheckedCookie] = React.useState(false)
 
   React.useEffect(() => {
     if (shouldRefreshToken) {
@@ -79,10 +69,19 @@ const UserProvider = ({children, setToken}: Props) => {
   }, [shouldRefreshToken])
 
   React.useEffect(() => {
+    if (called) {
+      setHasCheckedCookie(true)
+    }
+    if (data && data.refreshToken) {
+      setUser(parseToken(data.refreshToken))
+    }
+  }, [called, data])
+
+  React.useEffect(() => {
     const timeout = setTimeout(() => {
       refreshToken()
       setShouldStartRefreshTimer(true)
-    }, 1000)
+    }, 1000 * 60 * 13)
     setShouldStartRefreshTimer(false)
     return () => clearTimeout(timeout)
   }, [shouldStartRefreshTimer])
@@ -91,14 +90,17 @@ const UserProvider = ({children, setToken}: Props) => {
   const [logout, logoutMeta] = useLogoutMutation()
   const [switchAccount, switchAccountMeta] = useSwitchAccountMutation()
 
-  const user: Token | false = parseJWT('id')
-
   const value: IUserContext = {
-    user: user ? user : null,
+    user: user,
     login: options => {
       return new Promise(async resolve => {
         const response = await login(options)
-        setShouldRefreshToken(true)
+        if (response.data.login) {
+          const token = response.data.login
+          setUser(parseToken(token))
+          setToken(token)
+          setShouldRefreshToken(true)
+        }
         resolve(response)
       })
     },
@@ -121,9 +123,7 @@ const UserProvider = ({children, setToken}: Props) => {
     switchAccountMeta,
   }
 
-  const shouldRenderChildren = !loading && called
-
-  return <UserContext.Provider value={value}>{shouldRenderChildren ? children : null}</UserContext.Provider>
+  return <UserContext.Provider value={value}>{hasCheckedCookie ? children : null}</UserContext.Provider>
 }
 
 export default UserProvider

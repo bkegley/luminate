@@ -7,22 +7,20 @@ import 'typeface-inter'
 
 const Wrapper = ({children, authWrapper, uri}) => {
   const [token, setToken] = React.useState()
-  const link = new HttpLink({uri})
+  const link = new HttpLink({uri, credentials: 'include'})
 
-  const setAuthorizationLink = React.useCallback(
-    () =>
-      setContext((_request, previousContext) => {
-        return {
-          headers: {
-            ...previousContext.headers,
-            authorization: `Bearer ${token}`,
-          },
-        }
-      }),
-    [token],
-  )
+  const authorizationMiddleware = React.useMemo(() => {
+    return setContext((_request, previousContext) => {
+      return {
+        headers: {
+          ...previousContext.headers,
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    })
+  }, [token])
 
-  const client = createClient({link: setAuthorizationLink.concat(link)})
+  const client = createClient({link: authorizationMiddleware.concat(link)})
 
   return (
     <ApolloProvider client={client}>
