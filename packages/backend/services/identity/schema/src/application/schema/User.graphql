@@ -79,5 +79,5 @@ extend type Mutation {
   login(username: String!, password: String!): String
   logout: Boolean!
   switchAccount(accountId: ID!): Boolean
-  refreshToken: Boolean
+  refreshToken: String
 }

@@ -154,7 +154,7 @@ const resolvers: Resolvers = {
     //refreshToken: (parent, args, {res, user}) => {
     //if (!user) return null
     //const {iat, exp, ...remainingToken} = user
-    //const token = jwt.sign(remainingToken, USER_AUTH_TOKEN, {expiresIn: '10m'})
+    //const token = jwt.sign(remainingToken, USER_AUTH_TOKEN, {expiresIn: '15m'})
     //if (!token) {
     //res.cookie('id', '', {
     //expires: new Date(0),

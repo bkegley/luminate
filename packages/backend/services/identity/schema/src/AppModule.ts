@@ -24,13 +24,16 @@ import {
   CreateUserCommandHandler,
   DeleteUserCommandHandler,
   LoginUserCommandHandler,
+  LogoutUserCommandHandler,
+  RefreshTokenComandHandler,
   UpdateUserCommandHandler,
   UpdateUserPasswordCommandHandler,
   UpdateUserRolesCommandHandler,
 } from './application/commands'
 import {AccountResolvers, AuthResolvers, RoleResolvers, UserResolvers} from './application/schema'
-import {AccountsRepo, RolesRepo, UsersRepo} from './infra/repos'
-import {AccountSchema, RoleSchema, UserSchema} from './infra/models'
+import {AccountsRepo, RefreshTokensRepo, RolesRepo, UsersRepo} from './infra/repos'
+import {AccountSchema, RoleSchema, UserSchema, RefreshTokenSchema} from './infra/models'
+import {TokenService} from './infra/services/TokenService'
 import {AuthGuard} from './application/guards'
 
 const queryHandlers = [
@@ -56,14 +59,17 @@ const commandHandlers = [
   CreateUserCommandHandler,
   DeleteUserCommandHandler,
   LoginUserCommandHandler,
+  LogoutUserCommandHandler,
+  RefreshTokenComandHandler,
   UpdateUserCommandHandler,
   UpdateUserPasswordCommandHandler,
   UpdateUserRolesCommandHandler,
 ]
 
 const resolvers = [AccountResolvers, AuthResolvers, RoleResolvers, UserResolvers]
-const repos = [AccountsRepo, RolesRepo, UsersRepo]
-const guards: any[] = [AuthGuard]
+const repos = [AccountsRepo, RefreshTokensRepo, RolesRepo, UsersRepo]
+const services = [TokenService]
+const guards = [AuthGuard]
 
 const mongoUrl = process.env.DB_URL || `mongodb://localhost:27017/luminate-identity`
 
@@ -75,6 +81,7 @@ const mongoUrl = process.env.DB_URL || `mongodb://localhost:27017/luminate-ident
       context: ({req, res}) => {
         return {
           headers: req.headers,
+          req,
           res,
         }
       },
@@ -86,6 +93,10 @@ const mongoUrl = process.env.DB_URL || `mongodb://localhost:27017/luminate-ident
         schema: AccountSchema,
       },
       {
+        name: 'refreshToken',
+        schema: RefreshTokenSchema,
+      },
+      {
         name: 'role',
         schema: RoleSchema,
       },
@@ -95,6 +106,6 @@ const mongoUrl = process.env.DB_URL || `mongodb://localhost:27017/luminate-ident
       },
     ]),
   ],
-  providers: [...queryHandlers, ...commandHandlers, ...resolvers, ...repos, ...guards],
+  providers: [...queryHandlers, ...commandHandlers, ...resolvers, ...repos, ...services, ...guards],
 })
 export class AppModule {}

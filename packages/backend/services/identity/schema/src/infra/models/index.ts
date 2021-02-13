@@ -1,4 +1,5 @@
 export * from './Account'
 export * from './Person'
+export * from './RefreshToken'
 export * from './Role'
 export * from './RoleAggregate'
