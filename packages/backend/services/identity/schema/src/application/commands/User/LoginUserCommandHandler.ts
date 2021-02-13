@@ -1,18 +1,16 @@
-import jwt from 'jsonwebtoken'
 import {CommandHandler, EventBus} from '@nestjs/cqrs'
 import {LoginUserCommand} from './LoginUserCommand'
 import {ILoginUserCommandHandler} from '.'
-import {AccountsRepo, RolesRepo, UsersRepo} from '../../../infra/repos'
-
-const tokenSecret = process.env.USER_AUTH_TOKEN || 'supersecretpassword'
+import {RefreshTokensRepo, UsersRepo} from '../../../infra/repos'
+import {TokenService} from '../../../infra/services/TokenService'
 
 @CommandHandler(LoginUserCommand)
 export class LoginUserCommandHandler implements ILoginUserCommandHandler {
   constructor(
     private eventBus: EventBus,
     private usersRepo: UsersRepo,
-    private accountsRepo: AccountsRepo,
-    private rolesRepo: RolesRepo,
+    private tokenService: TokenService,
+    private refreshTokensRepo: RefreshTokensRepo,
   ) {}
 
   public async execute(command: LoginUserCommand) {
@@ -31,28 +29,17 @@ export class LoginUserCommandHandler implements ILoginUserCommandHandler {
       return null
     }
 
-    const defaultAccount = user.defaultAccount
+    const jwtToken = await this.tokenService.createJwt(user)
 
-    const accountRoles = user.roles.find(role => role.account.toString() === defaultAccount.toString())
-    const roles = await this.rolesRepo.list({_id: accountRoles?.roles})
+    const refreshToken = this.tokenService.createRefreshToken(user)
 
-    const scopes =
-      roles?.reduce((acc, role) => {
-        const scopes = role.scopes
-        const newScopes = scopes?.filter(scope => !acc.find(existingScope => existingScope === scope))
-        return acc.concat(newScopes || [])
-      }, [] as string[]) || []
-
-    const input = {
-      jti: user.getEntityId().toString(),
-      sub: user.username.value,
-      aud: defaultAccount.toString(),
-      scopes,
-    }
-
-    const token = jwt.sign(input, tokenSecret, {expiresIn: '10m'})
+    await this.refreshTokensRepo.save(refreshToken)
 
     user.events.forEach(event => this.eventBus.publish(event))
-    return token
+
+    return {
+      jwtToken,
+      refreshToken: refreshToken.token.value,
+    }
   }
 }

@@ -57,7 +57,7 @@ export class SwitchAccountCommandHandler implements ISwitchAccountCommandHandler
       scopes,
     }
 
-    const newToken = jwt.sign(input, USER_AUTH_TOKEN, {expiresIn: '10m'})
+    const newToken = jwt.sign(input, USER_AUTH_TOKEN, {expiresIn: '15m'})
 
     const accountSwitchedEvent = new AccountSwitchedEvent(user.username.value, accountId)
 
