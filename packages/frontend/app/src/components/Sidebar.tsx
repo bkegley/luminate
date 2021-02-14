@@ -121,7 +121,7 @@ const Sidebar = ({activeNavItem, setActiveNavItem, closeMenu, navMenuOpen}: Side
         })}
       </div>
       <div
-        className={`flex flex-col overflow-x-hidden whitespace-no-wrap z-10 sidebar-nav bg-gray-300 pt-16  ${
+        className={`flex flex-col overflow-x-hidden whitespace-nowrap z-10 sidebar-nav bg-gray-300 pt-16  ${
           activeNavItem && activeMenu && navMenuOpen ? 'w-64 px-6' : 'w-0'
         }`}
       >
