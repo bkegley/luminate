@@ -3,9 +3,7 @@
   "license": "MIT",
   "private": true,
   "workspaces": {
-    "packages": [
-      "packages/**"
-    ]
+    "packages": ["packages/**"]
   },
   "scripts": {
     "test": "lerna run test",
