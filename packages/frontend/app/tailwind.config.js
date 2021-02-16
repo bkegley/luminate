@@ -1,31 +1,18 @@
+const colors = require('tailwindcss/colors')
+const production = process.env.NODE_ENV === 'production'
+
 module.exports = {
+  purge: {
+    enabled: production,
+    content: ['./src/**/*.{js,jsx,ts,tsx}'],
+  },
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
-        primary: {
-          100: 'hsl(152, 68%, 96%)',
-          200: 'hsl(154, 75%, 87%)',
-          300: 'hsl(156, 73%, 74%)',
-          400: 'hsl(158, 58%, 62%)',
-          500: 'hsl(160, 51%, 49%)',
-          600: 'hsl(162, 63%, 41%)',
-          700: 'hsl(164, 71%, 34%)',
-          800: 'hsl(166, 72%, 28%)',
-          900: 'hsl(168, 80%, 23%)',
-          1000: 'hsl(170, 97%, 15%)',
-        },
-        gray: {
-          100: 'hsl(210, 36%, 96%)',
-          200: 'hsl(212, 33%, 89%)',
-          300: 'hsl(210, 31%, 80%)',
-          400: 'hsl(211, 27%, 70%)',
-          500: 'hsl(209, 23%, 60%)',
-          600: 'hsl(210, 22%, 49%)',
-          700: 'hsl(209, 28%, 39%)',
-          800: 'hsl(209, 34%, 30%)',
-          900: 'hsl(211, 39%, 23%)',
-          1000: 'hsl(209, 61%, 16%)',
-        },
+        primary: colors.emerald,
+        secondary: colors.yellow,
+        gray: colors.blueGray,
       },
       width: {
         'screen-1/2': '50vw',
