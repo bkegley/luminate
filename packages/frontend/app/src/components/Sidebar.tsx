@@ -1,179 +1,110 @@
 import React from 'react'
-import {ChevronLeft, Globe, Home, Thermometer} from 'react-feather'
-import {Link, useLocation} from 'react-router-dom'
+import {Transition} from '@headlessui/react'
+import {Icon, IconTypesEnum} from '@luminate/components'
+import {Link, useRouteMatch} from 'react-router-dom'
 
 export interface SidebarProps {
-  activeNavItem: NavigationIcons | null
-  navMenuOpen: boolean
-  closeMenu: () => void
-  setActiveNavItem: React.Dispatch<
-    React.SetStateAction<{
-      activeNavItem: NavigationIcons
-      open: boolean
-    }>
-  >
+  open: boolean
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-type Navigation = {
-  [key in NavigationIcons]: {
-    Icon: React.ComponentType<any>
-    routeRegex: string
-    to?: string
-    navigationMenu?: {
-      [x: string]: NavItem[]
-    }
-  }
-}
-
-interface NavItem {
+interface INavItem {
   text: string
+  description: string
   to: string
-  activeIsExact?: boolean
+  icon: IconTypesEnum
+  activeOnlyWhenExact?: boolean
 }
 
-export type NavigationIcons = 'home' | 'coffee' | 'geography' | 'sensory'
+const navItems: INavItem[] = [
+  {icon: IconTypesEnum.HOME, to: '/', text: 'Home', description: 'Home', activeOnlyWhenExact: true},
+  {icon: IconTypesEnum.PENCIL, to: '/test', text: 'Test', description: 'test'},
+  {icon: IconTypesEnum.BOOKMARK, to: '/example', text: 'Example', description: 'example'},
+]
 
-const navigation: Navigation = {
-  home: {
-    Icon: Home,
-    routeRegex: '^/$',
-    to: '/',
-  },
-  coffee: {
-    Icon: Home,
-    routeRegex: '^/(coffees)',
-    navigationMenu: {
-      Coffees: [
-        {
-          text: 'List',
-          to: '/coffees',
-        },
-      ],
-    },
-  },
-  geography: {
-    Icon: Globe,
-    routeRegex: '^/(countries|regions)',
-    navigationMenu: {
-      Countries: [
-        {
-          text: 'List',
-          to: '/countries',
-        },
-      ],
-      Regions: [
-        {
-          text: 'List',
-          to: '/regions',
-          activeIsExact: true,
-        },
-      ],
-    },
-  },
-  sensory: {
-    Icon: Thermometer,
-    routeRegex: '^/(cupping-sessions)',
-    navigationMenu: {
-      'Cupping Sessions': [
-        {
-          text: 'List',
-          to: '/cupping-sessions',
-        },
-      ],
-    },
-  },
-}
-
-const Sidebar = ({activeNavItem, setActiveNavItem, closeMenu, navMenuOpen}: SidebarProps) => {
-  const location = useLocation()
-
-  React.useEffect(() => {
-    const locationNavItem = ((Object.keys(navigation) as unknown) as NavigationIcons[]).find(key =>
-      location.pathname.match(navigation[key].routeRegex),
-    )
-    if (locationNavItem && !navMenuOpen && locationNavItem !== activeNavItem) {
-      setActiveNavItem({activeNavItem: locationNavItem, open: navMenuOpen})
-    }
-  }, [location.pathname, navMenuOpen, activeNavItem])
-
-  const activeMenu = activeNavItem ? navigation[activeNavItem].navigationMenu : null
+export const Sidebar = ({open, setOpen}: SidebarProps) => {
   return (
-    <div className="fixed left-0 z-10 flex min-h-screen">
-      <div className="flex flex-col w-16 pt-16 overflow-x-hidden bg-gray-500">
-        {((Object.keys(navigation) as unknown) as NavigationIcons[]).map(key => {
-          const {Icon, to} = navigation[key]
-          return to ? (
-            <Link
-              to={to}
-              onClick={() => setActiveNavItem({activeNavItem: key, open: false})}
-              className={`p-4 outline-none ${activeNavItem === key ? 'bg-gray-300 text-primary-500' : 'text-gray-200'}`}
-            >
-              <Icon height="inherit" width="inherit" />
-            </Link>
-          ) : (
-            <button
-              onClick={() => setActiveNavItem({activeNavItem: key, open: true})}
-              className={`p-4 outline-none ${activeNavItem === key ? 'bg-gray-300 text-primary-500' : 'text-gray-200'}`}
-            >
-              <Icon height="inherit" width="inherit" />
-            </button>
-          )
-        })}
-      </div>
-      <div
-        className={`flex flex-col overflow-x-hidden whitespace-nowrap z-10 sidebar-nav bg-gray-300 pt-16  ${
-          activeNavItem && activeMenu && navMenuOpen ? 'w-64 px-6' : 'w-0'
-        }`}
-      >
-        <div className="pt-4 text-right text-primary-500">
-          <button onClick={closeMenu}>
-            <ChevronLeft />
-          </button>
+    <>
+      <Transition show={open} enter="duration-100" className="md:hidden">
+        <div className="fixed inset-0 flex z-40">
+          <Transition.Child
+            className="fixed inset-0"
+            enter="transition-opacity ease-linear duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="transition-opacity ease-linear duration-300"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div onClick={() => setOpen(false)} className="absolute inset-0 bg-gray-600 opacity-75"></div>
+          </Transition.Child>
+          <Transition.Child
+            tabIndex={0}
+            className="relative flex flex-col w-28 bg-gray-50 dark:bg-gray-800 focus:outline-none"
+            enter="transition ease-in-out duration-300 transform"
+            enterFrom="-translate-x-full"
+            enterTo="translate-x-0"
+            leave="transition ease-in-out duration-300 transform"
+            leaveFrom="translate-x-0"
+            leaveTo="-translate-x-full"
+          >
+            <nav aria-label="Sidebar" className="mt-5 flex-1 h-0 overflow-y-auto">
+              <div className="py-3 px-3 space-y-3">
+                {navItems.map((item, index) => {
+                  return (
+                    <React.Fragment key={index}>
+                      <NavItem key={index} item={item} />
+                    </React.Fragment>
+                  )
+                })}
+              </div>
+            </nav>
+          </Transition.Child>
         </div>
-        {activeNavItem && activeMenu
-          ? Object.keys(activeMenu).map(key => {
-              const navItems = activeMenu[key]
-
+      </Transition>
+      <div className="hidden md:flex md:flex-shrink-0">
+        <nav
+          aria-label="Sidebar"
+          className="hidden md:block md:flex-shrink-0 bg-gray-50 dark:bg-gray-800 md:overflow-y-auto"
+        >
+          <div className="relative w-40 flex flex-col py-3 px-3 space-y-3">
+            {navItems.map((item, index) => {
               return (
-                <div key={key} className="my-4">
-                  <h3 className="text-xs font-semibold tracking-wide text-gray-600 uppercase">{key}</h3>
-                  {navItems.map((navItem, index) => {
-                    return (
-                      <NavLink key={index} to={navItem.to} exactPath={navItem.activeIsExact}>
-                        {navItem.text}
-                      </NavLink>
-                    )
-                  })}
-                </div>
+                <React.Fragment key={index}>
+                  <NavItem key={index} item={item} />
+                </React.Fragment>
               )
-            })
-          : null}
+            })}
+          </div>
+        </nav>
       </div>
-    </div>
+    </>
   )
 }
 
-interface NavLinkProps {
-  to: string
-  children: React.ReactNode
-  exactPath?: boolean
+interface NavItemProps {
+  item: INavItem
 }
 
-const NavLink = ({to, exactPath, children}: NavLinkProps) => {
-  const location = useLocation()
-  const isActivePath = !!location.pathname.match(`^${to}${exactPath ? '$' : ''}`)
+const NavItem = ({item}: NavItemProps) => {
+  const match = useRouteMatch({
+    path: item.to,
+    exact: item.activeOnlyWhenExact ?? false,
+  })
   return (
-    <div>
-      <Link
-        to={to}
-        className={`block py-1 px-2 m-1 border-l-4 border-${
-          isActivePath ? 'primary-500 bg-gray-400' : 'transparent'
-        } rounded text-gray-800 hover:bg-gray-400 hover:text-gray-900`}
-      >
-        {children}
-      </Link>
-    </div>
+    <Link
+      to={item.to}
+      className={`${
+        match
+          ? 'bg-gray-300 dark:bg-gray-900 text-gray-900 dark:text-white'
+          : 'text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
+      } flex-shrink-0 group flex items-center justify-center lg:justify-start rounded-lg text-base lg:text-sm font-medium px-2 py-2`}
+    >
+      <span className="sr-only">{item.description}</span>
+      <div className={`${match ? 'text-primary-400 dark:text-secondary-300' : ''} h-6 w-6`}>
+        <Icon type={item.icon} />
+      </div>
+      <div className="hidden lg:block lg:ml-3">{item.text}</div>
+    </Link>
   )
 }
-
-export default Sidebar

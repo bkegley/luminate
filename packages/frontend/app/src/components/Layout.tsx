@@ -1,32 +1,24 @@
 import React from 'react'
-import Sidebar, {NavigationIcons} from './Sidebar'
-import Header from './Header'
+import {Sidebar} from './Sidebar'
+import {Header} from './Header'
 
 export interface LayoutProps {
   children: React.ReactNode
 }
 
-const Layout = ({children}: LayoutProps) => {
-  const [{activeNavItem, open}, setActiveNavItem] = React.useState<{activeNavItem: NavigationIcons; open: boolean}>({
-    activeNavItem: 'home',
-    open: false,
-  })
-
+export const Layout = ({children}: LayoutProps) => {
+  const [open, setOpen] = React.useState(false)
   return (
-    <div className="flex flex-col min-h-screen bg-gray-200">
-      <Header />
-      <Sidebar
-        activeNavItem={activeNavItem}
-        navMenuOpen={open}
-        closeMenu={() => setActiveNavItem({activeNavItem, open: false})}
-        setActiveNavItem={setActiveNavItem}
-      />
-      <main className={`main relative mt-16 ${open ? 'sidebar-open' : 'ml-16'}`}>
-        <div className="w-5/6 mx-auto py-20">{children}</div>
-      </main>
-      <footer className="fixed bottom-0 left-0 w-full" />
+    <div className="h-screen overflow-hidden bg-gray-50 dark:bg-gray-800 dark:text-gray-100">
+      <Header open={open} setOpen={setOpen} />
+      <div className="flex">
+        <Sidebar open={open} setOpen={setOpen} />
+        <div className="flex flex-col min-w-0 flex-1 overflow-hidden">
+          <main className="relative flex-1 overflow-y-auto focus:outline-none md:px-8 lg:px-12" tabIndex={0}>
+            {children}
+          </main>
+        </div>
+      </div>
     </div>
   )
 }
-
-export default Layout

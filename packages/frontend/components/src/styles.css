@@ -1,0 +1,100 @@
+/* purgecss start ignore */
+@tailwind base;
+@tailwind components;
+
+@layer base {
+  .btn {
+    @apply w-full h-full flex items-center justify-center tracking-wide uppercase rounded shadow-sm border border-transparent cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2;
+  }
+
+  .btn-primary {
+    @apply text-white bg-primary-400 hover:bg-primary-600 focus:ring-primary-500;
+  }
+
+  .btn-secondary {
+    @apply text-white bg-secondary-300 hover:bg-secondary-400 focus:ring-secondary-400;
+  }
+
+  .btn-outline {
+    @apply bg-white border-gray-700 dark:border-gray-200 hover:border-gray-700 dark:hover:bg-gray-200 hover:bg-gray-700 hover:text-white;
+  }
+
+  .btn-danger {
+    @apply text-white bg-red-500 hover:bg-red-700 focus:ring-red-600;
+  }
+
+  .input {
+    @apply shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 dark:bg-gray-600 rounded-md;
+  }
+
+  .input-error {
+    @apply pr-10 border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500;
+  }
+
+  .error {
+    @apply text-red-600;
+  }
+
+  .h1 {
+    @apply text-5xl;
+  }
+
+  .h2 {
+    @apply text-4xl;
+  }
+  
+  .h3 {
+    @apply text-3xl;
+  }
+
+  .h4 {
+    @apply text-2xl;
+  }
+
+  .h5 {
+    @apply text-xl;
+  }
+
+  .h6 {
+    @apply text-base;
+  }
+
+  .link {
+    @apply rounded-md text-sm font-medium hover:text-secondary-500 dark:hover:text-secondary-300;
+  }
+
+  .tag {
+    @apply p-0 rounded;
+  }
+
+  .tag-default {
+    @apply bg-gray-200 dark:bg-gray-900 text-gray-800 dark:text-gray-200;
+  }
+
+  .tag-primary {
+    @apply bg-primary-200 text-primary-600;
+  }
+
+  .tag-close {
+    @apply rounded-r rounded-l-none py-px px-2;
+  }
+
+  .tag-close-default {
+    @apply bg-gray-600;
+  }
+
+  .tag-close-default:hover {
+    @apply bg-gray-800 text-white;
+  }
+
+  .tag-close-primary {
+    @apply bg-primary-600 text-gray-200;
+  }
+
+  .tag-close-primary:hover {
+    @apply bg-primary-600 text-white;
+  }
+}
+
+/* purgecss end ignore */
+@tailwind utilities;
