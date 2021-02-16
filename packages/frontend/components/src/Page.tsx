@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button, ButtonProps } from './Button';
+import { Heading } from './Heading';
 
 export interface PageAction {
   text: string;
@@ -22,11 +23,11 @@ export const Page = ({
   children,
 }: PageProps) => {
   return (
-    <div className="max-w-4xl  xl:max-w-5xl mx-auto md:px-8 xl:px-4">
+    <div className="max-w-4xl lg:max-w-5xl  xl:max-w-7xl mx-auto md:px-8 xl:px-4">
       <div className="pt-10 sm:pt-20 pb-16 px-4 sm:px-6 md:px-0">
         <div className="flex items-center justify-between">
           <div className="space-y-1">
-            <h1 className="text-3xl font-extrabold text-gray-900">{title}</h1>
+            <Heading as="h1">{title}</Heading>
             {subtitle ? (
               <p className="ml-4 max-w-2xl text-gray-500">{subtitle}</p>
             ) : null}

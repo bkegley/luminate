@@ -60,20 +60,6 @@ export const Header = ({open, setOpen}: HeaderProps) => {
 
           <div className="hidden md:block md:w-80">
             <div className="flex items-center justify-end">
-              <div className="flex">
-                <a
-                  href="#"
-                  className="px-3 py-2 rounded-md text-sm font-medium hover:text-secondary-500 dark:hover:text-secondary-300"
-                >
-                  Documentation
-                </a>
-                <a
-                  href="#"
-                  className="px-3 py-2 rounded-md text-sm font-medium hover:text-secondary-500 dark:hover:text-secondary-300"
-                >
-                  Support
-                </a>
-              </div>
               <div className="relative ml-3">
                 <Menu>
                   {({open}) => {
