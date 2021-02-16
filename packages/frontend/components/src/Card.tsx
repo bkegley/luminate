@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button, ButtonProps } from './Button';
+import { Heading } from './Heading';
 
 const CardContext = React.createContext({});
 
@@ -17,8 +18,8 @@ export interface CardProps {
 export const Card = ({ children }: CardProps) => {
   return (
     <CardContext.Provider value={{}}>
-      <div className="shadow sm:rounded-md sm:overflow-hidden">
-        <div className="bg-white dark:bg-gray-900 space-y-3">{children}</div>
+      <div className="shadow sm:rounded-md sm:overflow-hidden bg-white dark:bg-gray-900">
+        {children}
       </div>
     </CardContext.Provider>
   );
@@ -49,12 +50,9 @@ const Title = ({
       <div className="flex items-center justify-between">
         <div>
           {title ? (
-            <h2
-              id={id ?? undefined}
-              className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200"
-            >
+            <Heading as="h3" id={id ?? undefined}>
               {title}
-            </h2>
+            </Heading>
           ) : null}
           {subtitle ? (
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">

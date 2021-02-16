@@ -18,8 +18,11 @@ interface INavItem {
 
 const navItems: INavItem[] = [
   {icon: IconTypesEnum.HOME, to: '/', text: 'Home', description: 'Home', activeOnlyWhenExact: true},
-  {icon: IconTypesEnum.PENCIL, to: '/test', text: 'Test', description: 'test'},
-  {icon: IconTypesEnum.BOOKMARK, to: '/example', text: 'Example', description: 'example'},
+  {icon: IconTypesEnum.PENCIL, to: '/coffees', text: 'Coffees', description: 'coffees'},
+  {icon: IconTypesEnum.BOOKMARK, to: '/countries', text: 'Countries', description: 'countries'},
+  {icon: IconTypesEnum.BOOKMARK, to: '/varieties', text: 'Varieties', description: 'varieties'},
+  {icon: IconTypesEnum.BOOKMARK, to: '/cupping-sessions', text: 'Cupping', description: 'cupping sessions'},
+  {icon: IconTypesEnum.COG, to: '/account', text: 'Account', description: 'account'},
 ]
 
 export const Sidebar = ({open, setOpen}: SidebarProps) => {

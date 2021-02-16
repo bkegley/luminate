@@ -2,7 +2,7 @@ import React from 'react'
 import {useUser} from '@luminate/gatsby-theme-luminate/src'
 import {navigate} from 'gatsby'
 import {BrowserRouter} from 'react-router-dom'
-import Layout from '../components/Layout'
+import {Layout} from '../components/Layout'
 import App from '../app'
 
 const IndexPage = () => {
