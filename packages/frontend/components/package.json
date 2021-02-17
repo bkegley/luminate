@@ -6,10 +6,16 @@
   "author": "Bryan Kegley",
   "license": "MIT",
   "workspaces": {
-    "nohoist": ["@tailwindcss/forms", "@tailwindcss/forms/**"]
+    "nohoist": [
+      "@tailwindcss/forms",
+      "@tailwindcss/forms/**"
+    ]
   },
   "private": true,
-  "files": ["dist", "src"],
+  "files": [
+    "dist",
+    "src"
+  ],
   "engines": {
     "node": ">=10"
   },
@@ -65,5 +71,8 @@
     "tslib": "^2.1.0",
     "typescript": "^4.1.5"
   },
-  "dependencies": {}
+  "dependencies": {
+    "downshift": "^6.1.0",
+    "lodash.debounce": "^4.0.8"
+  }
 }

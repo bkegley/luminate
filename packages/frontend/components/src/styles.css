@@ -24,7 +24,7 @@
   }
 
   .input {
-    @apply shadow-sm focus:ring-secondary-300 focus:border-secondary-300 block w-full sm:text-sm border-gray-300 dark:border-gray-700 dark:bg-gray-800 rounded-md;
+    @apply shadow-sm focus:ring-primary-300 focus:border-primary-300 dark:focus:border-primary-100 block w-full sm:text-sm border-gray-300 dark:border-gray-700 dark:bg-gray-800 rounded-md;
   }
 
   .input-error {
