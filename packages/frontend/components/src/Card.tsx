@@ -18,7 +18,7 @@ export interface CardProps {
 export const Card = ({ children }: CardProps) => {
   return (
     <CardContext.Provider value={{}}>
-      <div className="shadow sm:rounded-md sm:overflow-hidden bg-white dark:bg-gray-900">
+      <div className="shadow sm:rounded-md bg-white dark:bg-gray-900">
         {children}
       </div>
     </CardContext.Provider>
