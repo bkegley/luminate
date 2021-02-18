@@ -60,31 +60,29 @@ export const Select = ({
           </span>
         </span>
       </button>
-      {isOpen ? (
-        <ul
-          className="input absolute mt-1 left-0 right-0 z-50 w-full p-0 m-0 overflow-y-auto list-none border-primary-300 dark:border-primary-100"
-          style={{ maxHeight: '250px' }}
-          {...getMenuProps()}
-        >
-          {options.map((option, index) => {
-            return (
-              <li
-                key={`${option.value}-${index}`}
-                className={`py-2 px-3 ${
-                  highlightedIndex === index
-                    ? 'bg-gray-100 dark:bg-gray-900'
-                    : ''
-                } ${
-                  selectedItem?.value === option.value ? 'text-primary-400' : ''
-                }`}
-                {...getItemProps({ item: option, index })}
-              >
-                {option.name}
-              </li>
-            );
-          })}
-        </ul>
-      ) : null}
+      <ul
+        className={`${
+          !isOpen ? 'hidden' : ''
+        } input absolute mt-1 left-0 right-0 z-50 w-full p-0 m-0 overflow-y-auto list-none border-primary-300 dark:border-primary-100`}
+        style={{ maxHeight: '250px' }}
+        {...getMenuProps()}
+      >
+        {options.map((option, index) => {
+          return (
+            <li
+              key={`${option.value}-${index}`}
+              className={`py-2 px-3 ${
+                highlightedIndex === index ? 'bg-gray-100 dark:bg-gray-900' : ''
+              } ${
+                selectedItem?.value === option.value ? 'text-primary-400' : ''
+              }`}
+              {...getItemProps({ item: option, index })}
+            >
+              {option.name}
+            </li>
+          );
+        })}
+      </ul>
     </div>
   );
 };
