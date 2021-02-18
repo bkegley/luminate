@@ -69,7 +69,7 @@ const UserProvider = ({children, setToken}: Props) => {
   }, [shouldRefreshToken])
 
   React.useEffect(() => {
-    if (called) {
+    if (called && !loading) {
       setHasCheckedCookie(true)
     }
     if (data && data.refreshToken) {
