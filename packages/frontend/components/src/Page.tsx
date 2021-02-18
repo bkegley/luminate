@@ -23,7 +23,7 @@ export const Page = ({
   children,
 }: PageProps) => {
   return (
-    <div className="max-w-4xl lg:max-w-5xl  xl:max-w-7xl mx-auto md:px-8 xl:px-4">
+    <div className="max-w-4xl lg:max-w-5xl  xl:max-w-7xl mx-auto md:px-8 xl:px-4 min-h-screen">
       <div className="pt-10 sm:pt-20 pb-16 px-4 sm:px-6 md:px-0">
         <div className="flex items-center justify-between">
           <div className="space-y-1">
