@@ -14,3 +14,4 @@ export * from './Logo';
 export * from './Page';
 export * from './Select';
 export * from './Tabs';
+export * from './Toggle';
