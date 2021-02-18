@@ -103,8 +103,8 @@ export const Combobox = ({
       }
     },
     stateReducer: (state, actionAndChanges) => {
-      // prevent dropdown from closing on 'Create New' click
       switch (actionAndChanges.type) {
+        // prevent dropdown from closing on 'Create New' click
         case useCombobox.stateChangeTypes.InputKeyDownEnter:
         case useCombobox.stateChangeTypes.ItemClick:
           if (state.selectedItem?.value === '__createNew') {
@@ -116,6 +116,7 @@ export const Combobox = ({
             };
           }
           return actionAndChanges.changes;
+        // TODO: focus input on menu open
         default:
           return actionAndChanges.changes;
       }
@@ -146,53 +147,36 @@ export const Combobox = ({
           </span>
         </button>
       </div>
-      {isOpen ? (
-        <ul
-          className="input absolute mt-1 left-0 right-0 z-50 w-full p-0 m-0 overflow-y-auto list-none border-primary-300 dark:border-primary-100"
-          style={{ maxHeight: '250px' }}
-          {...getMenuProps()}
-        >
-          <div className="px-4 py-2">
-            <input
-              type="text"
-              className="shadow-sm focus:ring-gray-300 focus:border-gray-300 dark:focus:border-gray-100 focus:bg-gray-200 dark:focus:bg-gray-700  block w-full sm:text-sm border-gray-300 dark:border-gray-700 dark:bg-gray-800 rounded-md"
-              {...getInputProps({ autoFocus: true })}
-            />
+      <ul
+        className={`${
+          !isOpen ? 'hidden' : ''
+        } input absolute mt-1 left-0 right-0 z-50 w-full p-0 m-0 overflow-y-auto list-none border-primary-300 dark:border-primary-100`}
+        style={{ maxHeight: '250px' }}
+        {...getMenuProps()}
+      >
+        <div className="px-4 py-2">
+          <input
+            type="text"
+            className="shadow-sm focus:ring-gray-300 focus:border-gray-300 dark:focus:border-gray-100 focus:bg-gray-200 dark:focus:bg-gray-700  block w-full sm:text-sm border-gray-300 dark:border-gray-700 dark:bg-gray-800 rounded-md"
+            {...getInputProps()}
+          />
+        </div>
+        {children}
+        {loading ? (
+          <div className="text-center py-4">
+            <p>loading</p>
           </div>
-          {children}
-          {loading ? (
-            <div className="text-center py-4">
-              <p>loading</p>
-            </div>
-          ) : (
-            inputOptions.map((option, index) => {
-              if (option.value === '__createNew') {
-                const { onClick, ...remainingProps } = getItemProps({
-                  item: option,
-                  index,
-                });
-                return (
-                  <DialogDisclosure
-                    {...createNewDialog}
-                    as="li"
-                    key={`${option.value}-${index}`}
-                    className={`py-2 px-3 ${
-                      highlightedIndex === index
-                        ? 'bg-gray-100 dark:bg-gray-900'
-                        : ''
-                    } ${
-                      selectedItem?.value === option.value
-                        ? 'text-primary-400'
-                        : ''
-                    }`}
-                    {...remainingProps}
-                  >
-                    {option.name}
-                  </DialogDisclosure>
-                );
-              }
+        ) : (
+          inputOptions.map((option, index) => {
+            if (option.value === '__createNew') {
+              const { onClick, ...remainingProps } = getItemProps({
+                item: option,
+                index,
+              });
               return (
-                <li
+                <DialogDisclosure
+                  {...createNewDialog}
+                  as="li"
                   key={`${option.value}-${index}`}
                   className={`py-2 px-3 ${
                     highlightedIndex === index
@@ -203,17 +187,30 @@ export const Combobox = ({
                       ? 'text-primary-400'
                       : ''
                   }`}
-                  {...getItemProps({ item: option, index })}
+                  {...remainingProps}
                 >
                   {option.name}
-                </li>
+                </DialogDisclosure>
               );
-            })
-          )}
-        </ul>
-      ) : null}
+            }
+            return (
+              <li
+                key={`${option.value}-${index}`}
+                className={`py-2 px-3 ${
+                  highlightedIndex === index
+                    ? 'bg-gray-100 dark:bg-gray-900'
+                    : ''
+                } ${
+                  selectedItem?.value === option.value ? 'text-primary-400' : ''
+                }`}
+                {...getItemProps({ item: option, index })}
+              >
+                {option.name}
+              </li>
+            );
+          })
+        )}
+      </ul>
     </div>
   );
 };
-
-export default Combobox;
