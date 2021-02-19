@@ -1,5 +1,6 @@
 import React from 'react'
-import {Heading, ScoreSheet, Avatar} from '@luminate/gatsby-theme-luminate/src'
+import {Heading} from '@luminate/components'
+import {ScoreSheet} from '../../../../graphql'
 
 export interface ScoreSheetTableViewProps {
   scoreSheets: ScoreSheet[]
@@ -15,7 +16,6 @@ const ScoreSheetTableView = ({scoreSheets}: ScoreSheetTableViewProps) => {
       <div className="bg-white rounded">
         <table className="w-full">
           <thead className="w-full bg-gray-400 border-b-2 border-gray-600">
-            <th className="w-1/12 p-4"></th>
             <th className="p-4 text-left">User</th>
             <th className="p-4 text-left">Overall</th>
             <th className="p-4 pr-10 text-right">Total Score</th>
@@ -30,9 +30,6 @@ const ScoreSheetTableView = ({scoreSheets}: ScoreSheetTableViewProps) => {
                     }`}
                     onClick={() => setOpenScoreSheetId(scoreSheet.id)}
                   >
-                    <td className="w-1/12 p-4">
-                      <Avatar src="https://picsum.photos/48/48" />{' '}
-                    </td>
                     <td className="p-4 text-left">{scoreSheet.user?.username}</td>
                     <td className="p-4 text-left">{scoreSheet.overall}</td>
                     <td className="p-4 pr-10 text-right">{scoreSheet.totalScore}</td>

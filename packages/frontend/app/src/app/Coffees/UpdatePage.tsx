@@ -1,13 +1,15 @@
 import React from 'react'
 import CoffeeUpdateForm from './UpdateForm'
 import {useGetCoffeeQuery} from '../../graphql'
-import {Modal, useDialogState, Button} from '@luminate/gatsby-theme-luminate/src'
+import {Modal, useDialogState} from '@luminate/gatsby-theme-luminate/src'
+import {Icon, IconTypesEnum} from '@luminate/components'
 import {ShareCoffeeForm} from './ShareCoffeeForm'
-import {Link} from 'react-router-dom'
-import {ChevronLeft} from 'react-feather'
+import {Link, useRouteMatch} from 'react-router-dom'
 
-const CoffeeUpdatePage = ({match}) => {
-  const {id} = match.params
+const CoffeeUpdatePage = () => {
+  const {
+    params: {id},
+  } = useRouteMatch<{id: string}>()
   const {data, error, loading} = useGetCoffeeQuery({variables: {id}})
   const shareCoffeeDialog = useDialogState()
 
@@ -20,7 +22,9 @@ const CoffeeUpdatePage = ({match}) => {
         </div>
       </Modal>
       <div className="flex items-center my-6 text-primary-600">
-        <ChevronLeft size={12} className="mr-px" />
+        <span className="h-3 w-3">
+          <Icon type={IconTypesEnum.CHEVRON_LEFT} />
+        </span>
         <Link to={`/coffees/${id}`}>Back</Link>
       </div>
       <CoffeeUpdateForm coffee={data.getCoffee} />

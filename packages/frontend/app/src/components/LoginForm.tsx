@@ -1,6 +1,7 @@
 import React from 'react'
 import {navigate} from 'gatsby'
-import {useUser, Button, Input} from '@luminate/gatsby-theme-luminate/src'
+import {useUser} from '@luminate/gatsby-theme-luminate/src'
+import {Button, Input} from '@luminate/components'
 import {Formik, Form, Field} from 'formik'
 
 const LoginForm = () => {

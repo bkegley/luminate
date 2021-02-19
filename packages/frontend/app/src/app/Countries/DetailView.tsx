@@ -1,8 +1,7 @@
 import React from 'react'
-import {Card, Heading} from '@luminate/gatsby-theme-luminate/src'
+import {Page, Card, Grid, Heading} from '@luminate/components'
 import {useGetCountryQuery} from '../../graphql'
-import {StyledLink} from '@luminate/gatsby-theme-luminate/src'
-import {RouteComponentProps} from 'react-router-dom'
+import {RouteComponentProps, Link} from 'react-router-dom'
 
 interface Params {
   id: string
@@ -29,46 +28,38 @@ const CountryDetailView = ({match}: Props) => {
   }
 
   return (
-    <div>
-      <div className="flex items-center mb-4">
-        <div className="mr-4">
-          <Heading>{data.getCountry?.name}</Heading>
-        </div>
-        <div className="text-sm">
-          <StyledLink to={`${match.url}/edit`}>Edit Info</StyledLink>
-        </div>
-      </div>
-      <div className="flex mb-4">
-        <div className="flex flex-col w-2/3 mr-4">
-          <Card className="overflow-hidden">
+    <Page title={data.getCountry?.name}>
+      <Grid>
+        <Grid.Left>
+          <Card>
             <img src="https://picsum.photos/800/400" />
             <div className="p-4">
               <p className="text-xs text-gray-500 uppercase tracking-wide">Information Section</p>
               <p>This is some information about the country</p>
             </div>
           </Card>
-        </div>
-        <div className="flex flex-col w-1/3">
-          <Card className="p-4 mb-3 bg-gray-100">
+        </Grid.Left>
+        <Grid.Right>
+          <Card>
             <div>
               <p className="text-xs text-gray-500 uppercase tracking-wide">Regions</p>
               {data.getCountry.regions
                 ? data.getCountry.regions.map(region => {
                     return (
                       <div>
-                        <StyledLink to={`/regions/${region?.id}`} variant="text">
+                        <Link className="link" to={`/regions/${region?.id}`}>
                           {region?.name}
-                        </StyledLink>
+                        </Link>
                       </div>
                     )
                   })
                 : '-'}
             </div>
           </Card>
-        </div>
-      </div>
+        </Grid.Right>
+      </Grid>
       <div>
-        <Heading className="mb-3">Story</Heading>
+        <Heading as="h3">Story</Heading>
         <p>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis arcu lacus, condimentum quis nulla eget, aliquet
           iaculis mi. Nulla tincidunt velit vitae enim porttitor, ac dignissim lectus porta. Vivamus eu urna malesuada,
@@ -104,7 +95,7 @@ const CountryDetailView = ({match}: Props) => {
           ultrices quam turpis at arcu.
         </p>
       </div>
-    </div>
+    </Page>
   )
 }
 

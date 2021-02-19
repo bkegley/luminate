@@ -1,5 +1,5 @@
 import React from 'react'
-import {Card, Combobox, Heading, Button, Input} from '@luminate/gatsby-theme-luminate/src'
+import {Card, Combobox, Button, Input} from '@luminate/components'
 import {Formik, Form, Field} from 'formik'
 import {
   useCreateFarmMutation,
@@ -97,69 +97,75 @@ const FarmCreateForm = ({
       {({dirty, setFieldValue, values}) => {
         return (
           <Form>
-            <Card className="p-3 overflow-visible" variant={isModal ? 'blank' : 'default'}>
-              {title ? <Heading>{title}</Heading> : null}
-              {!fields || fields.includes('name') ? (
-                <div className="mb-3">
-                  <label className="block mb-1" htmlFor="name">
-                    Name
-                  </label>
-                  <Field name="name" id="name" as={Input} />
-                </div>
-              ) : null}
-              {!fields || fields.includes('country') ? (
-                <div className="mb-3">
-                  <label className="block mb-1" htmlFor="country">
-                    Country
-                  </label>
-                  <Combobox
-                    id="country"
-                    options={countryOptions}
-                    initialSelectedItem={countryOptions?.find(option => option.value === values.country)}
-                    loading={countryLoading}
-                    onChange={value => {
-                      if (value.selectedItem) {
-                        if (value.selectedItem.value !== values.country) {
-                          setFieldValue('region', '')
+            <Card>
+              {' '}
+              <div className="p-6">
+                {!fields || fields.includes('name') ? (
+                  <div className="mb-3">
+                    <label className="block mb-1" htmlFor="name">
+                      Name
+                    </label>
+                    <Field name="name" id="name" as={Input} />
+                  </div>
+                ) : null}
+                {!fields || fields.includes('country') ? (
+                  <div className="mb-3">
+                    <label className="block mb-1" htmlFor="country">
+                      Country
+                    </label>
+                    <Combobox
+                      id="country"
+                      options={countryOptions}
+                      initialSelectedItem={countryOptions?.find(option => option.value === values.country)}
+                      loading={countryLoading}
+                      onChange={value => {
+                        if (value.selectedItem) {
+                          if (value.selectedItem.value !== values.country) {
+                            setFieldValue('region', '')
+                          }
+                          regionRefetch({
+                            query: [
+                              {field: 'country', operator: 'eq' as OperatorEnum, value: value.selectedItem.value},
+                            ],
+                          })
                         }
-                        regionRefetch({
-                          query: [{field: 'country', operator: 'eq' as OperatorEnum, value: value.selectedItem.value}],
-                        })
-                      }
-                      setFieldValue('country', value.selectedItem?.value)
-                    }}
-                  />
-                </div>
-              ) : null}
-              {!fields || fields.includes('region') ? (
-                <div className="mb-3">
-                  <label className="block mb-1" htmlFor="region">
-                    Region
-                  </label>
-                  <Combobox
-                    id="region"
-                    options={regionOptions}
-                    initialSelectedItem={regionOptions?.find(option => option.value === values.region)}
-                    loading={regionLoading}
-                    onChange={value => setFieldValue('region', value.selectedItem?.value)}
-                  />
-                </div>
-              ) : null}
-            </Card>
-            <div className="flex justify-end mt-4 px-3">
-              <div className="order-1">
-                <Button type="submit" variant="primary">
-                  Submit
-                </Button>
+                        setFieldValue('country', value.selectedItem?.value)
+                      }}
+                    />
+                  </div>
+                ) : null}
+                {!fields || fields.includes('region') ? (
+                  <div className="mb-3">
+                    <label className="block mb-1" htmlFor="region">
+                      Region
+                    </label>
+                    <Combobox
+                      id="region"
+                      options={regionOptions}
+                      initialSelectedItem={regionOptions?.find(option => option.value === values.region)}
+                      loading={regionLoading}
+                      onChange={value => setFieldValue('region', value.selectedItem?.value)}
+                    />
+                  </div>
+                ) : null}
               </div>
-              {onCancel ? (
-                <div className="mr-3">
-                  <Button type="button" variant="text" onClick={() => onCancel(dirty)}>
-                    Cancel
-                  </Button>
+              <Card.Footer>
+                <div className="flex justify-end mt-4 px-3">
+                  <div className="order-1">
+                    <Button type="submit" variant="primary">
+                      Submit
+                    </Button>
+                  </div>
+                  {onCancel ? (
+                    <div className="mr-3">
+                      <Button type="button" variant="outline" onClick={() => onCancel(dirty)}>
+                        Cancel
+                      </Button>
+                    </div>
+                  ) : null}
                 </div>
-              ) : null}
-            </div>
+              </Card.Footer>
+            </Card>
           </Form>
         )
       }}

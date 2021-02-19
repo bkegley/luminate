@@ -1,6 +1,6 @@
 import React from 'react'
 import {useCreateAccountMutation} from '../graphql'
-import {Input, Card, Button} from '@luminate/gatsby-theme-luminate/src'
+import {Input, Card, Button} from '@luminate/components'
 import {Formik, Form, Field} from 'formik'
 import {navigate} from 'gatsby'
 
@@ -30,33 +30,37 @@ const RegisterForm = ({isModal}: RegisterFormProps) => {
       }}
     >
       <Form>
-        <Card className="p-4 overflow-hidden" variant={isModal ? 'blank' : 'default'}>
-          <div className="mb-4">
-            <label className="block my-2" htmlFor="name">
-              Account Name
-            </label>
-            <Field name="name" id="name" type="text" label="Account Name" as={Input} />
+        <Card>
+          <div className="p-6">
+            <div className="mb-4">
+              <label className="block my-2" htmlFor="name">
+                Account Name
+              </label>
+              <Field name="name" id="name" type="text" label="Account Name" as={Input} />
+            </div>
+            <div className="my-4">
+              <label className="block my-2" htmlFor="username">
+                Username
+              </label>
+              <Field name="username" id="username" type="text" label="Username" as={Input} />
+            </div>
+            <div className="my-4">
+              <label className="block my-2" htmlFor="password">
+                Password
+              </label>
+              <Field name="password" id="password" type="password" label="Password" as={Input} />
+            </div>
           </div>
-          <div className="my-4">
-            <label className="block my-2" htmlFor="username">
-              Username
-            </label>
-            <Field name="username" id="username" type="text" label="Username" as={Input} />
-          </div>
-          <div className="my-4">
-            <label className="block my-2" htmlFor="password">
-              Password
-            </label>
-            <Field name="password" id="password" type="password" label="Password" as={Input} />
-          </div>
+          <Card.Footer>
+            <div className="flex justify-end mt-4 px-3">
+              <div>
+                <Button type="submit" variant="primary">
+                  Submit
+                </Button>
+              </div>
+            </div>
+          </Card.Footer>
         </Card>
-        <div className="flex justify-end mt-4 px-3">
-          <div>
-            <Button type="submit" variant="primary">
-              Submit
-            </Button>
-          </div>
-        </div>
       </Form>
     </Formik>
   )

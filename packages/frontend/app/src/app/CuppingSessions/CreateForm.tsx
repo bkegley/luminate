@@ -1,9 +1,8 @@
 import React from 'react'
 import {Formik, Form, Field} from 'formik'
-import {Combobox, Heading, Card, Button, Input, Modal, useDialogState} from '@luminate/gatsby-theme-luminate/src'
+import {Card, Button, Input} from '@luminate/components'
 import {
   useCreateCuppingSessionMutation,
-  OperatorEnum,
   CreateCuppingSessionMutation,
   ListCuppingSessionsDocument,
   CreateCuppingSessionInput,
@@ -23,8 +22,6 @@ interface CuppingSessionCreateFormProps {
 }
 
 const CuppingSessionCreateForm = ({
-  title,
-  isModal,
   fields,
   initialValues,
   onCreateSuccess,
@@ -68,39 +65,42 @@ const CuppingSessionCreateForm = ({
       {({dirty}) => {
         return (
           <Form>
-            <Card variant={isModal ? 'blank' : 'default'} className="p-3 overflow-visible">
-              {title ? <Heading>{title}</Heading> : null}
-              {!fields || fields.includes('description') ? (
-                <div className="mb-3">
-                  <label className="block mb-2" htmlFor="description">
-                    Description
-                  </label>
-                  <Field name="description" id="description" as={Input} />
-                </div>
-              ) : null}
-              {!fields || fields.includes('internalId') ? (
-                <div className="mb-3">
-                  <label className="block mb-2" htmlFor="internalId">
-                    Internal Id
-                  </label>
-                  <Field name="internalId" id="internalId" as={Input} />
-                </div>
-              ) : null}
-            </Card>
-            <div className="flex justify-end mt-4 px-3">
-              <div className="order-1">
-                <Button type="submit" variant="primary">
-                  Submit
-                </Button>
+            <Card>
+              <div className="p-6">
+                {!fields || fields.includes('description') ? (
+                  <div className="mb-3">
+                    <label className="block mb-2" htmlFor="description">
+                      Description
+                    </label>
+                    <Field name="description" id="description" as={Input} />
+                  </div>
+                ) : null}
+                {!fields || fields.includes('internalId') ? (
+                  <div className="mb-3">
+                    <label className="block mb-2" htmlFor="internalId">
+                      Internal Id
+                    </label>
+                    <Field name="internalId" id="internalId" as={Input} />
+                  </div>
+                ) : null}
               </div>
-              {onCancel ? (
-                <div className="mr-3">
-                  <Button type="button" variant="text" onClick={() => onCancel(dirty)}>
-                    Cancel
-                  </Button>
+              <Card.Footer>
+                <div className="flex justify-end">
+                  <div className="order-1">
+                    <Button type="submit" variant="primary">
+                      Submit
+                    </Button>
+                  </div>
+                  {onCancel ? (
+                    <div className="mr-3">
+                      <Button type="button" variant="outline" onClick={() => onCancel(dirty)}>
+                        Cancel
+                      </Button>
+                    </div>
+                  ) : null}
                 </div>
-              ) : null}
-            </div>
+              </Card.Footer>
+            </Card>
           </Form>
         )
       }}

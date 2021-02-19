@@ -1,7 +1,7 @@
 import React from 'react'
-import {Card, Heading, Drawer, StyledLink} from '@luminate/gatsby-theme-luminate/src'
+import {Card, Heading, Page, Grid} from '@luminate/components'
 import {useGetVarietyQuery} from '../../graphql'
-import {RouteComponentProps} from 'react-router-dom'
+import {Link, RouteComponentProps} from 'react-router-dom'
 
 interface Params {
   id: string
@@ -28,46 +28,40 @@ const VarietyDetailView = ({match}: Props) => {
   }
 
   return (
-    <div>
-      <div className="flex items-center mb-4">
-        <div className="mr-4">
-          <Heading>{data.getVariety?.name}</Heading>
-        </div>
-        <div className="text-sm">
-          <StyledLink to={`${match.url}/edit`}>Edit Info</StyledLink>
-        </div>
-      </div>
+    <Page title={data.getVariety?.name}>
       <div className="flex mb-4">
-        <div className="flex flex-col w-2/3 mr-4">
-          <Card className="overflow-hidden">
-            <img src="https://picsum.photos/800/400" />
-            <div className="p-4">
-              <p className="text-xs text-gray-500 uppercase tracking-wide">Information Section</p>
-              <p>This is some information about the variety</p>
-            </div>
-          </Card>
-        </div>
-        <div className="flex flex-col w-1/3">
-          <Card className="p-4 mb-3 bg-gray-100">
-            <div>
-              <p className="text-xs text-gray-500 uppercase tracking-wide">Coffees</p>
-              {data.getVariety?.coffees
-                ? data.getVariety?.coffees.map(coffee => {
-                    return (
-                      <div>
-                        <StyledLink to={`/coffees/${coffee?.id}`} variant="text">
-                          {coffee?.name}
-                        </StyledLink>
-                      </div>
-                    )
-                  })
-                : '-'}
-            </div>
-          </Card>
-        </div>
+        <Grid>
+          <Grid.Left>
+            <Card>
+              <img src="https://picsum.photos/800/400" />
+              <div className="p-4">
+                <p className="text-xs text-gray-500 uppercase tracking-wide">Information Section</p>
+                <p>This is some information about the variety</p>
+              </div>
+            </Card>
+          </Grid.Left>
+          <Grid.Right>
+            <Card>
+              <div>
+                <p className="text-xs text-gray-500 uppercase tracking-wide">Coffees</p>
+                {data.getVariety?.coffees
+                  ? data.getVariety?.coffees.map(coffee => {
+                      return (
+                        <div>
+                          <Link className="link" to={`/coffees/${coffee?.id}`}>
+                            {coffee?.name}
+                          </Link>
+                        </div>
+                      )
+                    })
+                  : '-'}
+              </div>
+            </Card>
+          </Grid.Right>
+        </Grid>
       </div>
       <div>
-        <Heading className="mb-3">Story</Heading>
+        <Heading as="h3">Story</Heading>
         <p>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis arcu lacus, condimentum quis nulla eget, aliquet
           iaculis mi. Nulla tincidunt velit vitae enim porttitor, ac dignissim lectus porta. Vivamus eu urna malesuada,
@@ -103,7 +97,7 @@ const VarietyDetailView = ({match}: Props) => {
           ultrices quam turpis at arcu.
         </p>
       </div>
-    </div>
+    </Page>
   )
 }
 

@@ -1,8 +1,9 @@
 import React from 'react'
 import {useGetCoffeeQuery} from '../../graphql'
-import {StyledLink, Card, Heading, Button, useDialogState, Modal} from '@luminate/gatsby-theme-luminate/src'
-import {RouteComponentProps} from 'react-router-dom'
+import {useDialogState, Modal} from '@luminate/gatsby-theme-luminate/src'
+import {Link, RouteComponentProps} from 'react-router-dom'
 import {ShareCoffeeForm} from './ShareCoffeeForm'
+import {Grid, Page, Card, Button, Heading} from '@luminate/components'
 
 interface Params {
   id: string
@@ -30,38 +31,30 @@ const CoffeeDetailView = ({match}: Props) => {
   }
 
   return (
-    <div>
+    <Page title={data.getCoffee?.name}>
       <Modal dialog={shareCoffeeDialog}>
         <div className="p-6 bg-white">
           <ShareCoffeeForm coffeeId={id} />
         </div>
       </Modal>
-      <div className="flex items-center mb-4">
-        <div className="mr-4">
-          <Heading>{data.getCoffee?.name}</Heading>
-        </div>
-        <div className="text-sm">
-          <StyledLink to={`${match.url}/edit`}>Edit Info</StyledLink>
-        </div>
-      </div>
-      <div className="flex mb-4">
-        <div className="flex flex-col w-8/12 mr-4">
-          <Card className="overflow-hidden">
+      <Grid>
+        <Grid.Left>
+          <Card>
             <img src="https://picsum.photos/800/400" />
             <div className="p-6">
               <p className="text-xs tracking-wide text-gray-600 uppercase">Information Section</p>
               <p>This is some information about the coffee</p>
             </div>
           </Card>
-        </div>
-        <div className="flex flex-col w-4/12">
-          <Card className="p-4 mb-3 bg-gray-100">
+        </Grid.Left>
+        <Grid.Right>
+          <Card>
             <div className="mb-3">
               <p className="text-xs tracking-wide text-gray-500 uppercase">Country</p>
               {data.getCoffee.country ? (
-                <StyledLink to={`/countries/${data.getCoffee.country?.id}`} variant="text">
+                <Link className="link" to={`/countries/${data.getCoffee.country?.id}`}>
                   {data.getCoffee.country?.name}
-                </StyledLink>
+                </Link>
               ) : (
                 '-'
               )}
@@ -69,25 +62,25 @@ const CoffeeDetailView = ({match}: Props) => {
             <div className="mb-3">
               <p className="text-xs tracking-wide text-gray-500 uppercase">Region</p>
               {data.getCoffee.region ? (
-                <StyledLink to={`/regions/${data.getCoffee.region?.id}`} variant="text">
+                <Link className="link" to={`/regions/${data.getCoffee.region?.id}`}>
                   {data.getCoffee.region?.name}
-                </StyledLink>
+                </Link>
               ) : (
                 '-'
               )}
             </div>
             <div className="flex flex-col items-end">
               <div className="w-1/4">
-                <Button type="button" variant="text" onClick={shareCoffeeDialog.toggle}>
+                <Button type="button" variant="outline" onClick={shareCoffeeDialog.toggle}>
                   Share
                 </Button>
               </div>
             </div>
           </Card>
-        </div>
-      </div>
+        </Grid.Right>
+      </Grid>
       <div>
-        <Heading className="mb-3">Story</Heading>
+        <Heading as="h3">Story</Heading>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis arcu lacus, condimentum quis nulla eget, aliquet
         iaculis mi. Nulla tincidunt velit vitae enim porttitor, ac dignissim lectus porta. Vivamus eu urna malesuada,
         sollicitudin nibh ac, condimentum ante. Aenean pharetra nisl et mi dictum fringilla. Phasellus a lorem arcu.
@@ -120,7 +113,7 @@ const CoffeeDetailView = ({match}: Props) => {
         facilisis nibh ligula, vitae dignissim metus auctor sit amet. Pellentesque sed dui fringilla erat pulvinar
         dignissim. Aenean dapibus, libero ac commodo varius, nisi nisi vulputate ante, in ultrices quam turpis at arcu.
       </div>
-    </div>
+    </Page>
   )
 }
 

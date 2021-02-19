@@ -9,7 +9,9 @@ import {schemas} from './schema'
 import {createMongoConnection, Token} from '@luminate/mongo-utils'
 import {Container} from './utils'
 import {CoffeeService, CountryService, FarmService, NoteService, RegionService, VarietyService} from './services'
-import {parseUserFromRequest} from '@luminate/graphql-utils'
+import {parseTokenFromRequest} from '@luminate/graphql-utils'
+
+const USER_AUTH_TOKEN = process.env.USER_AUTH_TOKEN || 'supersecretpassword'
 
 export interface Context {
   services: {
@@ -45,7 +47,7 @@ class Server {
     const server = new ApolloServer({
       schema: buildFederatedSchema(schemas),
       context: ({req}) => {
-        this.container.bind<Token | null>(this.types.User, parseUserFromRequest(req))
+        this.container.bind<Token | null>(this.types.User, parseTokenFromRequest(req, USER_AUTH_TOKEN))
 
         const services: Context['services'] = {
           coffee: this.container.resolve<CoffeeService>(this.types.CoffeeService),

@@ -1,5 +1,5 @@
 import React from 'react'
-import {Heading, Button} from '@luminate/gatsby-theme-luminate/src'
+import {Heading, Button} from '@luminate/components'
 
 interface DeleteAlertProps {
   heading?: string
@@ -24,7 +24,7 @@ const DeleteAlert = ({heading, text, onCancelClick, onConfirmClick, variant = 'p
         ) : null}
         {onCancelClick ? (
           <div className={`mr-${onConfirmClick ? '2' : '0'}`}>
-            <Button onClick={onCancelClick} variant="text">
+            <Button onClick={onCancelClick} variant="outline">
               Cancel
             </Button>
           </div>

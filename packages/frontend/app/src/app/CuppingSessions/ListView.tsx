@@ -1,8 +1,7 @@
 import React from 'react'
-import {useListCuppingSessionsQuery} from '../../graphql'
+import {useListCuppingSessionsQuery, CuppingSession} from '../../graphql'
 import {Link, RouteComponentProps} from 'react-router-dom'
-import {CuppingSession, Tooltip, Heading, Button, Card} from '@luminate/gatsby-theme-luminate/src'
-import {formatDistanceToNow, format} from 'date-fns'
+import {Card, Page} from '@luminate/components'
 
 interface Props extends RouteComponentProps {}
 
@@ -18,18 +17,8 @@ const ListCuppingSessionsView = ({match, history}: Props) => {
   }
 
   return (
-    <div className="flex flex-col">
-      <div className="flex items-center justify-between px-4 mb-4">
-        <div>
-          <Heading>Cupping Session</Heading>
-        </div>
-        <div>
-          <Button as="a" onClick={() => history.push(`${url}/create`)}>
-            Create New
-          </Button>
-        </div>
-      </div>
-      <Card className="overflow-hidden">
+    <Page title="Cupping Session" primaryAction={{text: 'Create New', onClick: () => history.push(`${url}/create`)}}>
+      <Card>
         {data.listCuppingSessions.edges.map(({node}, index) => {
           return (
             <div key={node?.id}>
@@ -40,7 +29,7 @@ const ListCuppingSessionsView = ({match, history}: Props) => {
           )
         })}
       </Card>
-    </div>
+    </Page>
   )
 }
 
@@ -53,16 +42,6 @@ const CuppingSessionRow = ({cuppingSession, index}: CuppingSessionRowProps) => {
     <div className={`flex items-center py-3 px-4 bg-${index % 2 === 0 ? 'transparent' : 'gray-100'}`}>
       <div className="w-1/4">{cuppingSession.description}</div>
       <div className="w-1/4">{cuppingSession.sessionCoffees?.length}</div>
-      <div className="w-1/4">
-        <Tooltip text={format(parseInt(cuppingSession.createdAt), 'EE, LLL do, yyyy')}>
-          <span>{formatDistanceToNow(parseInt(cuppingSession.createdAt), {addSuffix: true})}</span>
-        </Tooltip>
-      </div>
-      <div className="w-1/4">
-        <Tooltip text={format(parseInt(cuppingSession.updatedAt), 'EE, LLL do, yyyy')}>
-          <span>{formatDistanceToNow(parseInt(cuppingSession.updatedAt), {addSuffix: true})}</span>
-        </Tooltip>
-      </div>
     </div>
   )
 }

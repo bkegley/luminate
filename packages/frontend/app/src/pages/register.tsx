@@ -1,8 +1,6 @@
 import React from 'react'
 import RegisterForm from '../components/RegisterForm'
-import {Heading} from '@luminate/gatsby-theme-luminate/src'
-import Layout from '../components/Layout'
-import Header from '../components/RootHeader'
+import {Heading} from '@luminate/components'
 
 const RegisterPage = () => {
   return (

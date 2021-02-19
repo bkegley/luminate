@@ -1,6 +1,5 @@
 import React from 'react'
-import {Field} from 'formik'
-import {Input, Combobox, Button} from '@luminate/gatsby-theme-luminate/src'
+import {Input, Combobox, Button} from '@luminate/components'
 
 interface ModalForm {
   coffeeOptions?: Array<{name: string; value: string}>
@@ -68,7 +67,7 @@ const CreateSessionCoffee = ({
         </div>
         <div>
           <Button
-            variant="text"
+            variant="outline"
             onClick={() => {
               resetForm()
               onCancel()

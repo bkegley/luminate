@@ -1,14 +1,6 @@
 import React from 'react'
-import {
-  Card,
-  Heading,
-  Button,
-  Input,
-  Combobox,
-  Modal,
-  useDialogState,
-  DialogDisclosure,
-} from '@luminate/gatsby-theme-luminate/src'
+import {Card, Button, Input, Combobox} from '@luminate/components'
+import {Modal, useDialogState, DialogDisclosure} from '@luminate/gatsby-theme-luminate/src'
 import Alert from '../../components/Alert'
 import {
   useUpdateFarmMutation,
@@ -143,65 +135,70 @@ const FarmUpdateForm = ({
                 />
               </div>
             </Modal>
-            <Card className="p-3 overflow-visible" variant={isModal ? 'blank' : 'default'}>
-              {title ? <Heading>{title}</Heading> : null}
-              {!fields || fields.includes('name') ? (
-                <div className="mb-2">
-                  <label className="block mb-1" htmlFor="name">
-                    Name
-                  </label>
-                  <Field name="name" id="name" as={Input} />
-                </div>
-              ) : null}
-              {!fields || fields.includes('country') ? (
-                <div className="mb-2">
-                  <label className="block mb-1" htmlFor="country">
-                    Country`
-                  </label>
-                  <Combobox
-                    id="country"
-                    options={countryOptions}
-                    initialSelectedItem={countryOptions?.find(option => option.value === values.country)}
-                    loading={countryLoading}
-                    onChange={value => {
-                      if (value.selectedItem) {
-                        if (value.selectedItem.value !== values.country) {
-                          setFieldValue('region', '')
+            <Card>
+              <div className="p-6">
+                {!fields || fields.includes('name') ? (
+                  <div className="mb-2">
+                    <label className="block mb-1" htmlFor="name">
+                      Name
+                    </label>
+                    <Field name="name" id="name" as={Input} />
+                  </div>
+                ) : null}
+                {!fields || fields.includes('country') ? (
+                  <div className="mb-2">
+                    <label className="block mb-1" htmlFor="country">
+                      Country`
+                    </label>
+                    <Combobox
+                      id="country"
+                      options={countryOptions}
+                      initialSelectedItem={countryOptions?.find(option => option.value === values.country)}
+                      loading={countryLoading}
+                      onChange={value => {
+                        if (value.selectedItem) {
+                          if (value.selectedItem.value !== values.country) {
+                            setFieldValue('region', '')
+                          }
+                          regionRefetch({
+                            query: [
+                              {field: 'country', operator: 'eq' as OperatorEnum, value: value.selectedItem.value},
+                            ],
+                          })
                         }
-                        regionRefetch({
-                          query: [{field: 'country', operator: 'eq' as OperatorEnum, value: value.selectedItem.value}],
-                        })
-                      }
-                      setFieldValue('country', value.selectedItem?.value)
-                    }}
-                  />
+                        setFieldValue('country', value.selectedItem?.value)
+                      }}
+                    />
+                  </div>
+                ) : null}
+                {!fields || fields.includes('region') ? (
+                  <div className="mb-2">
+                    <label className="block mb-1" htmlFor="region">
+                      Region
+                    </label>
+                    <Combobox
+                      id="region"
+                      options={regionOptions}
+                      initialSelectedItem={regionOptions?.find(option => option.value === values.region)}
+                      loading={regionLoading}
+                      onChange={value => setFieldValue('region', value.selectedItem?.value)}
+                    />
+                  </div>
+                ) : null}
+              </div>
+              <Card.Footer>
+                <div className="flex justify-end mt-4 px-3">
+                  <div className="order-1">
+                    <Button type="submit">Submit</Button>
+                  </div>
+                  <div className="mr-2">
+                    <DialogDisclosure {...deleteDialog} as={Button} variant="outline">
+                      Delete
+                    </DialogDisclosure>
+                  </div>
                 </div>
-              ) : null}
-              {!fields || fields.includes('region') ? (
-                <div className="mb-2">
-                  <label className="block mb-1" htmlFor="region">
-                    Region
-                  </label>
-                  <Combobox
-                    id="region"
-                    options={regionOptions}
-                    initialSelectedItem={regionOptions?.find(option => option.value === values.region)}
-                    loading={regionLoading}
-                    onChange={value => setFieldValue('region', value.selectedItem?.value)}
-                  />
-                </div>
-              ) : null}
+              </Card.Footer>
             </Card>
-            <div className="flex justify-end mt-4 px-3">
-              <div className="order-1">
-                <Button type="submit">Submit</Button>
-              </div>
-              <div className="mr-2">
-                <DialogDisclosure {...deleteDialog} as={Button} variant="text">
-                  Delete
-                </DialogDisclosure>
-              </div>
-            </div>
           </Form>
         )
       }}

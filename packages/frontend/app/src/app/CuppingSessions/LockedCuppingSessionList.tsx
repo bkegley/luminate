@@ -1,6 +1,7 @@
 import React from 'react'
 import {SessionCoffee, useGetCuppingSessionWithScoreSheetsQuery} from '../../graphql'
-import {Modal, useDialogState, Button, Card, Heading} from '@luminate/gatsby-theme-luminate/src'
+import {Modal, useDialogState} from '@luminate/gatsby-theme-luminate/src'
+import {Card, Heading} from '@luminate/components'
 import CreateScoreSheetForm from './Coffees/ScoreSheets/CreateForm'
 import {Link, useLocation} from 'react-router-dom'
 
@@ -45,7 +46,7 @@ const SessionCoffeeCard = ({sessionCoffee, pathname}: SessionCoffeeCardProps) =>
           />
         </div>
       </Modal>
-      <Card className="w-1/4 p-3">
+      <Card>
         <Link to={`${pathname}/coffees/${sessionCoffee.id}`}>
           <Heading as="h4">{sessionCoffee.sampleNumber}</Heading>
         </Link>

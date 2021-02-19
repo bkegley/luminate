@@ -1,7 +1,7 @@
 import React from 'react'
-import {Card, Heading, Drawer, StyledLink} from '@luminate/gatsby-theme-luminate/src'
+import {Page, Card, Heading, Grid} from '@luminate/components'
 import {useGetRegionQuery} from '../../graphql'
-import {RouteComponentProps} from 'react-router-dom'
+import {RouteComponentProps, Link} from 'react-router-dom'
 
 interface Params {
   id: string
@@ -28,42 +28,34 @@ const RegionDetailView = ({match}: Props) => {
   }
 
   return (
-    <div>
-      <div className="flex items-center mb-4">
-        <div className="mr-4">
-          <Heading>{data.getRegion?.name}</Heading>
-        </div>
-        <div className="text-sm">
-          <StyledLink to={`${match.url}/edit`}>Edit Info</StyledLink>
-        </div>
-      </div>
-      <div className="flex mb-4">
-        <div className="flex flex-col w-2/3 mr-4">
-          <Card className="overflow-hidden">
+    <Page title={data.getRegion?.name}>
+      <Grid>
+        <Grid.Left>
+          <Card>
             <img src="https://picsum.photos/800/400" />
             <div className="p-4">
               <p className="text-xs text-gray-500 uppercase tracking-wide">Information Section</p>
               <p>This is some information about the region</p>
             </div>
           </Card>
-        </div>
-        <div className="flex flex-col w-1/3">
-          <Card className="p-4 mb-3 bg-gray-100">
-            <div className="mb-3">
+        </Grid.Left>
+        <Grid.Right>
+          <Card>
+            <div className="p-4">
               <p className="text-xs text-gray-500 uppercase tracking-wide">Country</p>
               {data.getRegion.country ? (
-                <StyledLink to={`/countries/${data.getRegion.country?.id}`} variant="text">
+                <Link className="link" to={`/countries/${data.getRegion.country?.id}`}>
                   {data.getRegion.country?.name}
-                </StyledLink>
+                </Link>
               ) : (
                 '-'
               )}
             </div>
           </Card>
-        </div>
-      </div>
+        </Grid.Right>
+      </Grid>
       <div>
-        <Heading className="mb-3">Story</Heading>
+        <Heading as="h3">Story</Heading>
         <p>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis arcu lacus, condimentum quis nulla eget, aliquet
           iaculis mi. Nulla tincidunt velit vitae enim porttitor, ac dignissim lectus porta. Vivamus eu urna malesuada,
@@ -99,7 +91,7 @@ const RegionDetailView = ({match}: Props) => {
           ultrices quam turpis at arcu.
         </p>
       </div>
-    </div>
+    </Page>
   )
 }
 

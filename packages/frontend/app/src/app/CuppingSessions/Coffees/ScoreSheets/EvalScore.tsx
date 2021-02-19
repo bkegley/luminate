@@ -1,5 +1,5 @@
 import React from 'react'
-import {Select, SelectProps} from '@luminate/gatsby-theme-luminate/src'
+import {Select, SelectProps} from '@luminate/components'
 
 type EvalScoreProps = Omit<SelectProps, 'options'>
 

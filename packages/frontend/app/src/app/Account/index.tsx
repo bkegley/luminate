@@ -1,60 +1,53 @@
 import React from 'react'
-import {useApolloClient} from '@apollo/client'
-import {Select, useUser, Card, Heading, Combobox} from '@luminate/gatsby-theme-luminate/src'
-import {useUserSearchQuery, useAddUserToAccountMutation} from '../../graphql'
+import {useDarkMode} from '../../hooks/useDarkMode'
+import {Card, Toggle, Label, IconTypesEnum, Page, Heading, Button} from '@luminate/components'
 
 const AccountPage = () => {
-  const {user, switchAccount} = useUser()
-  const client = useApolloClient()
-  const {data: users, loading, error, refetch} = useUserSearchQuery({variables: {searchText: ''}})
-  const [
-    addUserToAccount,
-    {data: addUserData, loading: addUserLoading, error: addUserError},
-  ] = useAddUserToAccountMutation()
-
-  const accountOptions = user?.accounts?.map(account => ({name: account?.name, value: account?.id}))
-  const activeAccount = accountOptions?.find(option => option.value === user?.account?.id)
-
-  const userOptions = users?.listUsers?.edges.map(({node}) => ({name: node?.username, value: node?.id}))
+  const {darkMode, toggleDarkMode} = useDarkMode()
 
   return (
-    <Card className="p-4">
-      <Heading as="h3">Account</Heading>
-      <label className="block mb-1" htmlFor="account">
-        Account
-      </label>
-      <Select
-        id="account"
-        options={accountOptions}
-        initialSelectedItem={activeAccount}
-        onChange={value => {
-          if (value.selectedItem) {
-            switchAccount({variables: {accountId: value.selectedItem.value.toString()}}).then(() => {
-              client.clearStore()
-            })
-          }
-        }}
-      />
+    <Page title="Account">
       <div>
-        <label className="block mb-1" htmlFor="users">
-          Users
-        </label>
-        <Combobox
-          id="users"
-          options={userOptions}
-          loading={loading}
-          onInputChange={value => refetch({searchText: value})}
-          onChange={value => {
-            if (value.selectedItem) {
-              addUserToAccount({variables: {accountId: user?.account?.id, userId: value.selectedItem.value}})
-            }
-          }}
-        />
+        <div className="md:grid md:grid-cols-3 md:gap-6">
+          <div className="md:col-span-1">
+            <div className="px-4 sm:px-0">
+              <Heading as="h3">Preferences</Heading>
+              <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">Customize the look and feel.</p>
+            </div>
+          </div>
+          <div className="mt-5 md:mt-0 md:col-span-2">
+            <Card>
+              <div className="px-4 py-5 space-y-6 sm:p-6">
+                <div>
+                  <Label htmlFor="about">Theme</Label>
+                  <div className="mt-1">
+                    <Toggle
+                      id="darkMode"
+                      description="Use dark mode"
+                      initialValue={darkMode}
+                      onIcon={IconTypesEnum.MOON}
+                      offIcon={IconTypesEnum.SUN}
+                      onChange={on => {
+                        if (on !== darkMode) {
+                          toggleDarkMode()
+                        }
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+              <Card.Footer>
+                <div className="flex justify-end">
+                  <div>
+                    <Button type="submit">Save</Button>
+                  </div>
+                </div>
+              </Card.Footer>
+            </Card>
+          </div>
+        </div>
       </div>
-      <div>
-        <pre>{JSON.stringify({users, loading, error}, null, 2)}</pre>
-      </div>
-    </Card>
+    </Page>
   )
 }
 

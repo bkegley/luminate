@@ -5,9 +5,9 @@ import {
   GetCuppingSessionCoffeeDocument,
   useUserSearchQuery,
 } from '../../../../graphql'
-import {Formik, Form, Field} from 'formik'
+import {Formik, Form} from 'formik'
 import EvalScore from './EvalScore'
-import {Button, Select} from '@luminate/gatsby-theme-luminate/src'
+import {Button, Select} from '@luminate/components'
 import {useRouteMatch, useHistory} from 'react-router-dom'
 
 interface ScoreSheetCreateFormProps {
