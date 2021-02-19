@@ -62,6 +62,8 @@ const UserProvider = ({children, setToken}: Props) => {
   const [shouldStartRefreshTimer, setShouldStartRefreshTimer] = React.useState(true)
   const [hasCheckedCookie, setHasCheckedCookie] = React.useState(false)
 
+  console.log({user})
+
   React.useEffect(() => {
     if (shouldRefreshToken) {
       refreshToken()
@@ -74,6 +76,7 @@ const UserProvider = ({children, setToken}: Props) => {
     }
     if (data && data.refreshToken) {
       setUser(parseToken(data.refreshToken))
+      setToken(data.refreshToken)
     }
   }, [called, data])
 
