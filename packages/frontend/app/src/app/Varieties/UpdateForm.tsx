@@ -1,13 +1,6 @@
 import React from 'react'
-import {
-  Card,
-  Heading,
-  Button,
-  Input,
-  Modal,
-  useDialogState,
-  DialogDisclosure,
-} from '@luminate/gatsby-theme-luminate/src'
+import {Card, Button, Input} from '@luminate/components'
+import {Modal, useDialogState, DialogDisclosure} from '@luminate/gatsby-theme-luminate/src'
 import Alert from '../../components/Alert'
 import {
   useUpdateVarietyMutation,
@@ -109,27 +102,30 @@ const VarietyUpdateForm = ({
                 />
               </div>
             </Modal>
-            <Card className="p-3 overflow-visible" variant={isModal ? 'blank' : 'default'}>
-              {title ? <Heading>{title}</Heading> : null}
-              {!fields || fields.includes('name') ? (
-                <div className="mb-3">
-                  <label className="block mb-1" htmlFor="name">
-                    Name
-                  </label>
-                  <Field name="name" id="name" as={Input} />
+            <Card>
+              <div className="p-6">
+                {!fields || fields.includes('name') ? (
+                  <div className="mb-3">
+                    <label className="block mb-1" htmlFor="name">
+                      Name
+                    </label>
+                    <Field name="name" id="name" as={Input} />
+                  </div>
+                ) : null}
+              </div>
+              <Card.Footer>
+                <div className="flex justify-end mt-4 px-3">
+                  <div className="order-1">
+                    <Button type="submit">Submit</Button>
+                  </div>
+                  <div className="mr-2">
+                    <DialogDisclosure {...deleteDialog} as={Button} variant="outline">
+                      Delete
+                    </DialogDisclosure>
+                  </div>
                 </div>
-              ) : null}
+              </Card.Footer>
             </Card>
-            <div className="flex justify-end mt-4 px-3">
-              <div className="order-1">
-                <Button type="submit">Submit</Button>
-              </div>
-              <div className="mr-2">
-                <DialogDisclosure {...deleteDialog} as={Button} variant="text">
-                  Delete
-                </DialogDisclosure>
-              </div>
-            </div>
           </Form>
         )
       }}

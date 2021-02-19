@@ -5,9 +5,9 @@ import {
   CuppingSession,
   useListCoffeesQuery,
 } from '../../graphql'
-import {Formik, Form, FieldArray, Field} from 'formik'
-import {Input, Combobox, Modal, useDialogState, Button, Card} from '@luminate/gatsby-theme-luminate/src'
-import {Trash, PlusCircle, Edit} from 'react-feather'
+import {Formik, Form, FieldArray} from 'formik'
+import {Modal, useDialogState} from '@luminate/gatsby-theme-luminate/src'
+import {Button, Card, Icon, IconTypesEnum} from '@luminate/components'
 import SessionCoffeeModalForm from './Coffees/ModalForm'
 
 interface AddSessionCoffeesProps {
@@ -44,7 +44,7 @@ const AddSessionCoffees = ({cuppingSession}: AddSessionCoffeesProps) => {
           </div>
           <div className="flex items-center justify-end">
             <div className="mr-4">
-              <Button variant="text" onClick={() => lockSessionDialog.toggle()}>
+              <Button variant="outline" onClick={() => lockSessionDialog.toggle()}>
                 Cancel
               </Button>
             </div>
@@ -57,7 +57,7 @@ const AddSessionCoffees = ({cuppingSession}: AddSessionCoffeesProps) => {
         </div>
       </Modal>
 
-      <Card className=" py-4 mb-32">
+      <Card>
         <Formik
           initialValues={{
             sessionCoffees:
@@ -127,7 +127,9 @@ const AddSessionCoffees = ({cuppingSession}: AddSessionCoffeesProps) => {
                             onClick={() => addSessionCoffeeDialog.toggle()}
                           >
                             <div className="mr-2">Add New</div>
-                            <PlusCircle />
+                            <span className="w-3 h-4">
+                              <Icon type={IconTypesEnum.TRASH} />
+                            </span>
                           </button>
                         </div>
                       </>
@@ -135,12 +137,10 @@ const AddSessionCoffees = ({cuppingSession}: AddSessionCoffeesProps) => {
                   }}
                 </FieldArray>
                 <div className="flex justify-end px-4">
-                  <Button variant="text" className="w-1/4 mr-4" onClick={() => lockSessionDialog.toggle()}>
+                  <Button variant="outline" onClick={() => lockSessionDialog.toggle()}>
                     Lock
                   </Button>
-                  <Button className="w-1/4" type="submit">
-                    Save Coffees
-                  </Button>
+                  <Button type="submit">Save Coffees</Button>
                 </div>
               </Form>
             )
@@ -187,12 +187,16 @@ const SessionCoffeeRow = ({index, coffeeOptions, onSubmit, onDelete, sampleNumbe
             type="button"
             onClick={() => sessionCoffeeDialog.toggle()}
           >
-            <Edit />
+            <span className="w-3 h-4">
+              <Icon type={IconTypesEnum.PENCIL} />
+            </span>
           </button>
         </div>
         <div className="w-1/12">
           <button className="border-none bg-transparent text-red-600" type="button" onClick={() => onDelete()}>
-            <Trash />
+            <span className="w-3 h-4">
+              <Icon type={IconTypesEnum.TRASH} />
+            </span>
           </button>
         </div>
       </div>

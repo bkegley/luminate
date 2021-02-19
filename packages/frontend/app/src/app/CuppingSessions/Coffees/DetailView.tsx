@@ -1,9 +1,7 @@
 import React from 'react'
 import {RouteComponentProps} from 'react-router-dom'
 import {useGetCuppingSessionCoffeeQuery} from '../../../graphql'
-import {Link} from 'react-router-dom'
 import {XYPlot, XAxis, YAxis, HorizontalGridLines, VerticalBarSeries, DiscreteColorLegend} from 'react-vis'
-import {Select} from '@luminate/gatsby-theme-luminate/src'
 import ScoreSheetTableView from './ScoreSheets/TableView'
 
 interface SessionCoffeeDetailViewProps extends RouteComponentProps<{sessionId: string; sessionCoffeeId: string}> {}

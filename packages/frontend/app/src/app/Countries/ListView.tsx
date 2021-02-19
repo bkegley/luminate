@@ -1,12 +1,11 @@
 import React from 'react'
-import {Heading, Button, Card} from '@luminate/gatsby-theme-luminate/src'
-import {useListCountriesTableQuery} from '../../graphql'
+import {Card, Page} from '@luminate/components'
+import {useListCountriesTableQuery, Country} from '../../graphql'
 import {Link, RouteComponentProps} from 'react-router-dom'
-import {Country} from '@luminate/gatsby-theme-luminate/src'
 
 interface Props extends RouteComponentProps {}
 
-const ListCountriesView = ({match, history}: Props) => {
+const ListCountriesView = ({match}: Props) => {
   const {url} = match
   const {data, error, loading} = useListCountriesTableQuery()
 
@@ -18,27 +17,21 @@ const ListCountriesView = ({match, history}: Props) => {
   }
 
   return (
-    <div className="flex flex-col">
-      <div className="flex items-center justify-between px-4 mb-4">
-        <div>
-          <Heading>Country</Heading>
+    <Page title="Country">
+      <Card>
+        <div className="p-6">
+          {data.listCountries.edges.map(({node}, index) => {
+            return (
+              <div key={node?.id}>
+                <Link to={`${url}/${node?.id}`}>
+                  <CountryRow country={node} index={index} />
+                </Link>
+              </div>
+            )
+          })}
         </div>
-        <div>
-          <Button onClick={() => history.push(`${url}/create`)}>Create New</Button>
-        </div>
-      </div>
-      <Card className="overflow-hidden">
-        {data.listCountries.edges.map(({node}, index) => {
-          return (
-            <div key={node?.id}>
-              <Link to={`${url}/${node?.id}`}>
-                <CountryRow country={node} index={index} />
-              </Link>
-            </div>
-          )
-        })}
       </Card>
-    </div>
+    </Page>
   )
 }
 
@@ -48,7 +41,9 @@ interface CountryRowProps {
 }
 const CountryRow = ({country, index}: CountryRowProps) => {
   return (
-    <div className={`flex items-center py-3 px-4 bg-${index % 2 === 0 ? 'transparent' : 'gray-100'}`}>
+    <div
+      className={`flex items-center py-3 px-4 ${index % 2 === 0 ? 'bg-transparent' : 'bg-gray-100 dark:bg-gray-800'}`}
+    >
       <div className="w-1/2">{country.name}</div>
     </div>
   )

@@ -1,8 +1,7 @@
 import React from 'react'
-import {Heading, Button, Card, Farm, Tooltip} from '@luminate/gatsby-theme-luminate/src'
-import {useListFarmsTableQuery} from '../../graphql'
+import {Heading, Button, Card} from '@luminate/components'
+import {useListFarmsTableQuery, Farm} from '../../graphql'
 import {Link, RouteComponentProps} from 'react-router-dom'
-import {formatDistanceToNow, format} from 'date-fns'
 
 interface Props extends RouteComponentProps {}
 
@@ -51,16 +50,6 @@ const FarmRow = ({farm, index}: FarmRowProps) => {
     <div className={`flex items-center bg-${index % 2 === 0 ? 'transparent' : 'gray-100'} py-3 px-4`}>
       <div className="w-1/4">{farm.name}</div>
       <div className="w-1/4">{farm.country?.name}</div>
-      <div className="w-1/4">
-        <Tooltip text={format(parseInt(farm.createdAt), 'EE, LLL do, yyyy')}>
-          <span>{formatDistanceToNow(parseInt(farm.createdAt), {addSuffix: true})}</span>
-        </Tooltip>
-      </div>
-      <div className="w-1/4">
-        <Tooltip text={format(parseInt(farm.updatedAt), 'EE, LLL do, yyyy')}>
-          <span>{formatDistanceToNow(parseInt(farm.updatedAt), {addSuffix: true})}</span>
-        </Tooltip>
-      </div>
     </div>
   )
 }

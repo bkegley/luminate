@@ -1,8 +1,7 @@
 import React from 'react'
-import {useUpdateCoffeePermissionsMutation} from '../../graphql'
-import {Formik, Form, Field, validateYupSchema} from 'formik'
-import {Input, Button, Combobox, PermissionTypeEnum} from '@luminate/gatsby-theme-luminate/src'
-import Tag from '../../components/Tag'
+import {useUpdateCoffeePermissionsMutation, PermissionTypeEnum} from '../../graphql'
+import {Formik, Form, Field} from 'formik'
+import {Input, Button, Combobox, Badge} from '@luminate/components'
 
 export interface ShareCoffeeFormProps {
   coffeeId: string
@@ -55,15 +54,16 @@ export const ShareCoffeeForm = ({coffeeId}: ShareCoffeeFormProps) => {
                 {values.permissionTypes.map(permissionType => {
                   return (
                     <div key={permissionType?.value} className="m-1">
-                      <Tag
-                        text={permissionType?.name || ''}
+                      <Badge
                         onCloseClick={() =>
                           setFieldValue(
                             'permissionTypes',
                             values.permissionTypes.filter(perm => perm.value !== permissionType.value),
                           )
                         }
-                      />
+                      >
+                        {permissionType?.name}
+                      </Badge>
                     </div>
                   )
                 })}

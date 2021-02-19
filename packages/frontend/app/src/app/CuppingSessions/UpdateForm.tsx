@@ -1,13 +1,6 @@
 import React from 'react'
-import {
-  Modal,
-  useDialogState,
-  DialogDisclosure,
-  Card,
-  Input,
-  Heading,
-  Button,
-} from '@luminate/gatsby-theme-luminate/src'
+import {Card, Input, Heading, Button} from '@luminate/components'
+import {Modal, useDialogState, DialogDisclosure} from '@luminate/gatsby-theme-luminate/src'
 import Alert from '../../components/Alert'
 import {
   useUpdateCuppingSessionMutation,
@@ -119,35 +112,38 @@ const CuppingSessionUpdateForm = ({
                 variant="danger"
               />
             </Modal>
-            <Card className="p-3 overflow-visible" variant={isModal ? 'blank' : 'default'}>
-              {title ? <Heading>{title}</Heading> : null}
-              {!fields || fields.includes('description') ? (
-                <div className="mb-3">
-                  <label className="block mb-1" htmlFor="description">
-                    Description
-                  </label>
-                  <Field name="description" id="description" as={Input} />
+            <Card>
+              <div className="p-6">
+                {!fields || fields.includes('description') ? (
+                  <div className="mb-3">
+                    <label className="block mb-1" htmlFor="description">
+                      Description
+                    </label>
+                    <Field name="description" id="description" as={Input} />
+                  </div>
+                ) : null}
+                {!fields || fields.includes('internalId') ? (
+                  <div className="mb-3">
+                    <label className="block mb-1" htmlFor="internalId">
+                      Internal Id
+                    </label>
+                    <Field name="internalId" id="internalId" as={Input} />
+                  </div>
+                ) : null}
+              </div>
+              <Card.Footer>
+                <div className="flex justify-end mt-4 px-3">
+                  <div className="order-1">
+                    <Button type="submit">Submit</Button>
+                  </div>
+                  <div className="mr-2">
+                    <DialogDisclosure {...deleteDialog} as={Button} variant="outline">
+                      Delete
+                    </DialogDisclosure>
+                  </div>
                 </div>
-              ) : null}
-              {!fields || fields.includes('internalId') ? (
-                <div className="mb-3">
-                  <label className="block mb-1" htmlFor="internalId">
-                    Internal Id
-                  </label>
-                  <Field name="internalId" id="internalId" as={Input} />
-                </div>
-              ) : null}
+              </Card.Footer>
             </Card>
-            <div className="flex justify-end mt-4 px-3">
-              <div className="order-1">
-                <Button type="submit">Submit</Button>
-              </div>
-              <div className="mr-2">
-                <DialogDisclosure {...deleteDialog} as={Button} variant="text">
-                  Delete
-                </DialogDisclosure>
-              </div>
-            </div>
           </Form>
         )
       }}

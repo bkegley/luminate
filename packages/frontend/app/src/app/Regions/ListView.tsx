@@ -1,7 +1,7 @@
 import React from 'react'
-import {useListRegionsTableQuery} from '../../graphql'
+import {Page, Card} from '@luminate/components'
+import {useListRegionsTableQuery, Region} from '../../graphql'
 import {Link, RouteComponentProps} from 'react-router-dom'
-import {Heading, Button, Card, Region} from '@luminate/gatsby-theme-luminate/src'
 
 interface Props extends RouteComponentProps {}
 
@@ -17,15 +17,7 @@ const ListRegionsView = ({match, history}: Props) => {
   }
 
   return (
-    <div className="flex flex-col">
-      <div className="flex items-center justify-between px-4 mb-4">
-        <div>
-          <Heading>Region</Heading>
-        </div>
-        <div>
-          <Button onClick={() => history.push(`${url}/create`)}>Create New</Button>
-        </div>
-      </div>
+    <Page title="Region" primaryAction={{text: 'Create New', onClick: () => history.push(`${url}/create`)}}>
       <Card>
         {data.listRegions.edges.map(({node}, index) => {
           return (
@@ -37,7 +29,7 @@ const ListRegionsView = ({match, history}: Props) => {
           )
         })}
       </Card>
-    </div>
+    </Page>
   )
 }
 

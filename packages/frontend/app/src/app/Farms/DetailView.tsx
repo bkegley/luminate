@@ -1,7 +1,7 @@
 import React from 'react'
-import {Card, Heading, Drawer, StyledLink} from '@luminate/gatsby-theme-luminate/src'
+import {Card, Heading} from '@luminate/components'
 import {useGetFarmQuery} from '../../graphql'
-import {RouteComponentProps} from 'react-router-dom'
+import {Link, RouteComponentProps} from 'react-router-dom'
 
 interface Params {
   id: string
@@ -34,12 +34,14 @@ const FarmDetailView = ({match}: Props) => {
           <Heading>{data.getFarm?.name}</Heading>
         </div>
         <div className="text-sm">
-          <StyledLink to={`${match.url}/edit`}>Edit Info</StyledLink>
+          <Link className="link" to={`${match.url}/edit`}>
+            Edit Info
+          </Link>
         </div>
       </div>
       <div className="flex mb-4">
         <div className="flex flex-col  w-2/3 mr-4">
-          <Card className="overflow-hidden">
+          <Card>
             <img src="https://picsum.photos/800/400" />
             <div className="p-4">
               <p className="text-xs text-gray-500 uppercase tracking-wide">Information Section</p>
@@ -48,13 +50,13 @@ const FarmDetailView = ({match}: Props) => {
           </Card>
         </div>
         <div className="flex flex-col w-1/3">
-          <Card className="p-4 mb-3 bg-gray-100">
+          <Card>
             <div className="mb-3">
               <p className="text-xs text-gray-500 uppercase tracking-wide">Country</p>
               {data.getFarm.country ? (
-                <StyledLink to={`/countries/${data.getFarm.country?.id}`} variant="text">
+                <Link className="link" to={`/countries/${data.getFarm.country?.id}`}>
                   {data.getFarm.country?.name}
-                </StyledLink>
+                </Link>
               ) : (
                 '-'
               )}
@@ -62,9 +64,10 @@ const FarmDetailView = ({match}: Props) => {
             <div>
               <p className="text-xs text-gray-500 uppercase tracking-wide">Region</p>
               {data.getFarm.region ? (
-                <StyledLink to={`/regions/${data.getFarm.region?.id}`} variant="text">
+                <Link className="link" to={`/regions/${data.getFarm.region?.id}`}>
+                  {' '}
                   {data.getFarm.region?.name}
-                </StyledLink>
+                </Link>
               ) : (
                 '-'
               )}
@@ -73,7 +76,7 @@ const FarmDetailView = ({match}: Props) => {
         </div>
       </div>
       <div>
-        <Heading className="mb-3">Story</Heading>
+        <Heading as="h3">Story</Heading>
         <p>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis arcu lacus, condimentum quis nulla eget, aliquet
           iaculis mi. Nulla tincidunt velit vitae enim porttitor, ac dignissim lectus porta. Vivamus eu urna malesuada,

@@ -1,6 +1,6 @@
 import React from 'react'
-import {Heading, Button, Card, Variety, Tooltip} from '@luminate/gatsby-theme-luminate/src'
-import {useListVarietiesTableQuery} from '../../graphql'
+import {Page, Card} from '@luminate/components'
+import {useListVarietiesTableQuery, Variety} from '../../graphql'
 import {Link, RouteComponentProps} from 'react-router-dom'
 import {formatDistanceToNow, format} from 'date-fns'
 
@@ -18,15 +18,7 @@ const ListVarietiesView = ({match, history}: Props) => {
   }
 
   return (
-    <div className="flex flex-col">
-      <div className="flex items-center justify-between px-4 mb-4">
-        <div>
-          <Heading>Variety</Heading>
-        </div>
-        <div>
-          <Button onClick={() => history.push(`${url}/create`)}>Create New</Button>
-        </div>
-      </div>
+    <Page title="Variety" primaryAction={{text: 'Create New', onClick: () => history.push(`${url}/create`)}}>
       <Card>
         {data.listVarieties.edges.map(({node}, index) => {
           return (
@@ -38,7 +30,7 @@ const ListVarietiesView = ({match, history}: Props) => {
           )
         })}
       </Card>
-    </div>
+    </Page>
   )
 }
 
@@ -51,14 +43,10 @@ const VarietyRow = ({variety, index}: VarietyRowProps) => {
     <div className={`flex items-center py-3 px-4 bg-${index % 2 === 0 ? 'transparent' : 'gray-100'}`}>
       <div className="w-1/2">{variety.name}</div>
       <div className="w-1/4">
-        <Tooltip text={format(parseInt(variety.createdAt), 'EE, LLL do, yyyy')}>
-          <span>{formatDistanceToNow(parseInt(variety.createdAt), {addSuffix: true})}</span>
-        </Tooltip>
+        <span>{formatDistanceToNow(parseInt(variety.createdAt), {addSuffix: true})}</span>
       </div>
       <div className="w-1/4">
-        <Tooltip text={format(parseInt(variety.updatedAt), 'EE, LLL do, yyyy')}>
-          <span>{formatDistanceToNow(parseInt(variety.updatedAt), {addSuffix: true})}</span>
-        </Tooltip>
+        <span>{formatDistanceToNow(parseInt(variety.updatedAt), {addSuffix: true})}</span>
       </div>
     </div>
   )

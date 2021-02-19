@@ -1,5 +1,5 @@
 import React from 'react'
-import {Button, Card, Grid, Input, Checkbox} from '@luminate/components'
+import {Button, Card, Grid, Input, Label} from '@luminate/components'
 import {Layout} from '../components/Layout'
 import {BrowserRouter} from 'react-router-dom'
 import {useDarkMode} from '../hooks/useDarkMode'
@@ -14,33 +14,42 @@ const TestPage = () => {
             <Grid>
               <Grid.Left>
                 <Card>
-                  <Card.Title title="Hey there" subtitle="This is a subtitle" />
-                  <div className="flex flex-col space-y-4 px-10">
-                    <Checkbox />
-                    <Button onClick={toggleDarkMode}>{darkMode ? 'Dark' : 'Light'}</Button>
-                    <button className="bg-secondary-300 hover:bg-secondary-400 w-full h-full flex items-center justify-center tracking-wide uppercase rounded shadow-sm border border-transparent cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2">
-                      Secondary
-                    </button>
-                    <Input />
-                    <Button variant="secondary" onClick={toggleDarkMode}>
-                      {darkMode ? 'Dark' : 'Light'}
-                    </Button>
-                    <Button variant="danger" onClick={toggleDarkMode}>
-                      {darkMode ? 'Dark' : 'Light'}
-                    </Button>
-                    <Button variant="outline" onClick={toggleDarkMode}>
-                      {darkMode ? 'Dark' : 'Light'}
-                    </Button>
-                    <Button onClick={toggleDarkMode}>{darkMode ? 'Dark' : 'Light'}</Button>
-                    <Button onClick={toggleDarkMode}>{darkMode ? 'Dark' : 'Light'}</Button>
+                  <Card.Title title="Create Coffee" subtitle="Create a tasty coffee" />
+                  <div className="space-y-4 px-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="other">Other</Label>
+                      <input
+                        type="text"
+                        className="shadow-sm focus:ring-secondary-300 focus:border-secondary-300 block w-full sm:text-sm border-gray-300 dark:border-gray-700 dark:bg-gray-800 rounded-md"
+                        id="other"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="name">Name</Label>
+                      <Input id="name" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="country">Country</Label>
+                      <Input id="country" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="region">Region</Label>
+                      <Input id="region" />
+                    </div>
                   </div>
-                  <Card.Footer>this is the footer</Card.Footer>
+                  <Card.Footer>
+                    <div className="flex justify-end">
+                      <div>
+                        <Button variant="primary">Save</Button>
+                      </div>
+                    </div>
+                  </Card.Footer>
                 </Card>
               </Grid.Left>
               <Grid.Right>
                 <Card>
                   <h1>Card</h1>
-                  <Button>Click me</Button>
+                  <Button onClick={toggleDarkMode}>{darkMode ? 'Dark' : 'Light'}</Button>
                 </Card>
               </Grid.Right>
             </Grid>

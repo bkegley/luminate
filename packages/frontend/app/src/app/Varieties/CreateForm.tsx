@@ -1,5 +1,5 @@
 import React from 'react'
-import {Card, Heading, Button, Input} from '@luminate/gatsby-theme-luminate/src'
+import {Card, Heading, Button, Input} from '@luminate/components'
 import {Formik, Form, Field} from 'formik'
 import {useCreateVarietyMutation, CreateVarietyMutation, ListVarietiesDocument, CreateVarietyInput} from '../../graphql'
 import {useHistory} from 'react-router-dom'
@@ -60,29 +60,32 @@ const VarietyCreateForm = ({
       {({dirty}) => {
         return (
           <Form>
-            <Card className="p-3 overflow-visible" variant={isModal ? 'blank' : 'default'}>
-              {title ? <Heading>{title}</Heading> : null}
-              {!fields || fields.includes('name') ? (
-                <div className="mb-3">
-                  <label className="block mb-1">Name</label>
-                  <Field name="name" id="name" as={Input} />
-                </div>
-              ) : null}
-            </Card>
-            <div className="flex justify-end mt-4 px-3">
-              <div className="order-1">
-                <Button type="submit" variant="primary">
-                  Submit
-                </Button>
+            <Card>
+              <div className="p-6">
+                {!fields || fields.includes('name') ? (
+                  <div className="mb-3">
+                    <label className="block mb-1">Name</label>
+                    <Field name="name" id="name" as={Input} />
+                  </div>
+                ) : null}
               </div>
-              {onCancel ? (
-                <div className="mr-3">
-                  <Button type="button" variant="text" onClick={() => onCancel(dirty)}>
-                    Cancel
-                  </Button>
+              <Card.Footer>
+                <div className="flex justify-end mt-4 px-3">
+                  <div className="order-1">
+                    <Button type="submit" variant="primary">
+                      Submit
+                    </Button>
+                  </div>
+                  {onCancel ? (
+                    <div className="mr-3">
+                      <Button type="button" variant="outline" onClick={() => onCancel(dirty)}>
+                        Cancel
+                      </Button>
+                    </div>
+                  ) : null}
                 </div>
-              ) : null}
-            </div>
+              </Card.Footer>
+            </Card>
           </Form>
         )
       }}

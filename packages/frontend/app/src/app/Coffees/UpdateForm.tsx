@@ -1,14 +1,6 @@
 import React from 'react'
-import {
-  Combobox,
-  Modal,
-  useDialogState,
-  DialogDisclosure,
-  Card,
-  Input,
-  Heading,
-  Button,
-} from '@luminate/gatsby-theme-luminate/src'
+import {Combobox, Card, Input, Heading, Button, Page, Badge} from '@luminate/components'
+import {Modal, useDialogState, DialogDisclosure} from '@luminate/gatsby-theme-luminate/src'
 import Alert from '../../components/Alert'
 import {
   useUpdateCoffeeMutation,
@@ -25,13 +17,11 @@ import {
 } from '../../graphql'
 import {Formik, Form, Field} from 'formik'
 import {useHistory, useRouteMatch} from 'react-router-dom'
-import Tag from '../../components/Tag'
 import CreateVarietyForm from '../Varieties/CreateForm'
 
 interface CoffeeUpdateFormProps {
   coffee: Coffee
-  title?: React.ReactNode
-  isModal?: boolean
+  title?: string
   fields?: Array<keyof UpdateCoffeeInput>
   /* Add functionality when entity successfully updates */
   onUpdateSuccess?: (data: UpdateCoffeeMutation) => void
@@ -46,7 +36,6 @@ interface CoffeeUpdateFormProps {
 const CoffeeUpdateForm = ({
   coffee,
   title,
-  isModal,
   fields,
   onUpdateSuccess,
   onUpdateError,
@@ -169,101 +158,108 @@ const CoffeeUpdateForm = ({
                 variant="danger"
               />
             </Modal>
-            <Card className="p-3 overflow-visible" variant={isModal ? 'blank' : 'default'}>
-              {title ? <Heading>{title}</Heading> : null}
-              {!fields || fields.includes('name') ? (
-                <div className="mb-3">
-                  <label className="block mb-1" htmlFor="name">
-                    Name
-                  </label>
-                  <Field name="name" id="name" as={Input} />
-                </div>
-              ) : null}
-              {!fields || fields.includes('country') ? (
-                <div className="mb-3">
-                  <label className="block mb-1" htmlFor="country">
-                    Country
-                  </label>
-                  <Combobox
-                    id="country"
-                    options={countryOptions}
-                    initialSelectedItem={countryOptions?.find(option => option.value === values.country)}
-                    loading={countryLoading}
-                    onChange={value => {
-                      if (value.selectedItem) {
-                        if (value.selectedItem.value !== values.country) {
-                          setFieldValue('region', '')
-                        }
-                        regionRefetch({
-                          query: [{field: 'country', operator: 'eq' as OperatorEnum, value: value.selectedItem.value}],
-                        })
-                      }
-                      setFieldValue('country', value.selectedItem?.value)
-                    }}
-                  />
-                </div>
-              ) : null}
-              {!fields || fields.includes('region') ? (
-                <div className="mb-3">
-                  <label className="block mb-1" htmlFor="region">
-                    Region
-                  </label>
-                  <Combobox
-                    id="region"
-                    options={regionOptions}
-                    initialSelectedItem={regionOptions?.find(option => option.value === values.region)}
-                    loading={regionLoading}
-                    onChange={value => setFieldValue('region', value.selectedItem?.value)}
-                  />
-                </div>
-              ) : null}
-              {!fields || fields.includes('varieties') ? (
-                <div className="mb-3">
-                  <label className="block mb-1" htmlFor="varieties">
-                    Varieties
-                  </label>
-                  <Combobox
-                    id="varieties"
-                    options={varietyOptions}
-                    loading={varietyLoading}
-                    onChange={value =>
-                      setFieldValue(
-                        'varieties',
-                        value.selectedItem ? values.varieties.concat(value.selectedItem) : values.varieties,
-                      )
-                    }
-                    createNewDialog={createNewVarietyDialog}
-                  />
-                  <div className="flex flex-wrap px-2">
-                    {values.varieties.map(variety => {
-                      return (
-                        <div key={variety?.value} className="m-1">
-                          <Tag
-                            text={variety?.name || ''}
-                            onCloseClick={() =>
-                              setFieldValue(
-                                'varieties',
-                                values.varieties.filter(valueVariety => valueVariety?.value !== variety?.value),
-                              )
-                            }
-                          />
-                        </div>
-                      )
-                    })}
+            <Page title={title}>
+              <Card>
+                {title ? <Heading>{title}</Heading> : null}
+                {!fields || fields.includes('name') ? (
+                  <div className="mb-3">
+                    <label className="block mb-1" htmlFor="name">
+                      Name
+                    </label>
+                    <Field name="name" id="name" as={Input} />
                   </div>
-                </div>
-              ) : null}
-            </Card>
-            <div className="flex justify-end px-3 mt-4">
-              <div className="order-1">
-                <Button type="submit">Submit</Button>
-              </div>
-              <div className="mr-2">
-                <DialogDisclosure {...deleteDialog} as={Button} variant="text">
-                  Delete
-                </DialogDisclosure>
-              </div>
-            </div>
+                ) : null}
+                {!fields || fields.includes('country') ? (
+                  <div className="mb-3">
+                    <label className="block mb-1" htmlFor="country">
+                      Country
+                    </label>
+                    <Combobox
+                      id="country"
+                      options={countryOptions}
+                      initialSelectedItem={countryOptions?.find(option => option.value === values.country)}
+                      loading={countryLoading}
+                      onChange={value => {
+                        if (value.selectedItem) {
+                          if (value.selectedItem.value !== values.country) {
+                            setFieldValue('region', '')
+                          }
+                          regionRefetch({
+                            query: [
+                              {field: 'country', operator: 'eq' as OperatorEnum, value: value.selectedItem.value},
+                            ],
+                          })
+                        }
+                        setFieldValue('country', value.selectedItem?.value)
+                      }}
+                    />
+                  </div>
+                ) : null}
+                {!fields || fields.includes('region') ? (
+                  <div className="mb-3">
+                    <label className="block mb-1" htmlFor="region">
+                      Region
+                    </label>
+                    <Combobox
+                      id="region"
+                      options={regionOptions}
+                      initialSelectedItem={regionOptions?.find(option => option.value === values.region)}
+                      loading={regionLoading}
+                      onChange={value => setFieldValue('region', value.selectedItem?.value)}
+                    />
+                  </div>
+                ) : null}
+                {!fields || fields.includes('varieties') ? (
+                  <div className="mb-3">
+                    <label className="block mb-1" htmlFor="varieties">
+                      Varieties
+                    </label>
+                    <Combobox
+                      id="varieties"
+                      options={varietyOptions}
+                      loading={varietyLoading}
+                      onChange={value =>
+                        setFieldValue(
+                          'varieties',
+                          value.selectedItem ? values.varieties.concat(value.selectedItem) : values.varieties,
+                        )
+                      }
+                      createNewDialog={createNewVarietyDialog}
+                    />
+                    <div className="flex flex-wrap px-2">
+                      {values.varieties.map(variety => {
+                        return (
+                          <div key={variety?.value} className="m-1">
+                            <Badge
+                              onCloseClick={() =>
+                                setFieldValue(
+                                  'varieties',
+                                  values.varieties.filter(valueVariety => valueVariety?.value !== variety?.value),
+                                )
+                              }
+                            >
+                              {variety?.name}
+                            </Badge>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+                ) : null}
+                <Card.Footer>
+                  <div className="flex justify-end px-3 mt-4">
+                    <div className="order-1">
+                      <Button type="submit">Submit</Button>
+                    </div>
+                    <div className="mr-2">
+                      <DialogDisclosure {...deleteDialog} as={Button} variant="outline">
+                        Delete
+                      </DialogDisclosure>
+                    </div>
+                  </div>
+                </Card.Footer>
+              </Card>
+            </Page>
           </Form>
         )
       }}

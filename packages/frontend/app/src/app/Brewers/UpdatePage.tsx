@@ -1,8 +1,8 @@
 import React from 'react'
 import BrewerUpdateForm from './UpdateForm'
 import {useGetBrewerQuery} from '../../graphql'
-import {Link, useRouteMatch} from 'react-router-dom'
-import {ChevronLeft} from 'react-feather'
+import {useRouteMatch} from 'react-router-dom'
+import {Page} from '@luminate/components'
 
 const BrewerUpdatePage = () => {
   const {
@@ -12,13 +12,9 @@ const BrewerUpdatePage = () => {
 
   if (!data || error || loading) return null
   return (
-    <div>
-      <div className="flex items-center my-6 text-primary-600">
-        <ChevronLeft size={12} className="mr-px" />
-        <Link to={`/coffees/${id}`}>Back</Link>
-      </div>
+    <Page title={data.getBrewer.name}>
       <BrewerUpdateForm brewer={data.getBrewer} />
-    </div>
+    </Page>
   )
 }
 

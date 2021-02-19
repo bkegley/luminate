@@ -1,6 +1,6 @@
 import React from 'react'
 import {Formik, Form, Field} from 'formik'
-import {Heading, Card, Button, Input, Select} from '@luminate/gatsby-theme-luminate/src'
+import {Card, Button, Input, Select} from '@luminate/components'
 import {
   useCreateBrewerMutation,
   CreateBrewerMutation,
@@ -88,54 +88,57 @@ const BrewerCreateForm = ({
       {({dirty, setFieldValue}) => {
         return (
           <Form>
-            <Card variant={isModal ? 'blank' : 'default'} className="p-3 overflow-visible">
-              {title ? <Heading>{title}</Heading> : null}
-              {!fields || fields.includes('name') ? (
-                <div className="mb-3">
-                  <label className="block mb-2" htmlFor="name">
-                    Name
-                  </label>
-                  <Field name="name" id="name" as={Input} />
-                </div>
-              ) : null}
-              {!fields || fields.includes('description') ? (
-                <div className="mb-3">
-                  <label className="block mb-2" htmlFor="description">
-                    Description
-                  </label>
-                  <Field name="description" id="description" as={Input} />
-                </div>
-              ) : null}
-              {!fields || fields.includes('type') ? (
-                <div className="mb-3">
-                  <label className="block mb-2" htmlFor="type">
-                    Type
-                  </label>
-                  <Select
-                    options={typeOptions}
-                    onChange={values => {
-                      if (values.selectedItem) {
-                        setFieldValue('type', values.selectedItem.value)
-                      }
-                    }}
-                  />
-                </div>
-              ) : null}
-            </Card>
-            <div className="flex justify-end mt-4 px-3">
-              <div className="order-1">
-                <Button type="submit" variant="primary">
-                  Submit
-                </Button>
+            <Card>
+              <div className="p-6">
+                {!fields || fields.includes('name') ? (
+                  <div className="mb-3">
+                    <label className="block mb-2" htmlFor="name">
+                      Name
+                    </label>
+                    <Field name="name" id="name" as={Input} />
+                  </div>
+                ) : null}
+                {!fields || fields.includes('description') ? (
+                  <div className="mb-3">
+                    <label className="block mb-2" htmlFor="description">
+                      Description
+                    </label>
+                    <Field name="description" id="description" as={Input} />
+                  </div>
+                ) : null}
+                {!fields || fields.includes('type') ? (
+                  <div className="mb-3">
+                    <label className="block mb-2" htmlFor="type">
+                      Type
+                    </label>
+                    <Select
+                      options={typeOptions}
+                      onChange={values => {
+                        if (values.selectedItem) {
+                          setFieldValue('type', values.selectedItem.value)
+                        }
+                      }}
+                    />
+                  </div>
+                ) : null}
               </div>
-              {onCancel ? (
-                <div className="mr-3">
-                  <Button type="button" variant="text" onClick={() => onCancel(dirty)}>
-                    Cancel
-                  </Button>
+              <Card.Footer>
+                <div className="flex justify-end">
+                  <div className="order-1">
+                    <Button type="submit" variant="primary">
+                      Submit
+                    </Button>
+                  </div>
+                  {onCancel ? (
+                    <div className="mr-3">
+                      <Button type="button" variant="outline" onClick={() => onCancel(dirty)}>
+                        Cancel
+                      </Button>
+                    </div>
+                  ) : null}
                 </div>
-              ) : null}
-            </div>
+              </Card.Footer>
+            </Card>
           </Form>
         )
       }}
