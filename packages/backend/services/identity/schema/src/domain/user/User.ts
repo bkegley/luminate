@@ -2,6 +2,7 @@ import {AggregateRoot, EntityId} from '@luminate/services-shared'
 import {UserPassword} from './UserPassword'
 import {UserUsername} from './UserUsername'
 import {UserUpdatedEvent, UserPasswordUpdatedEvent} from './events'
+import {UserTheme} from './UserTheme'
 
 export interface UserAggregateAttributes {
   username: UserUsername
@@ -12,6 +13,7 @@ export interface UserAggregateAttributes {
     roles: EntityId[]
   }>
   password?: UserPassword
+  theme?: UserTheme
 }
 
 export class UserAggregate extends AggregateRoot<UserAggregateAttributes> {
@@ -31,6 +33,10 @@ export class UserAggregate extends AggregateRoot<UserAggregateAttributes> {
     return this.attrs.roles
   }
 
+  public get theme() {
+    return this.attrs.theme
+  }
+
   public get password() {
     return this.attrs.password.getHashedValue()
   }
@@ -46,6 +52,10 @@ export class UserAggregate extends AggregateRoot<UserAggregateAttributes> {
   public update(attrs: Partial<UserAggregateAttributes>) {
     if (attrs.username) {
       this.attrs.username = attrs.username
+    }
+
+    if (attrs.theme) {
+      this.attrs.theme = attrs.theme
     }
 
     this.registerEvent(new UserUpdatedEvent(this))

@@ -2,16 +2,18 @@ import React from 'react'
 import {Sidebar} from './Sidebar'
 import {Header} from './Header'
 import {useDarkMode} from '../hooks/useDarkMode'
+import {DarkModeProvider} from '../hooks/DarkModeProvider'
+import {useUser} from '@luminate/gatsby-theme-luminate/src'
 
 export interface LayoutProps {
   children: React.ReactNode
 }
 
-export const Layout = ({children}: LayoutProps) => {
+const InnerLayout = ({children}: LayoutProps) => {
   const [open, setOpen] = React.useState(false)
   const {darkMode} = useDarkMode()
   return (
-    <div className={darkMode ? 'dark' : ''}>
+    <div className={darkMode === 'dark' ? 'dark' : ''}>
       <div className="min-h-screen h-full bg-gray-50 dark:bg-gray-800 dark:text-gray-100">
         <Header open={open} setOpen={setOpen} />
         <div className="flex">
@@ -24,5 +26,15 @@ export const Layout = ({children}: LayoutProps) => {
         </div>
       </div>
     </div>
+  )
+}
+
+export const Layout = ({children}: LayoutProps) => {
+  const {user} = useUser()
+
+  return (
+    <DarkModeProvider initialTheme={user.theme}>
+      <InnerLayout>{children}</InnerLayout>
+    </DarkModeProvider>
   )
 }

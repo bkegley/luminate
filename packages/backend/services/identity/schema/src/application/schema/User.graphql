@@ -6,6 +6,7 @@ interface UserInterface {
   accounts: [Account!]!
   roles: [Role!]!
   scopes: [String!]!
+  theme: Theme
   createdAt: String!
   updatedAt: String!
 }
@@ -18,6 +19,7 @@ type User implements UserInterface @key(fields: "id") {
   accounts: [Account!]!
   roles: [Role!]!
   scopes: [String!]!
+  theme: Theme
   createdAt: String!
   updatedAt: String!
 }
@@ -31,8 +33,14 @@ type Me implements UserInterface {
   accounts: [Account!]!
   roles: [Role!]!
   scopes: [String!]!
+  theme: Theme
   createdAt: String!
   updatedAt: String!
+}
+
+enum Theme {
+  dark
+  light
 }
 
 type UserConnection {
@@ -64,6 +72,12 @@ input UpdatePasswordInput {
   newPassword: String!
 }
 
+input UpdateMeInput {
+  firstName: String
+  lastName: String
+  theme: Theme
+}
+
 extend type Query {
   listUsers(cursor: String, limit: Int, query: [QueryInput!]): UserConnection!
   getUser(id: ID!): User
@@ -80,4 +94,5 @@ extend type Mutation {
   logout: Boolean!
   switchAccount(accountId: ID!): Boolean
   refreshToken: String
+  updateMe(input: UpdateMeInput): User
 }

@@ -132,6 +132,11 @@ export const UserSchema = extendSchema(
     lastLoggedIn: {
       type: Date,
     },
+    theme: {
+      type: String,
+      enum: ['dark', 'light'],
+      default: 'dark',
+    },
   },
   {timestamps: true},
 )

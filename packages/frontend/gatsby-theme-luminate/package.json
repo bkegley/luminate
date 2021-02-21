@@ -6,7 +6,10 @@
   "license": "MIT",
   "private": true,
   "workspaces": {
-    "nohoist": ["@tailwindcss/forms", "@tailwindcss/forms/**"]
+    "nohoist": [
+      "@tailwindcss/forms",
+      "@tailwindcss/forms/**"
+    ]
   },
   "scripts": {
     "type-check": "tsc"

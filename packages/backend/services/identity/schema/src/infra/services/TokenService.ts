@@ -37,6 +37,7 @@ export class TokenService {
       sub: user.username.value,
       aud: account,
       scopes,
+      theme: user.theme.value,
     }
 
     return jwt.sign(input, tokenSecret, {expiresIn: '15m'})

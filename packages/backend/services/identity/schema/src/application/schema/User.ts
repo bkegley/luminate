@@ -1,13 +1,14 @@
 import {Args, Context, Mutation, Query, Resolver} from '@nestjs/graphql'
 import {CommandBus, QueryBus} from '@nestjs/cqrs'
 import {Token} from '@luminate/graphql-utils'
-import {CreateUserInput, Resolvers, UpdateUserInput} from '../../types'
+import {CreateUserInput, Resolvers, UpdateUserInput, UpdateMeInput} from '../../types'
 import {TYPES} from '../../utils/types'
 import {
   CreateUserCommand,
   DeleteUserCommand,
   UpdateUserCommand,
   UpdateUserRolesCommand,
+  UpdateMeCommand,
 } from '../../application/commands'
 import {IAccountsRepo, IRolesRepo, IUsersRepo} from '../../infra/repos'
 import {AccountMapper} from '../../infra/mappers/AccountMapper'
@@ -49,6 +50,14 @@ export class UserResolvers {
   @Mutation('updateUser')
   async updateUser(@Args('id') id: string, @Args('input') input: UpdateUserInput) {
     const command = new UpdateUserCommand(id, input)
+    const user = await this.commandBus.execute(command)
+
+    return UserMapper.toDTO(user)
+  }
+
+  @Mutation('updateMe')
+  async updateMe(@Args('input') input: UpdateMeInput, @Context('user') token: Token) {
+    const command = new UpdateMeCommand(token.jti, input)
     const user = await this.commandBus.execute(command)
 
     return UserMapper.toDTO(user)

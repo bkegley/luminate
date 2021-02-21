@@ -395,6 +395,7 @@ export type Me = UserInterface & {
   accounts: Array<Account>
   roles: Array<Role>
   scopes: Array<Scalars['String']>
+  theme?: Maybe<Theme>
   createdAt: Scalars['String']
   updatedAt: Scalars['String']
 }
@@ -417,6 +418,7 @@ export type Mutation = {
   logout: Scalars['Boolean']
   switchAccount?: Maybe<Scalars['Boolean']>
   refreshToken?: Maybe<Scalars['String']>
+  updateMe?: Maybe<User>
   createNote?: Maybe<Note>
   updateNote?: Maybe<Note>
   deleteNote?: Maybe<Note>
@@ -523,6 +525,10 @@ export type MutationLoginArgs = {
 
 export type MutationSwitchAccountArgs = {
   accountId: Scalars['ID']
+}
+
+export type MutationUpdateMeArgs = {
+  input?: Maybe<UpdateMeInput>
 }
 
 export type MutationCreateNoteArgs = {
@@ -1022,6 +1028,11 @@ export type SessionCoffeeInput = {
   coffee: Scalars['ID']
 }
 
+export enum Theme {
+  Dark = 'dark',
+  Light = 'light',
+}
+
 export type UpdateAccountInput = {
   name?: Maybe<Scalars['String']>
 }
@@ -1077,6 +1088,12 @@ export type UpdateGrinderInput = {
   name?: Maybe<Scalars['String']>
   description?: Maybe<Scalars['String']>
   burrSet?: Maybe<BurrSet>
+}
+
+export type UpdateMeInput = {
+  firstName?: Maybe<Scalars['String']>
+  lastName?: Maybe<Scalars['String']>
+  theme?: Maybe<Theme>
 }
 
 export type UpdateNoteInput = {
@@ -1138,6 +1155,7 @@ export type User = UserInterface & {
   accounts: Array<Account>
   roles: Array<Role>
   scopes: Array<Scalars['String']>
+  theme?: Maybe<Theme>
   createdAt: Scalars['String']
   updatedAt: Scalars['String']
 }
@@ -1162,6 +1180,7 @@ export type UserInterface = {
   accounts: Array<Account>
   roles: Array<Role>
   scopes: Array<Scalars['String']>
+  theme?: Maybe<Theme>
   createdAt: Scalars['String']
   updatedAt: Scalars['String']
 }
@@ -1611,6 +1630,19 @@ export type UserSearchQuery = {__typename: 'Query'} & {
   }
 }
 
+export type UpdateMySettingsMutationVariables = Exact<{
+  input?: Maybe<UpdateMeInput>
+}>
+
+export type UpdateMySettingsMutation = {__typename: 'Mutation'} & {
+  updateMe?: Maybe<{__typename: 'User'} & MySettingsFragmentFragment>
+}
+
+export type MySettingsFragmentFragment = {__typename: 'User'} & Pick<
+  User,
+  'id' | 'username' | 'firstName' | 'lastName' | 'theme'
+>
+
 export type ListVarietiesQueryVariables = Exact<{[key: string]: never}>
 
 export type ListVarietiesQuery = {__typename: 'Query'} & {
@@ -1821,6 +1853,15 @@ export const RegionFragmentFragmentDoc = gql`
       id
       name
     }
+  }
+`
+export const MySettingsFragmentFragmentDoc = gql`
+  fragment MySettingsFragment on User {
+    id
+    username
+    firstName
+    lastName
+    theme
   }
 `
 export const VarietyFragmentFragmentDoc = gql`
@@ -3479,6 +3520,50 @@ export function useUserSearchLazyQuery(
 export type UserSearchQueryHookResult = ReturnType<typeof useUserSearchQuery>
 export type UserSearchLazyQueryHookResult = ReturnType<typeof useUserSearchLazyQuery>
 export type UserSearchQueryResult = Apollo.QueryResult<UserSearchQuery, UserSearchQueryVariables>
+export const UpdateMySettingsDocument = gql`
+  mutation UpdateMySettings($input: UpdateMeInput) {
+    updateMe(input: $input) {
+      ...MySettingsFragment
+    }
+  }
+  ${MySettingsFragmentFragmentDoc}
+`
+export type UpdateMySettingsMutationFn = Apollo.MutationFunction<
+  UpdateMySettingsMutation,
+  UpdateMySettingsMutationVariables
+>
+
+/**
+ * __useUpdateMySettingsMutation__
+ *
+ * To run a mutation, you first call `useUpdateMySettingsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateMySettingsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateMySettingsMutation, { data, loading, error }] = useUpdateMySettingsMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateMySettingsMutation(
+  baseOptions?: Apollo.MutationHookOptions<UpdateMySettingsMutation, UpdateMySettingsMutationVariables>,
+) {
+  return Apollo.useMutation<UpdateMySettingsMutation, UpdateMySettingsMutationVariables>(
+    UpdateMySettingsDocument,
+    baseOptions,
+  )
+}
+export type UpdateMySettingsMutationHookResult = ReturnType<typeof useUpdateMySettingsMutation>
+export type UpdateMySettingsMutationResult = Apollo.MutationResult<UpdateMySettingsMutation>
+export type UpdateMySettingsMutationOptions = Apollo.BaseMutationOptions<
+  UpdateMySettingsMutation,
+  UpdateMySettingsMutationVariables
+>
 export const ListVarietiesDocument = gql`
   query ListVarieties {
     listVarieties {

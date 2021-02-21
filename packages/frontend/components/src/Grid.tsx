@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 const GridContext = React.createContext({});
 
@@ -23,7 +23,7 @@ interface GridLeftProps {
 const Left = ({ children }: GridLeftProps) => {
   const context = React.useContext(GridContext);
   if (!context) {
-    throw new Error("Grid.Left must be wrapped in a Grid component");
+    throw new Error('Grid.Left must be wrapped in a Grid component');
   }
   return <div className="lg:col-start-1 lg:col-span-2">{children}</div>;
 };
@@ -35,7 +35,7 @@ interface GridRightProps {
 const Right = ({ children }: GridRightProps) => {
   const context = React.useContext(GridContext);
   if (!context) {
-    throw new Error("Grid.Right must be wrapped in a Grid component");
+    throw new Error('Grid.Right must be wrapped in a Grid component');
   }
   return <div className="lg:col-start-3 lg:col-span-1">{children}</div>;
 };

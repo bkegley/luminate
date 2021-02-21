@@ -2,12 +2,14 @@ import {EntityId} from '@luminate/services-shared'
 import {UserAggregate, UserAggregateAttributes} from '../../domain/user/User'
 import {UserPassword} from '../../domain/user/UserPassword'
 import {UserUsername} from '../../domain/user/UserUsername'
-import {User} from '../../types'
+import {User, Theme} from '../../types'
+import {UserTheme} from '../../domain/user/UserTheme'
 
 export interface IUserGraphQL extends Omit<User, 'accounts' | 'roles' | 'scopes'> {
   accounts: string[]
   roles?: string[]
   scopes?: string[]
+  theme?: Theme
 }
 
 export class UserMapper {
@@ -26,6 +28,11 @@ export class UserMapper {
     if (obj.password) {
       attrs.password = UserPassword.create({value: obj.password, isHashed: true})
     }
+
+    if (obj.theme) {
+      attrs.theme = UserTheme.create(obj.theme)
+    }
+
     return UserAggregate.create(attrs, id ? EntityId.create(id) : null)
   }
 
@@ -39,6 +46,7 @@ export class UserMapper {
         account: role.account.toString(),
         roles: role.roles.map(role => role.toString()),
       })),
+      theme: user.theme.value,
     }
   }
 
@@ -52,6 +60,7 @@ export class UserMapper {
       accounts: user.accounts.map(account => account.toString()),
       //roles: Array<Role>
       //scopes: Array<Scalars['String']>
+      theme: (user.theme.value as unknown) as Theme,
       // TODO: fix timestamps
       createdAt: now.toDateString(),
       updatedAt: now.toDateString(),

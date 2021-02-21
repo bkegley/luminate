@@ -8,3 +8,17 @@ query UserSearch($searchText: String) {
     }
   }
 }
+
+mutation UpdateMySettings($input: UpdateMeInput) {
+  updateMe(input: $input) {
+    ...MySettingsFragment
+  }
+}
+
+fragment MySettingsFragment on User {
+  id
+  username
+  firstName
+  lastName
+  theme
+}

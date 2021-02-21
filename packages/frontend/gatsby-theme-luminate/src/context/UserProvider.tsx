@@ -17,6 +17,7 @@ export interface Token {
     name: string
   }[]
   scopes?: string[]
+  theme: 'dark' | 'light'
   iat: number
   exp: number
 }
@@ -61,8 +62,6 @@ const UserProvider = ({children, setToken}: Props) => {
   const [refreshToken, {error, loading, data, called}] = useRefreshTokenMutation()
   const [shouldStartRefreshTimer, setShouldStartRefreshTimer] = React.useState(true)
   const [hasCheckedCookie, setHasCheckedCookie] = React.useState(false)
-
-  console.log({user})
 
   React.useEffect(() => {
     if (shouldRefreshToken) {

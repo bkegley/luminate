@@ -34,4 +34,5 @@ fragment UserFragment on Me {
     name
   }
   scopes
+  theme
 }

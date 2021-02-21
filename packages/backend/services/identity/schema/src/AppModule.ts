@@ -25,10 +25,11 @@ import {
   DeleteUserCommandHandler,
   LoginUserCommandHandler,
   LogoutUserCommandHandler,
-  RefreshTokenComandHandler,
+  UpdateMeComandHandler,
   UpdateUserCommandHandler,
   UpdateUserPasswordCommandHandler,
   UpdateUserRolesCommandHandler,
+  RefreshTokenComandHandler,
 } from './application/commands'
 import {AccountResolvers, AuthResolvers, RoleResolvers, UserResolvers} from './application/schema'
 import {AccountsRepo, RefreshTokensRepo, RolesRepo, UsersRepo} from './infra/repos'
@@ -60,10 +61,11 @@ const commandHandlers = [
   DeleteUserCommandHandler,
   LoginUserCommandHandler,
   LogoutUserCommandHandler,
-  RefreshTokenComandHandler,
+  UpdateMeComandHandler,
   UpdateUserCommandHandler,
   UpdateUserPasswordCommandHandler,
   UpdateUserRolesCommandHandler,
+  RefreshTokenComandHandler,
 ]
 
 const resolvers = [AccountResolvers, AuthResolvers, RoleResolvers, UserResolvers]

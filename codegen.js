@@ -41,7 +41,7 @@ const serverGenerates = {
     plugins: ['typescript'],
   },
   'packages/backend/services/identity/schema/src/types.d.ts': {
-    schema: ['./packages/backend/services/identity/schema/src/application/schema/**/!(index.ts)*.ts'],
+    schema: ['./packages/backend/services/identity/schema/src/application/**/!(index.ts)*.graphql'],
     plugins: ['typescript', 'typescript-resolvers'],
     config: {
       contextType: './startServer#Context',
@@ -72,7 +72,7 @@ const serverGenerates = {
     },
   },
   'packages/backend/services/brewing/schema/src/types.d.ts': {
-    schema: ['./packages/backend/services/brewing/schema/src/schema/**/!(index.ts)*.ts'],
+    schema: ['./packages/backend/services/brewing/schema/src/**/!(index.ts)*.graphql'],
     plugins: ['typescript', 'typescript-resolvers'],
     config: {
       contextType: './startServer#Context',

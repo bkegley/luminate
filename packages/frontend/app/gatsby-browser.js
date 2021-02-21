@@ -4,6 +4,8 @@ import {DarkModeProvider} from './src/hooks/DarkModeProvider'
 import './src/styles/style.css'
 import 'react-vis/dist/style.css'
 
-export const wrapRootElement = ({element}) => {
-  return <DarkModeProvider>{element}</DarkModeProvider>
+const Wrapper = ({element}) => {
+  return <DarkModeProvider initialTheme={'dark'}>{element}</DarkModeProvider>
 }
+
+export const wrapRootElement = ({element}) => <Wrapper element={element} />

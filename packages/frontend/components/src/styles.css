@@ -46,7 +46,7 @@
   .h2 {
     @apply text-4xl;
   }
-  
+
   .h3 {
     @apply text-3xl;
   }

@@ -395,6 +395,7 @@ export type Me = UserInterface & {
   accounts: Array<Account>
   roles: Array<Role>
   scopes: Array<Scalars['String']>
+  theme?: Maybe<Theme>
   createdAt: Scalars['String']
   updatedAt: Scalars['String']
 }
@@ -417,6 +418,7 @@ export type Mutation = {
   logout: Scalars['Boolean']
   switchAccount?: Maybe<Scalars['Boolean']>
   refreshToken?: Maybe<Scalars['String']>
+  updateMe?: Maybe<User>
   createNote?: Maybe<Note>
   updateNote?: Maybe<Note>
   deleteNote?: Maybe<Note>
@@ -523,6 +525,10 @@ export type MutationLoginArgs = {
 
 export type MutationSwitchAccountArgs = {
   accountId: Scalars['ID']
+}
+
+export type MutationUpdateMeArgs = {
+  input?: Maybe<UpdateMeInput>
 }
 
 export type MutationCreateNoteArgs = {
@@ -1022,6 +1028,11 @@ export type SessionCoffeeInput = {
   coffee: Scalars['ID']
 }
 
+export enum Theme {
+  Dark = 'dark',
+  Light = 'light',
+}
+
 export type UpdateAccountInput = {
   name?: Maybe<Scalars['String']>
 }
@@ -1077,6 +1088,12 @@ export type UpdateGrinderInput = {
   name?: Maybe<Scalars['String']>
   description?: Maybe<Scalars['String']>
   burrSet?: Maybe<BurrSet>
+}
+
+export type UpdateMeInput = {
+  firstName?: Maybe<Scalars['String']>
+  lastName?: Maybe<Scalars['String']>
+  theme?: Maybe<Theme>
 }
 
 export type UpdateNoteInput = {
@@ -1138,6 +1155,7 @@ export type User = UserInterface & {
   accounts: Array<Account>
   roles: Array<Role>
   scopes: Array<Scalars['String']>
+  theme?: Maybe<Theme>
   createdAt: Scalars['String']
   updatedAt: Scalars['String']
 }
@@ -1162,6 +1180,7 @@ export type UserInterface = {
   accounts: Array<Account>
   roles: Array<Role>
   scopes: Array<Scalars['String']>
+  theme?: Maybe<Theme>
   createdAt: Scalars['String']
   updatedAt: Scalars['String']
 }
@@ -1215,7 +1234,7 @@ export type LogoutMutation = {__typename: 'Mutation'} & Pick<Mutation, 'logout'>
 
 export type UserFragmentFragment = {__typename: 'Me'} & Pick<
   Me,
-  'id' | 'username' | 'firstName' | 'lastName' | 'scopes'
+  'id' | 'username' | 'firstName' | 'lastName' | 'scopes' | 'theme'
 > & {
     account?: Maybe<{__typename: 'Account'} & Pick<Account, 'id' | 'name'>>
     accounts: Array<{__typename: 'Account'} & Pick<Account, 'id' | 'name'>>
@@ -1241,6 +1260,7 @@ export const UserFragmentFragmentDoc = gql`
       name
     }
     scopes
+    theme
   }
 `
 export const SwitchAccountDocument = gql`

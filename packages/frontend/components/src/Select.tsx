@@ -37,7 +37,7 @@ export const Select = ({
     menuId: id || undefined,
     toggleButtonId: id || undefined,
     initialSelectedItem,
-    onSelectedItemChange: (changes) => {
+    onSelectedItemChange: changes => {
       if (onChange) {
         onChange(changes);
       }

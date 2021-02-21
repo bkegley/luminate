@@ -1,9 +1,24 @@
 import React from 'react'
 import {useDarkMode} from '../../hooks/useDarkMode'
 import {Card, Toggle, Label, IconTypesEnum, Page, Heading, Button} from '@luminate/components'
+import {useUpdateMySettingsMutation} from '../../graphql'
 
 const AccountPage = () => {
   const {darkMode, toggleDarkMode} = useDarkMode()
+  const isDark = darkMode === 'dark'
+
+  const [updateMe] = useUpdateMySettingsMutation()
+
+  const handleSubmit = () => {
+    updateMe({
+      variables: {
+        input: {
+          // @ts-ignore
+          theme: darkMode,
+        },
+      },
+    })
+  }
 
   return (
     <Page title="Account">
@@ -24,11 +39,11 @@ const AccountPage = () => {
                     <Toggle
                       id="darkMode"
                       description="Use dark mode"
-                      initialValue={darkMode}
+                      initialValue={isDark}
                       onIcon={IconTypesEnum.MOON}
                       offIcon={IconTypesEnum.SUN}
                       onChange={on => {
-                        if (on !== darkMode) {
+                        if (on !== isDark) {
                           toggleDarkMode()
                         }
                       }}
@@ -39,7 +54,7 @@ const AccountPage = () => {
               <Card.Footer>
                 <div className="flex justify-end">
                   <div>
-                    <Button type="submit">Save</Button>
+                    <Button onClick={handleSubmit}>Save</Button>
                   </div>
                 </div>
               </Card.Footer>
