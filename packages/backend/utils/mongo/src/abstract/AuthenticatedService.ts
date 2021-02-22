@@ -33,14 +33,14 @@ export class AuthenticatedService<T extends BaseDocument> extends BaseService<T>
         {
           readAccess: {
             $elemMatch: {
-              $in: [this.user?.account?.id].filter(Boolean),
+              $in: [this.user?.account].filter(Boolean),
             },
           },
         },
         {
           adminAccess: {
             $elemMatch: {
-              $in: [this.user?.account?.id].filter(Boolean),
+              $in: [this.user?.account].filter(Boolean),
             },
           },
         },
@@ -54,14 +54,14 @@ export class AuthenticatedService<T extends BaseDocument> extends BaseService<T>
         {
           writeAccess: {
             $elemMatch: {
-              $in: [this.user?.account?.id].filter(Boolean),
+              $in: [this.user?.account].filter(Boolean),
             },
           },
         },
         {
           adminAccess: {
             $elemMatch: {
-              $in: [this.user?.account?.id].filter(Boolean),
+              $in: [this.user?.account].filter(Boolean),
             },
           },
         },
@@ -73,7 +73,7 @@ export class AuthenticatedService<T extends BaseDocument> extends BaseService<T>
     return {
       adminAccess: {
         $elemMatch: {
-          $in: [this.user?.account?.id].filter(Boolean),
+          $in: [this.user?.account].filter(Boolean),
         },
       },
     }
@@ -91,10 +91,10 @@ export class AuthenticatedService<T extends BaseDocument> extends BaseService<T>
   public async create(input: any) {
     const defaults = {
       createdByUser: this.user?.jti,
-      createdByAccount: this.user?.account?.id,
-      readAccess: [this.user?.account?.id].filter(Boolean),
-      writeAccess: [this.user?.account?.id].filter(Boolean),
-      adminAccess: [this.user?.account?.id].filter(Boolean),
+      createdByAccount: this.user?.account,
+      readAccess: [this.user?.account].filter(Boolean),
+      writeAccess: [this.user?.account].filter(Boolean),
+      adminAccess: [this.user?.account].filter(Boolean),
     }
     return super.create({...defaults, ...input})
   }
