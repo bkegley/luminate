@@ -37,6 +37,8 @@ export class TokenService {
       sub: user.username.value,
       aud: account,
       scopes,
+      account,
+      accounts: user.accounts.map(account => account.toString()),
       theme: user.theme.value,
     }
 
