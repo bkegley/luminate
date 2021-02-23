@@ -7,7 +7,7 @@ export interface NoteDocument extends AuthenticatedDocument {
   field: string
 }
 
-const Note = extendSchema(
+export const NoteSchema = extendSchema(
   BaseAuthenticatedSchema,
   {
     entityId: {
@@ -26,4 +26,4 @@ const Note = extendSchema(
   {timestamps: true},
 )
 
-export const NoteModel = model<NoteDocument>('note', Note)
+export const NoteModel = model<NoteDocument>('note', NoteSchema)

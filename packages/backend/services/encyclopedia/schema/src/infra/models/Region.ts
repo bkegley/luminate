@@ -6,7 +6,7 @@ export interface RegionDocument extends BaseDocument {
   country?: string
 }
 
-const Region = extendSchema(
+export const RegionSchema = extendSchema(
   BasePublicSchema,
   {
     name: {
@@ -24,4 +24,4 @@ const Region = extendSchema(
   },
 )
 
-export const RegionModel = model<RegionDocument>('region', Region)
+export const RegionModel = model<RegionDocument>('region', RegionSchema)

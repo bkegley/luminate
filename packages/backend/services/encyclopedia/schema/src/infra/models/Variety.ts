@@ -6,7 +6,7 @@ export interface VarietyDocument extends AuthenticatedDocument {
   background?: string
 }
 
-const Variety = extendSchema(
+export const VarietySchema = extendSchema(
   BaseAuthenticatedSchema,
   {
     name: {
@@ -22,4 +22,4 @@ const Variety = extendSchema(
   },
 )
 
-export const VarietyModel = model<VarietyDocument>('variety', Variety, 'varieties')
+export const VarietyModel = model<VarietyDocument>('variety', VarietySchema, 'varieties')

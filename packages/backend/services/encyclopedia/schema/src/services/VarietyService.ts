@@ -1,4 +1,4 @@
-import {VarietyModel, VarietyDocument} from '../models/Variety'
+import {VarietyModel, VarietyDocument} from '../infra/models'
 import {AuthenticatedService, Token} from '@luminate/mongo-utils'
 import DataLoader from 'dataloader'
 

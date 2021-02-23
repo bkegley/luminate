@@ -14,7 +14,7 @@ const FarmZone = new Schema({
   },
 })
 
-const Farm = extendSchema(
+export const FarmSchema = extendSchema(
   BaseAuthenticatedSchema,
   {
     name: {
@@ -34,4 +34,4 @@ const Farm = extendSchema(
   {timestamps: true},
 )
 
-export const FarmModel = model<FarmDocument>('farm', Farm)
+export const FarmModel = model<FarmDocument>('farm', FarmSchema)

@@ -1,4 +1,4 @@
-import {CoffeeModel, CoffeeDocument} from '../models'
+import {CoffeeModel, CoffeeDocument} from '../infra/models'
 import {AuthenticatedService, Token} from '@luminate/mongo-utils'
 import DataLoader from 'dataloader'
 
