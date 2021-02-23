@@ -1,4 +1,4 @@
-import {RegionModel, RegionDocument} from '../models/Region'
+import {RegionModel, RegionDocument} from '../infra/models'
 import DataLoader from 'dataloader'
 import {BaseService, IListDocumentsArgs} from '@luminate/mongo-utils'
 

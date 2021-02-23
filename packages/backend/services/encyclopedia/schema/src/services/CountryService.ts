@@ -1,4 +1,4 @@
-import {CountryModel, CountryDocument} from '../models/Country'
+import {CountryModel, CountryDocument} from '../infra/models'
 import {BaseService, IListDocumentsArgs} from '@luminate/mongo-utils'
 import DataLoader from 'dataloader'
 

@@ -1,4 +1,4 @@
-import {FarmModel, FarmDocument} from '../models/Farm'
+import {FarmModel, FarmDocument} from '../infra/models'
 import {AuthenticatedService, Token} from '@luminate/mongo-utils'
 import DataLoader from 'dataloader'
 

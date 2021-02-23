@@ -18,7 +18,7 @@ export interface CountryDocument extends BaseDocument {
   }
 }
 
-const Country = extendSchema(
+export const CountrySchema = extendSchema(
   BasePublicSchema,
   {
     name: {
@@ -63,4 +63,4 @@ const Country = extendSchema(
   },
 )
 
-export const CountryModel = model<CountryDocument>('country', Country, 'countries')
+export const CountryModel = model<CountryDocument>('country', CountrySchema, 'countries')

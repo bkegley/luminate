@@ -1,0 +1,77 @@
+type Coffee @key(fields: "id") {
+  id: ID!
+  name: String!
+  country: Country
+  region: Region
+  varieties: [Variety!]!
+  elevation: String
+  components: [CoffeeComponent]
+  notes(fields: [String]): [Note]
+  createdAt: String!
+  updatedAt: String!
+}
+
+type CoffeeComponent {
+  coffee: CoffeeSummary!
+  percentage: Float!
+}
+
+type CoffeeSummary {
+  id: ID!
+  name: String!
+}
+
+type CoffeeConnection {
+  pageInfo: PageInfo!
+  edges: [CoffeeEdge!]!
+}
+
+type CoffeeEdge {
+  cursor: String!
+  node: Coffee!
+}
+
+input CreateCoffeeInput {
+  name: String!
+  country: String
+  region: String
+  farm: ID
+  farmZone: ID
+  varieties: [ID]
+  elevation: String
+  components: [ComponentInput]
+}
+
+input UpdateCoffeeInput {
+  name: String
+  country: String
+  region: String
+  farm: ID
+  farmZone: ID
+  varieties: [ID]
+  elevation: String
+  components: [ComponentInput]
+}
+
+input ComponentInput {
+  coffee: ID!
+  percentage: Float!
+}
+
+extend type Query {
+  listCoffees(cursor: String, limit: Int, query: [QueryInput!]): CoffeeConnection!
+  getCoffee(id: ID!): Coffee
+}
+
+enum PermissionTypeEnum {
+  read
+  write
+  admin
+}
+
+extend type Mutation {
+  createCoffee(input: CreateCoffeeInput!): Coffee
+  updateCoffee(id: ID!, input: UpdateCoffeeInput!): Coffee
+  deleteCoffee(id: ID!): Coffee
+  updateCoffeePermissionsForAccount(coffeeId: ID!, accountId: ID!, permissionTypes: [PermissionTypeEnum!]!): Boolean
+}

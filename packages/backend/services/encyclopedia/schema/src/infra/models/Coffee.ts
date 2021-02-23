@@ -12,7 +12,7 @@ export interface CoffeeDocument extends AuthenticatedDocument {
   components: Array<{coffee: string; percentage: number}>
 }
 
-const Coffee = extendSchema(
+export const CoffeeSchema = extendSchema(
   BaseAuthenticatedSchema,
   {
     name: {
@@ -53,4 +53,4 @@ const Coffee = extendSchema(
   {timestamps: true},
 )
 
-export const CoffeeModel = model<CoffeeDocument>('coffee', Coffee)
+export const CoffeeModel = model<CoffeeDocument>('coffee', CoffeeSchema)

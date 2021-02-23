@@ -1,4 +1,4 @@
-import {NoteModel, NoteDocument} from '../models/Note'
+import {NoteModel, NoteDocument} from '../infra/models'
 import {AuthenticatedService, Token} from '@luminate/mongo-utils'
 import DataLoader from 'dataloader'
 
