@@ -9,8 +9,8 @@ export class CoffeeMapper {
     let attrs: CoffeeAggregateAttributes = {
       name: CoffeeName.create(obj.name),
     }
-    const account = CoffeeAggregate.create(attrs, id ? EntityId.create(id) : null)
-    return account
+    const coffee = CoffeeAggregate.create(attrs, id ? EntityId.create(id) : null)
+    return coffee
   }
 
   public static toPersistence(coffee: CoffeeAggregate) {

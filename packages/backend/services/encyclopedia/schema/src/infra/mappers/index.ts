@@ -1,1 +1,5 @@
 export * from './CoffeeMapper'
+export * from './CountryMapper'
+export * from './FarmMapper'
+export * from './RegionMapper'
+export * from './VarietyMapper'

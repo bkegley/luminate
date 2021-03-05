@@ -1,3 +1,36 @@
+import {CommandBus, QueryBus} from '@nestjs/cqrs'
+import {Args, Mutation, Query, Resolver} from '@nestjs/graphql'
+import {VarietyMapper} from '../../infra/mappers'
+import {CreateVarietyInput} from '../../types'
+import {GetVarietyQuery, ListVarietiesQuery} from '../queries'
+
+@Resolver('Variety')
+export class VarietyResolvers {
+  constructor(private readonly queryBus: QueryBus, private readonly commandBus: CommandBus) {}
+
+  @Query('listVarieties')
+  async listVarieties() {
+    const query = new ListVarietiesQuery()
+    return this.queryBus.execute(query)
+  }
+
+  @Query('getVariety')
+  async getVariety(@Args('id') id: string) {
+    const query = new GetVarietyQuery(id)
+    const variety = await this.queryBus.execute(query)
+
+    return VarietyMapper.toDTO(variety)
+  }
+
+  @Mutation('createVariety')
+  async createVariety(@Args('input') input: CreateVarietyInput) {}
+
+  @Mutation('updateVariety')
+  async updateVariety(@Args('id') id: string, @Args('input') input: CreateVarietyInput) {}
+
+  @Mutation('deleteVariety')
+  async deleteVariety(@Args('id') id: string) {}
+}
 //import {gql} from 'apollo-server-express'
 //import {Resolvers} from '../types'
 

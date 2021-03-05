@@ -2,7 +2,6 @@ import React from 'react'
 import {Page, Card} from '@luminate/components'
 import {useListVarietiesTableQuery, Variety} from '../../graphql'
 import {Link, RouteComponentProps} from 'react-router-dom'
-import {formatDistanceToNow, format} from 'date-fns'
 
 interface Props extends RouteComponentProps {}
 
@@ -40,14 +39,10 @@ interface VarietyRowProps {
 }
 const VarietyRow = ({variety, index}: VarietyRowProps) => {
   return (
-    <div className={`flex items-center py-3 px-4 bg-${index % 2 === 0 ? 'transparent' : 'gray-100'}`}>
+    <div
+      className={`flex items-center py-3 px-4 ${index % 2 === 0 ? 'bg-transparent' : 'bg-gray-100 dark:bg-gray-800'}`}
+    >
       <div className="w-1/2">{variety.name}</div>
-      <div className="w-1/4">
-        <span>{formatDistanceToNow(parseInt(variety.createdAt), {addSuffix: true})}</span>
-      </div>
-      <div className="w-1/4">
-        <span>{formatDistanceToNow(parseInt(variety.updatedAt), {addSuffix: true})}</span>
-      </div>
     </div>
   )
 }

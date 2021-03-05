@@ -1,24 +1,34 @@
-//import {gql} from 'apollo-server-express'
-//import {Resolvers} from '../types'
+import {QueryBus} from '@nestjs/cqrs'
+import {Args, Parent, Query, ResolveField, Resolver} from '@nestjs/graphql'
+import {CountryMapper} from '../../infra/mappers'
+import {RegionMapper} from '../../infra/mappers/RegionMapper'
+import {GetCountryQuery, GetRegionQuery, ListRegionsQuery} from '../queries'
 
-//const resolvers: Resolvers = {
-//Query: {
-//listRegions: async (parent, args, {services}) => {
-//return services.region.getConnectionResults(args)
-//},
-//getRegion: async (parent, {id}, {services}) => {
-//return services.region.getById(id)
-//},
-//},
-//Region: {
-//country: async (parent, args, {services}) => {
-//if (!parent.country) return null
-//return services.country.getById(parent.country)
-//},
-//farms: async (parent, args, {services}) => {
-//return services.farm.listByRegionName(parent.id)
-//},
-//},
-//}
+@Resolver('Region')
+export class RegionResolvers {
+  constructor(private readonly queryBus: QueryBus) {}
 
-//export const schema = {typeDefs, resolvers}
+  @Query('listRegions')
+  async listRegions() {
+    const query = new ListRegionsQuery()
+    return this.queryBus.execute(query)
+  }
+
+  @Query('getRegion')
+  async getRegion(@Args('id') id: string) {
+    const query = new GetRegionQuery(id)
+    const region = await this.queryBus.execute(query)
+
+    return RegionMapper.toDTO(region)
+  }
+
+  @ResolveField()
+  async country(@Parent() region: any) {
+    console.log({region})
+    const query = new GetCountryQuery(region.country)
+    const country = await this.queryBus.execute(query)
+    console.log({country})
+
+    return CountryMapper.toDTO(country)
+  }
+}
