@@ -1,3 +1,26 @@
+import {CommandBus, QueryBus} from '@nestjs/cqrs'
+import {Args, Query, Resolver} from '@nestjs/graphql'
+import {FarmMapper} from '../../infra/mappers'
+import {GetFarmQuery, ListFarmsQuery} from '../queries'
+
+@Resolver('Farm')
+export class FarmResolvers {
+  constructor(private readonly queryBus: QueryBus, private readonly commandBus: CommandBus) {}
+
+  @Query('listFarms')
+  async listFarms() {
+    const query = new ListFarmsQuery()
+    return this.queryBus.execute(query)
+  }
+
+  @Query('getFarm')
+  async getFarm(@Args('id') id: string) {
+    const query = new GetFarmQuery(id)
+    const farm = await this.queryBus.execute(query)
+
+    return FarmMapper.toDTO(farm)
+  }
+}
 //import {gql} from 'apollo-server-express'
 //import {Resolvers} from '../types'
 

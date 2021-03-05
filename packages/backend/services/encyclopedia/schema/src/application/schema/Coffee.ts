@@ -21,6 +21,10 @@ export class CoffeeResolvers {
     const query = new GetCoffeeQuery(id)
     const coffee: CoffeeAggregate = await this.queryBus.execute(query)
 
+    if (!coffee) {
+      return null
+    }
+
     return CoffeeMapper.toDTO(coffee)
   }
 
