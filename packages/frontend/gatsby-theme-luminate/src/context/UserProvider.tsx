@@ -66,6 +66,7 @@ const UserProvider = ({children, setToken}: Props) => {
   React.useEffect(() => {
     if (shouldRefreshToken) {
       refreshToken()
+      setShouldRefreshToken(false)
     }
   }, [shouldRefreshToken])
 
@@ -110,7 +111,10 @@ const UserProvider = ({children, setToken}: Props) => {
     logout: options => {
       return new Promise(async resolve => {
         const response = await logout(options)
-        setShouldRefreshToken(true)
+        if (response.data.logout) {
+          setToken(null)
+          setUser(null)
+        }
         resolve(response)
       })
     },

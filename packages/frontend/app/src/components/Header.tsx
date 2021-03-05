@@ -1,6 +1,7 @@
 import React from 'react'
 import {Menu, Transition} from '@headlessui/react'
 import {IconTypesEnum, Icon} from '@luminate/components'
+import {useUser} from '@luminate/gatsby-theme-luminate/src'
 
 const SearchInput = () => {
   return (
@@ -34,6 +35,7 @@ export interface HeaderProps {
 }
 
 export const Header = ({open, setOpen}: HeaderProps) => {
+  const {logout} = useUser()
   return (
     <nav className="flex-shrink-0 bg-gray-50 dark:bg-gray-800">
       <div className="px-2 sm:px-4 lg:px-8">
@@ -118,13 +120,13 @@ export const Header = ({open, setOpen}: HeaderProps) => {
                               <Menu.Item>
                                 {() => {
                                   return (
-                                    <a
-                                      href="#"
+                                    <button
+                                      onClick={() => logout()}
                                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                       role="menuitem"
                                     >
                                       Logout
-                                    </a>
+                                    </button>
                                   )
                                 }}
                               </Menu.Item>
