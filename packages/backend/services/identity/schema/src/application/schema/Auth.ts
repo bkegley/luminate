@@ -50,7 +50,7 @@ export class AuthResolvers {
     const command = new LogoutUserCommand(token)
     const response = await this.commandBus.execute(command)
 
-    res.clearCookie('lmnt_ref')
+    res.clearCookie('lmt_ref')
 
     return response
   }
@@ -63,7 +63,7 @@ export class AuthResolvers {
     const token = await this.commandBus.execute(command)
 
     if (!token) {
-      res.clearCookie('lmnt_ref')
+      res.clearCookie('lmt_ref')
       return null
     }
     return token
