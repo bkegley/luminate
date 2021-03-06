@@ -3,11 +3,18 @@ import {FarmAggregate, FarmAggregateAttributes} from '../../domain/Farm/Farm'
 import {EntityId} from '@luminate/services-shared'
 
 export class FarmMapper {
+  public static toAttrs(obj: any) {
+    const attrs: FarmAggregateAttributes = {
+      name: obj.name,
+      regionId: obj.region ? EntityId.create(obj.region) : null,
+      countryId: obj.countryId ? EntityId.create(obj.country) : null,
+    }
+
+    return attrs
+  }
   public static toDomain(obj: any) {
     const id = obj.id || obj._id
-    let attrs: FarmAggregateAttributes = {
-      name: obj.name,
-    }
+    const attrs = FarmMapper.toAttrs(obj)
     const farm = FarmAggregate.create(attrs, id ? EntityId.create(id) : null)
     return farm
   }

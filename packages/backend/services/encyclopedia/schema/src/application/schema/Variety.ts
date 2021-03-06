@@ -2,6 +2,7 @@ import {CommandBus, QueryBus} from '@nestjs/cqrs'
 import {Args, Mutation, Query, Resolver} from '@nestjs/graphql'
 import {VarietyMapper} from '../../infra/mappers'
 import {CreateVarietyInput} from '../../types'
+import {CreateVarietyCommand, DeleteVarietyCommand, UpdateVarietyCommand} from '../commands'
 import {GetVarietyQuery, ListVarietiesQuery} from '../queries'
 
 @Resolver('Variety')
@@ -23,13 +24,33 @@ export class VarietyResolvers {
   }
 
   @Mutation('createVariety')
-  async createVariety(@Args('input') input: CreateVarietyInput) {}
+  async createVariety(@Args('input') input: CreateVarietyInput) {
+    const command = new CreateVarietyCommand(input)
+    const variety = await this.commandBus.execute(command)
+    if (!variety) {
+      return null
+    }
+
+    return VarietyMapper.toDTO(variety)
+  }
 
   @Mutation('updateVariety')
-  async updateVariety(@Args('id') id: string, @Args('input') input: CreateVarietyInput) {}
+  async updateVariety(@Args('id') id: string, @Args('input') input: CreateVarietyInput) {
+    const command = new UpdateVarietyCommand(id, input)
+    const variety = await this.commandBus.execute(command)
+    if (!variety) {
+      // possibly throw error instead?
+      return null
+    }
+
+    return VarietyMapper.toDTO(variety)
+  }
 
   @Mutation('deleteVariety')
-  async deleteVariety(@Args('id') id: string) {}
+  async deleteVariety(@Args('id') id: string) {
+    const command = new DeleteVarietyCommand(id)
+    return this.commandBus.execute(command)
+  }
 }
 //import {gql} from 'apollo-server-express'
 //import {Resolvers} from '../types'
