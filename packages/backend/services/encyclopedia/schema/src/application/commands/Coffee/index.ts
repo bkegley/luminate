@@ -1,2 +1,6 @@
 export * from './CreateCoffeeCommand'
 export * from './CreateCoffeeCommandHandler'
+export * from './DeleteCoffeeCommand'
+export * from './DeleteCoffeeCommandHandler'
+export * from './UpdateCoffeeCommand'
+export * from './UpdateCoffeeCommandHandler'

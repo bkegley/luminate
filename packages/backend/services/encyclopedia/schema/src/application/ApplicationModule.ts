@@ -3,7 +3,7 @@ import {CqrsModule} from '@nestjs/cqrs'
 import {GraphQLFederationModule} from '@nestjs/graphql'
 import {InfraModule} from '../infra/InfraModule'
 import {CoffeeResolvers, CountryResolvers, FarmResolvers, RegionResolvers, VarietyResolvers} from './schema'
-import {CreateCoffeeCommandHandler} from './commands'
+import {CreateCoffeeCommandHandler, UpdateCoffeeCommandHandler, DeleteCoffeeCommandHandler} from './commands'
 import {
   GetCoffeeQueryHandler,
   GetCountryQueryHandler,
@@ -31,7 +31,7 @@ const queryHandlers = [
   ListRegionsQueryHandler,
   ListVarietiesQueryHandler,
 ]
-const commandHandlers = [CreateCoffeeCommandHandler]
+const commandHandlers = [CreateCoffeeCommandHandler, UpdateCoffeeCommandHandler, DeleteCoffeeCommandHandler]
 
 @Module({
   imports: [

@@ -1,10 +1,10 @@
-import {Args, Mutation, Query, Resolver} from '@nestjs/graphql'
+import {Args, Mutation, Query, Resolver, ResolveField, Parent} from '@nestjs/graphql'
 import {CommandBus, QueryBus} from '@nestjs/cqrs'
 import {CreateCoffeeInput, UpdateCoffeeInput} from '../../types'
-import {CreateCoffeeCommand} from '../commands'
-import {CoffeeMapper} from '../../infra/mappers'
+import {CreateCoffeeCommand, DeleteCoffeeCommand, UpdateCoffeeCommand} from '../commands'
+import {CoffeeMapper, CountryMapper, RegionMapper} from '../../infra/mappers'
 import {CoffeeAggregate} from '../../domain/Coffee/Coffee'
-import {GetCoffeeQuery, ListCoffeesQuery} from '../queries'
+import {GetCoffeeQuery, GetCountryQuery, GetRegionQuery, ListCoffeesQuery, ListVarietiesQuery} from '../queries'
 
 @Resolver('Coffee')
 export class CoffeeResolvers {
@@ -36,19 +36,52 @@ export class CoffeeResolvers {
     return CoffeeMapper.toDTO(coffee)
   }
 
-  //@Mutation('updateCoffee')
-  //async updateCoffee(@Args('id') id: string, @Args('input') input: UpdateCoffeeInput) {
-  //const command = new UpdateCoffeeCommand(id, input)
-  //const coffee: CoffeeAggregate = await this.commandBus.execute(command)
+  @Mutation('updateCoffee')
+  async updateCoffee(@Args('id') id: string, @Args('input') input: UpdateCoffeeInput) {
+    const command = new UpdateCoffeeCommand(id, input)
+    const coffee: CoffeeAggregate = await this.commandBus.execute(command)
 
-  //return CoffeeMapper.toDTO(coffee)
-  //}
+    return CoffeeMapper.toDTO(coffee)
+  }
 
-  //@Mutation('deleteCoffee')
-  //async deleteCoffee(@Args('id') id: string) {
-  //const command = new DeleteCoffeeCommand(id)
-  //return this.commandBus.execute(command)
-  //}
+  @Mutation('deleteCoffee')
+  async deleteCoffee(@Args('id') id: string) {
+    const command = new DeleteCoffeeCommand(id)
+    return this.commandBus.execute(command)
+  }
+
+  @ResolveField()
+  async country(@Parent() coffee: any) {
+    if (!coffee.country) {
+      return null
+    }
+    const query = new GetCountryQuery(coffee.country)
+    const country = await this.queryBus.execute(query)
+    return CountryMapper.toDTO(country)
+  }
+
+  @ResolveField()
+  async region(@Parent() coffee: any) {
+    if (!coffee.region) {
+      return null
+    }
+    const query = new GetRegionQuery(coffee.region)
+    const region = await this.queryBus.execute(query)
+    return RegionMapper.toDTO(region)
+  }
+
+  @ResolveField()
+  async varieties(@Parent() coffee: any) {
+    if (!coffee.varieties || !coffee.varieties.length) {
+      return []
+    }
+
+    const query = new ListVarietiesQuery({conditions: {_id: coffee.varieties}})
+    // TODO: fix return type on list query
+    const varieties = await this.queryBus.execute(query)
+
+    return varieties.edges.map((edge: any) => edge.node)
+  }
 }
 
 //const resolvers: Resolvers = {
