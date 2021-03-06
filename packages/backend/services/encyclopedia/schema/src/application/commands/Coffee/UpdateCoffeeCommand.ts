@@ -1,14 +1,14 @@
 import {UpdateCoffeeInput} from '../../../types'
 
 export class UpdateCoffeeCommand {
-  public name?: string
-  public country?: string
-  public region?: string
-  public farm?: string
-  public farmZone?: string
-  public varieties?: string[]
-  public elevation?: string
-  public components?: Array<{
+  name?: string
+  country?: string
+  region?: string
+  farm?: string
+  farmZone?: string
+  varieties?: string[]
+  elevation?: string
+  components?: Array<{
     coffee: string
     percentage: number
   }>

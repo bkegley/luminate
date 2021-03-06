@@ -3,13 +3,17 @@ import {VarietyAggregate, VarietyAggregateAttributes} from '../../domain/Variety
 import {EntityId} from '@luminate/services-shared'
 
 export class VarietyMapper {
-  public static toDomain(obj: any) {
-    const id = obj.id || obj._id
-
-    let attrs: VarietyAggregateAttributes = {
+  public static toAttrs(obj: any) {
+    const attrs: VarietyAggregateAttributes = {
       name: obj.name,
       background: obj.background,
     }
+
+    return attrs
+  }
+  public static toDomain(obj: any) {
+    const id = obj.id || obj._id
+    const attrs = VarietyMapper.toAttrs(obj)
 
     const variety = VarietyAggregate.create(attrs, id ? EntityId.create(id) : null)
     return variety

@@ -1,6 +1,8 @@
 import {CommandBus, QueryBus} from '@nestjs/cqrs'
-import {Args, Query, Resolver} from '@nestjs/graphql'
+import {Args, Mutation, Query, Resolver} from '@nestjs/graphql'
 import {FarmMapper} from '../../infra/mappers'
+import {CreateFarmInput, UpdateFarmInput} from '../../types'
+import {CreateFarmCommand, DeleteFarmCommand, UpdateFarmCommand} from '../commands'
 import {GetFarmQuery, ListFarmsQuery} from '../queries'
 
 @Resolver('Farm')
@@ -20,19 +22,39 @@ export class FarmResolvers {
 
     return FarmMapper.toDTO(farm)
   }
+
+  @Mutation('createFarm')
+  async createFarm(@Args('input') input: CreateFarmInput) {
+    const command = new CreateFarmCommand(input)
+    const farm = await this.commandBus.execute(command)
+    if (!farm) {
+      return null
+    }
+
+    return FarmMapper.toDTO(farm)
+  }
+
+  @Mutation('updateFarm')
+  async updateFarm(@Args('id') id: string, @Args('input') input: UpdateFarmInput) {
+    const command = new UpdateFarmCommand(id, input)
+    const farm = await this.commandBus.execute(command)
+    if (!farm) {
+      return null
+    }
+
+    return FarmMapper.toDTO(farm)
+  }
+
+  @Mutation('deleteFarm')
+  async deleteFarm(@Args('id') id: string) {
+    const command = new DeleteFarmCommand(id)
+    return this.commandBus.execute(command)
+  }
 }
 //import {gql} from 'apollo-server-express'
 //import {Resolvers} from '../types'
 
 //const resolvers: Resolvers = {
-//Query: {
-//listFarms: async (parent, args, {services}) => {
-//return services.farm.getConnectionResults(args)
-//},
-//getFarm: async (parent, {id}, {services}, info) => {
-//return services.farm.getById(id)
-//},
-//},
 //Mutation: {
 //createFarm: async (parent, {input}, {services}) => {
 //return services.farm.create(input)
