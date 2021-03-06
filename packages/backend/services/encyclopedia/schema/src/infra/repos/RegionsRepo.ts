@@ -43,6 +43,6 @@ export class RegionsRepo implements IRegionsRepo {
   }
 
   public async delete(id: string) {
-    this.regionModel.deleteOne({_id: id})
+    await this.regionModel.deleteOne({_id: id})
   }
 }

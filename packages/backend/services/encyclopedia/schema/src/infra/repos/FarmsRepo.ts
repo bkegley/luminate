@@ -43,6 +43,6 @@ export class FarmsRepo implements IFarmsRepo {
   }
 
   public async delete(id: string) {
-    this.farmModel.deleteOne({_id: id})
+    await this.farmModel.deleteOne({_id: id})
   }
 }
