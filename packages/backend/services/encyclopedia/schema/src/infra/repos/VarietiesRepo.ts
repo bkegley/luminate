@@ -43,6 +43,6 @@ export class VarietiesRepo implements IVarietiesRepo {
   }
 
   public async delete(id: string) {
-    this.varietyModel.deleteOne({_id: id})
+    await this.varietyModel.deleteOne({_id: id})
   }
 }

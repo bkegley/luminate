@@ -43,6 +43,6 @@ export class CountriesRepo implements ICountriesRepo {
   }
 
   public async delete(id: string) {
-    this.countryModel.deleteOne({_id: id})
+    await this.countryModel.deleteOne({_id: id})
   }
 }

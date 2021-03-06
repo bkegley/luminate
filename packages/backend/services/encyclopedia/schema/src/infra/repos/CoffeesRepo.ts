@@ -43,6 +43,6 @@ export class CoffeesRepo implements ICoffeesRepo {
   }
 
   public async delete(id: string) {
-    this.coffeeModel.deleteOne({_id: id})
+    await this.coffeeModel.deleteOne({_id: id})
   }
 }
