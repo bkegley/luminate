@@ -3,13 +3,46 @@ import {CoffeeName} from './CoffeeName'
 
 export interface CoffeeAggregateAttributes {
   name: CoffeeName
-  country?: EntityId
-  region?: EntityId
+  countryId?: EntityId
+  regionId?: EntityId
+  varietyIds?: EntityId[]
 }
 
 export class CoffeeAggregate extends AggregateRoot<CoffeeAggregateAttributes> {
   public get name() {
     return this.attrs.name
+  }
+
+  public get countryId() {
+    return this.attrs.countryId
+  }
+
+  public get regionId() {
+    return this.attrs.regionId
+  }
+
+  public get varietyIds() {
+    return this.attrs.varietyIds
+  }
+
+  public update(attrs: Partial<CoffeeAggregateAttributes>) {
+    if (attrs.countryId) {
+      this.attrs.countryId = attrs.countryId
+    }
+
+    if (attrs.name) {
+      this.attrs.name = attrs.name
+    }
+
+    if (attrs.regionId) {
+      this.attrs.regionId = attrs.regionId
+    }
+
+    if (attrs.varietyIds) {
+      this.attrs.varietyIds = attrs.varietyIds
+    }
+
+    // TODO: register updated event
   }
 
   public static create(attrs: CoffeeAggregateAttributes, id?: EntityId) {

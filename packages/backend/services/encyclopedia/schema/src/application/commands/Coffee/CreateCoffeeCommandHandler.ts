@@ -10,16 +10,10 @@ export class CreateCoffeeCommandHandler implements ICommandHandler<CreateCoffeeC
   constructor(private readonly eventBus: EventBus, private readonly coffeesRepo: CoffeesRepo) {}
 
   async execute(command: CreateCoffeeCommand) {
-    const existingCoffee = await this.coffeesRepo.getByName(command.name)
-
-    if (existingCoffee) {
-      throw new Error('Coffee already exists')
-    }
-
     const coffee = CoffeeAggregate.create({
       name: CoffeeName.create(command.name),
-      country: command.country ? EntityId.create(command.country) : undefined,
-      region: command.region ? EntityId.create(command.region) : undefined,
+      countryId: command.country ? EntityId.create(command.country) : undefined,
+      regionId: command.region ? EntityId.create(command.region) : undefined,
     })
 
     await this.coffeesRepo.save(coffee)

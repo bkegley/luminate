@@ -7,8 +7,8 @@ import {VarietiesRepo} from '../../../infra/repos'
 export class ListVarietiesQueryHandler implements IQueryHandler<ListVarietiesQuery, any> {
   constructor(private readonly varietiesRepo: VarietiesRepo) {}
 
-  async execute(_query: ListVarietiesQuery) {
-    const varieties = await this.varietiesRepo.list()
+  async execute(query: ListVarietiesQuery) {
+    const varieties = await this.varietiesRepo.list(query.conditions)
 
     return {
       pageInfo: {
