@@ -1,6 +1,6 @@
-import {Variety} from '../../types'
 import {VarietyAggregate, VarietyAggregateAttributes} from '../../domain/Variety/Variety'
 import {EntityId} from '@luminate/services-shared'
+import {IVarietyDTO} from '../dtos'
 
 export class VarietyMapper {
   public static toAttrs(obj: any) {
@@ -27,7 +27,7 @@ export class VarietyMapper {
     }
   }
 
-  public static toDTO(variety: VarietyAggregate): Variety {
+  public static toDTO(variety: VarietyAggregate): IVarietyDTO {
     const now = new Date()
     return {
       id: variety.getEntityId().toString(),
