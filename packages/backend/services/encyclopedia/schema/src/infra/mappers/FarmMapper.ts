@@ -1,6 +1,6 @@
-import {Farm} from '../../types'
 import {FarmAggregate, FarmAggregateAttributes} from '../../domain/Farm/Farm'
 import {EntityId} from '@luminate/services-shared'
+import {IFarmDTO} from '../dtos'
 
 export class FarmMapper {
   public static toAttrs(obj: any) {
@@ -26,13 +26,14 @@ export class FarmMapper {
     }
   }
 
-  public static toDTO(farm: FarmAggregate): Farm {
+  public static toDTO(farm: FarmAggregate): IFarmDTO {
     const now = new Date()
     // TODO: add farmZones
-    // @ts-ignore
     return {
       id: farm.getEntityId().toString(),
       name: farm.name,
+      countryId: farm.countryId?.value ?? null,
+      regionId: farm.regionId?.value ?? null,
       // TODO: fix timestamps
       createdAt: now.toDateString(),
       updatedAt: now.toDateString(),

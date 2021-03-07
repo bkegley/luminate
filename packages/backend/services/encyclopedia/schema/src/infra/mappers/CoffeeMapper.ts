@@ -1,7 +1,7 @@
-import {Coffee} from '../../types'
 import {CoffeeAggregate, CoffeeAggregateAttributes} from '../../domain/Coffee/Coffee'
 import {EntityId} from '@luminate/services-shared'
 import {CoffeeName} from '../../domain/Coffee/CoffeeName'
+import {ICoffeeDTO} from '../dtos'
 
 export class CoffeeMapper {
   // TODO: should validate input
@@ -34,22 +34,15 @@ export class CoffeeMapper {
     }
   }
 
-  // TODO: DTOs should not be equivalent to GraphQL return types
-  // Instead, they should return ids so that field resolvers can
-  // pick them up and resolve the entity
-  public static toDTO(coffee: CoffeeAggregate): Coffee {
+  public static toDTO(coffee: CoffeeAggregate): ICoffeeDTO {
     const now = new Date()
-    // @ts-ignore
     return {
       id: coffee.getEntityId().toString(),
       name: coffee.name.value,
-      // @ts-ignore
       country: coffee.countryId?.toString(),
-      // @ts-ignore
       region: coffee.regionId?.toString(),
-      // @ts-ignore
       varieties: coffee.varietyIds?.map(id => id.toString()),
-      // TODO: fix timestamps
+      elevation: coffee.elevation,
       createdAt: now.toDateString(),
       updatedAt: now.toDateString(),
     }

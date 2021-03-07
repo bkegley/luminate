@@ -6,6 +6,7 @@ export interface CoffeeAggregateAttributes {
   countryId?: EntityId
   regionId?: EntityId
   varietyIds?: EntityId[]
+  elevation?: number
 }
 
 export class CoffeeAggregate extends AggregateRoot<CoffeeAggregateAttributes> {
@@ -23,6 +24,10 @@ export class CoffeeAggregate extends AggregateRoot<CoffeeAggregateAttributes> {
 
   public get varietyIds() {
     return this.attrs.varietyIds
+  }
+
+  public get elevation() {
+    return this.attrs.elevation
   }
 
   public update(attrs: Partial<CoffeeAggregateAttributes>) {
