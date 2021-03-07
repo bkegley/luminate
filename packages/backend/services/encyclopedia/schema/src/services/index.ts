@@ -1,6 +1,0 @@
-export * from './CoffeeService'
-export * from './CountryService'
-export * from './FarmService'
-export * from './NoteService'
-export * from './RegionService'
-export * from './VarietyService'

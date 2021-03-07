@@ -2,9 +2,8 @@ import shp from 'shpjs'
 import fs from 'fs'
 import https from 'https'
 import mkdirp from 'mkdirp'
-import {CountryService} from '../services/CountryService'
 import {createMongoConnection} from '@luminate/mongo-utils'
-import {RegionService} from '../services'
+import {CountryModel, RegionModel} from '../infra/models'
 
 async function downloadZip(url: string, filePath: string): Promise<Buffer> {
   return new Promise(async (resolve, reject) => {
@@ -90,13 +89,14 @@ async function geoPopulate() {
     }
   })
 
-  const countryService = new CountryService()
-  const dbCountries = await Promise.all([...countryData.map(country => countryService.upsert(country))])
+  const dbCountries = await Promise.all([
+    ...countryData.map(country =>
+      CountryModel.findOneAndUpdate({name: country.name}, country, {upsert: true, new: true}),
+    ),
+  ])
 
   // Create regions
   const regions = regionsJson.features
-
-  const regionService = new RegionService()
 
   const regionData = regions.map(region => {
     // @ts-ignore
@@ -121,7 +121,11 @@ async function geoPopulate() {
     }
   }, [])
 
-  const dbRegions = await Promise.all([...regionData.filter(Boolean).map(region => regionService.upsert(region))])
+  const dbRegions = await Promise.all([
+    ...regionData
+      .filter(Boolean)
+      .map(region => RegionModel.findOneAndUpdate({name: region.name}, region, {upsert: true, new: true})),
+  ])
 
   process.exit(0)
 }
