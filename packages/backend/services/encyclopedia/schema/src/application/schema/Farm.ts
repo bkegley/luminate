@@ -1,13 +1,20 @@
 import {CommandBus, QueryBus} from '@nestjs/cqrs'
-import {Args, Mutation, Query, Resolver} from '@nestjs/graphql'
-import {FarmMapper} from '../../infra/mappers'
+import {Args, Mutation, Parent, Query, ResolveField, Resolver} from '@nestjs/graphql'
+import {IFarmDTO} from '../../infra/dtos'
+import {CountryLoader, RegionLoader} from '../../infra/loaders'
+import {CountryMapper, FarmMapper, RegionMapper} from '../../infra/mappers'
 import {CreateFarmInput, UpdateFarmInput} from '../../types'
 import {CreateFarmCommand, DeleteFarmCommand, UpdateFarmCommand} from '../commands'
 import {GetFarmQuery, ListFarmsQuery} from '../queries'
 
 @Resolver('Farm')
 export class FarmResolvers {
-  constructor(private readonly queryBus: QueryBus, private readonly commandBus: CommandBus) {}
+  constructor(
+    private readonly queryBus: QueryBus,
+    private readonly commandBus: CommandBus,
+    private readonly countryLoader: CountryLoader,
+    private readonly regionLoader: RegionLoader,
+  ) {}
 
   @Query('listFarms')
   async listFarms() {
@@ -50,21 +57,28 @@ export class FarmResolvers {
     const command = new DeleteFarmCommand(id)
     return this.commandBus.execute(command)
   }
-}
-//import {gql} from 'apollo-server-express'
-//import {Resolvers} from '../types'
 
-//const resolvers: Resolvers = {
+  @ResolveField()
+  async country(@Parent() farm: IFarmDTO) {
+    if (!farm.countryId) {
+      return null
+    }
+
+    const country = await this.countryLoader.getById(farm.countryId)
+    return CountryMapper.toDTO(country)
+  }
+
+  @ResolveField()
+  async region(@Parent() farm: IFarmDTO) {
+    if (!farm.regionId) {
+      return null
+    }
+
+    const region = await this.regionLoader.getById(farm.regionId)
+    return RegionMapper.toDTO(region)
+  }
+}
 //Mutation: {
-//createFarm: async (parent, {input}, {services}) => {
-//return services.farm.create(input)
-//},
-//updateFarm: async (parent, {id, input}, {services}) => {
-//return services.farm.updateById(id, input)
-//},
-//deleteFarm: async (parent, {id}, {services}) => {
-//return services.farm.deleteById(id)
-//},
 //createFarmZone: async (parent, {farmId, input}, {services}) => {
 //return services.farm.createFarmZone(farmId, input)
 //},
@@ -75,16 +89,3 @@ export class FarmResolvers {
 //return services.farm.deleteFarmZoneById(id)
 //},
 //},
-//Farm: {
-//country: async (parent, args, {services}) => {
-//if (!parent.country) return null
-//return services.country.getById(parent.country)
-//},
-//region: async (parent, args, {services}) => {
-//if (!parent.region) return null
-//return services.region.getById(parent.region)
-//},
-//},
-//}
-
-//export const schema = {typeDefs, resolvers}

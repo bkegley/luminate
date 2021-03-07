@@ -21,7 +21,6 @@ export class CountryResolvers {
     return CountryMapper.toDTO(country)
   }
 
-  // TODO: Use Dataloader to execute with a single db call
   @ResolveField()
   async regions(@Parent() country: any) {
     const query = new ListRegionsQuery({conditions: {country: country.id}})

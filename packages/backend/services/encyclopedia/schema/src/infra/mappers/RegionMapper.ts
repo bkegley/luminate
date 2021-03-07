@@ -30,7 +30,7 @@ export class RegionMapper {
     return {
       id: region.getEntityId().toString(),
       name: region.name,
-      country: region.countryId.value ?? null,
+      country: region.countryId?.value ?? null,
     }
   }
 }
