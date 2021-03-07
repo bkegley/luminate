@@ -5,13 +5,13 @@ import {InfraModule} from '../infra/InfraModule'
 import {CoffeeResolvers, CountryResolvers, FarmResolvers, RegionResolvers, VarietyResolvers} from './schema'
 import {
   CreateCoffeeCommandHandler,
-  UpdateCoffeeCommandHandler,
-  DeleteCoffeeCommandHandler,
   CreateFarmCommandHandler,
-  DeleteFarmCommandHandler,
-  UpdateFarmCommandHandler,
   CreateVarietyCommandHandler,
+  DeleteCoffeeCommandHandler,
+  DeleteFarmCommandHandler,
   DeleteVarietyCommandHandler,
+  UpdateCoffeeCommandHandler,
+  UpdateFarmCommandHandler,
   UpdateVarietyCommandHandler,
 } from './commands'
 import {
