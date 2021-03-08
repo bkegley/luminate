@@ -1,13 +1,12 @@
-import {QueryFindOneAndUpdateOptions} from 'mongoose'
+import {Model, QueryFindOneAndUpdateOptions} from 'mongoose'
 import {Cursor} from '../utils/Cursor'
 import {BaseDocument} from './BaseDocument'
 import {QueryInputParser} from '../utils'
 import {IListDocumentsArgs} from './types'
-import {IService} from './IService'
-import {IRepo} from '.'
+import {IRepo} from './IRepo'
 
-export abstract class BaseService<T> implements IService<T> {
-  constructor(protected repo: IRepo<any>) {}
+export abstract class BaseRepo<T extends BaseDocument> implements IRepo<T> {
+  constructor(protected model: Model<T>) {}
 
   protected limit = 25
 
@@ -43,8 +42,7 @@ export abstract class BaseService<T> implements IService<T> {
   }
 
   public async getConnectionResults(args: IListDocumentsArgs) {
-    const documentsPlusOne = await this.repo.list(this.buildConnectionQuery(args))
-
+    const documentsPlusOne = await this.model.find(...this.buildConnectionQuery(args))
     if (!documentsPlusOne.length) {
       return {
         pageInfo: {
@@ -79,8 +77,31 @@ export abstract class BaseService<T> implements IService<T> {
     }
   }
 
-  public abstract create(input: any): any
-  public abstract updateOne(conditions: any, input: any, options?: QueryFindOneAndUpdateOptions): any
-  public abstract updateById(id: string, input: any, options?: QueryFindOneAndUpdateOptions): any
-  public abstract deleteById(id: string): any
+  public async list(): Promise<T[]>
+  public async list(args?: Parameters<typeof Model.find>) {
+    if (!args) {
+      return this.model.find()
+    }
+    return this.model.find(...args)
+  }
+
+  public async getById(id: string) {
+    return this.model.findById(id)
+  }
+
+  public async create(input: any) {
+    return await new this.model(input).save()
+  }
+
+  public async updateOne(conditions: any, input: any, options?: QueryFindOneAndUpdateOptions) {
+    return await this.model.findOneAndUpdate(conditions, input, options || {new: true})
+  }
+
+  public async updateById(id: string, input: any, options?: QueryFindOneAndUpdateOptions) {
+    return await this.model.findByIdAndUpdate(id, input, options || {new: true})
+  }
+
+  public async delete(id: string) {
+    await this.model.findByIdAndDelete(id)
+  }
 }

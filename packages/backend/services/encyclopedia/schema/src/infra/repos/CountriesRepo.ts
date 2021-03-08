@@ -5,27 +5,12 @@ import {ICountriesRepo} from './ICountriesRepo'
 import {CountryDocument} from '../models'
 import {CountryMapper} from '../mappers'
 import {CountryAggregate} from '../../domain/Country/Country'
+import {BaseRepo} from '@luminate/mongo-utils'
 
 @Injectable()
-export class CountriesRepo implements ICountriesRepo {
-  constructor(@InjectModel('country') private countryModel: Model<CountryDocument>) {}
-
-  public async list(conditions?: any) {
-    const countries = await this.countryModel.find(conditions)
-    if (!countries) {
-      return null
-    }
-
-    return countries.map(country => CountryMapper.toDomain(country))
-  }
-
-  public async getById(id: string) {
-    const country = await this.countryModel.findById(id)
-    if (!country) {
-      return null
-    }
-
-    return CountryMapper.toDomain(country)
+export class CountriesRepo extends BaseRepo<CountryDocument> implements ICountriesRepo {
+  constructor(@InjectModel('country') private countryModel: Model<CountryDocument>) {
+    super(countryModel)
   }
 
   public async getByName(name: string) {
@@ -40,9 +25,5 @@ export class CountriesRepo implements ICountriesRepo {
   public async save(country: CountryAggregate) {
     const {id, ...countryObj} = CountryMapper.toPersistence(country)
     await this.countryModel.updateOne({_id: id}, countryObj, {upsert: true})
-  }
-
-  public async delete(id: string) {
-    await this.countryModel.deleteOne({_id: id})
   }
 }

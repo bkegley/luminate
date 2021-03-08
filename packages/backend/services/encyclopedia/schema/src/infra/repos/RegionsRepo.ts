@@ -5,31 +5,16 @@ import {IRegionsRepo} from './IRegionsRepo'
 import {RegionDocument} from '../models'
 import {RegionMapper} from '../mappers/RegionMapper'
 import {RegionAggregate} from '../../domain/Region/Region'
+import {BaseRepo} from '@luminate/mongo-utils'
 
 @Injectable()
-export class RegionsRepo implements IRegionsRepo {
-  constructor(@InjectModel('region') private regionModel: Model<RegionDocument>) {}
-
-  public async list(conditions?: any) {
-    const regions = await this.regionModel.find(conditions)
-    if (!regions) {
-      return null
-    }
-
-    return regions.map(region => RegionMapper.toDomain(region))
-  }
-
-  public async getById(id: string) {
-    const region = await this.regionModel.findById(id)
-    if (!region) {
-      return null
-    }
-
-    return RegionMapper.toDomain(region)
+export class RegionsRepo extends BaseRepo<RegionDocument> implements IRegionsRepo {
+  constructor(@InjectModel('region') protected model: Model<RegionDocument>) {
+    super(model)
   }
 
   public async getByName(name: string) {
-    const region = await this.regionModel.findOne({name})
+    const region = await this.model.findOne({name})
     if (!region) {
       return null
     }
@@ -39,10 +24,6 @@ export class RegionsRepo implements IRegionsRepo {
 
   public async save(region: RegionAggregate) {
     const {id, ...regionObj} = RegionMapper.toPersistence(region)
-    await this.regionModel.updateOne({_id: id}, regionObj, {upsert: true})
-  }
-
-  public async delete(id: string) {
-    await this.regionModel.deleteOne({_id: id})
+    await this.model.updateOne({_id: id}, regionObj, {upsert: true})
   }
 }

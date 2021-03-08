@@ -28,9 +28,9 @@ export class CoffeeMapper {
     return {
       id: coffee.getEntityId().toString(),
       name: coffee.name.value,
-      country: coffee.countryId.toString(),
-      region: coffee.regionId.toString(),
-      varieties: coffee.varietyIds.map(id => id.toString()),
+      country: coffee.countryId?.toString(),
+      region: coffee.regionId?.toString(),
+      varieties: coffee.varietyIds?.map(id => id.toString()),
     }
   }
 

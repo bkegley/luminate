@@ -1,16 +1,22 @@
 import {QueryBus} from '@nestjs/cqrs'
 import {Args, Query, ResolveField, Resolver, Parent} from '@nestjs/graphql'
-import {CountryMapper} from '../../infra/mappers'
-import {GetCountryQuery, ListCountriesQuery, ListRegionsQuery} from '../queries'
+import {RegionLoader} from '../../infra/loaders'
+import {CountryMapper, RegionMapper} from '../../infra/mappers'
+import {QueryInput} from '../../types'
+import {GetCountryQuery, ListCountriesQuery} from '../queries'
 
 @Resolver('Country')
 export class CountryResolvers {
-  constructor(private readonly queryBus: QueryBus) {}
+  constructor(private readonly queryBus: QueryBus, private readonly regionLoader: RegionLoader) {}
 
   @Query('listCountries')
-  async listCountries() {
-    const query = new ListCountriesQuery()
-    return this.queryBus.execute(query)
+  async listCountries(
+    @Args('cursor') cursor: string,
+    @Args('limit') limit: number,
+    @Args('query') query: QueryInput[],
+  ) {
+    const listQuery = new ListCountriesQuery({cursor, limit, query})
+    return this.queryBus.execute(listQuery)
   }
 
   @Query('getCountry')
@@ -23,10 +29,7 @@ export class CountryResolvers {
 
   @ResolveField()
   async regions(@Parent() country: any) {
-    const query = new ListRegionsQuery({conditions: {country: country.id}})
-    // TODO: update to not return Connection Response
-    const regionsResponse = await this.queryBus.execute(query)
-
-    return regionsResponse.edges.map((edge: any) => edge.node)
+    const regions = await this.regionLoader.listByCountryId(country._id)
+    return regions.map(region => (region ? RegionMapper.toDTO(region) : null)).filter(Boolean)
   }
 }

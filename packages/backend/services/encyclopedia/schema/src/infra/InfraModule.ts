@@ -3,10 +3,13 @@ import {MongooseModule} from '@nestjs/mongoose'
 import {CoffeeSchema, CountrySchema, FarmSchema, RegionSchema, VarietySchema} from './models'
 import {CoffeesRepo, CountriesRepo, FarmsRepo, RegionsRepo, VarietiesRepo} from './repos'
 import {CoffeeLoader, CountryLoader, FarmLoader, RegionLoader, VarietyLoader} from './loaders'
+import {CoffeeService, CountryService} from './services'
 
 const mongoUrl = process.env.DB_URL || `mongodb://localhost:27017/luminate-encyclopedia`
 
 const repos = [CoffeesRepo, CountriesRepo, FarmsRepo, RegionsRepo, VarietiesRepo]
+
+const services = [CoffeeService, CountryService]
 
 const loaders = [CoffeeLoader, CountryLoader, FarmLoader, RegionLoader, VarietyLoader]
 
@@ -36,7 +39,7 @@ const loaders = [CoffeeLoader, CountryLoader, FarmLoader, RegionLoader, VarietyL
       },
     ]),
   ],
-  providers: [...repos, ...loaders],
-  exports: [...repos, ...loaders],
+  providers: [...repos, ...services, ...loaders],
+  exports: [...repos, ...services, ...loaders],
 })
 export class InfraModule {}

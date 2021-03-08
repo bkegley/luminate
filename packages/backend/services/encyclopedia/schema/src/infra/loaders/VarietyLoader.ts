@@ -22,7 +22,7 @@ export class VarietyLoader {
     const varieties = await this.varietyModel.find({_id: ids})
     return ids
       .map(id => varieties.find(variety => variety._id.toString() === id.toString()) || null)
-      .map(variety => VarietyMapper.toDomain(variety))
+      .map(variety => (variety ? VarietyMapper.toDomain(variety) : null))
   })
 
   public async getById(id: string) {

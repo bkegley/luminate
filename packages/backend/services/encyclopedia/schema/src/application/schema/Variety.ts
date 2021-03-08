@@ -24,9 +24,7 @@ export class VarietyResolvers {
   @Query('getVariety')
   async getVariety(@Args('id') id: string) {
     const query = new GetVarietyQuery(id)
-    const variety = await this.queryBus.execute(query)
-
-    return VarietyMapper.toDTO(variety)
+    return this.queryBus.execute(query)
   }
 
   @Mutation('createVariety')

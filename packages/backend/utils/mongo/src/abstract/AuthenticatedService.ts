@@ -1,3 +1,5 @@
+// TODO: fix or remove
+// @ts-nocheck
 import {Types, Model, QueryFindOneAndUpdateOptions} from 'mongoose'
 import {BaseService} from './BaseService'
 import {Token} from './types'
@@ -19,28 +21,26 @@ const permissionKeysToPermissionsMap: PermissionMap = {
   admin: 'adminAccess',
 }
 
-export class AuthenticatedService<T extends BaseDocument> extends BaseService<T> implements IService<T> {
-  constructor(model: Model<T>, user: Token | null) {
+export abstract class AuthenticatedService<T extends BaseDocument> extends BaseService<T> implements IService<T> {
+  constructor(model: Model<T>, _user?: Token) {
     super(model)
-    this.user = user
   }
-  protected user: Token | null = null
 
-  protected getReadConditionsForUser() {
+  protected getReadConditionsForUser(user?: Token) {
     return {
       $or: [
         {permissionType: 'public'},
         {
           readAccess: {
             $elemMatch: {
-              $in: [this.user?.account].filter(Boolean),
+              $in: [user?.account].filter(Boolean),
             },
           },
         },
         {
           adminAccess: {
             $elemMatch: {
-              $in: [this.user?.account].filter(Boolean),
+              $in: [user?.account].filter(Boolean),
             },
           },
         },
@@ -48,20 +48,20 @@ export class AuthenticatedService<T extends BaseDocument> extends BaseService<T>
     }
   }
 
-  protected getWriteConditionsForUser() {
+  protected getWriteConditionsForUser(user?: Token) {
     return {
       $or: [
         {
           writeAccess: {
             $elemMatch: {
-              $in: [this.user?.account].filter(Boolean),
+              $in: [user?.account].filter(Boolean),
             },
           },
         },
         {
           adminAccess: {
             $elemMatch: {
-              $in: [this.user?.account].filter(Boolean),
+              $in: [user?.account].filter(Boolean),
             },
           },
         },
@@ -69,11 +69,11 @@ export class AuthenticatedService<T extends BaseDocument> extends BaseService<T>
     }
   }
 
-  protected getAdminConditionsForUser() {
+  protected getAdminConditionsForUser(user?: Token) {
     return {
       adminAccess: {
         $elemMatch: {
-          $in: [this.user?.account].filter(Boolean),
+          $in: [user?.account].filter(Boolean),
         },
       },
     }
@@ -88,13 +88,13 @@ export class AuthenticatedService<T extends BaseDocument> extends BaseService<T>
     return document
   }
 
-  public async create(input: any) {
+  public async create(input: any, user?: Token) {
     const defaults = {
-      createdByUser: this.user?.jti,
-      createdByAccount: this.user?.account,
-      readAccess: [this.user?.account].filter(Boolean),
-      writeAccess: [this.user?.account].filter(Boolean),
-      adminAccess: [this.user?.account].filter(Boolean),
+      createdByUser: user?.jti,
+      createdByAccount: user?.account,
+      readAccess: [user?.account].filter(Boolean),
+      writeAccess: [user?.account].filter(Boolean),
+      adminAccess: [user?.account].filter(Boolean),
     }
     return super.create({...defaults, ...input})
   }

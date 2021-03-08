@@ -1,7 +1,6 @@
 import {QueryBus} from '@nestjs/cqrs'
 import {Args, Parent, Query, ResolveField, Resolver} from '@nestjs/graphql'
 import {CountryMapper} from '../../infra/mappers'
-import {RegionMapper} from '../../infra/mappers/RegionMapper'
 import {CountryLoader} from '../../infra/loaders'
 import {GetRegionQuery, ListRegionsQuery} from '../queries'
 import {IRegionDTO} from '../../infra/dtos'
@@ -19,9 +18,7 @@ export class RegionResolvers {
   @Query('getRegion')
   async getRegion(@Args('id') id: string) {
     const query = new GetRegionQuery(id)
-    const region = await this.queryBus.execute(query)
-
-    return RegionMapper.toDTO(region)
+    return this.queryBus.execute(query)
   }
 
   @ResolveField()

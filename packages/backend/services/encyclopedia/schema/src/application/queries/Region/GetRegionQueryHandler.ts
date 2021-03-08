@@ -1,10 +1,10 @@
 import {IQueryHandler, QueryHandler} from '@nestjs/cqrs'
 import {GetRegionQuery} from '.'
-import {RegionAggregate} from '../../../domain/Region/Region'
+import {RegionDocument} from '../../../infra/models'
 import {RegionsRepo} from '../../../infra/repos'
 
 @QueryHandler(GetRegionQuery)
-export class GetRegionQueryHandler implements IQueryHandler<GetRegionQuery, RegionAggregate> {
+export class GetRegionQueryHandler implements IQueryHandler<GetRegionQuery, RegionDocument> {
   constructor(private readonly regionsRepo: RegionsRepo) {}
 
   async execute(query: GetRegionQuery) {

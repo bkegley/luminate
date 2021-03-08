@@ -1,19 +1,27 @@
 import {Args, Mutation, Query, Resolver, ResolveField, Parent} from '@nestjs/graphql'
 import {CommandBus, QueryBus} from '@nestjs/cqrs'
-import {CreateCoffeeInput, UpdateCoffeeInput} from '../../types'
+import {CreateCoffeeInput, QueryInput, UpdateCoffeeInput} from '../../types'
 import {CreateCoffeeCommand, DeleteCoffeeCommand, UpdateCoffeeCommand} from '../commands'
-import {CoffeeMapper, CountryMapper, RegionMapper} from '../../infra/mappers'
+import {CoffeeMapper, CountryMapper, RegionMapper, VarietyMapper} from '../../infra/mappers'
 import {CoffeeAggregate} from '../../domain/Coffee/Coffee'
 import {GetCoffeeQuery, GetCountryQuery, GetRegionQuery, ListCoffeesQuery, ListVarietiesQuery} from '../queries'
+import {CountryLoader, RegionLoader, VarietyLoader} from '../../infra/loaders'
+import {VarietyAggregate} from '../../domain/Variety/Variety'
 
 @Resolver('Coffee')
 export class CoffeeResolvers {
-  constructor(private readonly queryBus: QueryBus, private readonly commandBus: CommandBus) {}
+  constructor(
+    private readonly queryBus: QueryBus,
+    private readonly commandBus: CommandBus,
+    private readonly countryLoader: CountryLoader,
+    private readonly regionLoader: RegionLoader,
+    private readonly varietyLoader: VarietyLoader,
+  ) {}
 
   @Query('listCoffees')
-  async listCoffees() {
-    const query = new ListCoffeesQuery()
-    return this.queryBus.execute(query)
+  async listCoffees(@Args('cursor') cursor: string, @Args('limit') limit: number, @Args('query') query: QueryInput[]) {
+    const coffeeQuery = new ListCoffeesQuery({cursor, limit, query})
+    return this.queryBus.execute(coffeeQuery)
   }
 
   @Query('getCoffee')
@@ -55,8 +63,7 @@ export class CoffeeResolvers {
     if (!coffee.country) {
       return null
     }
-    const query = new GetCountryQuery(coffee.country)
-    const country = await this.queryBus.execute(query)
+    const country = await this.countryLoader.getById(coffee.country)
     return CountryMapper.toDTO(country)
   }
 
@@ -65,8 +72,7 @@ export class CoffeeResolvers {
     if (!coffee.region) {
       return null
     }
-    const query = new GetRegionQuery(coffee.region)
-    const region = await this.queryBus.execute(query)
+    const region = await this.regionLoader.getById(coffee.region)
     return RegionMapper.toDTO(region)
   }
 
@@ -76,11 +82,11 @@ export class CoffeeResolvers {
       return []
     }
 
-    const query = new ListVarietiesQuery({conditions: {_id: coffee.varieties}})
-    // TODO: fix return type on list query
-    const varieties = await this.queryBus.execute(query)
+    const varieties = await Promise.all<VarietyAggregate>(
+      coffee.varieties.map((variety: string) => this.varietyLoader.getById(variety)),
+    )
 
-    return varieties.edges.map((edge: any) => edge.node)
+    return varieties.map(variety => (variety ? VarietyMapper.toDTO(variety) : null)).filter(Boolean)
   }
 }
 

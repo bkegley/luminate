@@ -8,17 +8,19 @@ export class UpdateCoffeeCommandHandler implements ICommandHandler<UpdateCoffeeC
   constructor(private readonly coffeesRepo: CoffeesRepo) {}
 
   async execute(command: UpdateCoffeeCommand) {
-    const coffee = await this.coffeesRepo.getById(command.id)
+    const coffeeDocument = await this.coffeesRepo.getById(command.id)
 
-    if (!coffee) {
+    if (!coffeeDocument) {
       throw new Error('Coffee does not exist')
     }
+
+    const coffee = CoffeeMapper.toDomain(coffeeDocument)
 
     const attrs = CoffeeMapper.toAttrs(command)
 
     coffee.update(attrs)
 
     await this.coffeesRepo.save(coffee)
-    return coffee
+    return coffeeDocument
   }
 }

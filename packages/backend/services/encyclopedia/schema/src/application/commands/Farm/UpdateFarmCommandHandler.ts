@@ -8,17 +8,19 @@ export class UpdateFarmCommandHandler implements ICommandHandler<UpdateFarmComma
   constructor(private readonly farmsRepo: FarmsRepo) {}
 
   async execute(command: UpdateFarmCommand) {
-    const farm = await this.farmsRepo.getById(command.id)
+    const farmDocument = await this.farmsRepo.getById(command.id)
 
-    if (!farm) {
+    if (!farmDocument) {
       throw new Error('Farm does not exist')
     }
+
+    const farm = FarmMapper.toDomain(farmDocument)
 
     const attrs = FarmMapper.toAttrs(command)
 
     farm.update(attrs)
 
     await this.farmsRepo.save(farm)
-    return farm
+    return farmDocument
   }
 }

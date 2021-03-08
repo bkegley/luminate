@@ -8,17 +8,19 @@ export class UpdateVarietyCommandHandler implements ICommandHandler<UpdateVariet
   constructor(private readonly varietiesRepo: VarietiesRepo) {}
 
   async execute(command: UpdateVarietyCommand) {
-    const variety = await this.varietiesRepo.getById(command.id)
+    const varietyDocument = await this.varietiesRepo.getById(command.id)
 
-    if (!variety) {
+    if (!varietyDocument) {
       throw new Error('Variety does not exist')
     }
+
+    const variety = VarietyMapper.toDomain(varietyDocument)
 
     const attrs = VarietyMapper.toAttrs(command)
 
     variety.update(attrs)
 
     await this.varietiesRepo.save(variety)
-    return variety
+    return varietyDocument
   }
 }
