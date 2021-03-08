@@ -1,8 +1,8 @@
-import {Document, QueryFindOneAndUpdateOptions} from 'mongoose'
+import {QueryFindOneAndUpdateOptions} from 'mongoose'
 import {IListDocumentsArgs} from './types'
 import {IConnectionResults} from './IConnectionResults'
 
-export interface IService<T extends Document> {
+export interface IService<T> {
   getConnectionResults(args: IListDocumentsArgs): Promise<IConnectionResults<T>>
   create(input: any): Promise<T>
   updateOne(conditions: any, input: any, options?: QueryFindOneAndUpdateOptions): Promise<T | null>

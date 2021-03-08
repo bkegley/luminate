@@ -1,4 +1,4 @@
-import {VarietyAggregate} from '../../domain/Variety/Variety'
+import {VarietyDocument} from '../models'
 import {IRepo} from './IRepo'
 
-export interface IVarietiesRepo extends IRepo<VarietyAggregate> {}
+export interface IVarietiesRepo extends IRepo<VarietyDocument> {}

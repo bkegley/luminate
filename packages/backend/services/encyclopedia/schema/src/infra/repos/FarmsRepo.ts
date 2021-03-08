@@ -4,45 +4,21 @@ import {Model} from 'mongoose'
 import {IFarmsRepo} from './IFarmsRepo'
 import {FarmDocument} from '../models'
 import {FarmMapper} from '../mappers/FarmMapper'
+import {BaseRepo} from '@luminate/mongo-utils'
 import {FarmAggregate} from '../../domain/Farm/Farm'
 
 @Injectable()
-export class FarmsRepo implements IFarmsRepo {
-  constructor(@InjectModel('farm') private farmModel: Model<FarmDocument>) {}
-
-  public async list(conditions?: any) {
-    const farms = await this.farmModel.find(conditions)
-    if (!farms) {
-      return null
-    }
-
-    return farms.map(farm => FarmMapper.toDomain(farm))
-  }
-
-  public async getById(id: string) {
-    const farm = await this.farmModel.findById(id)
-    if (!farm) {
-      return null
-    }
-
-    return FarmMapper.toDomain(farm)
+export class FarmsRepo extends BaseRepo<FarmDocument> implements IFarmsRepo {
+  constructor(@InjectModel('farm') protected model: Model<FarmDocument>) {
+    super(model)
   }
 
   public async getByName(name: string) {
-    const farm = await this.farmModel.findOne({name})
-    if (!farm) {
-      return null
-    }
-
-    return FarmMapper.toDomain(farm)
+    return this.model.findOne({name})
   }
 
   public async save(farm: FarmAggregate) {
     const {id, ...farmObj} = FarmMapper.toPersistence(farm)
-    await this.farmModel.updateOne({_id: id}, farmObj, {upsert: true})
-  }
-
-  public async delete(id: string) {
-    await this.farmModel.deleteOne({_id: id})
+    await this.model.updateOne({_id: id}, farmObj, {upsert: true})
   }
 }

@@ -22,11 +22,22 @@ export class RegionLoader {
     return names.map(name => regions.find(region => region.name === name)).map(region => RegionMapper.toDomain(region))
   })
 
+  private byCountryId = new DataLoader<string, RegionAggregate[] | null>(async ids => {
+    const regions = await this.regionModel.find({country: ids})
+    return ids
+      .map(id => regions.filter(region => region.country.toString() === id.toString()))
+      .map(regions => regions.map(region => RegionMapper.toDomain(region)))
+  })
+
   public getById(id: string) {
     return this.byRegionId.load(id)
   }
 
   public getByName(name: string) {
     return this.byRegionName.load(name)
+  }
+
+  public listByCountryId(id: string) {
+    return this.byCountryId.load(id)
   }
 }

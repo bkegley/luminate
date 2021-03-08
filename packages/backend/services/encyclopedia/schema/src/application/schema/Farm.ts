@@ -25,9 +25,7 @@ export class FarmResolvers {
   @Query('getFarm')
   async getFarm(@Args('id') id: string) {
     const query = new GetFarmQuery(id)
-    const farm = await this.queryBus.execute(query)
-
-    return FarmMapper.toDTO(farm)
+    return this.queryBus.execute(query)
   }
 
   @Mutation('createFarm')

@@ -1,4 +1,4 @@
-import {CountryAggregate} from '../../domain/Country/Country'
+import {CountryDocument} from '../models'
 import {IRepo} from './IRepo'
 
-export interface ICountriesRepo extends IRepo<CountryAggregate> {}
+export interface ICountriesRepo extends IRepo<CountryDocument> {}

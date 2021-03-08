@@ -1,4 +1,4 @@
-import {CoffeeAggregate} from '../../domain/Coffee/Coffee'
+import {CoffeeDocument} from '../models'
 import {IRepo} from './IRepo'
 
-export interface ICoffeesRepo extends IRepo<CoffeeAggregate> {}
+export interface ICoffeesRepo extends IRepo<CoffeeDocument> {}

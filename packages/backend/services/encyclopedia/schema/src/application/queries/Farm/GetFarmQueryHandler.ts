@@ -1,10 +1,10 @@
 import {IQueryHandler, QueryHandler} from '@nestjs/cqrs'
 import {GetFarmQuery} from '.'
-import {FarmAggregate} from '../../../domain/Farm/Farm'
+import {FarmDocument} from '../../../infra/models'
 import {FarmsRepo} from '../../../infra/repos'
 
 @QueryHandler(GetFarmQuery)
-export class GetFarmQueryHandler implements IQueryHandler<GetFarmQuery, FarmAggregate> {
+export class GetFarmQueryHandler implements IQueryHandler<GetFarmQuery, FarmDocument> {
   constructor(private readonly farmsRepo: FarmsRepo) {}
 
   async execute(query: GetFarmQuery) {

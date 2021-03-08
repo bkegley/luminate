@@ -1,4 +1,4 @@
-import {FarmAggregate} from '../../domain/Farm/Farm'
+import {FarmDocument} from '../models'
 import {IRepo} from './IRepo'
 
-export interface IFarmsRepo extends IRepo<FarmAggregate> {}
+export interface IFarmsRepo extends IRepo<FarmDocument> {}
