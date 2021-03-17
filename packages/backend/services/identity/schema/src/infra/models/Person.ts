@@ -42,7 +42,7 @@ interface IPhone extends ContactInfo {
   contactType: ContactType
 }
 
-export const PersonSchema = extendSchema(
+export const PersonSchema = extendSchema<PersonDocument>(
   BaseAuthenticatedSchema,
   {
     firstName: {
@@ -93,7 +93,7 @@ export const PersonSchema = extendSchema(
   {timestamps: true},
 )
 
-export const UserSchema = extendSchema(
+export const UserSchema = extendSchema<UserDocument>(
   PersonSchema,
   {
     username: {
@@ -111,6 +111,7 @@ export const UserSchema = extendSchema(
         ref: 'account',
       },
     ],
+    //@ts-ignore
     defaultAccount: {
       type: Types.ObjectId,
       ref: 'account',
@@ -129,6 +130,7 @@ export const UserSchema = extendSchema(
         ],
       },
     ],
+    //@ts-ignore
     lastLoggedIn: {
       type: Date,
     },

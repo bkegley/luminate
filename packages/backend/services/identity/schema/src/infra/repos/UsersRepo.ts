@@ -38,7 +38,12 @@ export class UsersRepo implements IUsersRepo {
 
   public async save(user: UserAggregate) {
     const {id, ...userObj} = UserMapper.toPersistence(user)
-    await this.userModel.updateOne({_id: id}, userObj, {upsert: true})
+    await this.userModel.updateOne(
+      {_id: id},
+      // @ts-ignore
+      userObj,
+      {upsert: true},
+    )
   }
 
   public async delete(id: string) {

@@ -18,7 +18,7 @@ export interface CountryDocument extends BaseDocument {
   }
 }
 
-export const CountrySchema = extendSchema(
+export const CountrySchema = extendSchema<CountryDocument>(
   BasePublicSchema,
   {
     name: {

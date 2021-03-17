@@ -18,7 +18,7 @@ export class CoffeeLoader {
   })
 
   private byCoffeeName = new DataLoader<string, CoffeeAggregate | null>(async names => {
-    const coffees = await this.coffeeModel.find({name: names})
+    const coffees = await this.coffeeModel.find({name: {$in: names as string[]}})
 
     return names
       .map(name => coffees.find(coffee => coffee.name === name || null))
@@ -26,7 +26,7 @@ export class CoffeeLoader {
   })
 
   private byVarietyId = new DataLoader<string, CoffeeAggregate[] | null>(async varietyIds => {
-    const coffees = await this.coffeeModel.find({varieties: {$in: varietyIds}})
+    const coffees = await this.coffeeModel.find({varieties: {$in: varietyIds as string[]}})
 
     return varietyIds
       .map(id =>

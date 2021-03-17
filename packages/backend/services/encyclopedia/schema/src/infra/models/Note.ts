@@ -7,10 +7,11 @@ export interface NoteDocument extends AuthenticatedDocument {
   field: string
 }
 
-export const NoteSchema = extendSchema(
+export const NoteSchema = extendSchema<NoteDocument>(
   BaseAuthenticatedSchema,
   {
     entityId: {
+      // @ts-ignore
       type: Types.ObjectId,
       required: true,
     },

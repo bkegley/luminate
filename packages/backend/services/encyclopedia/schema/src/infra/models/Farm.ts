@@ -3,8 +3,13 @@ import {extendSchema, AuthenticatedDocument, BaseAuthenticatedSchema} from '@lum
 
 export interface FarmDocument extends AuthenticatedDocument {
   name: string
-  country?: string
-  region?: string
+  country?: Types.ObjectIdConstructor
+  region?: Types.ObjectIdConstructor
+  farmZones: FarmZoneDocument[]
+}
+
+export interface FarmZoneDocument {
+  name: string
 }
 
 const FarmZone = new Schema({
@@ -14,7 +19,7 @@ const FarmZone = new Schema({
   },
 })
 
-export const FarmSchema = extendSchema(
+export const FarmSchema = extendSchema<FarmDocument>(
   BaseAuthenticatedSchema,
   {
     name: {

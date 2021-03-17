@@ -12,7 +12,7 @@ export interface CoffeeDocument extends AuthenticatedDocument {
   components: Array<{coffee: string; percentage: number}>
 }
 
-export const CoffeeSchema = extendSchema(
+export const CoffeeSchema = extendSchema<CoffeeDocument>(
   BaseAuthenticatedSchema,
   {
     name: {
@@ -20,18 +20,22 @@ export const CoffeeSchema = extendSchema(
       required: true,
     },
     country: {
+      // @ts-ignore
       type: Types.ObjectId,
       ref: 'country',
     },
     region: {
+      // @ts-ignore
       type: Types.ObjectId,
       ref: 'region',
     },
     farm: {
+      // @ts-ignore
       type: Types.ObjectId,
       ref: 'farm',
     },
     farmZone: {
+      // @ts-ignore
       type: Types.ObjectId,
     },
     varieties: [

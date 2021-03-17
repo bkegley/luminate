@@ -24,10 +24,10 @@
     "autoprefixer": "^10.2.4",
     "date-fns": "^2.9.0",
     "formik": "^2.1.1",
-    "gatsby": "^2.18.17",
-    "gatsby-plugin-postcss": "^3.7.0",
-    "gatsby-plugin-purgecss": "^4.0.1",
-    "gatsby-plugin-typescript": "^2.1.23",
+    "gatsby": "^3.1.0",
+    "gatsby-plugin-postcss": "^4.1.0",
+    "gatsby-plugin-purgecss": "^6.0.0",
+    "gatsby-plugin-typescript": "^3.1.0",
     "lodash.debounce": "^4.0.8",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
@@ -41,6 +41,6 @@
     "@types/react-vis": "^1.11.1",
     "autoprefixer": "^10.2.4",
     "postcss": "^8.2.6",
-    "tailwindcss": "^2.0.3"
+    "tailwindcss": "^2.0.4"
   }
 }

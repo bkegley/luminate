@@ -5,7 +5,7 @@ export interface DeviceDocument extends AuthenticatedDocument {
   name: string
 }
 
-const Device = extendSchema(
+const Device = extendSchema<DeviceDocument>(
   BaseAuthenticatedSchema,
   {
     name: {

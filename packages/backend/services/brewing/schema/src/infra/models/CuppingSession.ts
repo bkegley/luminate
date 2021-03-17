@@ -2,7 +2,9 @@ import {model, Schema, Document, Types} from 'mongoose'
 import {extendSchema, AuthenticatedDocument, BaseAuthenticatedSchema} from '@luminate/mongo-utils'
 
 export interface CuppingSessionDocument extends AuthenticatedDocument {
+  internalId?: string
   description: string
+  locked: boolean
   sessionCoffees?: [SessionCoffeeDocument]
 }
 
@@ -100,7 +102,7 @@ const ScoreSheet = new Schema({
   },
 })
 
-const CuppingSession = extendSchema(
+const CuppingSession = extendSchema<CuppingSessionDocument>(
   BaseAuthenticatedSchema,
   {
     internalId: {
@@ -109,6 +111,7 @@ const CuppingSession = extendSchema(
     description: {
       type: String,
     },
+    // @ts-ignore
     locked: {
       type: Boolean,
       default: false,

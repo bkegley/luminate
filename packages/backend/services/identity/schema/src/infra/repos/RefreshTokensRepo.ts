@@ -40,7 +40,12 @@ export class RefreshTokensRepo implements IRefreshTokensRepo {
 
   public async save(token: RefreshTokenAggregate) {
     const {id, ...tokenObj} = RefreshTokenMapper.toPersistence(token)
-    await this.refreshTokenModel.updateOne({_id: id}, tokenObj, {upsert: true})
+    await this.refreshTokenModel.updateOne(
+      {_id: id},
+      // @ts-ignore
+      tokenObj,
+      {upsert: true},
+    )
   }
 
   public async delete(id: string) {
