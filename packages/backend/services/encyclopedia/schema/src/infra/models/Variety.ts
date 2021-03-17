@@ -6,7 +6,7 @@ export interface VarietyDocument extends AuthenticatedDocument {
   background?: string
 }
 
-export const VarietySchema = extendSchema(
+export const VarietySchema = extendSchema<VarietyDocument>(
   BaseAuthenticatedSchema,
   {
     name: {

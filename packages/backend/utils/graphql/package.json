@@ -17,11 +17,11 @@
     "dataloader": "^2.0.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.8.1",
-    "uuid": "^3.3.3"
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^8.3.5",
     "@types/mongoose": "^5.5.36",
-    "@types/uuid": "^3.4.6"
+    "@types/uuid": "^8.3.0"
   }
 }

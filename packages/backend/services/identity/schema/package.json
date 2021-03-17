@@ -14,7 +14,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@apollo/federation": "^0.11.2",
+    "@apollo/federation": "^0.22.0",
     "@luminate/graphql-utils": "*",
     "@luminate/mongo-utils": "*",
     "@luminate/services-shared": "*",

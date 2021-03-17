@@ -22,9 +22,7 @@ export class CountryResolvers {
   @Query('getCountry')
   async getCountry(@Args('id') id: string) {
     const query = new GetCountryQuery(id)
-    const country = await this.queryBus.execute(query)
-
-    return CountryMapper.toDTO(country)
+    return await this.queryBus.execute(query)
   }
 
   @ResolveField()

@@ -18,12 +18,12 @@ export class RegionLoader {
   })
 
   private byRegionName = new DataLoader<string, RegionAggregate | null>(async names => {
-    const regions = await this.regionModel.find({name: names})
+    const regions = await this.regionModel.find({name: {$in: names as string[]}})
     return names.map(name => regions.find(region => region.name === name)).map(region => RegionMapper.toDomain(region))
   })
 
   private byCountryId = new DataLoader<string, RegionAggregate[] | null>(async ids => {
-    const regions = await this.regionModel.find({country: ids})
+    const regions = await this.regionModel.find({country: {$in: ids as string[]}})
     return ids
       .map(id => regions.filter(region => region.country.toString() === id.toString()))
       .map(regions => regions.map(region => RegionMapper.toDomain(region)))

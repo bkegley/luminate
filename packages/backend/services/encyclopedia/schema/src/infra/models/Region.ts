@@ -6,7 +6,7 @@ export interface RegionDocument extends BaseDocument {
   country?: string
 }
 
-export const RegionSchema = extendSchema(
+export const RegionSchema = extendSchema<RegionDocument>(
   BasePublicSchema,
   {
     name: {
@@ -15,6 +15,7 @@ export const RegionSchema = extendSchema(
       unique: true,
     },
     country: {
+      // @ts-ignore
       type: Types.ObjectId,
       ref: 'country',
     },

@@ -26,6 +26,7 @@ export class RolesProjection implements IRolesProjection {
     // seed the db with owner role
     // TODO: this should probably happen as a command on server startup
     const ownerRole = new RoleModel({name: 'Owner', scopes, permissionType: 'public'})
+    // @ts-ignore
     this.roles.push({...ownerRole.toObject({getters: true})})
 
     this.rolesConsumer = new Consumer(client, [{topic: 'roles', offset: 0}], {

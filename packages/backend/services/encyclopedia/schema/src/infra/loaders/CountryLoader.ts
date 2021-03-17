@@ -11,7 +11,7 @@ export class CountryLoader {
   constructor(@InjectModel('country') private readonly countryModel: Model<CountryDocument>) {}
 
   private byCountryName = new DataLoader<string, CountryAggregate | null>(async names => {
-    const countries = await this.countryModel.find({name: names})
+    const countries = await this.countryModel.find({name: {$in: names as string[]}})
 
     return names
       .map(name => countries.find(country => country.name === name || null))

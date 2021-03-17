@@ -5,7 +5,7 @@ export interface AccountDocument extends AuthenticatedDocument {
   name: string
 }
 
-export const AccountSchema = extendSchema(
+export const AccountSchema = extendSchema<AccountDocument>(
   BaseAuthenticatedSchema,
   {
     name: {

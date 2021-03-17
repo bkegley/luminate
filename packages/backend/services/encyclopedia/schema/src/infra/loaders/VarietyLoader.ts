@@ -11,7 +11,7 @@ export class VarietyLoader {
   constructor(@InjectModel('variety') private readonly varietyModel: Model<VarietyDocument>) {}
 
   private byVarietyName = new DataLoader<string, VarietyAggregate | null>(async names => {
-    const varieties = await this.varietyModel.find({name: names})
+    const varieties = await this.varietyModel.find({name: {$in: names as string[]}})
 
     return names
       .map(name => varieties.find(variety => variety.name === name || null))

@@ -11,7 +11,7 @@ export class FarmLoader {
   constructor(@InjectModel('farm') private readonly farmModel: Model<FarmDocument>) {}
 
   private byFarmName = new DataLoader<string, FarmAggregate | null>(async names => {
-    const farms = await this.farmModel.find({name: names})
+    const farms = await this.farmModel.find({name: {$in: names as string[]}})
 
     return names.map(name => farms.find(farm => farm.name === name || null)).map(farm => FarmMapper.toDomain(farm))
   })
