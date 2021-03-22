@@ -1,4 +1,4 @@
-import {Model, QueryFindOneAndUpdateOptions} from 'mongoose'
+import {Model} from 'mongoose'
 import {Cursor} from '../utils/Cursor'
 import {BaseDocument} from './BaseDocument'
 import {QueryInputParser} from '../utils'
@@ -31,7 +31,7 @@ export abstract class BaseRepo<T extends BaseDocument> implements IRepo<T> {
 
     return [
       mappedQueryInput?.length
-        ? Object.assign(remainingArgs, ...mappedQueryInput, paginationCursor)
+        ? {$and: [remainingArgs, ...mappedQueryInput, paginationCursor].filter(Boolean)}
         : {...remainingArgs, ...paginationCursor},
       null,
       {
@@ -41,7 +41,7 @@ export abstract class BaseRepo<T extends BaseDocument> implements IRepo<T> {
     ]
   }
 
-  public async getConnectionResults(args: IListDocumentsArgs) {
+  public async getConnectionResults(args: IListDocumentsArgs): Promise<any> {
     const documentsPlusOne = await this.model.find(...this.buildConnectionQuery(args))
     if (!documentsPlusOne.length) {
       return {
@@ -93,12 +93,12 @@ export abstract class BaseRepo<T extends BaseDocument> implements IRepo<T> {
     return await new this.model(input).save()
   }
 
-  public async updateOne(conditions: any, input: any, options?: QueryFindOneAndUpdateOptions) {
-    return await this.model.findOneAndUpdate(conditions, input, options || {new: true})
+  public async updateOne(conditions: any, input: any) {
+    return await this.model.findOneAndUpdate(conditions, input, {new: true})
   }
 
-  public async updateById(id: string, input: any, options?: QueryFindOneAndUpdateOptions) {
-    return await this.model.findByIdAndUpdate(id, input, options || {new: true})
+  public async updateById(id: string, input: any) {
+    return await this.model.findByIdAndUpdate(id, input, {new: true})
   }
 
   public async delete(id: string) {

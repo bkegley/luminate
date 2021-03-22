@@ -17,12 +17,11 @@
     "@nestjs/mongoose": "^7.2.4",
     "dataloader": "^2.0.0",
     "lodash.merge": "^4.6.2",
-    "mongoose": "^5.12.0"
+    "mongoose": "^5.12.1"
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^8.3.9",
     "@types/lodash.merge": "^4.6.6",
-    "@types/mongoose": "^5.5.36",
     "elint": "^2.0.1",
     "eslint-config-prettier": "^8.1.0",
     "husky": "^5.1.3",
