@@ -1,13 +1,17 @@
+import {Scopes, Token} from '@luminate/graphql-utils'
+import {UseGuards} from '@nestjs/common'
 import {CommandBus, QueryBus} from '@nestjs/cqrs'
-import {Args, Mutation, Parent, Query, ResolveField, Resolver} from '@nestjs/graphql'
+import {Args, Context, Mutation, Parent, Query, ResolveField, Resolver} from '@nestjs/graphql'
 import {IFarmDTO} from '../../infra/dtos'
 import {CountryLoader, RegionLoader} from '../../infra/loaders'
 import {CountryMapper, FarmMapper, RegionMapper} from '../../infra/mappers'
-import {CreateFarmInput, UpdateFarmInput} from '../../types'
+import {CreateFarmInput, QueryInput, UpdateFarmInput} from '../../types'
+import {AuthGuard} from '../AuthGuard'
 import {CreateFarmCommand, DeleteFarmCommand, UpdateFarmCommand} from '../commands'
 import {GetFarmQuery, ListFarmsQuery} from '../queries'
 
 @Resolver('Farm')
+@UseGuards(AuthGuard)
 export class FarmResolvers {
   constructor(
     private readonly queryBus: QueryBus,
@@ -17,20 +21,28 @@ export class FarmResolvers {
   ) {}
 
   @Query('listFarms')
-  async listFarms() {
-    const query = new ListFarmsQuery()
-    return this.queryBus.execute(query)
+  @Scopes('read:farm')
+  async listFarms(
+    @Args('cursor') cursor: string,
+    @Args('limit') limit: number,
+    @Args('query') query: QueryInput[],
+    @Context('user') user: Token,
+  ) {
+    const listFarmsQuery = new ListFarmsQuery(user, {cursor, limit, query})
+    return this.queryBus.execute(listFarmsQuery)
   }
 
   @Query('getFarm')
-  async getFarm(@Args('id') id: string) {
-    const query = new GetFarmQuery(id)
+  @Scopes('read:farm')
+  async getFarm(@Args('id') id: string, @Context('user') user: Token) {
+    const query = new GetFarmQuery(user, id)
     return this.queryBus.execute(query)
   }
 
   @Mutation('createFarm')
-  async createFarm(@Args('input') input: CreateFarmInput) {
-    const command = new CreateFarmCommand(input)
+  @Scopes('write:farm')
+  async createFarm(@Args('input') input: CreateFarmInput, @Context('user') user: Token) {
+    const command = new CreateFarmCommand(user, input)
     const farm = await this.commandBus.execute(command)
     if (!farm) {
       return null
@@ -40,8 +52,9 @@ export class FarmResolvers {
   }
 
   @Mutation('updateFarm')
-  async updateFarm(@Args('id') id: string, @Args('input') input: UpdateFarmInput) {
-    const command = new UpdateFarmCommand(id, input)
+  @Scopes('write:farm')
+  async updateFarm(@Args('id') id: string, @Args('input') input: UpdateFarmInput, @Context('user') user: Token) {
+    const command = new UpdateFarmCommand(user, id, input)
     const farm = await this.commandBus.execute(command)
     if (!farm) {
       return null
@@ -51,8 +64,9 @@ export class FarmResolvers {
   }
 
   @Mutation('deleteFarm')
-  async deleteFarm(@Args('id') id: string) {
-    const command = new DeleteFarmCommand(id)
+  @Scopes('write:farm')
+  async deleteFarm(@Args('id') id: string, @Context('user') user: Token) {
+    const command = new DeleteFarmCommand(user, id)
     return this.commandBus.execute(command)
   }
 
@@ -76,6 +90,7 @@ export class FarmResolvers {
     return RegionMapper.toDTO(region)
   }
 }
+
 //Mutation: {
 //createFarmZone: async (parent, {farmId, input}, {services}) => {
 //return services.farm.createFarmZone(farmId, input)

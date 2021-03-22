@@ -21,7 +21,7 @@ export class FarmMapper {
 
   public static toPersistence(farm: FarmAggregate) {
     return {
-      id: farm.getEntityId().toString(),
+      _id: farm.getEntityId().toString(),
       name: farm.name,
     }
   }

@@ -4,18 +4,24 @@ import {CountryMapper} from '../../infra/mappers'
 import {CountryLoader} from '../../infra/loaders'
 import {GetRegionQuery, ListRegionsQuery} from '../queries'
 import {IRegionDTO} from '../../infra/dtos'
+import {UseGuards} from '@nestjs/common'
+import {AuthGuard} from '../AuthGuard'
+import {Authenticated} from '@luminate/graphql-utils'
 
 @Resolver('Region')
+@UseGuards(AuthGuard)
 export class RegionResolvers {
   constructor(private readonly queryBus: QueryBus, private readonly countryLoader: CountryLoader) {}
 
   @Query('listRegions')
+  @Authenticated()
   async listRegions() {
     const query = new ListRegionsQuery()
     return this.queryBus.execute(query)
   }
 
   @Query('getRegion')
+  @Authenticated()
   async getRegion(@Args('id') id: string) {
     const query = new GetRegionQuery(id)
     return this.queryBus.execute(query)

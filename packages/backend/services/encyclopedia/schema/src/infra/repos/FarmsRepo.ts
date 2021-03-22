@@ -4,11 +4,11 @@ import {Model} from 'mongoose'
 import {IFarmsRepo} from './IFarmsRepo'
 import {FarmDocument} from '../models'
 import {FarmMapper} from '../mappers/FarmMapper'
-import {BaseRepo} from '@luminate/mongo-utils'
+import {AuthenticatedRepo, Token} from '@luminate/mongo-utils'
 import {FarmAggregate} from '../../domain/Farm/Farm'
 
 @Injectable()
-export class FarmsRepo extends BaseRepo<FarmDocument> implements IFarmsRepo {
+export class FarmsRepo extends AuthenticatedRepo<FarmDocument> implements IFarmsRepo {
   constructor(@InjectModel('farm') protected model: Model<FarmDocument>) {
     super(model)
   }
@@ -17,8 +17,15 @@ export class FarmsRepo extends BaseRepo<FarmDocument> implements IFarmsRepo {
     return this.model.findOne({name})
   }
 
-  public async save(farm: FarmAggregate) {
-    const {id, ...farmObj} = FarmMapper.toPersistence(farm)
-    await this.model.updateOne({_id: id}, farmObj, {upsert: true})
+  save(user: Token, farm: FarmAggregate): Promise<void>
+  save(farm: FarmAggregate): Promise<void>
+  public async save(userOrFarm: Token | FarmAggregate, farm?: FarmAggregate) {
+    if (farm) {
+      const {_id, ...farmObj} = FarmMapper.toPersistence(farm)
+      await this.updateOne(userOrFarm as Token, {_id}, farmObj)
+    } else {
+      const {_id, ...coffeeObj} = FarmMapper.toPersistence(userOrFarm as FarmAggregate)
+      await this.updateOne({_id}, coffeeObj)
+    }
   }
 }

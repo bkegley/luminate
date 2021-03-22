@@ -1,3 +1,4 @@
+import {Token} from '@luminate/mongo-utils'
 import {QueryInput, QueryListFarmsArgs} from '../../../types'
 
 export class ListFarmsQuery {
@@ -5,7 +6,7 @@ export class ListFarmsQuery {
   limit?: number
   query?: QueryInput[]
 
-  constructor(args?: QueryListFarmsArgs) {
+  constructor(public user: Token, args?: QueryListFarmsArgs) {
     if (args) {
       this.cursor = args.cursor
       this.limit = args.limit

@@ -1,6 +1,7 @@
 import {EntityId} from '@luminate/services-shared'
 import {CommandHandler, EventBus, ICommandHandler} from '@nestjs/cqrs'
 import {FarmAggregate} from '../../../domain/Farm/Farm'
+import {FarmMapper} from '../../../infra/mappers'
 import {FarmsRepo} from '../../../infra/repos'
 import {CreateFarmCommand} from './CreateFarmCommand'
 
@@ -15,7 +16,7 @@ export class CreateFarmCommandHandler implements ICommandHandler<CreateFarmComma
       regionId: command.region ? EntityId.create(command.region) : undefined,
     })
 
-    await this.farmsRepo.save(farm)
+    await this.farmsRepo.create(command.user, FarmMapper.toPersistence(farm))
     farm.events.forEach(event => this.eventBus.publish(event))
 
     return farm
