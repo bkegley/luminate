@@ -1,6 +1,5 @@
 import {BaseService} from '@luminate/mongo-utils'
 import {Injectable} from '@nestjs/common'
-import {QueryFindOneAndUpdateOptions} from 'mongoose'
 import {CoffeeAggregate} from '../../domain/Coffee/Coffee'
 import {CoffeeMapper} from '../mappers'
 import {CoffeesRepo} from '../repos'
@@ -23,14 +22,14 @@ export class CoffeeService extends BaseService<CoffeeAggregate> {
     return CoffeeMapper.toDomain(coffee)
   }
 
-  public async updateOne(conditions: any, input: any, options?: QueryFindOneAndUpdateOptions) {
-    const coffee = await this.repo.updateOne(conditions, input, options)
+  public async updateOne(conditions: any, input: any) {
+    const coffee = await this.repo.updateOne(conditions, input)
 
     return CoffeeMapper.toDomain(coffee)
   }
 
-  public async updateById(id: string, input: any, options?: QueryFindOneAndUpdateOptions) {
-    const coffee = await this.repo.updateById(id, input, options)
+  public async updateById(id: string, input: any) {
+    const coffee = await this.repo.updateById(id, input)
 
     return CoffeeMapper.toDomain(coffee)
   }

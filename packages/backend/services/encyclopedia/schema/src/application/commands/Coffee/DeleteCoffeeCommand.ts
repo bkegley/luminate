@@ -1,3 +1,5 @@
+import {Token} from '@luminate/mongo-utils'
+
 export class DeleteCoffeeCommand {
-  constructor(public id: string) {}
+  constructor(public user: Token, public id: string) {}
 }

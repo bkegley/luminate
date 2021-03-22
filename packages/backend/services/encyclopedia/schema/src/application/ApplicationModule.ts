@@ -26,6 +26,7 @@ import {
   ListFarmsQueryHandler,
   ListRegionsQueryHandler,
 } from './queries'
+import {parseTokenFromRequest} from '@luminate/graphql-utils'
 
 const resolvers = [CoffeeResolvers, CountryResolvers, FarmResolvers, RegionResolvers, VarietyResolvers]
 
@@ -53,6 +54,8 @@ const commandHandlers = [
   UpdateVarietyCommandHandler,
 ]
 
+const USER_AUTH_TOKEN = process.env.USER_AUTH_TOKEN || 'supersecretpassword'
+
 @Module({
   imports: [
     CqrsModule,
@@ -60,8 +63,12 @@ const commandHandlers = [
     GraphQLFederationModule.forRoot({
       typePaths: ['./src/application/schema/*.graphql'],
       context: ({req, res}) => {
+        let user
+        try {
+          user = parseTokenFromRequest(req, USER_AUTH_TOKEN)
+        } catch {}
         return {
-          headers: req.headers,
+          user,
           req,
           res,
         }

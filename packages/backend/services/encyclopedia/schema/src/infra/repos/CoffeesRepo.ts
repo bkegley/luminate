@@ -4,11 +4,11 @@ import {Model} from 'mongoose'
 import {ICoffeesRepo} from './ICoffeesRepo'
 import {CoffeeDocument} from '../models'
 import {CoffeeMapper} from '../mappers/CoffeeMapper'
-import {BaseRepo} from '@luminate/mongo-utils'
+import {AuthenticatedRepo, Token} from '@luminate/mongo-utils'
 import {CoffeeAggregate} from '../../domain/Coffee/Coffee'
 
 @Injectable()
-export class CoffeesRepo extends BaseRepo<CoffeeDocument> implements ICoffeesRepo {
+export class CoffeesRepo extends AuthenticatedRepo<CoffeeDocument> implements ICoffeesRepo {
   constructor(@InjectModel('coffee') private coffeeModel: Model<CoffeeDocument>) {
     super(coffeeModel)
   }
@@ -17,8 +17,15 @@ export class CoffeesRepo extends BaseRepo<CoffeeDocument> implements ICoffeesRep
     return this.coffeeModel.findOne({name})
   }
 
-  public async save(coffee: CoffeeAggregate) {
-    const {id, ...coffeeObj} = CoffeeMapper.toPersistence(coffee)
-    await this.coffeeModel.updateOne({_id: id}, coffeeObj, {upsert: true})
+  save(user: Token, coffee: CoffeeAggregate): Promise<void>
+  save(coffee: CoffeeAggregate): Promise<void>
+  public async save(userOrCoffee: Token | CoffeeAggregate, coffee?: CoffeeAggregate) {
+    if (coffee) {
+      const {_id, ...coffeeObj} = CoffeeMapper.toPersistence(coffee)
+      await this.updateOne(userOrCoffee as Token, {_id}, coffeeObj)
+    } else {
+      const {_id, ...coffeeObj} = CoffeeMapper.toPersistence(userOrCoffee as CoffeeAggregate)
+      await this.updateOne({_id}, coffeeObj)
+    }
   }
 }

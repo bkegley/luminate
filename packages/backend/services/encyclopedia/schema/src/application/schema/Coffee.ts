@@ -1,14 +1,18 @@
-import {Args, Mutation, Query, Resolver, ResolveField, Parent} from '@nestjs/graphql'
+import {Args, Mutation, Query, Resolver, ResolveField, Parent, Context} from '@nestjs/graphql'
 import {CommandBus, QueryBus} from '@nestjs/cqrs'
 import {CreateCoffeeInput, QueryInput, UpdateCoffeeInput} from '../../types'
 import {CreateCoffeeCommand, DeleteCoffeeCommand, UpdateCoffeeCommand} from '../commands'
 import {CoffeeMapper, CountryMapper, RegionMapper, VarietyMapper} from '../../infra/mappers'
 import {CoffeeAggregate} from '../../domain/Coffee/Coffee'
-import {GetCoffeeQuery, GetCountryQuery, GetRegionQuery, ListCoffeesQuery, ListVarietiesQuery} from '../queries'
+import {GetCoffeeQuery, ListCoffeesQuery} from '../queries'
 import {CountryLoader, RegionLoader, VarietyLoader} from '../../infra/loaders'
 import {VarietyAggregate} from '../../domain/Variety/Variety'
+import {AuthGuard, Scopes} from '@luminate/graphql-utils'
+import {UseGuards} from '@nestjs/common'
+import {Token} from '@luminate/mongo-utils'
 
 @Resolver('Coffee')
+@UseGuards(AuthGuard)
 export class CoffeeResolvers {
   constructor(
     private readonly queryBus: QueryBus,
@@ -19,14 +23,21 @@ export class CoffeeResolvers {
   ) {}
 
   @Query('listCoffees')
-  async listCoffees(@Args('cursor') cursor: string, @Args('limit') limit: number, @Args('query') query: QueryInput[]) {
-    const coffeeQuery = new ListCoffeesQuery({cursor, limit, query})
+  @Scopes('read:coffee')
+  async listCoffees(
+    @Args('cursor') cursor: string,
+    @Args('limit') limit: number,
+    @Args('query') query: QueryInput[],
+    @Context('user') user: Token,
+  ) {
+    const coffeeQuery = new ListCoffeesQuery(user, {cursor, limit, query})
     return this.queryBus.execute(coffeeQuery)
   }
 
   @Query('getCoffee')
-  async getCoffee(@Args('id') id: string) {
-    const query = new GetCoffeeQuery(id)
+  @Scopes('read:coffee')
+  async getCoffee(@Args('id') id: string, @Context('user') user: Token) {
+    const query = new GetCoffeeQuery(user, id)
     const coffee: CoffeeAggregate = await this.queryBus.execute(query)
 
     if (!coffee) {
@@ -37,28 +48,32 @@ export class CoffeeResolvers {
   }
 
   @Mutation('createCoffee')
-  async createCoffee(@Args('input') input: CreateCoffeeInput) {
-    const command = new CreateCoffeeCommand(input)
+  @Scopes('write:coffee')
+  async createCoffee(@Args('input') input: CreateCoffeeInput, @Context('user') user: Token) {
+    const command = new CreateCoffeeCommand(user, input)
     const coffee: CoffeeAggregate = await this.commandBus.execute(command)
 
     return CoffeeMapper.toDTO(coffee)
   }
 
   @Mutation('updateCoffee')
-  async updateCoffee(@Args('id') id: string, @Args('input') input: UpdateCoffeeInput) {
-    const command = new UpdateCoffeeCommand(id, input)
+  @Scopes('write:coffee')
+  async updateCoffee(@Args('id') id: string, @Args('input') input: UpdateCoffeeInput, @Context('user') user: Token) {
+    const command = new UpdateCoffeeCommand(user, id, input)
     const coffee: CoffeeAggregate = await this.commandBus.execute(command)
 
     return CoffeeMapper.toDTO(coffee)
   }
 
   @Mutation('deleteCoffee')
-  async deleteCoffee(@Args('id') id: string) {
-    const command = new DeleteCoffeeCommand(id)
+  @Scopes('write:coffee')
+  async deleteCoffee(@Args('id') id: string, @Context('user') user: Token) {
+    const command = new DeleteCoffeeCommand(user, id)
     return this.commandBus.execute(command)
   }
 
   @ResolveField()
+  @Scopes('read:country')
   async country(@Parent() coffee: any) {
     if (!coffee.country) {
       return null
@@ -68,6 +83,7 @@ export class CoffeeResolvers {
   }
 
   @ResolveField()
+  @Scopes('read:region')
   async region(@Parent() coffee: any) {
     if (!coffee.region) {
       return null
@@ -77,6 +93,7 @@ export class CoffeeResolvers {
   }
 
   @ResolveField()
+  @Scopes('read:varieties')
   async varieties(@Parent() coffee: any) {
     if (!coffee.varieties || !coffee.varieties.length) {
       return []

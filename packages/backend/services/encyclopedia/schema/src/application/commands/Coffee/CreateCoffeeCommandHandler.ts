@@ -2,6 +2,7 @@ import {EntityId} from '@luminate/services-shared'
 import {CommandHandler, EventBus, ICommandHandler} from '@nestjs/cqrs'
 import {CoffeeAggregate} from '../../../domain/Coffee/Coffee'
 import {CoffeeName} from '../../../domain/Coffee/CoffeeName'
+import {CoffeeMapper} from '../../../infra/mappers'
 import {CoffeesRepo} from '../../../infra/repos'
 import {CreateCoffeeCommand} from './CreateCoffeeCommand'
 
@@ -16,7 +17,7 @@ export class CreateCoffeeCommandHandler implements ICommandHandler<CreateCoffeeC
       regionId: command.region ? EntityId.create(command.region) : undefined,
     })
 
-    await this.coffeesRepo.save(coffee)
+    await this.coffeesRepo.create(command.user, CoffeeMapper.toPersistence(coffee))
     coffee.events.forEach(event => this.eventBus.publish(event))
 
     return coffee

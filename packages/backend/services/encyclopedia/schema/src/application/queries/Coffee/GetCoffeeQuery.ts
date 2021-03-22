@@ -1,3 +1,5 @@
+import {Token} from '@luminate/graphql-utils'
+
 export class GetCoffeeQuery {
-  constructor(public id: string) {}
+  constructor(public user: Token, public id: string) {}
 }
