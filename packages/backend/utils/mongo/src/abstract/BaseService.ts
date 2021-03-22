@@ -1,4 +1,3 @@
-import {QueryFindOneAndUpdateOptions} from 'mongoose'
 import {Cursor} from '../utils/Cursor'
 import {BaseDocument} from './BaseDocument'
 import {QueryInputParser} from '../utils'
@@ -32,7 +31,7 @@ export abstract class BaseService<T> implements IService<T> {
 
     return [
       mappedQueryInput?.length
-        ? Object.assign(remainingArgs, ...mappedQueryInput, paginationCursor)
+        ? {$and: [remainingArgs, ...mappedQueryInput, paginationCursor].filter(Boolean)}
         : {...remainingArgs, ...paginationCursor},
       null,
       {
@@ -80,7 +79,7 @@ export abstract class BaseService<T> implements IService<T> {
   }
 
   public abstract create(input: any): any
-  public abstract updateOne(conditions: any, input: any, options?: QueryFindOneAndUpdateOptions): any
-  public abstract updateById(id: string, input: any, options?: QueryFindOneAndUpdateOptions): any
+  public abstract updateOne(conditions: any, input: any): any
+  public abstract updateById(id: string, input: any): any
   public abstract deleteById(id: string): any
 }

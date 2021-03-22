@@ -1,12 +1,11 @@
-// TODO: fix or remove
 // @ts-nocheck
 import {Types, Model, QueryFindOneAndUpdateOptions} from 'mongoose'
-import {BaseService} from './BaseService'
 import {Token} from './types'
 import {BaseDocument} from './BaseDocument'
 import {IListDocumentsArgs} from './types'
 import merge from 'lodash.merge'
 import {IService} from './IService'
+import {IRepo} from '.'
 
 interface PermissionMap {
   read: string
@@ -21,10 +20,8 @@ const permissionKeysToPermissionsMap: PermissionMap = {
   admin: 'adminAccess',
 }
 
-export abstract class AuthenticatedService<T extends BaseDocument> extends BaseService<T> implements IService<T> {
-  constructor(model: Model<T>, _user?: Token) {
-    super(model)
-  }
+export abstract class AuthenticatedService<T> implements IService<T> {
+  constructor(private repo: IRepo<any>) {}
 
   protected getReadConditionsForUser(user?: Token) {
     return {
@@ -112,24 +109,24 @@ export abstract class AuthenticatedService<T extends BaseDocument> extends BaseS
     return await this.model.findOneAndDelete({_id: id, ...this.getWriteConditionsForUser()})
   }
 
-  public updateEntityPermissionsForAccount({
-    entityId,
-    accountId,
-    permissions,
-  }: {
-    entityId: string
-    accountId: string
-    permissions: Array<'read' | 'write' | 'admin'>
-  }) {
-    let permissionsObject = {}
-    Object.keys(permissionKeysToPermissionsMap)
-      .map(permission =>
-        (permissions as string[]).includes(permission)
-          ? {$addToSet: {[permissionKeysToPermissionsMap[permission]]: Types.ObjectId(accountId)}}
-          : {$pull: {[permissionKeysToPermissionsMap[permission]]: Types.ObjectId(accountId)}},
-      )
-      .forEach(object => (permissionsObject = merge(permissionsObject, object)))
+  //public updateEntityPermissionsForAccount({
+  //entityId,
+  //accountId,
+  //permissions,
+  //}: {
+  //entityId: string
+  //accountId: string
+  //permissions: Array<'read' | 'write' | 'admin'>
+  //}) {
+  //let permissionsObject = {}
+  //Object.keys(permissionKeysToPermissionsMap)
+  //.map(permission =>
+  //(permissions as string[]).includes(permission)
+  //? {$addToSet: {[permissionKeysToPermissionsMap[permission]]: Types.ObjectId(accountId)}}
+  //: {$pull: {[permissionKeysToPermissionsMap[permission]]: Types.ObjectId(accountId)}},
+  //)
+  //.forEach(object => (permissionsObject = merge(permissionsObject, object)))
 
-    return this.model.findOneAndUpdate({_id: entityId, ...this.getAdminConditionsForUser()}, permissionsObject)
-  }
+  //return this.model.findOneAndUpdate({_id: entityId, ...this.getAdminConditionsForUser()}, permissionsObject)
+  //}
 }

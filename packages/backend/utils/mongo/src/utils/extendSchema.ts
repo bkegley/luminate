@@ -2,6 +2,8 @@ import * as mongoose from 'mongoose'
 
 export const extendSchema = <T>(
   Schema: mongoose.Schema,
+  // FIX: types broken on current mongoose
+  // @ts-ignore
   definition: mongoose.SchemaDefinition<T>,
   options?: mongoose.SchemaOptions,
 ) => {
