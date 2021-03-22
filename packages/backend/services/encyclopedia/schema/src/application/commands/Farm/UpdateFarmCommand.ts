@@ -1,3 +1,4 @@
+import {Token} from '@luminate/mongo-utils'
 import {UpdateFarmInput} from '../../../types'
 
 export class UpdateFarmCommand {
@@ -5,7 +6,7 @@ export class UpdateFarmCommand {
   country?: string
   region?: string
 
-  constructor(public id: string, input: UpdateFarmInput) {
+  constructor(public user: Token, public id: string, input: UpdateFarmInput) {
     this.name = input.name
     this.country = input.country
     this.region = input.region

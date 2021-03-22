@@ -1,4 +1,4 @@
+import {IAuthenticatedRepo} from '@luminate/mongo-utils'
 import {FarmDocument} from '../models'
-import {IRepo} from './IRepo'
 
-export interface IFarmsRepo extends IRepo<FarmDocument> {}
+export interface IFarmsRepo extends IAuthenticatedRepo<FarmDocument> {}

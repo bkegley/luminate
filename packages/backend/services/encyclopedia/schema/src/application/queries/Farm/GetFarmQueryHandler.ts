@@ -8,6 +8,6 @@ export class GetFarmQueryHandler implements IQueryHandler<GetFarmQuery, FarmDocu
   constructor(private readonly farmsRepo: FarmsRepo) {}
 
   async execute(query: GetFarmQuery) {
-    return this.farmsRepo.getById(query.id)
+    return this.farmsRepo.getById(query.user, query.id)
   }
 }

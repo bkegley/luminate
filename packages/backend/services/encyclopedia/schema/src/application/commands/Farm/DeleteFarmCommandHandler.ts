@@ -7,6 +7,6 @@ export class DeleteFarmCommandHandler implements ICommandHandler<DeleteFarmComma
   constructor(private readonly farmsRepo: FarmsRepo) {}
 
   async execute(command: DeleteFarmCommand) {
-    return this.farmsRepo.delete(command.id)
+    return this.farmsRepo.delete(command.user, command.id)
   }
 }

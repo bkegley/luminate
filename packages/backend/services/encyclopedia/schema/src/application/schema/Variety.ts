@@ -1,13 +1,17 @@
+import {Authenticated, Scopes} from '@luminate/graphql-utils'
+import {UseGuards} from '@nestjs/common'
 import {CommandBus, QueryBus} from '@nestjs/cqrs'
 import {Args, Mutation, Parent, Query, ResolveField, Resolver} from '@nestjs/graphql'
 import {IVarietyDTO} from '../../infra/dtos'
 import {CoffeeLoader} from '../../infra/loaders'
 import {CoffeeMapper, VarietyMapper} from '../../infra/mappers'
 import {CreateVarietyInput} from '../../types'
+import {AuthGuard} from '../AuthGuard'
 import {CreateVarietyCommand, DeleteVarietyCommand, UpdateVarietyCommand} from '../commands'
 import {GetVarietyQuery, ListVarietiesQuery} from '../queries'
 
 @Resolver('Variety')
+@UseGuards(AuthGuard)
 export class VarietyResolvers {
   constructor(
     private readonly queryBus: QueryBus,
@@ -16,18 +20,21 @@ export class VarietyResolvers {
   ) {}
 
   @Query('listVarieties')
+  @Authenticated()
   async listVarieties() {
     const query = new ListVarietiesQuery()
     return this.queryBus.execute(query)
   }
 
   @Query('getVariety')
+  @Authenticated()
   async getVariety(@Args('id') id: string) {
     const query = new GetVarietyQuery(id)
     return this.queryBus.execute(query)
   }
 
   @Mutation('createVariety')
+  @Authenticated()
   async createVariety(@Args('input') input: CreateVarietyInput) {
     const command = new CreateVarietyCommand(input)
     const variety = await this.commandBus.execute(command)
@@ -39,6 +46,7 @@ export class VarietyResolvers {
   }
 
   @Mutation('updateVariety')
+  @Authenticated()
   async updateVariety(@Args('id') id: string, @Args('input') input: CreateVarietyInput) {
     const command = new UpdateVarietyCommand(id, input)
     const variety = await this.commandBus.execute(command)
@@ -51,6 +59,7 @@ export class VarietyResolvers {
   }
 
   @Mutation('deleteVariety')
+  @Authenticated()
   async deleteVariety(@Args('id') id: string) {
     const command = new DeleteVarietyCommand(id)
     return this.commandBus.execute(command)

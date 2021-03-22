@@ -6,6 +6,7 @@ import {FarmsRepo} from '../../../infra/repos'
 export class ListFarmsQueryHandler implements IQueryHandler<ListFarmsQuery> {
   constructor(private readonly farmsRepo: FarmsRepo) {}
   async execute(query: ListFarmsQuery) {
-    return this.farmsRepo.getConnectionResults(query)
+    const {user, ...args} = query
+    return this.farmsRepo.getConnectionResults(user, args)
   }
 }
