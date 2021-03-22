@@ -26,7 +26,7 @@ export class CoffeeMapper {
 
   public static toPersistence(coffee: CoffeeAggregate) {
     return {
-      id: coffee.getEntityId().toString(),
+      _id: coffee.getEntityId().toString(),
       name: coffee.name.value,
       country: coffee.countryId?.toString(),
       region: coffee.regionId?.toString(),

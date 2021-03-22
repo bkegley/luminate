@@ -1,3 +1,4 @@
+import {Token} from '@luminate/mongo-utils'
 import {UpdateCoffeeInput} from '../../../types'
 
 export class UpdateCoffeeCommand {
@@ -13,7 +14,7 @@ export class UpdateCoffeeCommand {
     percentage: number
   }>
 
-  constructor(public id: string, input: UpdateCoffeeInput) {
+  constructor(public user: Token, public id: string, input: UpdateCoffeeInput) {
     this.name = input.name
     this.country = input.country
     this.region = input.region

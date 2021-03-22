@@ -7,6 +7,6 @@ export class DeleteCoffeeCommandHandler implements ICommandHandler<DeleteCoffeeC
   constructor(private readonly coffeesRepo: CoffeesRepo) {}
 
   async execute(command: DeleteCoffeeCommand) {
-    return this.coffeesRepo.delete(command.id)
+    return this.coffeesRepo.delete(command.user, command.id)
   }
 }
