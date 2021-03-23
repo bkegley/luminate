@@ -1,4 +1,5 @@
 import React from 'react'
+import {useApolloClient} from '@apollo/client'
 import {useLoginMutation, useLogoutMutation, useSwitchAccountMutation, useRefreshTokenMutation} from '../graphql'
 
 export interface Token {
@@ -62,6 +63,7 @@ const UserProvider = ({children, setToken}: Props) => {
   const [refreshToken, {error, loading, data, called}] = useRefreshTokenMutation()
   const [shouldStartRefreshTimer, setShouldStartRefreshTimer] = React.useState(true)
   const [hasCheckedCookie, setHasCheckedCookie] = React.useState(false)
+  const client = useApolloClient()
 
   React.useEffect(() => {
     if (shouldRefreshToken) {
@@ -114,6 +116,7 @@ const UserProvider = ({children, setToken}: Props) => {
         if (response.data.logout) {
           setToken(null)
           setUser(null)
+          client.resetStore()
         }
         resolve(response)
       })
