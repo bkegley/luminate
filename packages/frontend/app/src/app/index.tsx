@@ -1,5 +1,5 @@
 import React from 'react'
-import {Switch, Route, useRouteMatch, useLocation} from 'react-router-dom'
+import {Switch, Route} from 'react-router-dom'
 import Home from './Home'
 import Account from './Account'
 import Brewers from './Brewers'
@@ -9,6 +9,7 @@ import CuppingSessions from './CuppingSessions'
 import Farms from './Farms'
 import Regions from './Regions'
 import Varieties from './Varieties'
+import {PostsRouter} from './Post'
 
 const AppRouter = () => {
   return (
@@ -39,6 +40,9 @@ const AppRouter = () => {
       </Route>
       <Route path="/cupping-sessions">
         <CuppingSessions />
+      </Route>
+      <Route path="/posts">
+        <PostsRouter />
       </Route>
     </Switch>
   )
