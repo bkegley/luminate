@@ -4,7 +4,6 @@ import {useDialogState, Modal} from '@luminate/gatsby-theme-luminate/src'
 import {Link, RouteComponentProps} from 'react-router-dom'
 import {ShareCoffeeForm} from './ShareCoffeeForm'
 import {Grid, Page, Card, Button, Heading} from '@luminate/components'
-import {RichTextArea} from '../../components/RichTextArea'
 
 interface Params {
   id: string
@@ -82,9 +81,6 @@ const CoffeeDetailView = ({match}: Props) => {
       </Grid>
       <div>
         <Heading as="h3">Story</Heading>
-        <div>
-          <RichTextArea />
-        </div>
       </div>
     </Page>
   )
