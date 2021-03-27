@@ -1,6 +1,7 @@
 import React from 'react'
-import {Editor, Element, Descendant, createEditor, Transforms} from 'slate'
+import {Editor, Element, Descendant, createEditor, Transforms, Text} from 'slate'
 import {withReact} from 'slate-react'
+import {EditableProps, RenderLeafProps} from 'slate-react/dist/components/editable'
 
 const withMentions = (editor: Editor) => {
   const {isVoid, isInline} = editor
@@ -42,10 +43,29 @@ const DefaultElement = (props: any) => {
 }
 
 export enum NodeType {
+  BOLD = 'BOLD',
+  ITALIC = 'ITALIC',
+  UNDERLINE = 'UNDERLINE',
   PARAGRAPH = 'PARAGRAPH',
   CODE = 'CODE',
   MENTION = 'MENTION',
   EMBEDDABLE = 'EMBEDDABLE',
+}
+
+const Leaf = ({attributes, leaf, children}: RenderLeafProps) => {
+  if (leaf[NodeType.BOLD]) {
+    children = <strong>{children}</strong>
+  }
+
+  if (leaf[NodeType.ITALIC]) {
+    children = <em>{children}</em>
+  }
+
+  if (leaf[NodeType.UNDERLINE]) {
+    children = <u>{children}</u>
+  }
+
+  return <span {...attributes}>{children}</span>
 }
 
 export interface EditorConfig {
@@ -59,6 +79,19 @@ const defaultRenderMap: {[x: string]: React.FC} = {
   //[NodeType.EMBEDDABLE]: () => {},
 }
 
+const toggleFormat = (editor: Editor, format: string) => {
+  const isActive = isFormatActive(editor, format)
+  Transforms.setNodes(editor, {[format]: isActive ? null : true}, {match: Text.isText, split: true})
+}
+
+const isFormatActive = (editor: Editor, format: string) => {
+  const nodes = Editor.nodes(editor, {
+    match: n => n[format] === true,
+    mode: 'all',
+  })
+  return !!nodes.next().value
+}
+
 export const useEditor = (
   {initialValue, renderElementMap}: EditorConfig = {
     initialValue: [{type: NodeType.PARAGRAPH, children: [{text: ''}]}],
@@ -66,6 +99,17 @@ export const useEditor = (
   },
 ) => {
   const editor = React.useMemo(() => withReact(withEmbeds(withMentions(createEditor()))), [])
+
+  const insertEmbed = React.useCallback((data: {[x: string]: any}) => {
+    const embed = {
+      type: NodeType.EMBEDDABLE,
+      data,
+      children: [{text: ''}],
+    }
+    Transforms.insertNodes(editor, embed)
+    Transforms.insertNodes(editor, {type: NodeType.PARAGRAPH, children: [{text: ''}]})
+    Transforms.move(editor)
+  }, [])
 
   const [value, setValue] = React.useState<Descendant[]>(initialValue)
 
@@ -93,20 +137,38 @@ export const useEditor = (
     }
   }, [])
 
+  const onDOMBeforeInput = React.useCallback((event: InputEvent) => {
+    switch (event.inputType) {
+      case 'formatBold':
+        event.preventDefault()
+        return toggleFormat(editor, NodeType.BOLD)
+      case 'formatItalic':
+        event.preventDefault()
+        return toggleFormat(editor, NodeType.ITALIC)
+      case 'formatUnderline':
+        event.preventDefault()
+        return toggleFormat(editor, NodeType.UNDERLINE)
+    }
+  }, [])
+
   const onChange = React.useCallback(newValue => {
     setValue(newValue)
   }, [])
 
   return {
-    actions: {},
+    actions: {
+      insertEmbed,
+    },
     getSlateProps: () => ({
       editor,
       value,
       onChange,
     }),
-    getEditableProps: () => ({
+    getEditableProps: (): EditableProps => ({
       onKeyDown,
       renderElement,
+      renderLeaf: props => <Leaf {...props} />,
+      onDOMBeforeInput,
     }),
   }
 }
