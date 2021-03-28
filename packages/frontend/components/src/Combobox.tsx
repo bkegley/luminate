@@ -75,8 +75,8 @@ export const Combobox = ({
     items: inputOptions,
     onInputValueChange: ({ inputValue }) => {
       if (inputValue) {
-        setInputOptions(oldOptions =>
-          oldOptions.filter(item => {
+        setInputOptions((oldOptions) =>
+          oldOptions.filter((item) => {
             if (item.value === '__createNew') return true;
             return (
               item.name.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1
@@ -94,7 +94,7 @@ export const Combobox = ({
       }
     },
     itemToString,
-    onSelectedItemChange: changes => {
+    onSelectedItemChange: (changes) => {
       if (onChange && changes.selectedItem?.value !== '__createNew') {
         onChange(changes);
       }

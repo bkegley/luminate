@@ -13,19 +13,13 @@ export class ListCuppingSessionQueryHandler implements IQueryHandler<ListCupping
     return {
       pageInfo: {
         hasNextPage: false,
-        nextCursor: Math.random()
-          .toString(36)
-          .substring(2, 11),
-        prevCursor: Math.random()
-          .toString(36)
-          .substring(2, 11),
+        nextCursor: Math.random().toString(36).substring(2, 11),
+        prevCursor: Math.random().toString(36).substring(2, 11),
       },
       edges: cuppingSessions.map(cuppingSession => {
         return {
           node: CuppingSessionMapper.toDTO(cuppingSession),
-          cursor: Math.random()
-            .toString(36)
-            .substring(2, 11),
+          cursor: Math.random().toString(36).substring(2, 11),
         }
       }),
     }

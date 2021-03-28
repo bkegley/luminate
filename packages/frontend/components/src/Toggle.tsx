@@ -65,7 +65,7 @@ export const Toggle = ({
       }`}
       aria-pressed={!!on}
       aria-labelledby={id}
-      onClick={() => setOn(old => !old)}
+      onClick={() => setOn((old) => !old)}
     >
       <span className="sr-only">{description}</span>
       <span
