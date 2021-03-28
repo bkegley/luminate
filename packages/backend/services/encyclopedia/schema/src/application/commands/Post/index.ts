@@ -1,0 +1,6 @@
+export * from './CreatePostCommand'
+export * from './CreatePostCommandHandler'
+export * from './DeletePostCommand'
+export * from './DeletePostCommandHandler'
+export * from './UpdatePostCommand'
+export * from './UpdatePostCommandHandler'

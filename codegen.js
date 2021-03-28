@@ -55,20 +55,20 @@ const serverGenerates = {
     },
   },
   'packages/backend/services/encyclopedia/schema/src/types.d.ts': {
-    schema: ['./packages/backend/services/encyclopedia/schema/src/schema/**/!(index.ts)*.ts'],
+    schema: ['./packages/backend/services/encyclopedia/schema/src/application/**/!(index.ts)*.graphql'],
     plugins: ['typescript', 'typescript-resolvers'],
     config: {
       contextType: './startServer#Context',
       useIndexSignature: true,
       federation: true,
-      mappers: {
-        Coffee: './models#CoffeeDocument',
-        Country: './models#CountryDocument',
-        Farm: './models#FarmDocument',
-        Note: './models#NoteDocument',
-        Region: './models#RegionDocument',
-        Variety: './models#VarietyDocument',
-      },
+      //mappers: {
+      //Coffee: './models#CoffeeDocument',
+      //Country: './models#CountryDocument',
+      //Farm: './models#FarmDocument',
+      //Note: './models#NoteDocument',
+      //Region: './models#RegionDocument',
+      //Variety: './models#VarietyDocument',
+      //},
     },
   },
   'packages/backend/services/brewing/schema/src/types.d.ts': {
