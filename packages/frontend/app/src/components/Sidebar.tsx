@@ -18,6 +18,7 @@ interface INavItem {
 
 const navItems: INavItem[] = [
   {icon: IconTypesEnum.HOME, to: '/', text: 'Home', description: 'Home', activeOnlyWhenExact: true},
+  {icon: IconTypesEnum.BOOK_OPEN, to: '/posts', text: 'Posts', description: 'posts'},
   {icon: IconTypesEnum.PENCIL, to: '/coffees', text: 'Coffees', description: 'coffees'},
   {icon: IconTypesEnum.BEAKER, to: '/brewers', text: 'Brewers', description: 'brewers'},
   {icon: IconTypesEnum.BOOKMARK, to: '/countries', text: 'Countries', description: 'countries'},

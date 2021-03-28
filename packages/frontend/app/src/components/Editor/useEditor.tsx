@@ -92,9 +92,11 @@ const isFormatActive = (editor: Editor, format: string) => {
   return !!nodes.next().value
 }
 
+const defaultValue = [{type: NodeType.PARAGRAPH, children: [{text: ''}]}]
+
 export const useEditor = (
   {initialValue, renderElementMap}: EditorConfig = {
-    initialValue: [{type: NodeType.PARAGRAPH, children: [{text: ''}]}],
+    initialValue: defaultValue,
     renderElementMap: {},
   },
 ) => {
@@ -111,7 +113,7 @@ export const useEditor = (
     Transforms.move(editor)
   }, [])
 
-  const [value, setValue] = React.useState<Descendant[]>(initialValue)
+  const [value, setValue] = React.useState<Descendant[]>(initialValue ?? defaultValue)
 
   const renderElement = React.useCallback(
     props => {

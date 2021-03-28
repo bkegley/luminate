@@ -8,6 +8,7 @@ type ThenArg<T> = T extends PromiseLike<infer U> ? U : T
 export type MutationSuccessResponse<T extends (...args: any[]) => any[]> = ThenArg<
   ReturnType<ThenArg<ReturnType<T>>[0]>
 >
+const defaultOptions = {}
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string
@@ -16,7 +17,6 @@ export type Scalars = {
   Int: number
   Float: number
   ScoreFloat: any
-  _FieldSet: any
 }
 
 export type Account = {
@@ -121,13 +121,8 @@ export type Coffee = {
   varieties: Array<Variety>
   elevation?: Maybe<Scalars['String']>
   components?: Maybe<Array<Maybe<CoffeeComponent>>>
-  notes?: Maybe<Array<Maybe<Note>>>
   createdAt: Scalars['String']
   updatedAt: Scalars['String']
-}
-
-export type CoffeeNotesArgs = {
-  fields?: Maybe<Array<Maybe<Scalars['String']>>>
 }
 
 export type CoffeeComponent = {
@@ -148,10 +143,20 @@ export type CoffeeEdge = {
   node: Coffee
 }
 
+export enum CoffeeField {
+  Name = 'name',
+  Elevation = 'elevation',
+}
+
 export type CoffeeSummary = {
   __typename: 'CoffeeSummary'
   id: Scalars['ID']
   name: Scalars['String']
+}
+
+export type CoffeeView = {
+  __typename: 'CoffeeView'
+  fields?: Maybe<Array<Maybe<CoffeeField>>>
 }
 
 export type ComponentInput = {
@@ -237,10 +242,10 @@ export type CreateGrinderInput = {
   burrSet?: Maybe<BurrSet>
 }
 
-export type CreateNoteInput = {
-  entityId: Scalars['ID']
+export type CreatePostInput = {
+  title?: Maybe<Scalars['String']>
+  relations?: Maybe<Array<Maybe<EntityRelationInput>>>
   content: Scalars['String']
-  field: Scalars['String']
 }
 
 export type CreateRecipeInput = {
@@ -284,6 +289,12 @@ export type CreateVarietyInput = {
   name: Scalars['String']
 }
 
+export type CreateViewInput = {
+  entity: ViewEntity
+  entityId: Scalars['ID']
+  name?: Maybe<Scalars['String']>
+}
+
 export type CuppingSession = {
   __typename: 'CuppingSession'
   id: Scalars['ID']
@@ -316,6 +327,23 @@ export type DefectScore = {
 export type DefectScoreInput = {
   numberOfCups?: Maybe<Scalars['Int']>
   intensity?: Maybe<Scalars['Float']>
+}
+
+export type EntityRelation = {
+  __typename: 'EntityRelation'
+  id: Scalars['ID']
+  type?: Maybe<EntityType>
+}
+
+export type EntityRelationInput = {
+  id: Scalars['ID']
+  type: EntityType
+}
+
+export enum EntityType {
+  Coffee = 'Coffee',
+  Country = 'Country',
+  Variety = 'Variety',
 }
 
 export type Evaluation = {
@@ -419,9 +447,6 @@ export type Mutation = {
   switchAccount?: Maybe<Scalars['Boolean']>
   refreshToken?: Maybe<Scalars['String']>
   updateMe?: Maybe<User>
-  createNote?: Maybe<Note>
-  updateNote?: Maybe<Note>
-  deleteNote?: Maybe<Note>
   createCoffee?: Maybe<Coffee>
   updateCoffee?: Maybe<Coffee>
   deleteCoffee?: Maybe<Coffee>
@@ -432,10 +457,16 @@ export type Mutation = {
   createFarmZone?: Maybe<Farm>
   updateFarmZone?: Maybe<Farm>
   deleteFarmZone?: Maybe<Farm>
+  createPost?: Maybe<Post>
+  updatePost?: Maybe<Post>
+  deletePost?: Maybe<Post>
   createVariety?: Maybe<Variety>
   updateVariety?: Maybe<Variety>
   deleteVariety?: Maybe<Variety>
   makeVarietyPublic?: Maybe<Scalars['Boolean']>
+  createView?: Maybe<View>
+  updateView?: Maybe<View>
+  deleteView?: Maybe<Scalars['Boolean']>
   createBrewGuide?: Maybe<BrewGuide>
   updateBrewGuide?: Maybe<BrewGuide>
   deleteBrewGuide?: Maybe<Scalars['Boolean']>
@@ -531,19 +562,6 @@ export type MutationUpdateMeArgs = {
   input?: Maybe<UpdateMeInput>
 }
 
-export type MutationCreateNoteArgs = {
-  input?: Maybe<CreateNoteInput>
-}
-
-export type MutationUpdateNoteArgs = {
-  id: Scalars['ID']
-  input?: Maybe<UpdateNoteInput>
-}
-
-export type MutationDeleteNoteArgs = {
-  id: Scalars['ID']
-}
-
 export type MutationCreateCoffeeArgs = {
   input: CreateCoffeeInput
 }
@@ -590,6 +608,19 @@ export type MutationDeleteFarmZoneArgs = {
   id: Scalars['ID']
 }
 
+export type MutationCreatePostArgs = {
+  input: CreatePostInput
+}
+
+export type MutationUpdatePostArgs = {
+  id: Scalars['ID']
+  input: UpdatePostInput
+}
+
+export type MutationDeletePostArgs = {
+  id: Scalars['ID']
+}
+
 export type MutationCreateVarietyArgs = {
   input: CreateVarietyInput
 }
@@ -604,6 +635,19 @@ export type MutationDeleteVarietyArgs = {
 }
 
 export type MutationMakeVarietyPublicArgs = {
+  id: Scalars['ID']
+}
+
+export type MutationCreateViewArgs = {
+  input: CreateViewInput
+}
+
+export type MutationUpdateViewArgs = {
+  id: Scalars['ID']
+  input: UpdateViewInput
+}
+
+export type MutationDeleteViewArgs = {
   id: Scalars['ID']
 }
 
@@ -722,15 +766,6 @@ export type MutationDeleteScoreSheetArgs = {
   id: Scalars['ID']
 }
 
-export type Note = {
-  __typename: 'Note'
-  id: Scalars['ID']
-  content: Scalars['String']
-  field: Scalars['String']
-  createdAt?: Maybe<Scalars['String']>
-  updatedAt?: Maybe<Scalars['String']>
-}
-
 export enum OperatorEnum {
   Contains = 'contains',
   ContainsSensitive = 'containsSensitive',
@@ -755,6 +790,28 @@ export enum PermissionTypeEnum {
   Admin = 'admin',
 }
 
+export type Post = {
+  __typename: 'Post'
+  id: Scalars['ID']
+  title?: Maybe<Scalars['String']>
+  relations?: Maybe<Array<Maybe<EntityRelation>>>
+  content: Scalars['String']
+  createdAt?: Maybe<Scalars['String']>
+  updatedAt?: Maybe<Scalars['String']>
+}
+
+export type PostConnection = {
+  __typename: 'PostConnection'
+  pageInfo: PageInfo
+  edges: Array<PostEdge>
+}
+
+export type PostEdge = {
+  __typename: 'PostEdge'
+  node: Post
+  cursor: Scalars['String']
+}
+
 export type Query = {
   __typename: 'Query'
   listAccounts: AccountConnection
@@ -770,10 +827,14 @@ export type Query = {
   getCountry?: Maybe<Country>
   listFarms: FarmConnection
   getFarm?: Maybe<Farm>
+  listPosts: PostConnection
+  getPost?: Maybe<Post>
   listRegions: RegionConnection
   getRegion?: Maybe<Region>
   listVarieties: VarietyConnection
   getVariety?: Maybe<Variety>
+  listViews?: Maybe<ViewConnection>
+  getView?: Maybe<View>
   listBrewGuides: BrewGuideConnection
   getBrewGuide?: Maybe<BrewGuide>
   listBrewers: BrewerConnection
@@ -853,6 +914,16 @@ export type QueryGetFarmArgs = {
   id: Scalars['ID']
 }
 
+export type QueryListPostsArgs = {
+  cursor?: Maybe<Scalars['String']>
+  limit?: Maybe<Scalars['Int']>
+  query?: Maybe<Array<QueryInput>>
+}
+
+export type QueryGetPostArgs = {
+  id: Scalars['ID']
+}
+
 export type QueryListRegionsArgs = {
   cursor?: Maybe<Scalars['String']>
   limit?: Maybe<Scalars['Int']>
@@ -870,6 +941,16 @@ export type QueryListVarietiesArgs = {
 }
 
 export type QueryGetVarietyArgs = {
+  id: Scalars['ID']
+}
+
+export type QueryListViewsArgs = {
+  cursor?: Maybe<Scalars['String']>
+  limit?: Maybe<Scalars['Int']>
+  query?: Maybe<Array<Maybe<QueryInput>>>
+}
+
+export type QueryGetViewArgs = {
   id: Scalars['ID']
 }
 
@@ -1096,15 +1177,15 @@ export type UpdateMeInput = {
   theme?: Maybe<Theme>
 }
 
-export type UpdateNoteInput = {
-  entityId?: Maybe<Scalars['ID']>
-  content?: Maybe<Scalars['String']>
-  field?: Maybe<Scalars['String']>
-}
-
 export type UpdatePasswordInput = {
   currentPassword: Scalars['String']
   newPassword: Scalars['String']
+}
+
+export type UpdatePostInput = {
+  title?: Maybe<Scalars['String']>
+  relations?: Maybe<Array<Maybe<EntityRelationInput>>>
+  content: Scalars['String']
 }
 
 export type UpdateRecipeInput = {
@@ -1143,6 +1224,10 @@ export type UpdateUserInput = {
 }
 
 export type UpdateVarietyInput = {
+  name?: Maybe<Scalars['String']>
+}
+
+export type UpdateViewInput = {
   name?: Maybe<Scalars['String']>
 }
 
@@ -1205,6 +1290,27 @@ export type VarietyEdge = {
   __typename: 'VarietyEdge'
   cursor: Scalars['String']
   node: Variety
+}
+
+export type View = {
+  __typename: 'View'
+  id: Scalars['ID']
+}
+
+export type ViewConnection = {
+  __typename: 'ViewConnection'
+  pageInfo: PageInfo
+  edges?: Maybe<Array<Maybe<ViewEdge>>>
+}
+
+export type ViewEdge = {
+  __typename: 'ViewEdge'
+  node?: Maybe<View>
+  cursor: Scalars['String']
+}
+
+export enum ViewEntity {
+  Coffee = 'Coffee',
 }
 
 export type SwitchAccountMutationVariables = Exact<{
@@ -1290,7 +1396,8 @@ export type SwitchAccountMutationFn = Apollo.MutationFunction<SwitchAccountMutat
 export function useSwitchAccountMutation(
   baseOptions?: Apollo.MutationHookOptions<SwitchAccountMutation, SwitchAccountMutationVariables>,
 ) {
-  return Apollo.useMutation<SwitchAccountMutation, SwitchAccountMutationVariables>(SwitchAccountDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useMutation<SwitchAccountMutation, SwitchAccountMutationVariables>(SwitchAccountDocument, options)
 }
 export type SwitchAccountMutationHookResult = ReturnType<typeof useSwitchAccountMutation>
 export type SwitchAccountMutationResult = Apollo.MutationResult<SwitchAccountMutation>
@@ -1323,10 +1430,12 @@ export const MeDocument = gql`
  * });
  */
 export function useMeQuery(baseOptions?: Apollo.QueryHookOptions<MeQuery, MeQueryVariables>) {
-  return Apollo.useQuery<MeQuery, MeQueryVariables>(MeDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useQuery<MeQuery, MeQueryVariables>(MeDocument, options)
 }
 export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery, MeQueryVariables>) {
-  return Apollo.useLazyQuery<MeQuery, MeQueryVariables>(MeDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useLazyQuery<MeQuery, MeQueryVariables>(MeDocument, options)
 }
 export type MeQueryHookResult = ReturnType<typeof useMeQuery>
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>
@@ -1357,7 +1466,8 @@ export type RefreshTokenMutationFn = Apollo.MutationFunction<RefreshTokenMutatio
 export function useRefreshTokenMutation(
   baseOptions?: Apollo.MutationHookOptions<RefreshTokenMutation, RefreshTokenMutationVariables>,
 ) {
-  return Apollo.useMutation<RefreshTokenMutation, RefreshTokenMutationVariables>(RefreshTokenDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useMutation<RefreshTokenMutation, RefreshTokenMutationVariables>(RefreshTokenDocument, options)
 }
 export type RefreshTokenMutationHookResult = ReturnType<typeof useRefreshTokenMutation>
 export type RefreshTokenMutationResult = Apollo.MutationResult<RefreshTokenMutation>
@@ -1391,7 +1501,8 @@ export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutati
  * });
  */
 export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginMutation, LoginMutationVariables>) {
-  return Apollo.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument, options)
 }
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>
@@ -1420,7 +1531,8 @@ export type LogoutMutationFn = Apollo.MutationFunction<LogoutMutation, LogoutMut
  * });
  */
 export function useLogoutMutation(baseOptions?: Apollo.MutationHookOptions<LogoutMutation, LogoutMutationVariables>) {
-  return Apollo.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument, options)
 }
 export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>
 export type LogoutMutationResult = Apollo.MutationResult<LogoutMutation>

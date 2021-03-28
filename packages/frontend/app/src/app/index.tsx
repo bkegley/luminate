@@ -9,6 +9,7 @@ import CuppingSessions from './CuppingSessions'
 import Farms from './Farms'
 import Regions from './Regions'
 import Varieties from './Varieties'
+import {ViewsRouter} from './Views'
 import {PostsRouter} from './Post'
 
 const AppRouter = () => {
@@ -37,6 +38,9 @@ const AppRouter = () => {
       </Route>
       <Route path="/varieties">
         <Varieties />
+      </Route>
+      <Route path="/views">
+        <ViewsRouter />
       </Route>
       <Route path="/cupping-sessions">
         <CuppingSessions />
