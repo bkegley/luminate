@@ -10,7 +10,6 @@ export class CreatePostCommandHandler implements ICommandHandler<CreatePostComma
   constructor(private readonly eventBus: EventBus, private readonly postsRepo: PostsRepo) {}
 
   async execute(command: CreatePostCommand) {
-    console.log({command})
     const post = PostAggregate.create({
       title: command.title,
       content: PostContent.create(command.content),

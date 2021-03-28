@@ -8,6 +8,7 @@ type ThenArg<T> = T extends PromiseLike<infer U> ? U : T
 export type MutationSuccessResponse<T extends (...args: any[]) => any[]> = ThenArg<
   ReturnType<ThenArg<ReturnType<T>>[0]>
 >
+const defaultOptions = {}
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string
@@ -16,7 +17,6 @@ export type Scalars = {
   Int: number
   Float: number
   ScoreFloat: any
-  _FieldSet: any
 }
 
 export type Account = {
@@ -121,13 +121,8 @@ export type Coffee = {
   varieties: Array<Variety>
   elevation?: Maybe<Scalars['String']>
   components?: Maybe<Array<Maybe<CoffeeComponent>>>
-  notes?: Maybe<Array<Maybe<Note>>>
   createdAt: Scalars['String']
   updatedAt: Scalars['String']
-}
-
-export type CoffeeNotesArgs = {
-  fields?: Maybe<Array<Maybe<Scalars['String']>>>
 }
 
 export type CoffeeComponent = {
@@ -148,10 +143,20 @@ export type CoffeeEdge = {
   node: Coffee
 }
 
+export enum CoffeeField {
+  Name = 'name',
+  Elevation = 'elevation',
+}
+
 export type CoffeeSummary = {
   __typename: 'CoffeeSummary'
   id: Scalars['ID']
   name: Scalars['String']
+}
+
+export type CoffeeView = {
+  __typename: 'CoffeeView'
+  fields?: Maybe<Array<Maybe<CoffeeField>>>
 }
 
 export type ComponentInput = {
@@ -237,10 +242,10 @@ export type CreateGrinderInput = {
   burrSet?: Maybe<BurrSet>
 }
 
-export type CreateNoteInput = {
-  entityId: Scalars['ID']
+export type CreatePostInput = {
+  title?: Maybe<Scalars['String']>
+  relations?: Maybe<Array<Maybe<EntityRelationInput>>>
   content: Scalars['String']
-  field: Scalars['String']
 }
 
 export type CreateRecipeInput = {
@@ -284,6 +289,12 @@ export type CreateVarietyInput = {
   name: Scalars['String']
 }
 
+export type CreateViewInput = {
+  entity: ViewEntity
+  entityId: Scalars['ID']
+  name?: Maybe<Scalars['String']>
+}
+
 export type CuppingSession = {
   __typename: 'CuppingSession'
   id: Scalars['ID']
@@ -316,6 +327,23 @@ export type DefectScore = {
 export type DefectScoreInput = {
   numberOfCups?: Maybe<Scalars['Int']>
   intensity?: Maybe<Scalars['Float']>
+}
+
+export type EntityRelation = {
+  __typename: 'EntityRelation'
+  id: Scalars['ID']
+  type?: Maybe<EntityType>
+}
+
+export type EntityRelationInput = {
+  id: Scalars['ID']
+  type: EntityType
+}
+
+export enum EntityType {
+  Coffee = 'Coffee',
+  Country = 'Country',
+  Variety = 'Variety',
 }
 
 export type Evaluation = {
@@ -419,9 +447,6 @@ export type Mutation = {
   switchAccount?: Maybe<Scalars['Boolean']>
   refreshToken?: Maybe<Scalars['String']>
   updateMe?: Maybe<User>
-  createNote?: Maybe<Note>
-  updateNote?: Maybe<Note>
-  deleteNote?: Maybe<Note>
   createCoffee?: Maybe<Coffee>
   updateCoffee?: Maybe<Coffee>
   deleteCoffee?: Maybe<Coffee>
@@ -432,10 +457,16 @@ export type Mutation = {
   createFarmZone?: Maybe<Farm>
   updateFarmZone?: Maybe<Farm>
   deleteFarmZone?: Maybe<Farm>
+  createPost?: Maybe<Post>
+  updatePost?: Maybe<Post>
+  deletePost?: Maybe<Post>
   createVariety?: Maybe<Variety>
   updateVariety?: Maybe<Variety>
   deleteVariety?: Maybe<Variety>
   makeVarietyPublic?: Maybe<Scalars['Boolean']>
+  createView?: Maybe<View>
+  updateView?: Maybe<View>
+  deleteView?: Maybe<Scalars['Boolean']>
   createBrewGuide?: Maybe<BrewGuide>
   updateBrewGuide?: Maybe<BrewGuide>
   deleteBrewGuide?: Maybe<Scalars['Boolean']>
@@ -531,19 +562,6 @@ export type MutationUpdateMeArgs = {
   input?: Maybe<UpdateMeInput>
 }
 
-export type MutationCreateNoteArgs = {
-  input?: Maybe<CreateNoteInput>
-}
-
-export type MutationUpdateNoteArgs = {
-  id: Scalars['ID']
-  input?: Maybe<UpdateNoteInput>
-}
-
-export type MutationDeleteNoteArgs = {
-  id: Scalars['ID']
-}
-
 export type MutationCreateCoffeeArgs = {
   input: CreateCoffeeInput
 }
@@ -590,6 +608,19 @@ export type MutationDeleteFarmZoneArgs = {
   id: Scalars['ID']
 }
 
+export type MutationCreatePostArgs = {
+  input: CreatePostInput
+}
+
+export type MutationUpdatePostArgs = {
+  id: Scalars['ID']
+  input: UpdatePostInput
+}
+
+export type MutationDeletePostArgs = {
+  id: Scalars['ID']
+}
+
 export type MutationCreateVarietyArgs = {
   input: CreateVarietyInput
 }
@@ -604,6 +635,19 @@ export type MutationDeleteVarietyArgs = {
 }
 
 export type MutationMakeVarietyPublicArgs = {
+  id: Scalars['ID']
+}
+
+export type MutationCreateViewArgs = {
+  input: CreateViewInput
+}
+
+export type MutationUpdateViewArgs = {
+  id: Scalars['ID']
+  input: UpdateViewInput
+}
+
+export type MutationDeleteViewArgs = {
   id: Scalars['ID']
 }
 
@@ -722,15 +766,6 @@ export type MutationDeleteScoreSheetArgs = {
   id: Scalars['ID']
 }
 
-export type Note = {
-  __typename: 'Note'
-  id: Scalars['ID']
-  content: Scalars['String']
-  field: Scalars['String']
-  createdAt?: Maybe<Scalars['String']>
-  updatedAt?: Maybe<Scalars['String']>
-}
-
 export enum OperatorEnum {
   Contains = 'contains',
   ContainsSensitive = 'containsSensitive',
@@ -755,6 +790,28 @@ export enum PermissionTypeEnum {
   Admin = 'admin',
 }
 
+export type Post = {
+  __typename: 'Post'
+  id: Scalars['ID']
+  title?: Maybe<Scalars['String']>
+  relations?: Maybe<Array<Maybe<EntityRelation>>>
+  content: Scalars['String']
+  createdAt?: Maybe<Scalars['String']>
+  updatedAt?: Maybe<Scalars['String']>
+}
+
+export type PostConnection = {
+  __typename: 'PostConnection'
+  pageInfo: PageInfo
+  edges: Array<PostEdge>
+}
+
+export type PostEdge = {
+  __typename: 'PostEdge'
+  node: Post
+  cursor: Scalars['String']
+}
+
 export type Query = {
   __typename: 'Query'
   listAccounts: AccountConnection
@@ -770,10 +827,14 @@ export type Query = {
   getCountry?: Maybe<Country>
   listFarms: FarmConnection
   getFarm?: Maybe<Farm>
+  listPosts: PostConnection
+  getPost?: Maybe<Post>
   listRegions: RegionConnection
   getRegion?: Maybe<Region>
   listVarieties: VarietyConnection
   getVariety?: Maybe<Variety>
+  listViews?: Maybe<ViewConnection>
+  getView?: Maybe<View>
   listBrewGuides: BrewGuideConnection
   getBrewGuide?: Maybe<BrewGuide>
   listBrewers: BrewerConnection
@@ -853,6 +914,16 @@ export type QueryGetFarmArgs = {
   id: Scalars['ID']
 }
 
+export type QueryListPostsArgs = {
+  cursor?: Maybe<Scalars['String']>
+  limit?: Maybe<Scalars['Int']>
+  query?: Maybe<Array<QueryInput>>
+}
+
+export type QueryGetPostArgs = {
+  id: Scalars['ID']
+}
+
 export type QueryListRegionsArgs = {
   cursor?: Maybe<Scalars['String']>
   limit?: Maybe<Scalars['Int']>
@@ -870,6 +941,16 @@ export type QueryListVarietiesArgs = {
 }
 
 export type QueryGetVarietyArgs = {
+  id: Scalars['ID']
+}
+
+export type QueryListViewsArgs = {
+  cursor?: Maybe<Scalars['String']>
+  limit?: Maybe<Scalars['Int']>
+  query?: Maybe<Array<Maybe<QueryInput>>>
+}
+
+export type QueryGetViewArgs = {
   id: Scalars['ID']
 }
 
@@ -1096,15 +1177,15 @@ export type UpdateMeInput = {
   theme?: Maybe<Theme>
 }
 
-export type UpdateNoteInput = {
-  entityId?: Maybe<Scalars['ID']>
-  content?: Maybe<Scalars['String']>
-  field?: Maybe<Scalars['String']>
-}
-
 export type UpdatePasswordInput = {
   currentPassword: Scalars['String']
   newPassword: Scalars['String']
+}
+
+export type UpdatePostInput = {
+  title?: Maybe<Scalars['String']>
+  relations?: Maybe<Array<Maybe<EntityRelationInput>>>
+  content: Scalars['String']
 }
 
 export type UpdateRecipeInput = {
@@ -1143,6 +1224,10 @@ export type UpdateUserInput = {
 }
 
 export type UpdateVarietyInput = {
+  name?: Maybe<Scalars['String']>
+}
+
+export type UpdateViewInput = {
   name?: Maybe<Scalars['String']>
 }
 
@@ -1205,6 +1290,27 @@ export type VarietyEdge = {
   __typename: 'VarietyEdge'
   cursor: Scalars['String']
   node: Variety
+}
+
+export type View = {
+  __typename: 'View'
+  id: Scalars['ID']
+}
+
+export type ViewConnection = {
+  __typename: 'ViewConnection'
+  pageInfo: PageInfo
+  edges?: Maybe<Array<Maybe<ViewEdge>>>
+}
+
+export type ViewEdge = {
+  __typename: 'ViewEdge'
+  node?: Maybe<View>
+  cursor: Scalars['String']
+}
+
+export enum ViewEntity {
+  Coffee = 'Coffee',
 }
 
 export type CreateAccountMutationVariables = Exact<{
@@ -1581,6 +1687,46 @@ export type FarmFragmentFragment = {__typename: 'Farm'} & Pick<Farm, 'id' | 'nam
     farmZones: Array<{__typename: 'FarmZone'} & Pick<FarmZone, 'id' | 'name'>>
   }
 
+export type ListPostsQueryVariables = Exact<{
+  cursor?: Maybe<Scalars['String']>
+  limit?: Maybe<Scalars['Int']>
+  query?: Maybe<Array<QueryInput> | QueryInput>
+}>
+
+export type ListPostsQuery = {__typename: 'Query'} & {
+  listPosts: {__typename: 'PostConnection'} & {
+    pageInfo: {__typename: 'PageInfo'} & Pick<PageInfo, 'hasNextPage' | 'nextCursor' | 'prevCursor'>
+    edges: Array<
+      {__typename: 'PostEdge'} & Pick<PostEdge, 'cursor'> & {node: {__typename: 'Post'} & PostFragmentFragment}
+    >
+  }
+}
+
+export type GetPostQueryVariables = Exact<{
+  id: Scalars['ID']
+}>
+
+export type GetPostQuery = {__typename: 'Query'} & {getPost?: Maybe<{__typename: 'Post'} & PostFragmentFragment>}
+
+export type CreatePostMutationVariables = Exact<{
+  input: CreatePostInput
+}>
+
+export type CreatePostMutation = {__typename: 'Mutation'} & {
+  createPost?: Maybe<{__typename: 'Post'} & PostFragmentFragment>
+}
+
+export type UpdatePostMutationVariables = Exact<{
+  id: Scalars['ID']
+  input: UpdatePostInput
+}>
+
+export type UpdatePostMutation = {__typename: 'Mutation'} & {
+  updatePost?: Maybe<{__typename: 'Post'} & PostFragmentFragment>
+}
+
+export type PostFragmentFragment = {__typename: 'Post'} & Pick<Post, 'id' | 'title' | 'content'>
+
 export type ListRegionsQueryVariables = Exact<{
   cursor?: Maybe<Scalars['String']>
   limit?: Maybe<Scalars['Int']>
@@ -1841,6 +1987,13 @@ export const FarmFragmentFragmentDoc = gql`
     updatedAt
   }
 `
+export const PostFragmentFragmentDoc = gql`
+  fragment PostFragment on Post {
+    id
+    title
+    content
+  }
+`
 export const RegionFragmentFragmentDoc = gql`
   fragment RegionFragment on Region {
     id
@@ -1907,7 +2060,8 @@ export type CreateAccountMutationFn = Apollo.MutationFunction<CreateAccountMutat
 export function useCreateAccountMutation(
   baseOptions?: Apollo.MutationHookOptions<CreateAccountMutation, CreateAccountMutationVariables>,
 ) {
-  return Apollo.useMutation<CreateAccountMutation, CreateAccountMutationVariables>(CreateAccountDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useMutation<CreateAccountMutation, CreateAccountMutationVariables>(CreateAccountDocument, options)
 }
 export type CreateAccountMutationHookResult = ReturnType<typeof useCreateAccountMutation>
 export type CreateAccountMutationResult = Apollo.MutationResult<CreateAccountMutation>
@@ -1946,9 +2100,10 @@ export type AddUserToAccountMutationFn = Apollo.MutationFunction<
 export function useAddUserToAccountMutation(
   baseOptions?: Apollo.MutationHookOptions<AddUserToAccountMutation, AddUserToAccountMutationVariables>,
 ) {
+  const options = {...defaultOptions, ...baseOptions}
   return Apollo.useMutation<AddUserToAccountMutation, AddUserToAccountMutationVariables>(
     AddUserToAccountDocument,
-    baseOptions,
+    options,
   )
 }
 export type AddUserToAccountMutationHookResult = ReturnType<typeof useAddUserToAccountMutation>
@@ -1993,12 +2148,14 @@ export const ListBrewersDocument = gql`
 export function useListBrewersQuery(
   baseOptions?: Apollo.QueryHookOptions<ListBrewersQuery, ListBrewersQueryVariables>,
 ) {
-  return Apollo.useQuery<ListBrewersQuery, ListBrewersQueryVariables>(ListBrewersDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useQuery<ListBrewersQuery, ListBrewersQueryVariables>(ListBrewersDocument, options)
 }
 export function useListBrewersLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<ListBrewersQuery, ListBrewersQueryVariables>,
 ) {
-  return Apollo.useLazyQuery<ListBrewersQuery, ListBrewersQueryVariables>(ListBrewersDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useLazyQuery<ListBrewersQuery, ListBrewersQueryVariables>(ListBrewersDocument, options)
 }
 export type ListBrewersQueryHookResult = ReturnType<typeof useListBrewersQuery>
 export type ListBrewersLazyQueryHookResult = ReturnType<typeof useListBrewersLazyQuery>
@@ -2029,12 +2186,14 @@ export const GetBrewerDocument = gql`
  * });
  */
 export function useGetBrewerQuery(baseOptions: Apollo.QueryHookOptions<GetBrewerQuery, GetBrewerQueryVariables>) {
-  return Apollo.useQuery<GetBrewerQuery, GetBrewerQueryVariables>(GetBrewerDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useQuery<GetBrewerQuery, GetBrewerQueryVariables>(GetBrewerDocument, options)
 }
 export function useGetBrewerLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<GetBrewerQuery, GetBrewerQueryVariables>,
 ) {
-  return Apollo.useLazyQuery<GetBrewerQuery, GetBrewerQueryVariables>(GetBrewerDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useLazyQuery<GetBrewerQuery, GetBrewerQueryVariables>(GetBrewerDocument, options)
 }
 export type GetBrewerQueryHookResult = ReturnType<typeof useGetBrewerQuery>
 export type GetBrewerLazyQueryHookResult = ReturnType<typeof useGetBrewerLazyQuery>
@@ -2069,7 +2228,8 @@ export type CreateBrewerMutationFn = Apollo.MutationFunction<CreateBrewerMutatio
 export function useCreateBrewerMutation(
   baseOptions?: Apollo.MutationHookOptions<CreateBrewerMutation, CreateBrewerMutationVariables>,
 ) {
-  return Apollo.useMutation<CreateBrewerMutation, CreateBrewerMutationVariables>(CreateBrewerDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useMutation<CreateBrewerMutation, CreateBrewerMutationVariables>(CreateBrewerDocument, options)
 }
 export type CreateBrewerMutationHookResult = ReturnType<typeof useCreateBrewerMutation>
 export type CreateBrewerMutationResult = Apollo.MutationResult<CreateBrewerMutation>
@@ -2108,7 +2268,8 @@ export type UpdateBrewerMutationFn = Apollo.MutationFunction<UpdateBrewerMutatio
 export function useUpdateBrewerMutation(
   baseOptions?: Apollo.MutationHookOptions<UpdateBrewerMutation, UpdateBrewerMutationVariables>,
 ) {
-  return Apollo.useMutation<UpdateBrewerMutation, UpdateBrewerMutationVariables>(UpdateBrewerDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useMutation<UpdateBrewerMutation, UpdateBrewerMutationVariables>(UpdateBrewerDocument, options)
 }
 export type UpdateBrewerMutationHookResult = ReturnType<typeof useUpdateBrewerMutation>
 export type UpdateBrewerMutationResult = Apollo.MutationResult<UpdateBrewerMutation>
@@ -2147,12 +2308,14 @@ export const ListCoffeesDocument = gql`
 export function useListCoffeesQuery(
   baseOptions?: Apollo.QueryHookOptions<ListCoffeesQuery, ListCoffeesQueryVariables>,
 ) {
-  return Apollo.useQuery<ListCoffeesQuery, ListCoffeesQueryVariables>(ListCoffeesDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useQuery<ListCoffeesQuery, ListCoffeesQueryVariables>(ListCoffeesDocument, options)
 }
 export function useListCoffeesLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<ListCoffeesQuery, ListCoffeesQueryVariables>,
 ) {
-  return Apollo.useLazyQuery<ListCoffeesQuery, ListCoffeesQueryVariables>(ListCoffeesDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useLazyQuery<ListCoffeesQuery, ListCoffeesQueryVariables>(ListCoffeesDocument, options)
 }
 export type ListCoffeesQueryHookResult = ReturnType<typeof useListCoffeesQuery>
 export type ListCoffeesLazyQueryHookResult = ReturnType<typeof useListCoffeesLazyQuery>
@@ -2194,15 +2357,14 @@ export const ListCoffeesTableDocument = gql`
 export function useListCoffeesTableQuery(
   baseOptions?: Apollo.QueryHookOptions<ListCoffeesTableQuery, ListCoffeesTableQueryVariables>,
 ) {
-  return Apollo.useQuery<ListCoffeesTableQuery, ListCoffeesTableQueryVariables>(ListCoffeesTableDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useQuery<ListCoffeesTableQuery, ListCoffeesTableQueryVariables>(ListCoffeesTableDocument, options)
 }
 export function useListCoffeesTableLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<ListCoffeesTableQuery, ListCoffeesTableQueryVariables>,
 ) {
-  return Apollo.useLazyQuery<ListCoffeesTableQuery, ListCoffeesTableQueryVariables>(
-    ListCoffeesTableDocument,
-    baseOptions,
-  )
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useLazyQuery<ListCoffeesTableQuery, ListCoffeesTableQueryVariables>(ListCoffeesTableDocument, options)
 }
 export type ListCoffeesTableQueryHookResult = ReturnType<typeof useListCoffeesTableQuery>
 export type ListCoffeesTableLazyQueryHookResult = ReturnType<typeof useListCoffeesTableLazyQuery>
@@ -2233,12 +2395,14 @@ export const GetCoffeeDocument = gql`
  * });
  */
 export function useGetCoffeeQuery(baseOptions: Apollo.QueryHookOptions<GetCoffeeQuery, GetCoffeeQueryVariables>) {
-  return Apollo.useQuery<GetCoffeeQuery, GetCoffeeQueryVariables>(GetCoffeeDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useQuery<GetCoffeeQuery, GetCoffeeQueryVariables>(GetCoffeeDocument, options)
 }
 export function useGetCoffeeLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<GetCoffeeQuery, GetCoffeeQueryVariables>,
 ) {
-  return Apollo.useLazyQuery<GetCoffeeQuery, GetCoffeeQueryVariables>(GetCoffeeDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useLazyQuery<GetCoffeeQuery, GetCoffeeQueryVariables>(GetCoffeeDocument, options)
 }
 export type GetCoffeeQueryHookResult = ReturnType<typeof useGetCoffeeQuery>
 export type GetCoffeeLazyQueryHookResult = ReturnType<typeof useGetCoffeeLazyQuery>
@@ -2273,7 +2437,8 @@ export type CreateCoffeeMutationFn = Apollo.MutationFunction<CreateCoffeeMutatio
 export function useCreateCoffeeMutation(
   baseOptions?: Apollo.MutationHookOptions<CreateCoffeeMutation, CreateCoffeeMutationVariables>,
 ) {
-  return Apollo.useMutation<CreateCoffeeMutation, CreateCoffeeMutationVariables>(CreateCoffeeDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useMutation<CreateCoffeeMutation, CreateCoffeeMutationVariables>(CreateCoffeeDocument, options)
 }
 export type CreateCoffeeMutationHookResult = ReturnType<typeof useCreateCoffeeMutation>
 export type CreateCoffeeMutationResult = Apollo.MutationResult<CreateCoffeeMutation>
@@ -2312,7 +2477,8 @@ export type UpdateCoffeeMutationFn = Apollo.MutationFunction<UpdateCoffeeMutatio
 export function useUpdateCoffeeMutation(
   baseOptions?: Apollo.MutationHookOptions<UpdateCoffeeMutation, UpdateCoffeeMutationVariables>,
 ) {
-  return Apollo.useMutation<UpdateCoffeeMutation, UpdateCoffeeMutationVariables>(UpdateCoffeeDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useMutation<UpdateCoffeeMutation, UpdateCoffeeMutationVariables>(UpdateCoffeeDocument, options)
 }
 export type UpdateCoffeeMutationHookResult = ReturnType<typeof useUpdateCoffeeMutation>
 export type UpdateCoffeeMutationResult = Apollo.MutationResult<UpdateCoffeeMutation>
@@ -2349,7 +2515,8 @@ export type DeleteCoffeeMutationFn = Apollo.MutationFunction<DeleteCoffeeMutatio
 export function useDeleteCoffeeMutation(
   baseOptions?: Apollo.MutationHookOptions<DeleteCoffeeMutation, DeleteCoffeeMutationVariables>,
 ) {
-  return Apollo.useMutation<DeleteCoffeeMutation, DeleteCoffeeMutationVariables>(DeleteCoffeeDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useMutation<DeleteCoffeeMutation, DeleteCoffeeMutationVariables>(DeleteCoffeeDocument, options)
 }
 export type DeleteCoffeeMutationHookResult = ReturnType<typeof useDeleteCoffeeMutation>
 export type DeleteCoffeeMutationResult = Apollo.MutationResult<DeleteCoffeeMutation>
@@ -2389,9 +2556,10 @@ export type UpdateCoffeePermissionsMutationFn = Apollo.MutationFunction<
 export function useUpdateCoffeePermissionsMutation(
   baseOptions?: Apollo.MutationHookOptions<UpdateCoffeePermissionsMutation, UpdateCoffeePermissionsMutationVariables>,
 ) {
+  const options = {...defaultOptions, ...baseOptions}
   return Apollo.useMutation<UpdateCoffeePermissionsMutation, UpdateCoffeePermissionsMutationVariables>(
     UpdateCoffeePermissionsDocument,
-    baseOptions,
+    options,
   )
 }
 export type UpdateCoffeePermissionsMutationHookResult = ReturnType<typeof useUpdateCoffeePermissionsMutation>
@@ -2431,12 +2599,14 @@ export const ListCountriesDocument = gql`
 export function useListCountriesQuery(
   baseOptions?: Apollo.QueryHookOptions<ListCountriesQuery, ListCountriesQueryVariables>,
 ) {
-  return Apollo.useQuery<ListCountriesQuery, ListCountriesQueryVariables>(ListCountriesDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useQuery<ListCountriesQuery, ListCountriesQueryVariables>(ListCountriesDocument, options)
 }
 export function useListCountriesLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<ListCountriesQuery, ListCountriesQueryVariables>,
 ) {
-  return Apollo.useLazyQuery<ListCountriesQuery, ListCountriesQueryVariables>(ListCountriesDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useLazyQuery<ListCountriesQuery, ListCountriesQueryVariables>(ListCountriesDocument, options)
 }
 export type ListCountriesQueryHookResult = ReturnType<typeof useListCountriesQuery>
 export type ListCountriesLazyQueryHookResult = ReturnType<typeof useListCountriesLazyQuery>
@@ -2472,17 +2642,16 @@ export const ListCountriesTableDocument = gql`
 export function useListCountriesTableQuery(
   baseOptions?: Apollo.QueryHookOptions<ListCountriesTableQuery, ListCountriesTableQueryVariables>,
 ) {
-  return Apollo.useQuery<ListCountriesTableQuery, ListCountriesTableQueryVariables>(
-    ListCountriesTableDocument,
-    baseOptions,
-  )
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useQuery<ListCountriesTableQuery, ListCountriesTableQueryVariables>(ListCountriesTableDocument, options)
 }
 export function useListCountriesTableLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<ListCountriesTableQuery, ListCountriesTableQueryVariables>,
 ) {
+  const options = {...defaultOptions, ...baseOptions}
   return Apollo.useLazyQuery<ListCountriesTableQuery, ListCountriesTableQueryVariables>(
     ListCountriesTableDocument,
-    baseOptions,
+    options,
   )
 }
 export type ListCountriesTableQueryHookResult = ReturnType<typeof useListCountriesTableQuery>
@@ -2522,15 +2691,14 @@ export const ListAllCountriesDocument = gql`
 export function useListAllCountriesQuery(
   baseOptions?: Apollo.QueryHookOptions<ListAllCountriesQuery, ListAllCountriesQueryVariables>,
 ) {
-  return Apollo.useQuery<ListAllCountriesQuery, ListAllCountriesQueryVariables>(ListAllCountriesDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useQuery<ListAllCountriesQuery, ListAllCountriesQueryVariables>(ListAllCountriesDocument, options)
 }
 export function useListAllCountriesLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<ListAllCountriesQuery, ListAllCountriesQueryVariables>,
 ) {
-  return Apollo.useLazyQuery<ListAllCountriesQuery, ListAllCountriesQueryVariables>(
-    ListAllCountriesDocument,
-    baseOptions,
-  )
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useLazyQuery<ListAllCountriesQuery, ListAllCountriesQueryVariables>(ListAllCountriesDocument, options)
 }
 export type ListAllCountriesQueryHookResult = ReturnType<typeof useListAllCountriesQuery>
 export type ListAllCountriesLazyQueryHookResult = ReturnType<typeof useListAllCountriesLazyQuery>
@@ -2561,12 +2729,14 @@ export const GetCountryDocument = gql`
  * });
  */
 export function useGetCountryQuery(baseOptions: Apollo.QueryHookOptions<GetCountryQuery, GetCountryQueryVariables>) {
-  return Apollo.useQuery<GetCountryQuery, GetCountryQueryVariables>(GetCountryDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useQuery<GetCountryQuery, GetCountryQueryVariables>(GetCountryDocument, options)
 }
 export function useGetCountryLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<GetCountryQuery, GetCountryQueryVariables>,
 ) {
-  return Apollo.useLazyQuery<GetCountryQuery, GetCountryQueryVariables>(GetCountryDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useLazyQuery<GetCountryQuery, GetCountryQueryVariables>(GetCountryDocument, options)
 }
 export type GetCountryQueryHookResult = ReturnType<typeof useGetCountryQuery>
 export type GetCountryLazyQueryHookResult = ReturnType<typeof useGetCountryLazyQuery>
@@ -2608,17 +2778,19 @@ export const ListCuppingSessionsDocument = gql`
 export function useListCuppingSessionsQuery(
   baseOptions?: Apollo.QueryHookOptions<ListCuppingSessionsQuery, ListCuppingSessionsQueryVariables>,
 ) {
+  const options = {...defaultOptions, ...baseOptions}
   return Apollo.useQuery<ListCuppingSessionsQuery, ListCuppingSessionsQueryVariables>(
     ListCuppingSessionsDocument,
-    baseOptions,
+    options,
   )
 }
 export function useListCuppingSessionsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<ListCuppingSessionsQuery, ListCuppingSessionsQueryVariables>,
 ) {
+  const options = {...defaultOptions, ...baseOptions}
   return Apollo.useLazyQuery<ListCuppingSessionsQuery, ListCuppingSessionsQueryVariables>(
     ListCuppingSessionsDocument,
-    baseOptions,
+    options,
   )
 }
 export type ListCuppingSessionsQueryHookResult = ReturnType<typeof useListCuppingSessionsQuery>
@@ -2655,17 +2827,16 @@ export const GetCuppingSessionDocument = gql`
 export function useGetCuppingSessionQuery(
   baseOptions: Apollo.QueryHookOptions<GetCuppingSessionQuery, GetCuppingSessionQueryVariables>,
 ) {
-  return Apollo.useQuery<GetCuppingSessionQuery, GetCuppingSessionQueryVariables>(
-    GetCuppingSessionDocument,
-    baseOptions,
-  )
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useQuery<GetCuppingSessionQuery, GetCuppingSessionQueryVariables>(GetCuppingSessionDocument, options)
 }
 export function useGetCuppingSessionLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<GetCuppingSessionQuery, GetCuppingSessionQueryVariables>,
 ) {
+  const options = {...defaultOptions, ...baseOptions}
   return Apollo.useLazyQuery<GetCuppingSessionQuery, GetCuppingSessionQueryVariables>(
     GetCuppingSessionDocument,
-    baseOptions,
+    options,
   )
 }
 export type GetCuppingSessionQueryHookResult = ReturnType<typeof useGetCuppingSessionQuery>
@@ -2702,9 +2873,10 @@ export function useGetCuppingSessionWithScoreSheetsQuery(
     GetCuppingSessionWithScoreSheetsQueryVariables
   >,
 ) {
+  const options = {...defaultOptions, ...baseOptions}
   return Apollo.useQuery<GetCuppingSessionWithScoreSheetsQuery, GetCuppingSessionWithScoreSheetsQueryVariables>(
     GetCuppingSessionWithScoreSheetsDocument,
-    baseOptions,
+    options,
   )
 }
 export function useGetCuppingSessionWithScoreSheetsLazyQuery(
@@ -2713,9 +2885,10 @@ export function useGetCuppingSessionWithScoreSheetsLazyQuery(
     GetCuppingSessionWithScoreSheetsQueryVariables
   >,
 ) {
+  const options = {...defaultOptions, ...baseOptions}
   return Apollo.useLazyQuery<GetCuppingSessionWithScoreSheetsQuery, GetCuppingSessionWithScoreSheetsQueryVariables>(
     GetCuppingSessionWithScoreSheetsDocument,
-    baseOptions,
+    options,
   )
 }
 export type GetCuppingSessionWithScoreSheetsQueryHookResult = ReturnType<
@@ -2756,17 +2929,19 @@ export const GetCuppingSessionCoffeeDocument = gql`
 export function useGetCuppingSessionCoffeeQuery(
   baseOptions: Apollo.QueryHookOptions<GetCuppingSessionCoffeeQuery, GetCuppingSessionCoffeeQueryVariables>,
 ) {
+  const options = {...defaultOptions, ...baseOptions}
   return Apollo.useQuery<GetCuppingSessionCoffeeQuery, GetCuppingSessionCoffeeQueryVariables>(
     GetCuppingSessionCoffeeDocument,
-    baseOptions,
+    options,
   )
 }
 export function useGetCuppingSessionCoffeeLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<GetCuppingSessionCoffeeQuery, GetCuppingSessionCoffeeQueryVariables>,
 ) {
+  const options = {...defaultOptions, ...baseOptions}
   return Apollo.useLazyQuery<GetCuppingSessionCoffeeQuery, GetCuppingSessionCoffeeQueryVariables>(
     GetCuppingSessionCoffeeDocument,
-    baseOptions,
+    options,
   )
 }
 export type GetCuppingSessionCoffeeQueryHookResult = ReturnType<typeof useGetCuppingSessionCoffeeQuery>
@@ -2804,12 +2979,14 @@ export const GetScoreSheetDocument = gql`
 export function useGetScoreSheetQuery(
   baseOptions: Apollo.QueryHookOptions<GetScoreSheetQuery, GetScoreSheetQueryVariables>,
 ) {
-  return Apollo.useQuery<GetScoreSheetQuery, GetScoreSheetQueryVariables>(GetScoreSheetDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useQuery<GetScoreSheetQuery, GetScoreSheetQueryVariables>(GetScoreSheetDocument, options)
 }
 export function useGetScoreSheetLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<GetScoreSheetQuery, GetScoreSheetQueryVariables>,
 ) {
-  return Apollo.useLazyQuery<GetScoreSheetQuery, GetScoreSheetQueryVariables>(GetScoreSheetDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useLazyQuery<GetScoreSheetQuery, GetScoreSheetQueryVariables>(GetScoreSheetDocument, options)
 }
 export type GetScoreSheetQueryHookResult = ReturnType<typeof useGetScoreSheetQuery>
 export type GetScoreSheetLazyQueryHookResult = ReturnType<typeof useGetScoreSheetLazyQuery>
@@ -2847,9 +3024,10 @@ export type CreateCuppingSessionMutationFn = Apollo.MutationFunction<
 export function useCreateCuppingSessionMutation(
   baseOptions?: Apollo.MutationHookOptions<CreateCuppingSessionMutation, CreateCuppingSessionMutationVariables>,
 ) {
+  const options = {...defaultOptions, ...baseOptions}
   return Apollo.useMutation<CreateCuppingSessionMutation, CreateCuppingSessionMutationVariables>(
     CreateCuppingSessionDocument,
-    baseOptions,
+    options,
   )
 }
 export type CreateCuppingSessionMutationHookResult = ReturnType<typeof useCreateCuppingSessionMutation>
@@ -2892,9 +3070,10 @@ export type UpdateCuppingSessionMutationFn = Apollo.MutationFunction<
 export function useUpdateCuppingSessionMutation(
   baseOptions?: Apollo.MutationHookOptions<UpdateCuppingSessionMutation, UpdateCuppingSessionMutationVariables>,
 ) {
+  const options = {...defaultOptions, ...baseOptions}
   return Apollo.useMutation<UpdateCuppingSessionMutation, UpdateCuppingSessionMutationVariables>(
     UpdateCuppingSessionDocument,
-    baseOptions,
+    options,
   )
 }
 export type UpdateCuppingSessionMutationHookResult = ReturnType<typeof useUpdateCuppingSessionMutation>
@@ -2940,9 +3119,10 @@ export function useUpdateCuppingSessionCoffeesMutation(
     UpdateCuppingSessionCoffeesMutationVariables
   >,
 ) {
+  const options = {...defaultOptions, ...baseOptions}
   return Apollo.useMutation<UpdateCuppingSessionCoffeesMutation, UpdateCuppingSessionCoffeesMutationVariables>(
     UpdateCuppingSessionCoffeesDocument,
-    baseOptions,
+    options,
   )
 }
 export type UpdateCuppingSessionCoffeesMutationHookResult = ReturnType<typeof useUpdateCuppingSessionCoffeesMutation>
@@ -2984,9 +3164,10 @@ export type LockCuppingSessionMutationFn = Apollo.MutationFunction<
 export function useLockCuppingSessionMutation(
   baseOptions?: Apollo.MutationHookOptions<LockCuppingSessionMutation, LockCuppingSessionMutationVariables>,
 ) {
+  const options = {...defaultOptions, ...baseOptions}
   return Apollo.useMutation<LockCuppingSessionMutation, LockCuppingSessionMutationVariables>(
     LockCuppingSessionDocument,
-    baseOptions,
+    options,
   )
 }
 export type LockCuppingSessionMutationHookResult = ReturnType<typeof useLockCuppingSessionMutation>
@@ -3025,9 +3206,10 @@ export type DeleteCuppingSessionMutationFn = Apollo.MutationFunction<
 export function useDeleteCuppingSessionMutation(
   baseOptions?: Apollo.MutationHookOptions<DeleteCuppingSessionMutation, DeleteCuppingSessionMutationVariables>,
 ) {
+  const options = {...defaultOptions, ...baseOptions}
   return Apollo.useMutation<DeleteCuppingSessionMutation, DeleteCuppingSessionMutationVariables>(
     DeleteCuppingSessionDocument,
-    baseOptions,
+    options,
   )
 }
 export type DeleteCuppingSessionMutationHookResult = ReturnType<typeof useDeleteCuppingSessionMutation>
@@ -3070,9 +3252,10 @@ export type CreateScoreSheetMutationFn = Apollo.MutationFunction<
 export function useCreateScoreSheetMutation(
   baseOptions?: Apollo.MutationHookOptions<CreateScoreSheetMutation, CreateScoreSheetMutationVariables>,
 ) {
+  const options = {...defaultOptions, ...baseOptions}
   return Apollo.useMutation<CreateScoreSheetMutation, CreateScoreSheetMutationVariables>(
     CreateScoreSheetDocument,
-    baseOptions,
+    options,
   )
 }
 export type CreateScoreSheetMutationHookResult = ReturnType<typeof useCreateScoreSheetMutation>
@@ -3116,9 +3299,10 @@ export type UpdateScoreSheetMutationFn = Apollo.MutationFunction<
 export function useUpdateScoreSheetMutation(
   baseOptions?: Apollo.MutationHookOptions<UpdateScoreSheetMutation, UpdateScoreSheetMutationVariables>,
 ) {
+  const options = {...defaultOptions, ...baseOptions}
   return Apollo.useMutation<UpdateScoreSheetMutation, UpdateScoreSheetMutationVariables>(
     UpdateScoreSheetDocument,
-    baseOptions,
+    options,
   )
 }
 export type UpdateScoreSheetMutationHookResult = ReturnType<typeof useUpdateScoreSheetMutation>
@@ -3156,12 +3340,14 @@ export const ListFarmsDocument = gql`
  * });
  */
 export function useListFarmsQuery(baseOptions?: Apollo.QueryHookOptions<ListFarmsQuery, ListFarmsQueryVariables>) {
-  return Apollo.useQuery<ListFarmsQuery, ListFarmsQueryVariables>(ListFarmsDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useQuery<ListFarmsQuery, ListFarmsQueryVariables>(ListFarmsDocument, options)
 }
 export function useListFarmsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<ListFarmsQuery, ListFarmsQueryVariables>,
 ) {
-  return Apollo.useLazyQuery<ListFarmsQuery, ListFarmsQueryVariables>(ListFarmsDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useLazyQuery<ListFarmsQuery, ListFarmsQueryVariables>(ListFarmsDocument, options)
 }
 export type ListFarmsQueryHookResult = ReturnType<typeof useListFarmsQuery>
 export type ListFarmsLazyQueryHookResult = ReturnType<typeof useListFarmsLazyQuery>
@@ -3203,12 +3389,14 @@ export const ListFarmsTableDocument = gql`
 export function useListFarmsTableQuery(
   baseOptions?: Apollo.QueryHookOptions<ListFarmsTableQuery, ListFarmsTableQueryVariables>,
 ) {
-  return Apollo.useQuery<ListFarmsTableQuery, ListFarmsTableQueryVariables>(ListFarmsTableDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useQuery<ListFarmsTableQuery, ListFarmsTableQueryVariables>(ListFarmsTableDocument, options)
 }
 export function useListFarmsTableLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<ListFarmsTableQuery, ListFarmsTableQueryVariables>,
 ) {
-  return Apollo.useLazyQuery<ListFarmsTableQuery, ListFarmsTableQueryVariables>(ListFarmsTableDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useLazyQuery<ListFarmsTableQuery, ListFarmsTableQueryVariables>(ListFarmsTableDocument, options)
 }
 export type ListFarmsTableQueryHookResult = ReturnType<typeof useListFarmsTableQuery>
 export type ListFarmsTableLazyQueryHookResult = ReturnType<typeof useListFarmsTableLazyQuery>
@@ -3239,10 +3427,12 @@ export const GetFarmDocument = gql`
  * });
  */
 export function useGetFarmQuery(baseOptions: Apollo.QueryHookOptions<GetFarmQuery, GetFarmQueryVariables>) {
-  return Apollo.useQuery<GetFarmQuery, GetFarmQueryVariables>(GetFarmDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useQuery<GetFarmQuery, GetFarmQueryVariables>(GetFarmDocument, options)
 }
 export function useGetFarmLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetFarmQuery, GetFarmQueryVariables>) {
-  return Apollo.useLazyQuery<GetFarmQuery, GetFarmQueryVariables>(GetFarmDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useLazyQuery<GetFarmQuery, GetFarmQueryVariables>(GetFarmDocument, options)
 }
 export type GetFarmQueryHookResult = ReturnType<typeof useGetFarmQuery>
 export type GetFarmLazyQueryHookResult = ReturnType<typeof useGetFarmLazyQuery>
@@ -3277,7 +3467,8 @@ export type CreateFarmMutationFn = Apollo.MutationFunction<CreateFarmMutation, C
 export function useCreateFarmMutation(
   baseOptions?: Apollo.MutationHookOptions<CreateFarmMutation, CreateFarmMutationVariables>,
 ) {
-  return Apollo.useMutation<CreateFarmMutation, CreateFarmMutationVariables>(CreateFarmDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useMutation<CreateFarmMutation, CreateFarmMutationVariables>(CreateFarmDocument, options)
 }
 export type CreateFarmMutationHookResult = ReturnType<typeof useCreateFarmMutation>
 export type CreateFarmMutationResult = Apollo.MutationResult<CreateFarmMutation>
@@ -3313,7 +3504,8 @@ export type UpdateFarmMutationFn = Apollo.MutationFunction<UpdateFarmMutation, U
 export function useUpdateFarmMutation(
   baseOptions?: Apollo.MutationHookOptions<UpdateFarmMutation, UpdateFarmMutationVariables>,
 ) {
-  return Apollo.useMutation<UpdateFarmMutation, UpdateFarmMutationVariables>(UpdateFarmDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useMutation<UpdateFarmMutation, UpdateFarmMutationVariables>(UpdateFarmDocument, options)
 }
 export type UpdateFarmMutationHookResult = ReturnType<typeof useUpdateFarmMutation>
 export type UpdateFarmMutationResult = Apollo.MutationResult<UpdateFarmMutation>
@@ -3347,11 +3539,171 @@ export type DeleteFarmMutationFn = Apollo.MutationFunction<DeleteFarmMutation, D
 export function useDeleteFarmMutation(
   baseOptions?: Apollo.MutationHookOptions<DeleteFarmMutation, DeleteFarmMutationVariables>,
 ) {
-  return Apollo.useMutation<DeleteFarmMutation, DeleteFarmMutationVariables>(DeleteFarmDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useMutation<DeleteFarmMutation, DeleteFarmMutationVariables>(DeleteFarmDocument, options)
 }
 export type DeleteFarmMutationHookResult = ReturnType<typeof useDeleteFarmMutation>
 export type DeleteFarmMutationResult = Apollo.MutationResult<DeleteFarmMutation>
 export type DeleteFarmMutationOptions = Apollo.BaseMutationOptions<DeleteFarmMutation, DeleteFarmMutationVariables>
+export const ListPostsDocument = gql`
+  query ListPosts($cursor: String, $limit: Int, $query: [QueryInput!]) {
+    listPosts(cursor: $cursor, limit: $limit, query: $query) {
+      pageInfo {
+        hasNextPage
+        nextCursor
+        prevCursor
+      }
+      edges {
+        cursor
+        node {
+          ...PostFragment
+        }
+      }
+    }
+  }
+  ${PostFragmentFragmentDoc}
+`
+
+/**
+ * __useListPostsQuery__
+ *
+ * To run a query within a React component, call `useListPostsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListPostsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useListPostsQuery({
+ *   variables: {
+ *      cursor: // value for 'cursor'
+ *      limit: // value for 'limit'
+ *      query: // value for 'query'
+ *   },
+ * });
+ */
+export function useListPostsQuery(baseOptions?: Apollo.QueryHookOptions<ListPostsQuery, ListPostsQueryVariables>) {
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useQuery<ListPostsQuery, ListPostsQueryVariables>(ListPostsDocument, options)
+}
+export function useListPostsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<ListPostsQuery, ListPostsQueryVariables>,
+) {
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useLazyQuery<ListPostsQuery, ListPostsQueryVariables>(ListPostsDocument, options)
+}
+export type ListPostsQueryHookResult = ReturnType<typeof useListPostsQuery>
+export type ListPostsLazyQueryHookResult = ReturnType<typeof useListPostsLazyQuery>
+export type ListPostsQueryResult = Apollo.QueryResult<ListPostsQuery, ListPostsQueryVariables>
+export const GetPostDocument = gql`
+  query GetPost($id: ID!) {
+    getPost(id: $id) {
+      ...PostFragment
+    }
+  }
+  ${PostFragmentFragmentDoc}
+`
+
+/**
+ * __useGetPostQuery__
+ *
+ * To run a query within a React component, call `useGetPostQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPostQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPostQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetPostQuery(baseOptions: Apollo.QueryHookOptions<GetPostQuery, GetPostQueryVariables>) {
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useQuery<GetPostQuery, GetPostQueryVariables>(GetPostDocument, options)
+}
+export function useGetPostLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPostQuery, GetPostQueryVariables>) {
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useLazyQuery<GetPostQuery, GetPostQueryVariables>(GetPostDocument, options)
+}
+export type GetPostQueryHookResult = ReturnType<typeof useGetPostQuery>
+export type GetPostLazyQueryHookResult = ReturnType<typeof useGetPostLazyQuery>
+export type GetPostQueryResult = Apollo.QueryResult<GetPostQuery, GetPostQueryVariables>
+export const CreatePostDocument = gql`
+  mutation CreatePost($input: CreatePostInput!) {
+    createPost(input: $input) {
+      ...PostFragment
+    }
+  }
+  ${PostFragmentFragmentDoc}
+`
+export type CreatePostMutationFn = Apollo.MutationFunction<CreatePostMutation, CreatePostMutationVariables>
+
+/**
+ * __useCreatePostMutation__
+ *
+ * To run a mutation, you first call `useCreatePostMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreatePostMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createPostMutation, { data, loading, error }] = useCreatePostMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreatePostMutation(
+  baseOptions?: Apollo.MutationHookOptions<CreatePostMutation, CreatePostMutationVariables>,
+) {
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useMutation<CreatePostMutation, CreatePostMutationVariables>(CreatePostDocument, options)
+}
+export type CreatePostMutationHookResult = ReturnType<typeof useCreatePostMutation>
+export type CreatePostMutationResult = Apollo.MutationResult<CreatePostMutation>
+export type CreatePostMutationOptions = Apollo.BaseMutationOptions<CreatePostMutation, CreatePostMutationVariables>
+export const UpdatePostDocument = gql`
+  mutation UpdatePost($id: ID!, $input: UpdatePostInput!) {
+    updatePost(id: $id, input: $input) {
+      ...PostFragment
+    }
+  }
+  ${PostFragmentFragmentDoc}
+`
+export type UpdatePostMutationFn = Apollo.MutationFunction<UpdatePostMutation, UpdatePostMutationVariables>
+
+/**
+ * __useUpdatePostMutation__
+ *
+ * To run a mutation, you first call `useUpdatePostMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdatePostMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updatePostMutation, { data, loading, error }] = useUpdatePostMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdatePostMutation(
+  baseOptions?: Apollo.MutationHookOptions<UpdatePostMutation, UpdatePostMutationVariables>,
+) {
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useMutation<UpdatePostMutation, UpdatePostMutationVariables>(UpdatePostDocument, options)
+}
+export type UpdatePostMutationHookResult = ReturnType<typeof useUpdatePostMutation>
+export type UpdatePostMutationResult = Apollo.MutationResult<UpdatePostMutation>
+export type UpdatePostMutationOptions = Apollo.BaseMutationOptions<UpdatePostMutation, UpdatePostMutationVariables>
 export const ListRegionsDocument = gql`
   query ListRegions($cursor: String, $limit: Int, $query: [QueryInput!]) {
     listRegions(cursor: $cursor, limit: $limit, query: $query) {
@@ -3386,12 +3738,14 @@ export const ListRegionsDocument = gql`
 export function useListRegionsQuery(
   baseOptions?: Apollo.QueryHookOptions<ListRegionsQuery, ListRegionsQueryVariables>,
 ) {
-  return Apollo.useQuery<ListRegionsQuery, ListRegionsQueryVariables>(ListRegionsDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useQuery<ListRegionsQuery, ListRegionsQueryVariables>(ListRegionsDocument, options)
 }
 export function useListRegionsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<ListRegionsQuery, ListRegionsQueryVariables>,
 ) {
-  return Apollo.useLazyQuery<ListRegionsQuery, ListRegionsQueryVariables>(ListRegionsDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useLazyQuery<ListRegionsQuery, ListRegionsQueryVariables>(ListRegionsDocument, options)
 }
 export type ListRegionsQueryHookResult = ReturnType<typeof useListRegionsQuery>
 export type ListRegionsLazyQueryHookResult = ReturnType<typeof useListRegionsLazyQuery>
@@ -3431,15 +3785,14 @@ export const ListRegionsTableDocument = gql`
 export function useListRegionsTableQuery(
   baseOptions?: Apollo.QueryHookOptions<ListRegionsTableQuery, ListRegionsTableQueryVariables>,
 ) {
-  return Apollo.useQuery<ListRegionsTableQuery, ListRegionsTableQueryVariables>(ListRegionsTableDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useQuery<ListRegionsTableQuery, ListRegionsTableQueryVariables>(ListRegionsTableDocument, options)
 }
 export function useListRegionsTableLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<ListRegionsTableQuery, ListRegionsTableQueryVariables>,
 ) {
-  return Apollo.useLazyQuery<ListRegionsTableQuery, ListRegionsTableQueryVariables>(
-    ListRegionsTableDocument,
-    baseOptions,
-  )
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useLazyQuery<ListRegionsTableQuery, ListRegionsTableQueryVariables>(ListRegionsTableDocument, options)
 }
 export type ListRegionsTableQueryHookResult = ReturnType<typeof useListRegionsTableQuery>
 export type ListRegionsTableLazyQueryHookResult = ReturnType<typeof useListRegionsTableLazyQuery>
@@ -3470,12 +3823,14 @@ export const GetRegionDocument = gql`
  * });
  */
 export function useGetRegionQuery(baseOptions: Apollo.QueryHookOptions<GetRegionQuery, GetRegionQueryVariables>) {
-  return Apollo.useQuery<GetRegionQuery, GetRegionQueryVariables>(GetRegionDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useQuery<GetRegionQuery, GetRegionQueryVariables>(GetRegionDocument, options)
 }
 export function useGetRegionLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<GetRegionQuery, GetRegionQueryVariables>,
 ) {
-  return Apollo.useLazyQuery<GetRegionQuery, GetRegionQueryVariables>(GetRegionDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useLazyQuery<GetRegionQuery, GetRegionQueryVariables>(GetRegionDocument, options)
 }
 export type GetRegionQueryHookResult = ReturnType<typeof useGetRegionQuery>
 export type GetRegionLazyQueryHookResult = ReturnType<typeof useGetRegionLazyQuery>
@@ -3510,12 +3865,14 @@ export const UserSearchDocument = gql`
  * });
  */
 export function useUserSearchQuery(baseOptions?: Apollo.QueryHookOptions<UserSearchQuery, UserSearchQueryVariables>) {
-  return Apollo.useQuery<UserSearchQuery, UserSearchQueryVariables>(UserSearchDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useQuery<UserSearchQuery, UserSearchQueryVariables>(UserSearchDocument, options)
 }
 export function useUserSearchLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<UserSearchQuery, UserSearchQueryVariables>,
 ) {
-  return Apollo.useLazyQuery<UserSearchQuery, UserSearchQueryVariables>(UserSearchDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useLazyQuery<UserSearchQuery, UserSearchQueryVariables>(UserSearchDocument, options)
 }
 export type UserSearchQueryHookResult = ReturnType<typeof useUserSearchQuery>
 export type UserSearchLazyQueryHookResult = ReturnType<typeof useUserSearchLazyQuery>
@@ -3553,9 +3910,10 @@ export type UpdateMySettingsMutationFn = Apollo.MutationFunction<
 export function useUpdateMySettingsMutation(
   baseOptions?: Apollo.MutationHookOptions<UpdateMySettingsMutation, UpdateMySettingsMutationVariables>,
 ) {
+  const options = {...defaultOptions, ...baseOptions}
   return Apollo.useMutation<UpdateMySettingsMutation, UpdateMySettingsMutationVariables>(
     UpdateMySettingsDocument,
-    baseOptions,
+    options,
   )
 }
 export type UpdateMySettingsMutationHookResult = ReturnType<typeof useUpdateMySettingsMutation>
@@ -3595,12 +3953,14 @@ export const ListVarietiesDocument = gql`
 export function useListVarietiesQuery(
   baseOptions?: Apollo.QueryHookOptions<ListVarietiesQuery, ListVarietiesQueryVariables>,
 ) {
-  return Apollo.useQuery<ListVarietiesQuery, ListVarietiesQueryVariables>(ListVarietiesDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useQuery<ListVarietiesQuery, ListVarietiesQueryVariables>(ListVarietiesDocument, options)
 }
 export function useListVarietiesLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<ListVarietiesQuery, ListVarietiesQueryVariables>,
 ) {
-  return Apollo.useLazyQuery<ListVarietiesQuery, ListVarietiesQueryVariables>(ListVarietiesDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useLazyQuery<ListVarietiesQuery, ListVarietiesQueryVariables>(ListVarietiesDocument, options)
 }
 export type ListVarietiesQueryHookResult = ReturnType<typeof useListVarietiesQuery>
 export type ListVarietiesLazyQueryHookResult = ReturnType<typeof useListVarietiesLazyQuery>
@@ -3638,17 +3998,16 @@ export const ListVarietiesTableDocument = gql`
 export function useListVarietiesTableQuery(
   baseOptions?: Apollo.QueryHookOptions<ListVarietiesTableQuery, ListVarietiesTableQueryVariables>,
 ) {
-  return Apollo.useQuery<ListVarietiesTableQuery, ListVarietiesTableQueryVariables>(
-    ListVarietiesTableDocument,
-    baseOptions,
-  )
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useQuery<ListVarietiesTableQuery, ListVarietiesTableQueryVariables>(ListVarietiesTableDocument, options)
 }
 export function useListVarietiesTableLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<ListVarietiesTableQuery, ListVarietiesTableQueryVariables>,
 ) {
+  const options = {...defaultOptions, ...baseOptions}
   return Apollo.useLazyQuery<ListVarietiesTableQuery, ListVarietiesTableQueryVariables>(
     ListVarietiesTableDocument,
-    baseOptions,
+    options,
   )
 }
 export type ListVarietiesTableQueryHookResult = ReturnType<typeof useListVarietiesTableQuery>
@@ -3683,12 +4042,14 @@ export const GetVarietyDocument = gql`
  * });
  */
 export function useGetVarietyQuery(baseOptions: Apollo.QueryHookOptions<GetVarietyQuery, GetVarietyQueryVariables>) {
-  return Apollo.useQuery<GetVarietyQuery, GetVarietyQueryVariables>(GetVarietyDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useQuery<GetVarietyQuery, GetVarietyQueryVariables>(GetVarietyDocument, options)
 }
 export function useGetVarietyLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<GetVarietyQuery, GetVarietyQueryVariables>,
 ) {
-  return Apollo.useLazyQuery<GetVarietyQuery, GetVarietyQueryVariables>(GetVarietyDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useLazyQuery<GetVarietyQuery, GetVarietyQueryVariables>(GetVarietyDocument, options)
 }
 export type GetVarietyQueryHookResult = ReturnType<typeof useGetVarietyQuery>
 export type GetVarietyLazyQueryHookResult = ReturnType<typeof useGetVarietyLazyQuery>
@@ -3723,7 +4084,8 @@ export type CreateVarietyMutationFn = Apollo.MutationFunction<CreateVarietyMutat
 export function useCreateVarietyMutation(
   baseOptions?: Apollo.MutationHookOptions<CreateVarietyMutation, CreateVarietyMutationVariables>,
 ) {
-  return Apollo.useMutation<CreateVarietyMutation, CreateVarietyMutationVariables>(CreateVarietyDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useMutation<CreateVarietyMutation, CreateVarietyMutationVariables>(CreateVarietyDocument, options)
 }
 export type CreateVarietyMutationHookResult = ReturnType<typeof useCreateVarietyMutation>
 export type CreateVarietyMutationResult = Apollo.MutationResult<CreateVarietyMutation>
@@ -3762,7 +4124,8 @@ export type UpdateVarietyMutationFn = Apollo.MutationFunction<UpdateVarietyMutat
 export function useUpdateVarietyMutation(
   baseOptions?: Apollo.MutationHookOptions<UpdateVarietyMutation, UpdateVarietyMutationVariables>,
 ) {
-  return Apollo.useMutation<UpdateVarietyMutation, UpdateVarietyMutationVariables>(UpdateVarietyDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useMutation<UpdateVarietyMutation, UpdateVarietyMutationVariables>(UpdateVarietyDocument, options)
 }
 export type UpdateVarietyMutationHookResult = ReturnType<typeof useUpdateVarietyMutation>
 export type UpdateVarietyMutationResult = Apollo.MutationResult<UpdateVarietyMutation>
@@ -3799,7 +4162,8 @@ export type DeleteVarietyMutationFn = Apollo.MutationFunction<DeleteVarietyMutat
 export function useDeleteVarietyMutation(
   baseOptions?: Apollo.MutationHookOptions<DeleteVarietyMutation, DeleteVarietyMutationVariables>,
 ) {
-  return Apollo.useMutation<DeleteVarietyMutation, DeleteVarietyMutationVariables>(DeleteVarietyDocument, baseOptions)
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useMutation<DeleteVarietyMutation, DeleteVarietyMutationVariables>(DeleteVarietyDocument, options)
 }
 export type DeleteVarietyMutationHookResult = ReturnType<typeof useDeleteVarietyMutation>
 export type DeleteVarietyMutationResult = Apollo.MutationResult<DeleteVarietyMutation>

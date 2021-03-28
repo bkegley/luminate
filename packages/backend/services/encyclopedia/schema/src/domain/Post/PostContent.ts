@@ -25,7 +25,7 @@ export class PostContent extends ValueObject<PostNode[]> {
     return JSON.stringify(this.attrs)
   }
 
-  public static create(content: any) {
-    return new PostContent(content)
+  public static create(content: string) {
+    return new PostContent(JSON.parse(content))
   }
 }

@@ -1,0 +1,39 @@
+query ListPosts($cursor: String, $limit: Int, $query: [QueryInput!]) {
+  listPosts(cursor: $cursor, limit: $limit, query: $query) {
+    pageInfo {
+      hasNextPage
+      nextCursor
+      prevCursor
+    }
+    edges {
+      cursor
+      node {
+        ...PostFragment
+      }
+    }
+  }
+}
+
+query GetPost($id: ID!) {
+  getPost(id: $id) {
+    ...PostFragment
+  }
+}
+
+mutation CreatePost($input: CreatePostInput!) {
+  createPost(input: $input) {
+    ...PostFragment
+  }
+}
+
+mutation UpdatePost($id: ID!, $input: UpdatePostInput!) {
+  updatePost(id: $id, input: $input) {
+    ...PostFragment
+  }
+}
+
+fragment PostFragment on Post {
+  id
+  title
+  content
+}
