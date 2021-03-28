@@ -2,6 +2,7 @@ import React from 'react'
 import {Editor, Element, Descendant, createEditor, Transforms, Text} from 'slate'
 import {withReact} from 'slate-react'
 import {EditableProps, RenderLeafProps} from 'slate-react/dist/components/editable'
+import {NodeType} from './NodeType'
 
 const withMentions = (editor: Editor) => {
   const {isVoid, isInline} = editor
@@ -40,16 +41,6 @@ const DefaultElement = (props: any) => {
       {props.children}
     </p>
   )
-}
-
-export enum NodeType {
-  BOLD = 'BOLD',
-  ITALIC = 'ITALIC',
-  UNDERLINE = 'UNDERLINE',
-  PARAGRAPH = 'PARAGRAPH',
-  CODE = 'CODE',
-  MENTION = 'MENTION',
-  EMBEDDABLE = 'EMBEDDABLE',
 }
 
 const Leaf = ({attributes, leaf, children}: RenderLeafProps) => {
