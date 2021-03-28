@@ -11,6 +11,13 @@ export type Scalars = {
   Float: number
 }
 
+export type PageInfo = {
+  __typename?: 'PageInfo'
+  hasNextPage?: Maybe<Scalars['Boolean']>
+  prevCursor?: Maybe<Scalars['String']>
+  nextCursor?: Maybe<Scalars['String']>
+}
+
 export enum OperatorEnum {
   Eq = 'eq',
   Ne = 'ne',
@@ -20,13 +27,6 @@ export enum OperatorEnum {
   Lte = 'lte',
   Contains = 'contains',
   ContainsSensitive = 'containsSensitive',
-}
-
-export type PageInfo = {
-  __typename?: 'PageInfo'
-  hasNextPage?: Maybe<Scalars['Boolean']>
-  prevCursor?: Maybe<Scalars['String']>
-  nextCursor?: Maybe<Scalars['String']>
 }
 
 export type QueryInput = {

@@ -7,6 +7,7 @@ export enum ScopeResources {
   FARM = 'farm',
   ORGANIZATION = 'organization',
   PERSON = 'person',
+  POST = 'post',
   USER = 'user',
   REGION = 'region',
   ROLE = 'role',

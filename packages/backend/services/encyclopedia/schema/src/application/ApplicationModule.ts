@@ -2,55 +2,72 @@ import {Module} from '@nestjs/common'
 import {CqrsModule} from '@nestjs/cqrs'
 import {GraphQLFederationModule} from '@nestjs/graphql'
 import {InfraModule} from '../infra/InfraModule'
-import {CoffeeResolvers, CountryResolvers, FarmResolvers, RegionResolvers, VarietyResolvers} from './schema'
+import {
+  CoffeeResolvers,
+  CountryResolvers,
+  FarmResolvers,
+  PostResolvers,
+  RegionResolvers,
+  VarietyResolvers,
+} from './schema'
 import {
   CreateCoffeeCommandHandler,
   CreateFarmCommandHandler,
+  CreatePostCommandHandler,
   CreateVarietyCommandHandler,
   DeleteCoffeeCommandHandler,
   DeleteFarmCommandHandler,
+  DeletePostCommandHandler,
   DeleteVarietyCommandHandler,
   UpdateCoffeeCommandHandler,
   UpdateFarmCommandHandler,
+  UpdatePostCommandHandler,
   UpdateVarietyCommandHandler,
 } from './commands'
 import {
   GetCoffeeQueryHandler,
   GetCountryQueryHandler,
   GetFarmQueryHandler,
+  GetPostQueryHandler,
   GetRegionQueryHandler,
   GetVarietyQueryHandler,
   ListVarietiesQueryHandler,
   ListCoffeesQueryHandler,
   ListCountriesQueryHandler,
   ListFarmsQueryHandler,
+  ListPostsQueryHandler,
   ListRegionsQueryHandler,
 } from './queries'
 import {parseTokenFromRequest} from '@luminate/graphql-utils'
 
-const resolvers = [CoffeeResolvers, CountryResolvers, FarmResolvers, RegionResolvers, VarietyResolvers]
+const resolvers = [CoffeeResolvers, CountryResolvers, FarmResolvers, PostResolvers, RegionResolvers, VarietyResolvers]
 
 const queryHandlers = [
   GetCoffeeQueryHandler,
   GetCountryQueryHandler,
   GetFarmQueryHandler,
+  GetPostQueryHandler,
   GetRegionQueryHandler,
   GetVarietyQueryHandler,
+  ListVarietiesQueryHandler,
   ListCoffeesQueryHandler,
   ListCountriesQueryHandler,
   ListFarmsQueryHandler,
+  ListPostsQueryHandler,
   ListRegionsQueryHandler,
-  ListVarietiesQueryHandler,
 ]
 const commandHandlers = [
   CreateCoffeeCommandHandler,
-  UpdateCoffeeCommandHandler,
-  DeleteCoffeeCommandHandler,
   CreateFarmCommandHandler,
-  DeleteFarmCommandHandler,
-  UpdateFarmCommandHandler,
+  CreatePostCommandHandler,
   CreateVarietyCommandHandler,
+  DeleteCoffeeCommandHandler,
+  DeleteFarmCommandHandler,
+  DeletePostCommandHandler,
   DeleteVarietyCommandHandler,
+  UpdateCoffeeCommandHandler,
+  UpdateFarmCommandHandler,
+  UpdatePostCommandHandler,
   UpdateVarietyCommandHandler,
 ]
 

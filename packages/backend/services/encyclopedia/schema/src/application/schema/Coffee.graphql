@@ -6,7 +6,6 @@ type Coffee @key(fields: "id") {
   varieties: [Variety!]!
   elevation: String
   components: [CoffeeComponent]
-  notes(fields: [String]): [Note]
   createdAt: String!
   updatedAt: String!
 }
