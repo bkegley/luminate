@@ -16,17 +16,11 @@ export abstract class BaseRepo<T extends BaseDocument> implements IRepo<T> {
     const mappedQueryInput = QueryInputParser.getQueryValue(query)
 
     const paginationCursor = cursor
-      ? sortBy
-        ? {
-            [sortBy.field]: {
-              [sortBy.descending ? '$gte' : '$lte']: Cursor.parseCursor(cursor),
-            },
-          }
-        : {
-            updatedAt: {
-              $lte: Cursor.parseCursor(cursor),
-            },
-          }
+      ? {
+          updatedAt: {
+            [sortBy?.descending ? '$gte' : '$lte']: Cursor.parseCursor(cursor),
+          },
+        }
       : {}
 
     return [
@@ -35,7 +29,7 @@ export abstract class BaseRepo<T extends BaseDocument> implements IRepo<T> {
         : {...remainingArgs, ...paginationCursor},
       null,
       {
-        sort: sortBy ? `${sortBy.descending ? '' : '-'}${sortBy.field}` : '-updatedAt',
+        sort: Object.assign({}, sortBy ? {[sortBy.field]: sortBy.descending ? -1 : 1} : null, {updatedAt: -1}),
         limit: limit ? limit + 1 : this.limit + 1,
       },
     ]
@@ -57,7 +51,7 @@ export abstract class BaseRepo<T extends BaseDocument> implements IRepo<T> {
     const hasNextPage = documentsPlusOne.length > (args.limit || this.limit)
     const documents = hasNextPage ? documentsPlusOne.slice(0, -1) : documentsPlusOne
 
-    const cursorField = (args.sortBy?.field ?? 'updatedAt') as keyof BaseDocument
+    const cursorField = 'updatedAt'
     const nextCursor = hasNextPage
       ? Cursor.createCursor(documentsPlusOne[documentsPlusOne.length - 1][cursorField])
       : null
