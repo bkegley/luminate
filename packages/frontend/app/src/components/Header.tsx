@@ -2,6 +2,7 @@ import React from 'react'
 import {Menu, Transition} from '@headlessui/react'
 import {IconTypesEnum, Icon} from '@luminate/components'
 import {useUser} from '@luminate/gatsby-theme-luminate/src'
+import {Link} from 'react-router-dom'
 
 const SearchInput = () => {
   return (
@@ -54,7 +55,9 @@ export const Header = ({open, setOpen}: HeaderProps) => {
           </div>
           <div className="flex flex-1 justify-center md:flex-none md:justify-start items-center px-2 lg:px-0 xl:w-64">
             <div className="flex-shrink-0">
-              <span>luminate</span>
+              <Link to="/" className="text-2xl bg-gradient-to-l gradient-heading">
+                luminate
+              </Link>
             </div>
           </div>
 
