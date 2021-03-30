@@ -2,7 +2,7 @@ import {model, Types} from 'mongoose'
 import {extendSchema, AuthenticatedDocument, BaseAuthenticatedSchema} from '@luminate/mongo-utils'
 
 export interface PostDocument extends AuthenticatedDocument {
-  relations: {entity: string; id: string}[]
+  relations: {entity: string; id: string; pinned: boolean}[]
   title: string
   content: string
 }
@@ -25,6 +25,10 @@ export const PostSchema = extendSchema<PostDocument>(
         },
         id: {
           type: Types.ObjectId,
+        },
+        pinned: {
+          type: Boolean,
+          default: false,
         },
       },
     ],

@@ -13,6 +13,18 @@ export class PostsRepo extends AuthenticatedRepo<PostDocument> implements IPosts
     super(postModel)
   }
 
+  listByEntityId(user: Token, id: string): Promise<PostDocument[]>
+  listByEntityId(id: string): Promise<PostDocument[]>
+  async listByEntityId(userOrId: Token | string, id?: string) {
+    if (id) {
+      return this.getConnectionResults(userOrId as Token, {
+        relations: {$elemMatch: {id}},
+        sortBy: {field: 'relations.pinned', descending: true},
+      })
+    }
+    return this.getConnectionResults({relations: {$elemMatch: {id}}})
+  }
+
   save(user: Token, post: PostAggregate): Promise<void>
   save(post: PostAggregate): Promise<void>
   public async save(userOrPost: Token | PostAggregate, post?: PostAggregate) {
