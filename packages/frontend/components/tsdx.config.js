@@ -1,12 +1,12 @@
 const postcss = require('rollup-plugin-postcss');
 const autoprefixer = require('autoprefixer');
-const jit = require('@tailwindcss/jit');
+const tailwind = require('tailwindcss');
 
 module.exports = {
   rollup(config, options) {
     config.plugins.push(
       postcss({
-        plugins: [autoprefixer(), jit()],
+        plugins: [autoprefixer(), tailwind()],
       })
     );
     return config;

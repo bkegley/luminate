@@ -63,6 +63,10 @@
     @apply text-base;
   }
 
+  .gradient-heading {
+    @apply text-transparent bg-clip-text from-primary-300 dark:from-secondary-200 to-primary-800 dark:to-primary-300;
+  }
+
   .link {
     @apply rounded-md text-sm font-medium hover:text-secondary-500 dark:hover:text-secondary-300;
   }
