@@ -4,6 +4,7 @@ import {useDialogState, Modal} from '@luminate/gatsby-theme-luminate/src'
 import {Link, RouteComponentProps} from 'react-router-dom'
 import {ShareCoffeeForm} from './ShareCoffeeForm'
 import {Grid, Page, Card, Button, Heading} from '@luminate/components'
+import {EntityPostListView} from '../Post/EntityListView'
 
 interface Params {
   id: string
@@ -81,6 +82,9 @@ const CoffeeDetailView = ({match}: Props) => {
       </Grid>
       <div>
         <Heading as="h3">Story</Heading>
+      </div>
+      <div>
+        <EntityPostListView entityId={id} />
       </div>
     </Page>
   )

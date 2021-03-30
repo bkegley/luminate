@@ -16,7 +16,7 @@ export const PostDetailView = () => {
   const content: Node[] = data ? JSON.parse(data.getPost.content) : null
 
   return (
-    <Page title={data.getPost.title}>
+    <Page title={data?.getPost.title}>
       <p>{content ? serializer(content) : null}</p>
     </Page>
   )

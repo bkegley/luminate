@@ -1,6 +1,7 @@
 type Post {
   id: ID!
   title: String
+  pinned(entityId: ID!): Boolean
   relations: [EntityRelation]
   content: String!
   createdAt: String
@@ -10,6 +11,7 @@ type Post {
 type EntityRelation {
   id: ID!
   type: EntityType
+  pinned: Boolean
 }
 
 enum EntityType {
@@ -31,6 +33,7 @@ type PostEdge {
 input EntityRelationInput {
   id: ID!
   type: EntityType!
+  pinned: Boolean
 }
 
 input CreatePostInput {
@@ -47,6 +50,7 @@ input UpdatePostInput {
 
 extend type Query {
   listPosts(cursor: String, limit: Int, query: [QueryInput!]): PostConnection!
+  getEntityPosts(id: ID!): PostConnection!
   getPost(id: ID!): Post
 }
 
@@ -54,4 +58,5 @@ extend type Mutation {
   createPost(input: CreatePostInput!): Post
   updatePost(id: ID!, input: UpdatePostInput!): Post
   deletePost(id: ID!): Post
+  togglePin(id: ID!, entityId: ID!): Boolean
 }

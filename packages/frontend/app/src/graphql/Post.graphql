@@ -20,6 +20,18 @@ query GetPost($id: ID!) {
   }
 }
 
+query GetEntityPosts($id: ID!) {
+  getEntityPosts(id: $id) {
+    edges {
+      node {
+        id
+        title
+        pinned(entityId: $id)
+      }
+    }
+  }
+}
+
 mutation CreatePost($input: CreatePostInput!) {
   createPost(input: $input) {
     ...PostFragment
@@ -30,6 +42,10 @@ mutation UpdatePost($id: ID!, $input: UpdatePostInput!) {
   updatePost(id: $id, input: $input) {
     ...PostFragment
   }
+}
+
+mutation TogglePin($id: ID!, $entityId: ID!) {
+  togglePin(id: $id, entityId: $entityId)
 }
 
 fragment PostFragment on Post {

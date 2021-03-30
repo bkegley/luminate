@@ -83,6 +83,7 @@ export type Query = {
   __typename?: 'Query'
   getCoffee?: Maybe<Coffee>
   getCountry?: Maybe<Country>
+  getEntityPosts: PostConnection
   getFarm?: Maybe<Farm>
   getPost?: Maybe<Post>
   getRegion?: Maybe<Region>
@@ -102,6 +103,10 @@ export type QueryGetCoffeeArgs = {
 }
 
 export type QueryGetCountryArgs = {
+  id: Scalars['ID']
+}
+
+export type QueryGetEntityPostsArgs = {
   id: Scalars['ID']
 }
 
@@ -188,6 +193,7 @@ export type Mutation = {
   deleteVariety?: Maybe<Variety>
   deleteView?: Maybe<Scalars['Boolean']>
   makeVarietyPublic?: Maybe<Scalars['Boolean']>
+  togglePin?: Maybe<Scalars['Boolean']>
   updateCoffee?: Maybe<Coffee>
   updateCoffeePermissionsForAccount?: Maybe<Scalars['Boolean']>
   updateFarm?: Maybe<Farm>
@@ -248,6 +254,11 @@ export type MutationDeleteViewArgs = {
 
 export type MutationMakeVarietyPublicArgs = {
   id: Scalars['ID']
+}
+
+export type MutationTogglePinArgs = {
+  id: Scalars['ID']
+  entityId: Scalars['ID']
 }
 
 export type MutationUpdateCoffeeArgs = {
@@ -358,16 +369,22 @@ export type Post = {
   __typename?: 'Post'
   id: Scalars['ID']
   title?: Maybe<Scalars['String']>
+  pinned?: Maybe<Scalars['Boolean']>
   relations?: Maybe<Array<Maybe<EntityRelation>>>
   content: Scalars['String']
   createdAt?: Maybe<Scalars['String']>
   updatedAt?: Maybe<Scalars['String']>
 }
 
+export type PostPinnedArgs = {
+  entityId: Scalars['ID']
+}
+
 export type EntityRelation = {
   __typename?: 'EntityRelation'
   id: Scalars['ID']
   type?: Maybe<EntityType>
+  pinned?: Maybe<Scalars['Boolean']>
 }
 
 export enum EntityType {
@@ -391,6 +408,7 @@ export type PostEdge = {
 export type EntityRelationInput = {
   id: Scalars['ID']
   type: EntityType
+  pinned?: Maybe<Scalars['Boolean']>
 }
 
 export type CreatePostInput = {
@@ -797,6 +815,12 @@ export type QueryResolvers<
     ContextType,
     RequireFields<QueryGetCountryArgs, 'id'>
   >
+  getEntityPosts?: Resolver<
+    ResolversTypes['PostConnection'],
+    ParentType,
+    ContextType,
+    RequireFields<QueryGetEntityPostsArgs, 'id'>
+  >
   getFarm?: Resolver<Maybe<ResolversTypes['Farm']>, ParentType, ContextType, RequireFields<QueryGetFarmArgs, 'id'>>
   getPost?: Resolver<Maybe<ResolversTypes['Post']>, ParentType, ContextType, RequireFields<QueryGetPostArgs, 'id'>>
   getRegion?: Resolver<
@@ -938,6 +962,12 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationMakeVarietyPublicArgs, 'id'>
   >
+  togglePin?: Resolver<
+    Maybe<ResolversTypes['Boolean']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationTogglePinArgs, 'id' | 'entityId'>
+  >
   updateCoffee?: Resolver<
     Maybe<ResolversTypes['Coffee']>,
     ParentType,
@@ -1057,6 +1087,12 @@ export type PostResolvers<
 > = ResolversObject<{
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
   title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  pinned?: Resolver<
+    Maybe<ResolversTypes['Boolean']>,
+    ParentType,
+    ContextType,
+    RequireFields<PostPinnedArgs, 'entityId'>
+  >
   relations?: Resolver<Maybe<Array<Maybe<ResolversTypes['EntityRelation']>>>, ParentType, ContextType>
   content?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   createdAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
@@ -1070,6 +1106,7 @@ export type EntityRelationResolvers<
 > = ResolversObject<{
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
   type?: Resolver<Maybe<ResolversTypes['EntityType']>, ParentType, ContextType>
+  pinned?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>
 }>
 

@@ -333,11 +333,13 @@ export type EntityRelation = {
   __typename: 'EntityRelation'
   id: Scalars['ID']
   type?: Maybe<EntityType>
+  pinned?: Maybe<Scalars['Boolean']>
 }
 
 export type EntityRelationInput = {
   id: Scalars['ID']
   type: EntityType
+  pinned?: Maybe<Scalars['Boolean']>
 }
 
 export enum EntityType {
@@ -460,6 +462,7 @@ export type Mutation = {
   createPost?: Maybe<Post>
   updatePost?: Maybe<Post>
   deletePost?: Maybe<Post>
+  togglePin?: Maybe<Scalars['Boolean']>
   createVariety?: Maybe<Variety>
   updateVariety?: Maybe<Variety>
   deleteVariety?: Maybe<Variety>
@@ -619,6 +622,11 @@ export type MutationUpdatePostArgs = {
 
 export type MutationDeletePostArgs = {
   id: Scalars['ID']
+}
+
+export type MutationTogglePinArgs = {
+  id: Scalars['ID']
+  entityId: Scalars['ID']
 }
 
 export type MutationCreateVarietyArgs = {
@@ -794,10 +802,15 @@ export type Post = {
   __typename: 'Post'
   id: Scalars['ID']
   title?: Maybe<Scalars['String']>
+  pinned?: Maybe<Scalars['Boolean']>
   relations?: Maybe<Array<Maybe<EntityRelation>>>
   content: Scalars['String']
   createdAt?: Maybe<Scalars['String']>
   updatedAt?: Maybe<Scalars['String']>
+}
+
+export type PostPinnedArgs = {
+  entityId: Scalars['ID']
 }
 
 export type PostConnection = {
@@ -828,6 +841,7 @@ export type Query = {
   listFarms: FarmConnection
   getFarm?: Maybe<Farm>
   listPosts: PostConnection
+  getEntityPosts: PostConnection
   getPost?: Maybe<Post>
   listRegions: RegionConnection
   getRegion?: Maybe<Region>
@@ -918,6 +932,10 @@ export type QueryListPostsArgs = {
   cursor?: Maybe<Scalars['String']>
   limit?: Maybe<Scalars['Int']>
   query?: Maybe<Array<QueryInput>>
+}
+
+export type QueryGetEntityPostsArgs = {
+  id: Scalars['ID']
 }
 
 export type QueryGetPostArgs = {
@@ -1708,6 +1726,16 @@ export type GetPostQueryVariables = Exact<{
 
 export type GetPostQuery = {__typename: 'Query'} & {getPost?: Maybe<{__typename: 'Post'} & PostFragmentFragment>}
 
+export type GetEntityPostsQueryVariables = Exact<{
+  id: Scalars['ID']
+}>
+
+export type GetEntityPostsQuery = {__typename: 'Query'} & {
+  getEntityPosts: {__typename: 'PostConnection'} & {
+    edges: Array<{__typename: 'PostEdge'} & {node: {__typename: 'Post'} & Pick<Post, 'id' | 'title' | 'pinned'>}>
+  }
+}
+
 export type CreatePostMutationVariables = Exact<{
   input: CreatePostInput
 }>
@@ -1724,6 +1752,13 @@ export type UpdatePostMutationVariables = Exact<{
 export type UpdatePostMutation = {__typename: 'Mutation'} & {
   updatePost?: Maybe<{__typename: 'Post'} & PostFragmentFragment>
 }
+
+export type TogglePinMutationVariables = Exact<{
+  id: Scalars['ID']
+  entityId: Scalars['ID']
+}>
+
+export type TogglePinMutation = {__typename: 'Mutation'} & Pick<Mutation, 'togglePin'>
 
 export type PostFragmentFragment = {__typename: 'Post'} & Pick<Post, 'id' | 'title' | 'content'>
 
@@ -3631,6 +3666,51 @@ export function useGetPostLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Ge
 export type GetPostQueryHookResult = ReturnType<typeof useGetPostQuery>
 export type GetPostLazyQueryHookResult = ReturnType<typeof useGetPostLazyQuery>
 export type GetPostQueryResult = Apollo.QueryResult<GetPostQuery, GetPostQueryVariables>
+export const GetEntityPostsDocument = gql`
+  query GetEntityPosts($id: ID!) {
+    getEntityPosts(id: $id) {
+      edges {
+        node {
+          id
+          title
+          pinned(entityId: $id)
+        }
+      }
+    }
+  }
+`
+
+/**
+ * __useGetEntityPostsQuery__
+ *
+ * To run a query within a React component, call `useGetEntityPostsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetEntityPostsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetEntityPostsQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetEntityPostsQuery(
+  baseOptions: Apollo.QueryHookOptions<GetEntityPostsQuery, GetEntityPostsQueryVariables>,
+) {
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useQuery<GetEntityPostsQuery, GetEntityPostsQueryVariables>(GetEntityPostsDocument, options)
+}
+export function useGetEntityPostsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<GetEntityPostsQuery, GetEntityPostsQueryVariables>,
+) {
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useLazyQuery<GetEntityPostsQuery, GetEntityPostsQueryVariables>(GetEntityPostsDocument, options)
+}
+export type GetEntityPostsQueryHookResult = ReturnType<typeof useGetEntityPostsQuery>
+export type GetEntityPostsLazyQueryHookResult = ReturnType<typeof useGetEntityPostsLazyQuery>
+export type GetEntityPostsQueryResult = Apollo.QueryResult<GetEntityPostsQuery, GetEntityPostsQueryVariables>
 export const CreatePostDocument = gql`
   mutation CreatePost($input: CreatePostInput!) {
     createPost(input: $input) {
@@ -3704,6 +3784,40 @@ export function useUpdatePostMutation(
 export type UpdatePostMutationHookResult = ReturnType<typeof useUpdatePostMutation>
 export type UpdatePostMutationResult = Apollo.MutationResult<UpdatePostMutation>
 export type UpdatePostMutationOptions = Apollo.BaseMutationOptions<UpdatePostMutation, UpdatePostMutationVariables>
+export const TogglePinDocument = gql`
+  mutation TogglePin($id: ID!, $entityId: ID!) {
+    togglePin(id: $id, entityId: $entityId)
+  }
+`
+export type TogglePinMutationFn = Apollo.MutationFunction<TogglePinMutation, TogglePinMutationVariables>
+
+/**
+ * __useTogglePinMutation__
+ *
+ * To run a mutation, you first call `useTogglePinMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useTogglePinMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [togglePinMutation, { data, loading, error }] = useTogglePinMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      entityId: // value for 'entityId'
+ *   },
+ * });
+ */
+export function useTogglePinMutation(
+  baseOptions?: Apollo.MutationHookOptions<TogglePinMutation, TogglePinMutationVariables>,
+) {
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useMutation<TogglePinMutation, TogglePinMutationVariables>(TogglePinDocument, options)
+}
+export type TogglePinMutationHookResult = ReturnType<typeof useTogglePinMutation>
+export type TogglePinMutationResult = Apollo.MutationResult<TogglePinMutation>
+export type TogglePinMutationOptions = Apollo.BaseMutationOptions<TogglePinMutation, TogglePinMutationVariables>
 export const ListRegionsDocument = gql`
   query ListRegions($cursor: String, $limit: Int, $query: [QueryInput!]) {
     listRegions(cursor: $cursor, limit: $limit, query: $query) {

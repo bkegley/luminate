@@ -333,11 +333,13 @@ export type EntityRelation = {
   __typename: 'EntityRelation'
   id: Scalars['ID']
   type?: Maybe<EntityType>
+  pinned?: Maybe<Scalars['Boolean']>
 }
 
 export type EntityRelationInput = {
   id: Scalars['ID']
   type: EntityType
+  pinned?: Maybe<Scalars['Boolean']>
 }
 
 export enum EntityType {
@@ -460,6 +462,7 @@ export type Mutation = {
   createPost?: Maybe<Post>
   updatePost?: Maybe<Post>
   deletePost?: Maybe<Post>
+  togglePin?: Maybe<Scalars['Boolean']>
   createVariety?: Maybe<Variety>
   updateVariety?: Maybe<Variety>
   deleteVariety?: Maybe<Variety>
@@ -619,6 +622,11 @@ export type MutationUpdatePostArgs = {
 
 export type MutationDeletePostArgs = {
   id: Scalars['ID']
+}
+
+export type MutationTogglePinArgs = {
+  id: Scalars['ID']
+  entityId: Scalars['ID']
 }
 
 export type MutationCreateVarietyArgs = {
@@ -794,10 +802,15 @@ export type Post = {
   __typename: 'Post'
   id: Scalars['ID']
   title?: Maybe<Scalars['String']>
+  pinned?: Maybe<Scalars['Boolean']>
   relations?: Maybe<Array<Maybe<EntityRelation>>>
   content: Scalars['String']
   createdAt?: Maybe<Scalars['String']>
   updatedAt?: Maybe<Scalars['String']>
+}
+
+export type PostPinnedArgs = {
+  entityId: Scalars['ID']
 }
 
 export type PostConnection = {
@@ -828,6 +841,7 @@ export type Query = {
   listFarms: FarmConnection
   getFarm?: Maybe<Farm>
   listPosts: PostConnection
+  getEntityPosts: PostConnection
   getPost?: Maybe<Post>
   listRegions: RegionConnection
   getRegion?: Maybe<Region>
@@ -918,6 +932,10 @@ export type QueryListPostsArgs = {
   cursor?: Maybe<Scalars['String']>
   limit?: Maybe<Scalars['Int']>
   query?: Maybe<Array<QueryInput>>
+}
+
+export type QueryGetEntityPostsArgs = {
+  id: Scalars['ID']
 }
 
 export type QueryGetPostArgs = {
