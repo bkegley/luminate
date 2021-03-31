@@ -46,7 +46,7 @@ export class UserMapper {
         account: role.account.toString(),
         roles: role.roles.map(role => role.toString()),
       })),
-      theme: user.theme.value,
+      theme: user.theme?.value,
     }
   }
 
@@ -60,7 +60,7 @@ export class UserMapper {
       accounts: user.accounts.map(account => account.toString()),
       //roles: Array<Role>
       //scopes: Array<Scalars['String']>
-      theme: (user.theme.value as unknown) as Theme,
+      theme: (user.theme?.value as unknown) as Theme,
       // TODO: fix timestamps
       createdAt: now.toDateString(),
       updatedAt: now.toDateString(),

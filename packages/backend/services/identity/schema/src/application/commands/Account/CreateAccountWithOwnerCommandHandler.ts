@@ -44,12 +44,8 @@ export class CreateAccountWithOwnerCommandHandler implements ICreateAccountWithO
       roles: [{account: account.getEntityId(), roles: [ownerRole.getEntityId()]}],
     })
 
-    console.log('we are here')
-
     try {
-      console.log('saving')
       await Promise.all([this.accountsRepo.save(account), this.usersRepo.save(user)])
-      console.log('saved')
     } catch (error) {
       console.log({error})
       return null
