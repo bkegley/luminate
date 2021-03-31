@@ -16,7 +16,7 @@
   }
 
   .btn-outline {
-    @apply bg-white border-gray-700 dark:border-gray-200 hover:border-gray-700 dark:hover:bg-gray-200 hover:bg-gray-700 hover:text-white;
+    @apply bg-transparent border-gray-700 dark:border-gray-200 hover:border-gray-700 dark:hover:bg-gray-200 hover:bg-gray-700 hover:text-white dark:hover:text-gray-900;
   }
 
   .btn-danger {
