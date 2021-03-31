@@ -486,6 +486,8 @@ export type CoffeeView = {
 export type View = {
   __typename?: 'View'
   id: Scalars['ID']
+  name: Scalars['String']
+  description?: Maybe<Scalars['String']>
 }
 
 export type ViewConnection = {
@@ -505,13 +507,13 @@ export type ViewEdge = {
 }
 
 export type CreateViewInput = {
-  entity: ViewEntity
-  entityId: Scalars['ID']
-  name?: Maybe<Scalars['String']>
+  name: Scalars['String']
+  description?: Maybe<Scalars['String']>
 }
 
 export type UpdateViewInput = {
   name?: Maybe<Scalars['String']>
+  description?: Maybe<Scalars['String']>
 }
 
 export type PageInfo = {
@@ -1201,6 +1203,8 @@ export type ViewResolvers<
   ParentType extends ResolversParentTypes['View'] = ResolversParentTypes['View']
 > = ResolversObject<{
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>
 }>
 
