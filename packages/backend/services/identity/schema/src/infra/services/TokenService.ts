@@ -39,7 +39,7 @@ export class TokenService {
       scopes,
       account,
       accounts: user.accounts.map(account => account.toString()),
-      theme: user.theme.value,
+      theme: user.theme?.value,
     }
 
     return jwt.sign(input, tokenSecret, {expiresIn: '15m'})
