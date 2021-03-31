@@ -1,0 +1,38 @@
+query ListViews {
+  listViews {
+    edges {
+      node {
+        id
+        name
+      }
+    }
+  }
+}
+
+query GetView($id: ID!) {
+  getView(id: $id) {
+    ...ViewFragment
+  }
+}
+
+mutation CreateView($input: CreateViewInput!) {
+  createView(input: $input) {
+    ...ViewFragment
+  }
+}
+
+mutation UpdateView($id: ID!, $input: UpdateViewInput!) {
+  updateView(id: $id, input: $input) {
+    ...ViewFragment
+  }
+}
+
+mutation DeleteView($id: ID!) {
+  deleteView(id: $id)
+}
+
+fragment ViewFragment on View {
+  id
+  name
+  description
+}

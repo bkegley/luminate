@@ -290,9 +290,8 @@ export type CreateVarietyInput = {
 }
 
 export type CreateViewInput = {
-  entity: ViewEntity
-  entityId: Scalars['ID']
-  name?: Maybe<Scalars['String']>
+  name: Scalars['String']
+  description?: Maybe<Scalars['String']>
 }
 
 export type CuppingSession = {
@@ -1247,6 +1246,7 @@ export type UpdateVarietyInput = {
 
 export type UpdateViewInput = {
   name?: Maybe<Scalars['String']>
+  description?: Maybe<Scalars['String']>
 }
 
 export type User = UserInterface & {
@@ -1313,6 +1313,8 @@ export type VarietyEdge = {
 export type View = {
   __typename: 'View'
   id: Scalars['ID']
+  name: Scalars['String']
+  description?: Maybe<Scalars['String']>
 }
 
 export type ViewConnection = {

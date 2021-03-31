@@ -3,34 +3,34 @@ import {Card, Button, Input} from '@luminate/components'
 import {Modal, useDialogState, DialogDisclosure} from '@luminate/gatsby-theme-luminate/src'
 import Alert from '../../components/Alert'
 import {
-  useUpdateVarietyMutation,
-  useDeleteVarietyMutation,
-  ListVarietiesDocument,
-  Variety,
-  UpdateVarietyMutation,
-  DeleteVarietyMutation,
-  UpdateVarietyInput,
+  useUpdateViewMutation,
+  useDeleteViewMutation,
+  ListViewsDocument,
+  View,
+  UpdateViewMutation,
+  DeleteViewMutation,
+  UpdateViewInput,
 } from '../../graphql'
 import {Formik, Form, Field} from 'formik'
 import {useHistory, useRouteMatch} from 'react-router-dom'
 
 interface ViewUpdateFormProps {
-  variety: Variety
+  view: View
   title?: React.ReactNode
   isModal?: boolean
-  fields?: Array<keyof UpdateVarietyInput>
+  fields?: Array<keyof UpdateViewInput>
   /* Add functionality when entity successfully updates */
-  onUpdateSuccess?: (data: UpdateVarietyMutation) => void
+  onUpdateSuccess?: (data: UpdateViewMutation) => void
   /* Add functionality when entity fails to update */
   onUpdateError?: (err: any) => void
   /* Add functionality when entity is successfully deleted - default is to redirect to list view */
-  onDeleteSuccess?: (data: DeleteVarietyMutation) => void
+  onDeleteSuccess?: (data: DeleteViewMutation) => void
   /* Add functionality when entity fails to */
   onDeleteError?: (err: any) => void
 }
 
 const ViewUpdateForm = ({
-  variety,
+  view,
   title,
   isModal,
   fields,
@@ -41,7 +41,7 @@ const ViewUpdateForm = ({
 }: ViewUpdateFormProps) => {
   const history = useHistory()
   const {path} = useRouteMatch()
-  const [updateVariety, {data: updateData, error: updateError, loading: updateLoading}] = useUpdateVarietyMutation({
+  const [updateView, {data: updateData, error: updateError, loading: updateLoading}] = useUpdateViewMutation({
     onCompleted: data => {
       if (onUpdateSuccess) {
         onUpdateSuccess(data)
@@ -53,9 +53,9 @@ const ViewUpdateForm = ({
       }
     },
   })
-  const [deleteVariety, {data: deleteData, error: deleteError, loading: deleteLoading}] = useDeleteVarietyMutation({
-    variables: {id: variety.id},
-    refetchQueries: [{query: ListVarietiesDocument}],
+  const [deleteView, {data: deleteData, error: deleteError, loading: deleteLoading}] = useDeleteViewMutation({
+    variables: {id: view.id},
+    refetchQueries: [{query: ListViewsDocument}],
     awaitRefetchQueries: true,
     onCompleted: data => {
       if (onDeleteSuccess) {
@@ -76,12 +76,12 @@ const ViewUpdateForm = ({
   return (
     <Formik
       initialValues={{
-        name: variety.name || '',
+        name: view.name || '',
       }}
       onSubmit={async (values, {setSubmitting}) => {
-        await updateVariety({
+        await updateView({
           variables: {
-            id: variety.id,
+            id: view.id,
             input: values,
           },
         })
@@ -97,7 +97,7 @@ const ViewUpdateForm = ({
                   heading="Are you sure?"
                   text="This action cannot be undone."
                   onCancelClick={deleteDialog.toggle}
-                  onConfirmClick={() => deleteVariety({variables: {id: variety.id}})}
+                  onConfirmClick={() => deleteView({variables: {id: view.id}})}
                   variant="danger"
                 />
               </div>

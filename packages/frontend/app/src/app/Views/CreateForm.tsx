@@ -1,16 +1,16 @@
 import React from 'react'
 import {Card, Button, Input} from '@luminate/components'
 import {Formik, Form, Field} from 'formik'
-import {useCreateVarietyMutation, CreateVarietyMutation, ListVarietiesDocument, CreateVarietyInput} from '../../graphql'
+import {useCreateViewMutation, CreateViewMutation, ListViewsDocument, CreateViewInput} from '../../graphql'
 import {useHistory} from 'react-router-dom'
 
 interface ViewCreateFormProps {
   title?: React.ReactNode
   isModal?: boolean
-  fields?: Array<keyof CreateVarietyInput>
-  initialValues?: Partial<CreateVarietyInput>
+  fields?: Array<keyof CreateViewInput>
+  initialValues?: Partial<CreateViewInput>
   /* Add functionality when entity successfully creates - default is to redirect to detail view*/
-  onCreateSuccess?: (data: CreateVarietyMutation) => void
+  onCreateSuccess?: (data: CreateViewMutation) => void
   /* Add functionality when entity fails to create */
   onCreateError?: (err: any) => void
   onCancel?: (dirty: boolean) => void
@@ -18,13 +18,13 @@ interface ViewCreateFormProps {
 
 const ViewCreateForm = ({fields, initialValues, onCreateSuccess, onCreateError, onCancel}: ViewCreateFormProps) => {
   const history = useHistory()
-  const [createVariety, {data, error, loading}] = useCreateVarietyMutation({
-    refetchQueries: [{query: ListVarietiesDocument}],
+  const [createView, {data, error, loading}] = useCreateViewMutation({
+    refetchQueries: [{query: ListViewsDocument}],
     onCompleted: data => {
       if (onCreateSuccess) {
         onCreateSuccess(data)
       } else {
-        history.push(`/views/${data.createVariety?.id}`)
+        history.push(`/views/${data.createView?.id}`)
       }
     },
     onError: err => {
@@ -38,10 +38,11 @@ const ViewCreateForm = ({fields, initialValues, onCreateSuccess, onCreateError, 
     <Formik
       initialValues={{
         name: '',
+        description: '',
         ...initialValues,
       }}
       onSubmit={async (values, {setSubmitting}) => {
-        await createVariety({
+        await createView({
           variables: {
             input: values,
           },
@@ -58,6 +59,12 @@ const ViewCreateForm = ({fields, initialValues, onCreateSuccess, onCreateError, 
                   <div className="mb-3">
                     <label className="block mb-1">Name</label>
                     <Field name="name" id="name" as={Input} />
+                  </div>
+                ) : null}
+                {!fields || fields.includes('description') ? (
+                  <div className="mb-3">
+                    <label className="block mb-1">Description</label>
+                    <Field name="description" id="description" as={Input} />
                   </div>
                 ) : null}
               </div>
