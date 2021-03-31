@@ -24,6 +24,7 @@ const navItems: INavItem[] = [
   {icon: IconTypesEnum.BOOKMARK, to: '/countries', text: 'Countries', description: 'countries'},
   {icon: IconTypesEnum.BOOKMARK, to: '/varieties', text: 'Varieties', description: 'varieties'},
   {icon: IconTypesEnum.BOOKMARK, to: '/cupping-sessions', text: 'Cupping', description: 'cupping sessions'},
+  {icon: IconTypesEnum.EYE, to: '/views', text: 'Views', description: 'views'},
   {icon: IconTypesEnum.COG, to: '/account', text: 'Account', description: 'account'},
 ]
 

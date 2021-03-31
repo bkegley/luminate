@@ -290,9 +290,8 @@ export type CreateVarietyInput = {
 }
 
 export type CreateViewInput = {
-  entity: ViewEntity
-  entityId: Scalars['ID']
-  name?: Maybe<Scalars['String']>
+  name: Scalars['String']
+  description?: Maybe<Scalars['String']>
 }
 
 export type CuppingSession = {
@@ -1247,6 +1246,7 @@ export type UpdateVarietyInput = {
 
 export type UpdateViewInput = {
   name?: Maybe<Scalars['String']>
+  description?: Maybe<Scalars['String']>
 }
 
 export type User = UserInterface & {
@@ -1313,6 +1313,8 @@ export type VarietyEdge = {
 export type View = {
   __typename: 'View'
   id: Scalars['ID']
+  name: Scalars['String']
+  description?: Maybe<Scalars['String']>
 }
 
 export type ViewConnection = {
@@ -1882,6 +1884,49 @@ export type VarietyFragmentFragment = {__typename: 'Variety'} & Pick<
   'id' | 'name' | 'background' | 'createdAt' | 'updatedAt'
 > & {coffees?: Maybe<Array<Maybe<{__typename: 'Coffee'} & Pick<Coffee, 'id' | 'name'>>>>}
 
+export type ListViewsQueryVariables = Exact<{[key: string]: never}>
+
+export type ListViewsQuery = {__typename: 'Query'} & {
+  listViews?: Maybe<
+    {__typename: 'ViewConnection'} & {
+      edges?: Maybe<
+        Array<Maybe<{__typename: 'ViewEdge'} & {node?: Maybe<{__typename: 'View'} & Pick<View, 'id' | 'name'>>}>>
+      >
+    }
+  >
+}
+
+export type GetViewQueryVariables = Exact<{
+  id: Scalars['ID']
+}>
+
+export type GetViewQuery = {__typename: 'Query'} & {getView?: Maybe<{__typename: 'View'} & ViewFragmentFragment>}
+
+export type CreateViewMutationVariables = Exact<{
+  input: CreateViewInput
+}>
+
+export type CreateViewMutation = {__typename: 'Mutation'} & {
+  createView?: Maybe<{__typename: 'View'} & ViewFragmentFragment>
+}
+
+export type UpdateViewMutationVariables = Exact<{
+  id: Scalars['ID']
+  input: UpdateViewInput
+}>
+
+export type UpdateViewMutation = {__typename: 'Mutation'} & {
+  updateView?: Maybe<{__typename: 'View'} & ViewFragmentFragment>
+}
+
+export type DeleteViewMutationVariables = Exact<{
+  id: Scalars['ID']
+}>
+
+export type DeleteViewMutation = {__typename: 'Mutation'} & Pick<Mutation, 'deleteView'>
+
+export type ViewFragmentFragment = {__typename: 'View'} & Pick<View, 'id' | 'name' | 'description'>
+
 export const BrewerFragmentFragmentDoc = gql`
   fragment BrewerFragment on Brewer {
     id
@@ -2063,6 +2108,13 @@ export const VarietyFragmentFragmentDoc = gql`
     }
     createdAt
     updatedAt
+  }
+`
+export const ViewFragmentFragmentDoc = gql`
+  fragment ViewFragment on View {
+    id
+    name
+    description
   }
 `
 export const CreateAccountDocument = gql`
@@ -4285,3 +4337,186 @@ export type DeleteVarietyMutationOptions = Apollo.BaseMutationOptions<
   DeleteVarietyMutation,
   DeleteVarietyMutationVariables
 >
+export const ListViewsDocument = gql`
+  query ListViews {
+    listViews {
+      edges {
+        node {
+          id
+          name
+        }
+      }
+    }
+  }
+`
+
+/**
+ * __useListViewsQuery__
+ *
+ * To run a query within a React component, call `useListViewsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListViewsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useListViewsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useListViewsQuery(baseOptions?: Apollo.QueryHookOptions<ListViewsQuery, ListViewsQueryVariables>) {
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useQuery<ListViewsQuery, ListViewsQueryVariables>(ListViewsDocument, options)
+}
+export function useListViewsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<ListViewsQuery, ListViewsQueryVariables>,
+) {
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useLazyQuery<ListViewsQuery, ListViewsQueryVariables>(ListViewsDocument, options)
+}
+export type ListViewsQueryHookResult = ReturnType<typeof useListViewsQuery>
+export type ListViewsLazyQueryHookResult = ReturnType<typeof useListViewsLazyQuery>
+export type ListViewsQueryResult = Apollo.QueryResult<ListViewsQuery, ListViewsQueryVariables>
+export const GetViewDocument = gql`
+  query GetView($id: ID!) {
+    getView(id: $id) {
+      ...ViewFragment
+    }
+  }
+  ${ViewFragmentFragmentDoc}
+`
+
+/**
+ * __useGetViewQuery__
+ *
+ * To run a query within a React component, call `useGetViewQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetViewQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetViewQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetViewQuery(baseOptions: Apollo.QueryHookOptions<GetViewQuery, GetViewQueryVariables>) {
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useQuery<GetViewQuery, GetViewQueryVariables>(GetViewDocument, options)
+}
+export function useGetViewLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetViewQuery, GetViewQueryVariables>) {
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useLazyQuery<GetViewQuery, GetViewQueryVariables>(GetViewDocument, options)
+}
+export type GetViewQueryHookResult = ReturnType<typeof useGetViewQuery>
+export type GetViewLazyQueryHookResult = ReturnType<typeof useGetViewLazyQuery>
+export type GetViewQueryResult = Apollo.QueryResult<GetViewQuery, GetViewQueryVariables>
+export const CreateViewDocument = gql`
+  mutation CreateView($input: CreateViewInput!) {
+    createView(input: $input) {
+      ...ViewFragment
+    }
+  }
+  ${ViewFragmentFragmentDoc}
+`
+export type CreateViewMutationFn = Apollo.MutationFunction<CreateViewMutation, CreateViewMutationVariables>
+
+/**
+ * __useCreateViewMutation__
+ *
+ * To run a mutation, you first call `useCreateViewMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateViewMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createViewMutation, { data, loading, error }] = useCreateViewMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateViewMutation(
+  baseOptions?: Apollo.MutationHookOptions<CreateViewMutation, CreateViewMutationVariables>,
+) {
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useMutation<CreateViewMutation, CreateViewMutationVariables>(CreateViewDocument, options)
+}
+export type CreateViewMutationHookResult = ReturnType<typeof useCreateViewMutation>
+export type CreateViewMutationResult = Apollo.MutationResult<CreateViewMutation>
+export type CreateViewMutationOptions = Apollo.BaseMutationOptions<CreateViewMutation, CreateViewMutationVariables>
+export const UpdateViewDocument = gql`
+  mutation UpdateView($id: ID!, $input: UpdateViewInput!) {
+    updateView(id: $id, input: $input) {
+      ...ViewFragment
+    }
+  }
+  ${ViewFragmentFragmentDoc}
+`
+export type UpdateViewMutationFn = Apollo.MutationFunction<UpdateViewMutation, UpdateViewMutationVariables>
+
+/**
+ * __useUpdateViewMutation__
+ *
+ * To run a mutation, you first call `useUpdateViewMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateViewMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateViewMutation, { data, loading, error }] = useUpdateViewMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateViewMutation(
+  baseOptions?: Apollo.MutationHookOptions<UpdateViewMutation, UpdateViewMutationVariables>,
+) {
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useMutation<UpdateViewMutation, UpdateViewMutationVariables>(UpdateViewDocument, options)
+}
+export type UpdateViewMutationHookResult = ReturnType<typeof useUpdateViewMutation>
+export type UpdateViewMutationResult = Apollo.MutationResult<UpdateViewMutation>
+export type UpdateViewMutationOptions = Apollo.BaseMutationOptions<UpdateViewMutation, UpdateViewMutationVariables>
+export const DeleteViewDocument = gql`
+  mutation DeleteView($id: ID!) {
+    deleteView(id: $id)
+  }
+`
+export type DeleteViewMutationFn = Apollo.MutationFunction<DeleteViewMutation, DeleteViewMutationVariables>
+
+/**
+ * __useDeleteViewMutation__
+ *
+ * To run a mutation, you first call `useDeleteViewMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteViewMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteViewMutation, { data, loading, error }] = useDeleteViewMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteViewMutation(
+  baseOptions?: Apollo.MutationHookOptions<DeleteViewMutation, DeleteViewMutationVariables>,
+) {
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useMutation<DeleteViewMutation, DeleteViewMutationVariables>(DeleteViewDocument, options)
+}
+export type DeleteViewMutationHookResult = ReturnType<typeof useDeleteViewMutation>
+export type DeleteViewMutationResult = Apollo.MutationResult<DeleteViewMutation>
+export type DeleteViewMutationOptions = Apollo.BaseMutationOptions<DeleteViewMutation, DeleteViewMutationVariables>
