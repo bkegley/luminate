@@ -1,7 +1,7 @@
 import React from 'react'
 import {useGetCoffeeQuery} from '../../graphql'
 import {useDialogState, Modal} from '@luminate/gatsby-theme-luminate/src'
-import {Link, RouteComponentProps} from 'react-router-dom'
+import {Link, RouteComponentProps, useHistory} from 'react-router-dom'
 import {ShareCoffeeForm} from './ShareCoffeeForm'
 import {Grid, Page, Card, Button, Heading} from '@luminate/components'
 import {EntityPostListView} from '../Post/EntityListView'
@@ -13,6 +13,7 @@ interface Params {
 interface Props extends RouteComponentProps<Params> {}
 
 const CoffeeDetailView = ({match}: Props) => {
+  const history = useHistory()
   const shareCoffeeDialog = useDialogState()
   const {
     params: {id},
@@ -32,7 +33,22 @@ const CoffeeDetailView = ({match}: Props) => {
   }
 
   return (
-    <Page title={data.getCoffee?.name}>
+    <Page
+      title={data.getCoffee?.name}
+      primaryAction={{
+        text: 'Create Post',
+        onClick: () => history.push(`/posts/create?type=Coffee&id=${id}`),
+        as: 'a',
+      }}
+      secondaryActions={[
+        {
+          text: 'Update',
+          variant: 'outline',
+          onClick: () => history.push(`/coffees/${id}/edit`),
+          as: 'a',
+        },
+      ]}
+    >
       <Modal dialog={shareCoffeeDialog}>
         <div className="p-6 bg-white">
           <ShareCoffeeForm coffeeId={id} />

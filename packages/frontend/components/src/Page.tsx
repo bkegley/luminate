@@ -14,12 +14,14 @@ export interface PageProps {
   subtitle?: string;
   children: React.ReactNode;
   primaryAction?: PageAction;
+  secondaryActions?: PageAction[];
 }
 
 export const Page = ({
   title,
   subtitle,
   primaryAction,
+  secondaryActions,
   children,
 }: PageProps) => {
   return (
@@ -32,17 +34,34 @@ export const Page = ({
               <p className="ml-4 max-w-2xl text-gray-500">{subtitle}</p>
             ) : null}
           </div>
-          {primaryAction ? (
-            <div>
-              <Button
-                variant={primaryAction.variant}
-                onClick={primaryAction.onClick}
-                as={primaryAction.as}
-              >
-                {primaryAction.text}
-              </Button>
-            </div>
-          ) : null}
+          <div className="flex flex-row-reverse items-center space-x-4 space-x-reverse">
+            {primaryAction ? (
+              <div>
+                <Button
+                  variant={primaryAction.variant}
+                  onClick={primaryAction.onClick}
+                  as={primaryAction.as}
+                >
+                  {primaryAction.text}
+                </Button>
+              </div>
+            ) : null}
+            {secondaryActions
+              ? secondaryActions.map((action) => {
+                  return (
+                    <div>
+                      <Button
+                        variant={action.variant ?? 'outline'}
+                        onClick={action.onClick}
+                        as={action.as}
+                      >
+                        {action.text}
+                      </Button>
+                    </div>
+                  );
+                })
+              : null}
+          </div>
         </div>
         <div>
           <div className="py-6 sm:py-12">{children}</div>
