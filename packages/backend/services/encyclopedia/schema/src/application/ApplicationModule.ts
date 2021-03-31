@@ -15,15 +15,18 @@ import {
   CreateFarmCommandHandler,
   CreatePostCommandHandler,
   CreateVarietyCommandHandler,
+  CreateViewCommandHandler,
   DeleteCoffeeCommandHandler,
   DeleteFarmCommandHandler,
   DeletePostCommandHandler,
   DeleteVarietyCommandHandler,
+  DeleteViewCommandHandler,
   TogglePostPinCommandHandler,
   UpdateCoffeeCommandHandler,
   UpdateFarmCommandHandler,
   UpdatePostCommandHandler,
   UpdateVarietyCommandHandler,
+  UpdateViewCommandHandler,
 } from './commands'
 import {
   GetCoffeeQueryHandler,
@@ -33,16 +36,27 @@ import {
   GetEntityPostsQueryHandler,
   GetRegionQueryHandler,
   GetVarietyQueryHandler,
-  ListVarietiesQueryHandler,
+  GetViewQueryHandler,
   ListCoffeesQueryHandler,
   ListCountriesQueryHandler,
   ListFarmsQueryHandler,
   ListPostsQueryHandler,
   ListRegionsQueryHandler,
+  ListVarietiesQueryHandler,
+  ListViewsQueryHandler,
 } from './queries'
 import {parseTokenFromRequest} from '@luminate/graphql-utils'
+import {ViewResolvers} from './schema/View'
 
-const resolvers = [CoffeeResolvers, CountryResolvers, FarmResolvers, PostResolvers, RegionResolvers, VarietyResolvers]
+const resolvers = [
+  CoffeeResolvers,
+  CountryResolvers,
+  FarmResolvers,
+  PostResolvers,
+  RegionResolvers,
+  VarietyResolvers,
+  ViewResolvers,
+]
 
 const queryHandlers = [
   GetCoffeeQueryHandler,
@@ -52,27 +66,32 @@ const queryHandlers = [
   GetEntityPostsQueryHandler,
   GetRegionQueryHandler,
   GetVarietyQueryHandler,
-  ListVarietiesQueryHandler,
+  GetViewQueryHandler,
   ListCoffeesQueryHandler,
   ListCountriesQueryHandler,
   ListFarmsQueryHandler,
   ListPostsQueryHandler,
   ListRegionsQueryHandler,
+  ListVarietiesQueryHandler,
+  ListViewsQueryHandler,
 ]
 const commandHandlers = [
   CreateCoffeeCommandHandler,
   CreateFarmCommandHandler,
   CreatePostCommandHandler,
   CreateVarietyCommandHandler,
+  CreateViewCommandHandler,
   DeleteCoffeeCommandHandler,
   DeleteFarmCommandHandler,
   DeletePostCommandHandler,
   DeleteVarietyCommandHandler,
+  DeleteViewCommandHandler,
   TogglePostPinCommandHandler,
   UpdateCoffeeCommandHandler,
   UpdateFarmCommandHandler,
   UpdatePostCommandHandler,
   UpdateVarietyCommandHandler,
+  UpdateViewCommandHandler,
 ]
 
 const USER_AUTH_TOKEN = process.env.USER_AUTH_TOKEN || 'supersecretpassword'

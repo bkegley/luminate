@@ -9,6 +9,8 @@ type CoffeeView {
 
 type View {
   id: ID!
+  name: String!
+  description: String
 }
 
 type ViewConnection {
@@ -26,13 +28,13 @@ type ViewEdge {
 }
 
 input CreateViewInput {
-  entity: ViewEntity!
-  entityId: ID!
-  name: String
+  name: String!
+  description: String
 }
 
 input UpdateViewInput {
   name: String
+  description: String
 }
 
 extend type Query {
