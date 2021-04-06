@@ -1,6 +1,7 @@
 import React from 'react'
 import {Card, Heading, Page} from '@luminate/components'
 import {useHistory} from 'react-router-dom'
+import {ViewCreator} from '../../components/ViewCreator'
 
 const Home = () => {
   const history = useHistory()
@@ -10,6 +11,7 @@ const Home = () => {
       <Card>
         <Heading as="h4">Welcome</Heading>
       </Card>
+      <ViewCreator />
     </Page>
   )
 }

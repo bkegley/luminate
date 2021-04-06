@@ -107,7 +107,7 @@ const NavItem = ({item}: NavItemProps) => {
       } flex-shrink-0 group flex items-center justify-center lg:justify-start rounded-lg text-base lg:text-sm font-medium px-2 py-2`}
     >
       <span className="sr-only">{item.description}</span>
-      <div className={`${match ? 'text-primary-400 dark:text-secondary-300' : ''} h-6 w-6`}>
+      <div className={`${match ? 'text-primary-400 dark:text-secondary-200' : ''} h-6 w-6`}>
         <Icon type={item.icon} />
       </div>
       <div className="hidden lg:block lg:ml-3">{item.text}</div>
