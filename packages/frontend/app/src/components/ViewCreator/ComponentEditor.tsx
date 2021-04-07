@@ -1,14 +1,11 @@
-import {Button, Input, Label} from '@luminate/components'
 import React from 'react'
-import {ItemType, TitleItem} from './types'
+import {HeadingEditor} from './Heading'
+import {ParagraphEditor} from './Paragraph'
+import {ItemType} from './types'
 import {useViewState} from './useViewState'
 
 export const ComponentEditor = () => {
-  const {
-    items,
-    selectedItem,
-    actions: {removeItem},
-  } = useViewState()
+  const {items, selectedItem} = useViewState()
 
   if (selectedItem === null) {
     return null
@@ -16,39 +13,29 @@ export const ComponentEditor = () => {
 
   const item = items.find(item => item.id === selectedItem)
 
+  let Component = null
+  switch (item.type) {
+    case ItemType.HEADING:
+      Component = HeadingEditor
+      break
+
+    case ItemType.PARAGRAPH:
+      Component = ParagraphEditor
+      break
+
+    case ItemType.EMBEDDED_DATA:
+      Component = null
+      break
+  }
+
   return (
-    <div>
-      {item.type === ItemType.TITLE ? <TitleEditor item={item} /> : <div>other</div>}
-      <div>
-        <button onClick={() => removeItem(selectedItem)}>remove</button>
-      </div>
-      <pre>{JSON.stringify(item, null, 2)}</pre>
-    </div>
-  )
-}
-
-interface TitleEditorProps {
-  item: TitleItem
-}
-const TitleEditor = ({item}: TitleEditorProps) => {
-  const {
-    actions: {updateItem},
-  } = useViewState()
-
-  React.useEffect(() => {
-    setText(item.text)
-  }, [item.id])
-
-  const [text, setText] = React.useState(item.text)
-  return (
-    <div>
-      <div>
-        <Label htmlFor="title">title</Label>
-        <Input id="title" value={text} onChange={e => setText(e.currentTarget.value)} />
-      </div>
-      <div>
-        <Button onClick={() => updateItem({...item, text})}>Save</Button>
-      </div>
+    <div className="my-6">
+      {Component ? (
+        <Component
+          // @ts-ignore
+          item={item}
+        />
+      ) : null}
     </div>
   )
 }

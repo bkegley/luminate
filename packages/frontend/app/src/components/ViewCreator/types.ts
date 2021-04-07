@@ -1,5 +1,6 @@
 export enum ItemType {
-  TITLE = 'TITLE',
+  HEADING = 'HEADING',
+  PARAGRAPH = 'PARAGRAPH',
   EMBEDDED_DATA = 'EMBEDDED_DATA',
 }
 
@@ -8,8 +9,14 @@ export interface BaseItem {
   type: ItemType
 }
 
-export interface TitleItem extends BaseItem {
-  type: ItemType.TITLE
+export interface HeadingItem extends BaseItem {
+  type: ItemType.HEADING
+  text: string
+  heading: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
+}
+
+export interface ParagraphItem extends BaseItem {
+  type: ItemType.PARAGRAPH
   text: string
 }
 
@@ -19,4 +26,4 @@ export interface EmbeddedDataItem extends BaseItem {
   entityType: string
 }
 
-export type IItem = EmbeddedDataItem | TitleItem
+export type IItem = HeadingItem | ParagraphItem | EmbeddedDataItem
