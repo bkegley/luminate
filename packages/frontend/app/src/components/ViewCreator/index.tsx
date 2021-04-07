@@ -59,8 +59,9 @@ const initialState: IState = {
   items: [
     {
       id: 0,
-      type: ItemType.TITLE,
+      type: ItemType.HEADING,
       text: 'Set a Title',
+      heading: 'h2',
     },
   ],
 }
