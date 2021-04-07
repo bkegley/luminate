@@ -1,6 +1,8 @@
 import {Icon, IconTypesEnum} from '@luminate/components'
 import React from 'react'
 import {useListCoffeesQuery} from '../../graphql'
+import {ItemType} from './types'
+import {useViewState} from './useViewState'
 
 const ComponentSelectorContext = React.createContext(undefined)
 
@@ -45,17 +47,28 @@ const reducer = (state: State, action: Action) => {
 }
 
 export const ComponentSelector = () => {
-  return <ComponentSelectorContext.Provider value={undefined}>{}</ComponentSelectorContext.Provider>
+  return (
+    <ComponentSelectorContext.Provider value={undefined}>
+      <ComponentList />
+    </ComponentSelectorContext.Provider>
+  )
 }
 
 const ComponentList = () => {
+  const {
+    actions: {addNew},
+  } = useViewState()
   return (
     <div>
       <p>these are our components</p>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         {Array.from(new Array(9)).map((_, index) => {
           return (
-            <div
+            <button
+              type="button"
+              onClick={() =>
+                addNew({id: Math.floor(Math.random() * 1000), type: ItemType.TITLE, text: 'Default Title'})
+              }
               key={index}
               className="relative rounded-lg border border-gray-300 bg-white px-4 py-3 shadow-sm flex items-center space-x-3 hover:border-gray-400 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500"
             >
@@ -68,7 +81,7 @@ const ComponentList = () => {
                   <p className="text-sm font-medium text-gray-900">Coffee</p>
                 </a>
               </div>
-            </div>
+            </button>
           )
         })}
       </div>

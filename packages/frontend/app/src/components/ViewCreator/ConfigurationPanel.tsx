@@ -1,11 +1,9 @@
 import React from 'react'
-import {useViewState} from './useViewState'
 import {Tabs} from '@luminate/components'
+import {ComponentEditor} from './ComponentEditor'
 import {ComponentSelector} from './ComponentSelector'
 
 export const ConfigurationPanel = () => {
-  const viewState = useViewState()
-
   return (
     <div>
       <Tabs tabs={['Editor', 'Components']}>
@@ -20,14 +18,6 @@ export const ConfigurationPanel = () => {
           }
         }}
       </Tabs>
-    </div>
-  )
-}
-
-const ComponentEditor = () => {
-  return (
-    <div>
-      <p>this is our editor</p>
     </div>
   )
 }
