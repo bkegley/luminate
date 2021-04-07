@@ -1,5 +1,5 @@
 import React from 'react'
-import {ViewStateContext} from './ViewStateProvider'
+import {ViewStateContext} from './'
 
 export const useViewState = () => {
   const context = React.useContext(ViewStateContext)
