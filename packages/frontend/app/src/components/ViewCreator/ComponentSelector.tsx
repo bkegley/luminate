@@ -1,43 +1,38 @@
-import {Button, Icon, IconTypesEnum} from '@luminate/components'
 import React from 'react'
+import {Button} from '@luminate/components'
 import {ItemType} from './types'
 import {useViewState} from './useViewState'
+import {LinkedField} from './LinkedField'
 
 const ComponentSelectorContext = React.createContext(undefined)
 
 enum ActionType {
-  COMPONENT_TYPE_CLICK = 'COMPONENT_TYPE_CLICK',
-  BACK_BUTTON_CLICK = 'BACK_BUTTON_CLICK',
+  UPDATE_SELECTION_TYPE = 'BACK_BUTTON_CLICK',
 }
 
-enum ComponentType {
-  COFFEE = 'COFFEE',
+export enum SelectionType {
+  PRIMITIVE = 'PRIMITIVE',
+  LINKED_FIELD = 'LINKED_FIELD',
 }
 
-type Action =
-  | {
-      type: ActionType.COMPONENT_TYPE_CLICK
-      data: ComponentType
-    }
-  | {
-      type: ActionType.BACK_BUTTON_CLICK
-    }
+type Action = {
+  type: ActionType.UPDATE_SELECTION_TYPE
+  selectionType: SelectionType
+}
 
 interface State {
-  step: 1 | 2 | 3
-  selectedComponent: ComponentType
+  selectionType: SelectionType
+  prevSelectionType: SelectionType | null
 }
 
-const reducer = (state: State, action: Action) => {
+const reducer = (state: State, action: Action): State => {
   switch (action.type) {
-    case ActionType.COMPONENT_TYPE_CLICK:
-      return state
-
-    case ActionType.BACK_BUTTON_CLICK:
+    case ActionType.UPDATE_SELECTION_TYPE:
       return {
         ...state,
         // TODO: This should also remove all set options
-        step: state.step === 1 ? 1 : state.step - 1,
+        selectionType: action.selectionType,
+        prevSelectionType: state.selectionType,
       }
 
     default:
@@ -45,47 +40,71 @@ const reducer = (state: State, action: Action) => {
   }
 }
 
+const initialState: State = {
+  selectionType: SelectionType.PRIMITIVE,
+  prevSelectionType: null,
+}
+
 export const ComponentSelector = () => {
+  const [{selectionType, prevSelectionType}, dispatch] = React.useReducer(reducer, initialState)
+
+  const handleSelectionTypeClick = React.useCallback((selectionType: SelectionType) => {
+    dispatch({type: ActionType.UPDATE_SELECTION_TYPE, selectionType})
+  }, [])
+
   return (
-    <ComponentSelectorContext.Provider value={undefined}>
-      <ComponentList />
+    <ComponentSelectorContext.Provider value={{selectionType, prevSelectionType, actions: {handleSelectionTypeClick}}}>
+      <div className="my-6">
+        {selectionType === SelectionType.PRIMITIVE ? (
+          <PrimitivesList handleSelectionTypeClick={handleSelectionTypeClick} />
+        ) : selectionType === SelectionType.LINKED_FIELD ? (
+          <LinkedField handleSelectionTypeClick={handleSelectionTypeClick} />
+        ) : (
+          <div>3</div>
+        )}
+      </div>
     </ComponentSelectorContext.Provider>
   )
 }
 
-const ComponentList = () => {
+interface PrimitivesListProps {
+  handleSelectionTypeClick: (selectionType: SelectionType) => void
+}
+
+const PrimitivesList = ({handleSelectionTypeClick}: PrimitivesListProps) => {
   const {
     actions: {addNew},
   } = useViewState()
   return (
-    <div className="my-6">
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <Button
-          variant="outline"
-          onClick={() =>
-            addNew({
-              id: Math.floor(Math.random() * 1000),
-              type: ItemType.HEADING,
-              text: 'Placeholder Title',
-              heading: 'h2',
-            })
-          }
-        >
-          Heading
-        </Button>
-        <Button
-          variant="outline"
-          onClick={() =>
-            addNew({
-              id: Math.floor(Math.random() * 1000),
-              type: ItemType.PARAGRAPH,
-              text: 'Placeholder paragraph text',
-            })
-          }
-        >
-          Paragraph
-        </Button>
-      </div>
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <Button
+        variant="outline"
+        onClick={() =>
+          addNew({
+            id: Math.floor(Math.random() * 1000),
+            type: ItemType.HEADING,
+            text: 'Placeholder Title',
+            heading: 'h2',
+          })
+        }
+      >
+        Heading
+      </Button>
+      <Button
+        variant="outline"
+        onClick={() =>
+          addNew({
+            id: Math.floor(Math.random() * 1000),
+            type: ItemType.PARAGRAPH,
+            text: 'Placeholder paragraph text',
+          })
+        }
+      >
+        Paragraph
+      </Button>
+      <Button variant="outline" onClick={() => handleSelectionTypeClick(SelectionType.LINKED_FIELD)}>
+        Create Linked Field
+      </Button>
     </div>
   )
 }

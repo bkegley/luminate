@@ -7,11 +7,11 @@ import {useViewState} from './useViewState'
 export const ComponentEditor = () => {
   const {items, selectedItem} = useViewState()
 
-  if (selectedItem === null) {
+  const item = items.find(item => item.id === selectedItem)
+
+  if (!item) {
     return null
   }
-
-  const item = items.find(item => item.id === selectedItem)
 
   let Component = null
   switch (item.type) {
@@ -23,7 +23,7 @@ export const ComponentEditor = () => {
       Component = ParagraphEditor
       break
 
-    case ItemType.EMBEDDED_DATA:
+    case ItemType.LINKED_FIELD:
       Component = null
       break
   }
