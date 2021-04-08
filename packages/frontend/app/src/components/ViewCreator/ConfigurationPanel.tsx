@@ -5,21 +5,23 @@ import {ComponentSelector} from './ComponentSelector'
 
 export const ConfigurationPanel = () => {
   return (
-    <Card>
-      <div className="p-6">
-        <Tabs tabs={['Editor', 'Components']}>
-          {({activeTab}) => {
-            switch (activeTab) {
-              case 'Editor':
-                return <ComponentEditor />
-              case 'Components':
-                return <ComponentSelector />
-              default:
-                return null
-            }
-          }}
-        </Tabs>
-      </div>
-    </Card>
+    <div>
+      <Card>
+        <div className="p-6">
+          <Tabs tabs={['Editor', 'Components']}>
+            {({activeTab}) => {
+              switch (activeTab) {
+                case 'Editor':
+                  return <ComponentEditor />
+                case 'Components':
+                  return <ComponentSelector />
+                default:
+                  return null
+              }
+            }}
+          </Tabs>
+        </div>
+      </Card>
+    </div>
   )
 }

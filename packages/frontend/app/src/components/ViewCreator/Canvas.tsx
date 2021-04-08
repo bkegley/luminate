@@ -4,12 +4,14 @@ import {useViewState} from './useViewState'
 import {ItemType} from './types'
 import {HeadingDisplay} from './Heading'
 import {ParagraphDisplay} from './Paragraph'
+import {CanvasItem} from './CanvasItem'
+import {LinkedFieldDisplay} from './LinkedField/LinkedFieldDisplay'
 
 export const Canvas = () => {
   const {
     items,
     selectedItem,
-    actions: {selectItem},
+    actions: {selectItem, removeItem},
   } = useViewState()
 
   return (
@@ -29,8 +31,8 @@ export const Canvas = () => {
                     Component = ParagraphDisplay
                     break
 
-                  case ItemType.EMBEDDED_DATA:
-                    Component = null
+                  case ItemType.LINKED_FIELD:
+                    Component = LinkedFieldDisplay
                     break
                 }
                 return (
@@ -43,7 +45,12 @@ export const Canvas = () => {
                         className="my-2"
                         onClick={() => selectItem(item.id)}
                       >
-                        {Component ? <Component item={item} selected={item.id === selectedItem} /> : null}
+                        {Component ? (
+                          <CanvasItem item={item} selected={item.id === selectedItem} removeItem={removeItem}>
+                            {/* @ts-ignore */}
+                            <Component item={item} />
+                          </CanvasItem>
+                        ) : null}
                       </div>
                     )}
                   </Draggable>

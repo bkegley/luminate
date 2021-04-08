@@ -1,29 +1,29 @@
-export enum ItemType {
+export enum NodeType {
   HEADING = 'HEADING',
   PARAGRAPH = 'PARAGRAPH',
-  EMBEDDED_DATA = 'EMBEDDED_DATA',
+  LINKED_FIELD = 'LINKED_FIELD',
 }
 
-export interface BaseItem {
+export interface BaseNode {
   id: number
-  type: ItemType
+  type: NodeType
 }
 
-export interface HeadingItem extends BaseItem {
-  type: ItemType.HEADING
+export interface HeadingNode extends BaseNode {
+  type: NodeType.HEADING
   text: string
   heading: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
 }
 
-export interface ParagraphItem extends BaseItem {
-  type: ItemType.PARAGRAPH
+export interface ParagraphNode extends BaseNode {
+  type: NodeType.PARAGRAPH
   text: string
 }
 
-export interface EmbeddedDataItem extends BaseItem {
-  type: ItemType.EMBEDDED_DATA
+export interface LinkedFieldNode extends BaseNode {
+  type: NodeType.LINKED_FIELD
   // TODO: use EntityType enum
   entityType: string
 }
 
-export type IItem = HeadingItem | ParagraphItem | EmbeddedDataItem
+export type INode = HeadingNode | ParagraphNode | LinkedFieldNode
