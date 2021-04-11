@@ -61,42 +61,50 @@ const CoffeeFieldSelection = ({id}: {id: string}) => {
           Add
         </Button>
       </div>
-      <div className="col-span-2">
-        <dt className="text-sm text-gray-500 dark:text-gray-400">Country</dt>
-        <dd>{data.getCoffee.country.name}</dd>
-      </div>
-      <div>
-        <Button
-          variant="outline"
-          onClick={() =>
-            addNew({
-              type: NodeType.LINKED_FIELD,
-              entityType: LinkedEntityType.COFFEE,
-              data: {id: data.getCoffee.id, field: 'country.name'},
-            })
-          }
-        >
-          Add
-        </Button>
-      </div>
-      <div className="col-span-2">
-        <dt className="text-sm text-gray-500 dark:text-gray-400">Region</dt>
-        <dd>{data.getCoffee.region.name}</dd>
-      </div>
-      <div>
-        <Button
-          variant="outline"
-          onClick={() =>
-            addNew({
-              type: NodeType.LINKED_FIELD,
-              entityType: LinkedEntityType.COFFEE,
-              data: {id: data.getCoffee.id, field: 'region.name'},
-            })
-          }
-        >
-          Add
-        </Button>
-      </div>
+      {data.getCoffee.country ? (
+        <>
+          <div className="col-span-2">
+            <dt className="text-sm text-gray-500 dark:text-gray-400">Country</dt>
+            <dd>{data.getCoffee.country.name}</dd>
+          </div>
+          <div>
+            <Button
+              variant="outline"
+              onClick={() =>
+                addNew({
+                  type: NodeType.LINKED_FIELD,
+                  entityType: LinkedEntityType.COFFEE,
+                  data: {id: data.getCoffee.id, field: 'country.name'},
+                })
+              }
+            >
+              Add
+            </Button>
+          </div>
+        </>
+      ) : null}
+      {data.getCoffee.region ? (
+        <>
+          <div className="col-span-2">
+            <dt className="text-sm text-gray-500 dark:text-gray-400">Region</dt>
+            <dd>{data.getCoffee.region.name}</dd>
+          </div>
+          <div>
+            <Button
+              variant="outline"
+              onClick={() =>
+                addNew({
+                  type: NodeType.LINKED_FIELD,
+                  entityType: LinkedEntityType.COFFEE,
+                  data: {id: data.getCoffee.id, field: 'region.name'},
+                })
+              }
+            >
+              Add
+            </Button>
+          </div>
+        </>
+      ) : null}
     </dl>
   )
 }
