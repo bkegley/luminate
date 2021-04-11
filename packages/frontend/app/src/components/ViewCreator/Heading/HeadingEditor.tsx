@@ -1,10 +1,10 @@
 import React from 'react'
 import {Button, Heading, Icon, IconTypesEnum, Input, Label} from '@luminate/components'
-import {HeadingItem} from '../types'
+import {HeadingNode} from '../types'
 import {useViewState} from '../useViewState'
 
 interface HeadingEditorProps {
-  item: HeadingItem
+  item: HeadingNode
 }
 
 export const HeadingEditor = ({item}: HeadingEditorProps) => {
@@ -12,12 +12,12 @@ export const HeadingEditor = ({item}: HeadingEditorProps) => {
     actions: {updateItem, removeItem},
   } = useViewState()
 
-  const [text, setText] = React.useState(item.text)
-  const [heading, setHeading] = React.useState(item.heading)
+  const [text, setText] = React.useState(item.data.text)
+  const [heading, setHeading] = React.useState(item.data.heading)
 
   React.useEffect(() => {
-    setText(item.text)
-    setHeading(item.heading)
+    setText(item.data.text)
+    setHeading(item.data.heading)
   }, [item.id])
 
   return (
@@ -40,7 +40,7 @@ export const HeadingEditor = ({item}: HeadingEditorProps) => {
       </div>
       <div className="mt-10 flex flex-row-reverse space-x-4 space-x-reverse">
         <div>
-          <Button onClick={() => updateItem({...item, text, heading})}>Save</Button>
+          <Button onClick={() => updateItem({...item, data: {text, heading}})}>Save</Button>
         </div>
         <div>
           <Button variant="danger" onClick={() => removeItem(item.id)}>

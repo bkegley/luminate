@@ -1,11 +1,11 @@
 import React from 'react'
 import {Heading} from '@luminate/components'
-import {HeadingItem} from '../types'
+import {HeadingNode} from '../types'
 
 export interface HeadingDisplayProps {
-  item: HeadingItem
+  item: HeadingNode
 }
 
 export const HeadingDisplay = ({item}: HeadingDisplayProps) => {
-  return <Heading as={item.heading}>{item.text}</Heading>
+  return <Heading as={item.data.heading}>{item.data.text}</Heading>
 }

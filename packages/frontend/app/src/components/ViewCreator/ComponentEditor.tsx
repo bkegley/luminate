@@ -1,7 +1,8 @@
 import React from 'react'
 import {HeadingEditor} from './Heading'
+import {LinkedFieldEditor} from './LinkedField/LinkedFieldEditor'
 import {ParagraphEditor} from './Paragraph'
-import {ItemType} from './types'
+import {NodeType} from './types'
 import {useViewState} from './useViewState'
 
 export const ComponentEditor = () => {
@@ -15,16 +16,16 @@ export const ComponentEditor = () => {
 
   let Component = null
   switch (item.type) {
-    case ItemType.HEADING:
+    case NodeType.HEADING:
       Component = HeadingEditor
       break
 
-    case ItemType.PARAGRAPH:
+    case NodeType.PARAGRAPH:
       Component = ParagraphEditor
       break
 
-    case ItemType.LINKED_FIELD:
-      Component = null
+    case NodeType.LINKED_FIELD:
+      Component = LinkedFieldEditor
       break
   }
 

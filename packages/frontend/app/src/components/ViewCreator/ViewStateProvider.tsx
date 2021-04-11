@@ -1,7 +1,7 @@
 import React from 'react'
 
 export interface IViewStateContext {
-  selectedRow: number | null
+  selectedRow: string | null
 }
 
 export const ViewStateContext = React.createContext<IViewStateContext | undefined>(undefined)
