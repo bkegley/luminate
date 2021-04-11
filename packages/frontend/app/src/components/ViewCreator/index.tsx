@@ -5,11 +5,13 @@ import {ConfigurationPanel} from './ConfigurationPanel'
 import {INode, NodeType} from './types'
 import {reorder} from './utils'
 
+type DistributiveOmit<T, K extends keyof any> = T extends any ? Omit<T, K> : never
+
 export interface IViewStateContext {
   items: INode[]
   selectedItem: string | null
   actions: {
-    addNew: (item: INode) => void
+    addNew: (item: DistributiveOmit<INode, 'id'>) => void
     updateItem: (item: INode) => void
     removeItem: (id: string) => void
     selectItem: (id: string) => void
