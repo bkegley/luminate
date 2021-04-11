@@ -1,7 +1,7 @@
 import React from 'react'
 import {Droppable, Draggable} from 'react-beautiful-dnd'
 import {useViewState} from './useViewState'
-import {ItemType} from './types'
+import {NodeType} from './types'
 import {HeadingDisplay} from './Heading'
 import {ParagraphDisplay} from './Paragraph'
 import {CanvasItem} from './CanvasItem'
@@ -23,15 +23,15 @@ export const Canvas = () => {
               {items.map((item, index) => {
                 let Component: React.ReactNode | null = null
                 switch (item.type) {
-                  case ItemType.HEADING:
+                  case NodeType.HEADING:
                     Component = HeadingDisplay
                     break
 
-                  case ItemType.PARAGRAPH:
+                  case NodeType.PARAGRAPH:
                     Component = ParagraphDisplay
                     break
 
-                  case ItemType.LINKED_FIELD:
+                  case NodeType.LINKED_FIELD:
                     Component = LinkedFieldDisplay
                     break
                 }

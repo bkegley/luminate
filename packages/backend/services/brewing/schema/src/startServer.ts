@@ -70,6 +70,7 @@ class Server {
           {topic: 'recipes', partitions: 1, replicationFactor: 1},
         ],
         async err => {
+          console.log({err})
           if (err) {
             console.error({err})
             reject(err)

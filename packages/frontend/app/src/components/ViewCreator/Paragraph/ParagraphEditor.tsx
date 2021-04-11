@@ -1,10 +1,10 @@
 import React from 'react'
 import {Button, Icon, IconTypesEnum, Label} from '@luminate/components'
-import {HeadingItem} from '../types'
+import {ParagraphNode} from '../types'
 import {useViewState} from '../useViewState'
 
 interface ParagraphEditorProps {
-  item: HeadingItem
+  item: ParagraphNode
 }
 
 export const ParagraphEditor = ({item}: ParagraphEditorProps) => {
@@ -12,10 +12,10 @@ export const ParagraphEditor = ({item}: ParagraphEditorProps) => {
     actions: {updateItem, removeItem},
   } = useViewState()
 
-  const [text, setText] = React.useState(item.text)
+  const [text, setText] = React.useState(item.data.text)
 
   React.useEffect(() => {
-    setText(item.text)
+    setText(item.data.text)
   }, [item.id])
 
   return (
@@ -28,7 +28,7 @@ export const ParagraphEditor = ({item}: ParagraphEditorProps) => {
       </div>
       <div className="mt-10 flex flex-row-reverse space-x-4 space-x-reverse">
         <div>
-          <Button onClick={() => updateItem({...item, text})}>Save</Button>
+          <Button onClick={() => updateItem({...item, data: {text}})}>Save</Button>
         </div>
         <div>
           <Button variant="danger" onClick={() => removeItem(item.id)}>

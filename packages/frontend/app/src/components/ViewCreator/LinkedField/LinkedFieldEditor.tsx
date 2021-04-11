@@ -1,17 +1,17 @@
 import React from 'react'
 import {LinkedEntityType, LinkedFieldNode} from '../types'
-import {CoffeeLinkDisplay} from './CoffeeLinkDisplay'
+import {CoffeeLinkEditor} from './CoffeeLinkEditor'
 
-interface LinkedFieldDisplayProps {
+interface LinkedFieldEditorProps {
   item: LinkedFieldNode
 }
 
-export const LinkedFieldDisplay = ({item}: LinkedFieldDisplayProps) => {
-  let Component = DefaultLinkedFieldDisplay
+export const LinkedFieldEditor = ({item}: LinkedFieldEditorProps) => {
+  let Component = DefaultLinkedFieldEditor
 
   switch (item.entityType) {
     case LinkedEntityType.COFFEE:
-      Component = CoffeeLinkDisplay
+      Component = CoffeeLinkEditor
       break
     default:
       break
@@ -23,6 +23,6 @@ export const LinkedFieldDisplay = ({item}: LinkedFieldDisplayProps) => {
   )
 }
 
-const DefaultLinkedFieldDisplay = ({item}: LinkedFieldDisplayProps) => {
+const DefaultLinkedFieldEditor = ({item}: LinkedFieldEditorProps) => {
   return <pre>{JSON.stringify(item, null, 2)}</pre>
 }

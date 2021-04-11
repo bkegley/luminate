@@ -1,6 +1,6 @@
 import React from 'react'
 import {Button} from '@luminate/components'
-import {ItemType} from './types'
+import {NodeType} from './types'
 import {useViewState} from './useViewState'
 import {LinkedField} from './LinkedField'
 
@@ -81,10 +81,11 @@ const PrimitivesList = ({handleSelectionTypeClick}: PrimitivesListProps) => {
         variant="outline"
         onClick={() =>
           addNew({
-            id: Math.floor(Math.random() * 1000),
-            type: ItemType.HEADING,
-            text: 'Placeholder Title',
-            heading: 'h2',
+            type: NodeType.HEADING,
+            data: {
+              text: 'Placeholder Title',
+              heading: 'h2',
+            },
           })
         }
       >
@@ -94,9 +95,10 @@ const PrimitivesList = ({handleSelectionTypeClick}: PrimitivesListProps) => {
         variant="outline"
         onClick={() =>
           addNew({
-            id: Math.floor(Math.random() * 1000),
-            type: ItemType.PARAGRAPH,
-            text: 'Placeholder paragraph text',
+            type: NodeType.PARAGRAPH,
+            data: {
+              text: 'Placeholder paragraph text',
+            },
           })
         }
       >

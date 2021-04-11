@@ -1,10 +1,10 @@
 import React from 'react'
-import {HeadingItem} from '../types'
+import {ParagraphNode} from '../types'
 
 export interface ParagraphDisplayProps {
-  item: HeadingItem
+  item: ParagraphNode
 }
 
 export const ParagraphDisplay = ({item}: ParagraphDisplayProps) => {
-  return <p>{item.text}</p>
+  return <p>{item.data.text}</p>
 }

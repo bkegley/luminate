@@ -1,10 +1,10 @@
 import {Icon, IconTypesEnum} from '@luminate/components'
 import React from 'react'
-import {IItem} from './types'
+import {INode} from './types'
 
 export interface CanvasItemProps {
-  item: IItem
-  removeItem: (id: number) => void
+  item: INode
+  removeItem: (id: string) => void
   selected: boolean
   children: React.ReactNode
 }

@@ -2,17 +2,17 @@ import React from 'react'
 import {DragDropContext, DraggableLocation, DropResult} from 'react-beautiful-dnd'
 import {Canvas} from './Canvas'
 import {ConfigurationPanel} from './ConfigurationPanel'
-import {IItem, ItemType} from './types'
+import {INode, NodeType} from './types'
 import {reorder} from './utils'
 
 export interface IViewStateContext {
-  items: IItem[]
-  selectedItem: number | null
+  items: INode[]
+  selectedItem: string | null
   actions: {
-    addNew: (item: IItem) => void
-    updateItem: (item: IItem) => void
-    removeItem: (id: number) => void
-    selectItem: (id: number) => void
+    addNew: (item: INode) => void
+    updateItem: (item: INode) => void
+    removeItem: (id: string) => void
+    selectItem: (id: string) => void
   }
 }
 
@@ -29,15 +29,15 @@ enum ActionType {
 type Action =
   | {
       type: ActionType.ADD_NEW
-      item: IItem
+      item: INode
     }
   | {
       type: ActionType.UPDATE_ITEM
-      item: IItem
+      item: INode
     }
   | {
       type: ActionType.REMOVE_ITEM
-      id: number
+      id: string
     }
   | {
       type: ActionType.DROP_ITEM
@@ -46,22 +46,24 @@ type Action =
     }
   | {
       type: ActionType.SELECT_ITEM
-      id: number
+      id: string
     }
 
 interface IState {
-  selectedItem: number | null
-  items: IItem[]
+  selectedItem: string | null
+  items: INode[]
 }
 
 const initialState: IState = {
   selectedItem: null,
   items: [
     {
-      id: 0,
-      type: ItemType.HEADING,
-      text: 'Set a Title',
-      heading: 'h2',
+      id: 'random_id',
+      type: NodeType.HEADING,
+      data: {
+        text: 'Set a Title',
+        heading: 'h2',
+      },
     },
   ],
 }
@@ -104,19 +106,20 @@ const reducer = (state: IState, action: Action): IState => {
 export const ViewCreator = () => {
   const [state, dispatch] = React.useReducer(reducer, initialState)
 
-  const addNew = React.useCallback((item: IItem) => {
-    dispatch({type: ActionType.ADD_NEW, item})
+  const addNew = React.useCallback((item: Exclude<INode, 'id'>) => {
+    const id = Math.random().toString(36).substr(7)
+    dispatch({type: ActionType.ADD_NEW, item: {...item, id}})
   }, [])
 
-  const updateItem = React.useCallback((item: IItem) => {
+  const updateItem = React.useCallback((item: INode) => {
     dispatch({type: ActionType.UPDATE_ITEM, item})
   }, [])
 
-  const removeItem = React.useCallback((id: number) => {
+  const removeItem = React.useCallback((id: string) => {
     dispatch({type: ActionType.REMOVE_ITEM, id})
   }, [])
 
-  const selectItem = React.useCallback((id: number) => {
+  const selectItem = React.useCallback((id: string) => {
     dispatch({type: ActionType.SELECT_ITEM, id})
   }, [])
 
