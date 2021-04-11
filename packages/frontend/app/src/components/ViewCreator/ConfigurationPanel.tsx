@@ -1,7 +1,7 @@
 import React from 'react'
 import {Card, Tabs} from '@luminate/components'
-import {ComponentEditor} from './ComponentEditor'
-import {ComponentSelector} from './ComponentSelector'
+import {EditorPanel} from './EditorPanel'
+import {ComponentsPanel} from './ComponentsPanel'
 
 export const ConfigurationPanel = () => {
   return (
@@ -12,9 +12,9 @@ export const ConfigurationPanel = () => {
             {({activeTab}) => {
               switch (activeTab) {
                 case 'Editor':
-                  return <ComponentEditor />
+                  return <EditorPanel />
                 case 'Components':
-                  return <ComponentSelector />
+                  return <ComponentsPanel />
                 default:
                   return null
               }

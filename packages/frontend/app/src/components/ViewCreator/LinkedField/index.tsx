@@ -1,6 +1,6 @@
 import {Button, Icon, IconTypesEnum} from '@luminate/components'
 import React from 'react'
-import {SelectionType} from '../ComponentSelector'
+import {SelectionType} from '../ComponentsPanel'
 import {CoffeeLinkSelection} from './CoffeeLinkSelection'
 
 enum LinkedFieldType {
