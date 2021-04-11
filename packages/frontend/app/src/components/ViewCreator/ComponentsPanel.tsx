@@ -4,7 +4,7 @@ import {NodeType} from './types'
 import {useViewState} from './useViewState'
 import {LinkedField} from './LinkedField'
 
-const ComponentSelectorContext = React.createContext(undefined)
+const ComponentsPanelContext = React.createContext(undefined)
 
 enum ActionType {
   UPDATE_SELECTION_TYPE = 'BACK_BUTTON_CLICK',
@@ -45,7 +45,7 @@ const initialState: State = {
   prevSelectionType: null,
 }
 
-export const ComponentSelector = () => {
+export const ComponentsPanel = () => {
   const [{selectionType, prevSelectionType}, dispatch] = React.useReducer(reducer, initialState)
 
   const handleSelectionTypeClick = React.useCallback((selectionType: SelectionType) => {
@@ -53,7 +53,7 @@ export const ComponentSelector = () => {
   }, [])
 
   return (
-    <ComponentSelectorContext.Provider value={{selectionType, prevSelectionType, actions: {handleSelectionTypeClick}}}>
+    <ComponentsPanelContext.Provider value={{selectionType, prevSelectionType, actions: {handleSelectionTypeClick}}}>
       <div className="my-6">
         {selectionType === SelectionType.PRIMITIVE ? (
           <PrimitivesList handleSelectionTypeClick={handleSelectionTypeClick} />
@@ -63,7 +63,7 @@ export const ComponentSelector = () => {
           <div>3</div>
         )}
       </div>
-    </ComponentSelectorContext.Provider>
+    </ComponentsPanelContext.Provider>
   )
 }
 
