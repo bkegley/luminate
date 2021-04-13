@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.3.9",
+    "@luminate/charts": "*",
     "@luminate/components": "*",
     "@luminate/gatsby-theme-luminate": "*",
     "autoprefixer": "^10.2.4",
@@ -33,7 +34,6 @@
     "react-dom": "^17.0.1",
     "react-feather": "^2.0.3",
     "react-router-dom": "^5.1.2",
-    "react-vis": "^1.11.7",
     "slate": "^0.59.0",
     "slate-react": "^0.59.0"
   },
@@ -42,7 +42,6 @@
     "@tailwindcss/jit": "^0.1.17",
     "@types/react-beautiful-dnd": "^13.0.0",
     "@types/react-router-dom": "^5.1.3",
-    "@types/react-vis": "^1.11.1",
     "autoprefixer": "^10.2.4",
     "postcss": "^8.2.6",
     "tailwindcss": "^2.0.4"

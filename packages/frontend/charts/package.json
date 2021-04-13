@@ -1,0 +1,65 @@
+{
+  "name": "@luminate/charts",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "author": "Bryan Kegley",
+  "license": "MIT",
+  "workspaces": {
+    "nohoist": [
+      "@tailwindcss/forms",
+      "@tailwindcss/forms/**"
+    ]
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "engines": {
+    "node": ">=10"
+  },
+  "scripts": {
+    "start": "tsdx watch",
+    "build": "tsdx build",
+    "test": "tsdx test --passWithNoTests",
+    "lint": "tsdx lint",
+    "prepare": "tsdx build",
+    "size": "size-limit",
+    "analyze": "size-limit --why"
+  },
+  "peerDependencies": {
+    "react": ">=16"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "tsdx lint"
+    }
+  },
+  "prettier": {
+    "printWidth": 80,
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "es5"
+  },
+  "module": "dist/charts.esm.js",
+  "size-limit": [
+    {
+      "path": "dist/charts.cjs.production.min.js",
+      "limit": "10 KB"
+    },
+    {
+      "path": "dist/charts.esm.js",
+      "limit": "10 KB"
+    }
+  ],
+  "dependencies": {
+    "d3": "^6.6.2"
+  },
+  "devDependencies": {
+    "@types/d3": "^6.3.0",
+    "autoprefixer": "^10.2.5",
+    "postcss": "^8.2.10",
+    "rollup-plugin-postcss": "^4.0.0",
+    "tailwindcss": "^2.1.1"
+  }
+}
