@@ -1,7 +1,6 @@
 import React from 'react'
 import {RouteComponentProps} from 'react-router-dom'
 import {useGetCuppingSessionCoffeeQuery} from '../../../graphql'
-import {XYPlot, XAxis, YAxis, HorizontalGridLines, VerticalBarSeries, DiscreteColorLegend} from 'react-vis'
 import ScoreSheetTableView from './ScoreSheets/TableView'
 
 interface SessionCoffeeDetailViewProps extends RouteComponentProps<{sessionId: string; sessionCoffeeId: string}> {}
@@ -71,35 +70,6 @@ const SessionCoffeeDetailView = ({match}: SessionCoffeeDetailViewProps) => {
         </div>
       </div>
       <div>
-        <XYPlot width={500} height={500} xType="ordinal">
-          <HorizontalGridLines />
-          <DiscreteColorLegend
-            orientation="vertical"
-            style={{position: 'absolute', right: '-75px', top: '25px'}}
-            // @ts-ignore
-            items={Object.keys(graphsData).map(userId => ({title: userId, color: graphsData[userId].color}))}
-
-            // items={selectedGraphOptions.map(option => ({title: option, color: option.color}))}
-          />
-          {Object.keys(graphsData).map(userId => {
-            return (
-              <VerticalBarSeries
-                // @ts-ignore
-                color={graphsData[userId].color}
-                data={selectedGraphOptions.map(option => {
-                  return {
-                    x: option,
-                    // @ts-ignore
-                    y: graphsData[userId][option],
-                  }
-                })}
-                barWidth={0.5}
-              />
-            )
-          })}
-          <XAxis title="id" />
-          <YAxis />
-        </XYPlot>
         <ScoreSheetTableView scoreSheets={coffee?.scoreSheets} />
       </div>
     </div>
