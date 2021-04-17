@@ -24,7 +24,7 @@ export const ComponentEditor = ({title, tags, children}: ComponentEditorProps) =
 
   const [metaOpen, setMetaOpen] = React.useState(false)
 
-  const tagArray = Array.isArray(tags) ? tags : [tags]
+  const tagArray = !!tags ? (Array.isArray(tags) ? tags : [tags]) : undefined
 
   return (
     <div className="space-y-6">

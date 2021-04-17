@@ -3,6 +3,7 @@ import {Button} from '@luminate/components'
 import {NodeType} from './types'
 import {useViewState} from './useViewState'
 import {LinkedField} from './LinkedField'
+import {LinkedGraph} from './LinkedGraph'
 
 const ComponentsPanelContext = React.createContext(undefined)
 
@@ -13,6 +14,7 @@ enum ActionType {
 export enum SelectionType {
   PRIMITIVE = 'PRIMITIVE',
   LINKED_FIELD = 'LINKED_FIELD',
+  LINKED_GRAPH = 'LINKED_GRAPH',
 }
 
 type Action = {
@@ -52,16 +54,26 @@ export const ComponentsPanel = () => {
     dispatch({type: ActionType.UPDATE_SELECTION_TYPE, selectionType})
   }, [])
 
+  let Component: React.ReactNode | null = null
+  switch (selectionType) {
+    case SelectionType.PRIMITIVE:
+      Component = PrimitivesList
+      break
+
+    case SelectionType.LINKED_FIELD:
+      Component = LinkedField
+      break
+
+    case SelectionType.LINKED_GRAPH:
+      Component = LinkedGraph
+      break
+  }
+
   return (
     <ComponentsPanelContext.Provider value={{selectionType, prevSelectionType, actions: {handleSelectionTypeClick}}}>
       <div className="my-6">
-        {selectionType === SelectionType.PRIMITIVE ? (
-          <PrimitivesList handleSelectionTypeClick={handleSelectionTypeClick} />
-        ) : selectionType === SelectionType.LINKED_FIELD ? (
-          <LinkedField handleSelectionTypeClick={handleSelectionTypeClick} />
-        ) : (
-          <div>3</div>
-        )}
+        {/* @ts-ignore */}
+        <Component handleSelectionTypeClick={handleSelectionTypeClick} />
       </div>
     </ComponentsPanelContext.Provider>
   )
@@ -106,6 +118,9 @@ const PrimitivesList = ({handleSelectionTypeClick}: PrimitivesListProps) => {
       </Button>
       <Button variant="outline" onClick={() => handleSelectionTypeClick(SelectionType.LINKED_FIELD)}>
         Create Linked Field
+      </Button>
+      <Button variant="outline" onClick={() => handleSelectionTypeClick(SelectionType.LINKED_GRAPH)}>
+        Create Linked Graph
       </Button>
     </div>
   )

@@ -1,18 +1,18 @@
 import React from 'react'
 import {Button, Icon, IconTypesEnum} from '@luminate/components'
 import {SelectionType} from '../ComponentsPanel'
-import {CoffeeLinkSelection} from './CoffeeLinkSelection'
+import {TimelineSelection} from './TimelineSelection'
 
-enum LinkedFieldType {
-  COFFEE = 'COFFEE',
+enum LinkedGraphType {
+  TIMELINE = 'TIMELINE',
 }
 
-interface LinkedFieldProps {
+interface LinkedGraphProps {
   handleSelectionTypeClick: (selectionType: SelectionType) => void
 }
 
-export const LinkedField = ({handleSelectionTypeClick}: LinkedFieldProps) => {
-  const [selectedLink, setSelectedLink] = React.useState<LinkedFieldType | null>(null)
+export const LinkedGraph = ({handleSelectionTypeClick}: LinkedGraphProps) => {
+  const [selectedGraph, setSelectedGraph] = React.useState<LinkedGraphType | null>(null)
 
   return (
     <div>
@@ -25,10 +25,10 @@ export const LinkedField = ({handleSelectionTypeClick}: LinkedFieldProps) => {
         </div>
       </button>
       <div className="mt-6">
-        {!selectedLink ? (
-          <LinkTypeList setSelectedLink={setSelectedLink} />
-        ) : selectedLink === LinkedFieldType.COFFEE ? (
-          <CoffeeLinkSelection />
+        {!selectedGraph ? (
+          <LinkTypeList setSelectedLink={setSelectedGraph} />
+        ) : selectedGraph === LinkedGraphType.TIMELINE ? (
+          <TimelineSelection />
         ) : null}
       </div>
     </div>
@@ -36,14 +36,14 @@ export const LinkedField = ({handleSelectionTypeClick}: LinkedFieldProps) => {
 }
 
 interface LinkTypeListProps {
-  setSelectedLink: (linkType: LinkedFieldType) => void
+  setSelectedLink: (linkType: LinkedGraphType) => void
 }
 
 const LinkTypeList = ({setSelectedLink}: LinkTypeListProps) => {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <Button variant="outline" onClick={() => setSelectedLink(LinkedFieldType.COFFEE)}>
-        Coffee
+      <Button variant="outline" onClick={() => setSelectedLink(LinkedGraphType.TIMELINE)}>
+        Timeline
       </Button>
     </div>
   )

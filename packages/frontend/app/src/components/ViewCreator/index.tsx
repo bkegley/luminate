@@ -7,12 +7,12 @@ import {reorder} from './utils'
 
 type DistributiveOmit<T, K extends keyof any> = T extends any ? Omit<T, K> : never
 
-export interface IViewStateContext {
-  items: INode[]
+export interface IViewStateContext<T extends INode = INode> {
+  items: T[]
   selectedItem: string | null
   actions: {
-    addNew: (item: DistributiveOmit<INode, 'id'>) => void
-    updateItem: (item: INode) => void
+    addNew: (item: DistributiveOmit<T, 'id'>) => void
+    updateItem: (item: T) => void
     removeItem: (id: string) => void
     selectItem: (id: string) => void
   }

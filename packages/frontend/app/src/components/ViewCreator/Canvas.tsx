@@ -6,6 +6,7 @@ import {HeadingDisplay} from './Heading'
 import {ParagraphDisplay} from './Paragraph'
 import {CanvasItem} from './CanvasItem'
 import {LinkedFieldDisplay} from './LinkedField/LinkedFieldDisplay'
+import {LinkedGraphDisplay} from './LinkedGraph/LinkedGraphDisplay'
 
 export const Canvas = () => {
   const {
@@ -19,7 +20,7 @@ export const Canvas = () => {
       <Droppable droppableId="list">
         {provided => {
           return (
-            <div ref={provided.innerRef} className="p-4 bg-gray-700" {...provided.droppableProps}>
+            <div ref={provided.innerRef} className="p-4" {...provided.droppableProps}>
               {items.map((item, index) => {
                 let Component: React.ReactNode | null = null
                 switch (item.type) {
@@ -33,6 +34,10 @@ export const Canvas = () => {
 
                   case NodeType.LINKED_FIELD:
                     Component = LinkedFieldDisplay
+                    break
+
+                  case NodeType.LINKED_GRAPH:
+                    Component = LinkedGraphDisplay
                     break
                 }
                 return (

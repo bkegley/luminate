@@ -19,13 +19,13 @@ const LoginPage = () => {
     <div className={darkMode ? 'dark' : ''}>
       <div className="min-h-screen bg-gray-50 dark:bg-gray-800 dark:text-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
-          <img
-            className="mx-auto h-12 w-auto"
-            src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg"
-            alt="Workflow"
-          />
+          <div className="text-center">
+            <Heading as="h1">
+              <span className="bg-gradient-to-l gradient-heading">luminate</span>
+            </Heading>
+          </div>
           <div className="mt-6 text-center">
-            <Heading>Sign in to your account</Heading>
+            <Heading as="h3">Sign in to your account</Heading>
           </div>
         </div>
 
