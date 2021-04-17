@@ -33,6 +33,7 @@ const ViewDetailView = ({}: Props) => {
                 <p className="text-xs text-gray-500 uppercase tracking-wide">Information Section</p>
                 <p>{data.getView?.description}</p>
               </div>
+              <pre>{JSON.stringify(data.getView, null, 2)}</pre>
             </Card>
           </Grid.Left>
         </Grid>

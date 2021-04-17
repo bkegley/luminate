@@ -35,4 +35,5 @@ fragment ViewFragment on View {
   id
   name
   description
+  jsonString
 }

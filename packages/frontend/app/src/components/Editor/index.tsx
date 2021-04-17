@@ -1,6 +1,8 @@
+import {Select} from '@luminate/components'
 import React from 'react'
 import {createEditor, Editor as SlateEditor, Transforms, Descendant, Element} from 'slate'
 import {Slate, Editable, withReact, useEditor} from 'slate-react'
+import {useListViewsQuery} from '../../graphql'
 
 const withMentions = (editor: SlateEditor) => {
   const {isVoid, isInline} = editor
@@ -11,7 +13,7 @@ const withMentions = (editor: SlateEditor) => {
 
 const withEmbeds = (editor: SlateEditor) => {
   const {isVoid} = editor
-  editor.isVoid = (element: Element) => (element.type === 'embeddable' ? true : isVoid(element))
+  editor.isVoid = (element: Element) => (element.type === 'view' ? true : isVoid(element))
   return editor
 }
 
@@ -52,9 +54,9 @@ const insertObject = <T extends {[x: string]: any; text: string}>(type: string) 
 }
 
 const insertMention = insertObject<{text: string}>('mention')
-const insertEmbed = (editor: SlateEditor, data: any) => {
+const insertView = (editor: SlateEditor, data: any) => {
   const mention = {
-    type: 'embeddable',
+    type: 'view',
     data,
     children: [{text: data.text}],
   }
@@ -63,20 +65,22 @@ const insertEmbed = (editor: SlateEditor, data: any) => {
   Transforms.move(editor)
 }
 
-const InsertEmbed = () => {
+const InsertView = () => {
   const editor = useEditor()
   const [id, setId] = React.useState('')
+  const {error, loading, data} = useListViewsQuery()
+  const options = data?.listViews.edges.map(({node}) => ({value: node.id, name: node.name}))
   return (
     <div className="p-6">
-      <input type="text" value={id} onChange={e => setId(e.currentTarget.value)} />
+      <Select options={options} />
       <button
         className="bg-white text-gray-800"
         onClick={() => {
-          insertEmbed(editor, {text: '', url: 'https://picsum.photos/200', id})
+          insertView(editor, {text: '', url: 'https://picsum.photos/200', id})
           setId('')
         }}
       >
-        Embed
+        Add View
       </button>
     </div>
   )
@@ -95,7 +99,7 @@ export const Editor = () => {
       case 'mention': {
         return <Mention {...props} />
       }
-      case 'embeddable': {
+      case 'view': {
         return
       }
       default: {
@@ -122,7 +126,7 @@ export const Editor = () => {
       }}
     >
       <div>
-        <InsertEmbed />
+        <InsertView />
         <Editable renderElement={renderElement} onKeyDown={onKeyDown} />
       </div>
     </Slate>

@@ -3,6 +3,7 @@ import {Editor, Element, Descendant, createEditor, Transforms, Text} from 'slate
 import {withReact} from 'slate-react'
 import {EditableProps, RenderLeafProps} from 'slate-react/dist/components/editable'
 import {NodeType} from './NodeType'
+import {ViewDisplay} from '../ViewCreator/ViewDisplay'
 
 const withMentions = (editor: Editor) => {
   const {isVoid, isInline} = editor
@@ -33,6 +34,11 @@ const Mention = ({attributes, element, children}: any) => {
       {children}
     </span>
   )
+}
+
+const View = ({attributes, element, children}: any) => {
+  const {id} = element
+  return <ViewDisplay id={id} />
 }
 
 const DefaultElement = (props: any) => {
@@ -67,7 +73,7 @@ export interface EditorConfig {
 const defaultRenderMap: {[x: string]: React.FC} = {
   [NodeType.CODE]: CodeElement,
   [NodeType.MENTION]: Mention,
-  //[NodeType.EMBEDDABLE]: () => {},
+  [NodeType.VIEW]: View,
 }
 
 const toggleFormat = (editor: Editor, format: string) => {
@@ -93,13 +99,13 @@ export const useEditor = (
 ) => {
   const editor = React.useMemo(() => withReact(withEmbeds(withMentions(createEditor()))), [])
 
-  const insertEmbed = React.useCallback((data: {[x: string]: any}) => {
-    const embed = {
-      type: NodeType.EMBEDDABLE,
-      data,
+  const insertView = React.useCallback((id: string) => {
+    const view = {
+      type: NodeType.VIEW,
+      id,
       children: [{text: ''}],
     }
-    Transforms.insertNodes(editor, embed)
+    Transforms.insertNodes(editor, view)
     Transforms.insertNodes(editor, {type: NodeType.PARAGRAPH, children: [{text: ''}]})
     Transforms.move(editor)
   }, [])
@@ -150,7 +156,7 @@ export const useEditor = (
 
   return {
     actions: {
-      insertEmbed,
+      insertView,
     },
     getSlateProps: () => ({
       editor,
