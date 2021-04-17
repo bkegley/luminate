@@ -4,6 +4,7 @@ import {extendSchema, AuthenticatedDocument, BaseAuthenticatedSchema} from '@lum
 export interface ViewDocument extends AuthenticatedDocument {
   name: string
   description?: string
+  jsonString?: string
 }
 
 export const ViewSchema = extendSchema<ViewDocument>(
@@ -14,6 +15,9 @@ export const ViewSchema = extendSchema<ViewDocument>(
       required: true,
     },
     description: {
+      type: String,
+    },
+    jsonString: {
       type: String,
     },
   },

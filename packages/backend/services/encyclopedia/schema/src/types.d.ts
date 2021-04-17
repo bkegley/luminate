@@ -488,6 +488,7 @@ export type View = {
   id: Scalars['ID']
   name: Scalars['String']
   description?: Maybe<Scalars['String']>
+  jsonString?: Maybe<Scalars['String']>
 }
 
 export type ViewConnection = {
@@ -509,11 +510,13 @@ export type ViewEdge = {
 export type CreateViewInput = {
   name: Scalars['String']
   description?: Maybe<Scalars['String']>
+  jsonString?: Maybe<Scalars['String']>
 }
 
 export type UpdateViewInput = {
   name?: Maybe<Scalars['String']>
   description?: Maybe<Scalars['String']>
+  jsonString?: Maybe<Scalars['String']>
 }
 
 export type PageInfo = {
@@ -1205,6 +1208,7 @@ export type ViewResolvers<
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  jsonString?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>
 }>
 

@@ -11,6 +11,7 @@ type View {
   id: ID!
   name: String!
   description: String
+  jsonString: String
 }
 
 type ViewConnection {
@@ -30,11 +31,13 @@ type ViewEdge {
 input CreateViewInput {
   name: String!
   description: String
+  jsonString: String
 }
 
 input UpdateViewInput {
   name: String
   description: String
+  jsonString: String
 }
 
 extend type Query {

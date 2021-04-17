@@ -7,6 +7,7 @@ export class ViewMapper {
     const attrs: ViewAggregateAttributes = {
       name: obj.name,
       description: obj.description,
+      jsonString: obj.jsonString,
     }
 
     return attrs
@@ -24,6 +25,7 @@ export class ViewMapper {
       _id: view.getEntityId().toString(),
       name: view.name,
       description: view.description,
+      jsonString: view.jsonString,
     }
   }
 
@@ -33,6 +35,7 @@ export class ViewMapper {
       id: view.getEntityId().toString(),
       name: view.name,
       description: view.description,
+      jsonString: view.jsonString,
       // TODO: fix timestamps
       createdAt: now.toDateString(),
       updatedAt: now.toDateString(),
