@@ -2,19 +2,13 @@
   "name": "@luminate/charts",
   "version": "0.1.0",
   "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "typings": "dist/types.d.ts",
   "author": "Bryan Kegley",
   "license": "MIT",
   "workspaces": {
-    "nohoist": [
-      "@tailwindcss/forms",
-      "@tailwindcss/forms/**"
-    ]
+    "nohoist": ["@tailwindcss/forms", "@tailwindcss/forms/**"]
   },
-  "files": [
-    "dist",
-    "src"
-  ],
+  "files": ["dist", "src"],
   "engines": {
     "node": ">=10"
   },

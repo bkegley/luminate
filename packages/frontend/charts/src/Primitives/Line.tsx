@@ -1,10 +1,10 @@
 import React from 'react';
 import * as d3 from 'd3';
-import { Accessor } from '../types';
+import { Accessor, LineData } from '../types';
 
 export interface LineProps extends React.SVGProps<SVGPathElement> {
   type?: 'line' | 'area';
-  data: any[];
+  data: LineData;
   // TODO: fix accessor types
   xAccessor: Accessor;
   yAccessor: Accessor;
@@ -34,5 +34,7 @@ export const Line = ({
     lineGenerator.y0(y0Accessor).y1(yAccessor);
   }
 
-  return <path className="stroke-current" {...props} d={lineGenerator(data)} />;
+  return (
+    <path className="stroke-current" {...props} d={lineGenerator(data.data)} />
+  );
 };
