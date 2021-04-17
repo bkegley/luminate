@@ -1,8 +1,8 @@
 import React from 'react'
-import {Button, Card, Input, Label, Page} from '@luminate/components'
+import {Button, Card, Input, Label, Page, Select} from '@luminate/components'
 import {Editable, Slate} from 'slate-react'
 import {useEditor} from '../../components/Editor/useEditor'
-import {EntityRelationInput, EntityType, useCreatePostMutation} from '../../graphql'
+import {EntityRelationInput, EntityType, useCreatePostMutation, useListViewsQuery} from '../../graphql'
 import {useQueryParams} from '../../hooks/useQueryParams'
 
 export const PostCreatePage = () => {
@@ -24,6 +24,10 @@ export const PostCreatePage = () => {
     createPost({variables: {input}})
   }
 
+  const {data: listData} = useListViewsQuery()
+  const options = listData?.listViews.edges.map(({node}) => ({value: node.id, name: node.name}))
+  const [selectedView, setSelectedView] = React.useState<string | null>(null)
+
   return (
     <Page title="Create a Post">
       <Card>
@@ -31,6 +35,15 @@ export const PostCreatePage = () => {
           <div className="space-y-4">
             <Label htmlFor="title">Title</Label>
             <Input id="title" value={title} onChange={e => setTitle(e.currentTarget.value)} />
+          </div>
+          <div>
+            <Label htmlFor="view">View</Label>
+            <Select options={options} onChange={e => setSelectedView(e.selectedItem?.value as string)} />
+            <div>
+              <Button variant="secondary" onClick={() => actions.insertView(selectedView)}>
+                Add View
+              </Button>
+            </div>
           </div>
           <div className="my-6">
             <Slate {...getSlateProps()}>

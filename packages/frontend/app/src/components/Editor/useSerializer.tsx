@@ -1,6 +1,7 @@
 import React from 'react'
 import {Node, Text} from 'slate'
 import {NodeType} from './NodeType'
+import {ViewDisplay} from '../ViewCreator/ViewDisplay'
 
 const Paragraph = ({children}: any) => {
   return <p>{children}</p>
@@ -8,6 +9,7 @@ const Paragraph = ({children}: any) => {
 
 const defaultSerializeMap = {
   [NodeType.PARAGRAPH]: Paragraph,
+  [NodeType.VIEW]: ViewDisplay,
 }
 
 export const useSerializer = () => {
@@ -24,6 +26,7 @@ export const useSerializer = () => {
       if (nodes[NodeType.UNDERLINE]) {
         return <u>{nodes.children}</u>
       }
+
       return <span>{nodes.text}</span>
     }
 
@@ -32,8 +35,8 @@ export const useSerializer = () => {
         // @ts-ignore
         const children = node.children.map(n => serialize(n))
         // @ts-ignore
-        const Component = defaultSerializeMap[NodeType.PARAGRAPH]
-        return Component ? <Component>{children}</Component> : <Paragraph>{children}</Paragraph>
+        const Component = defaultSerializeMap[node.type]
+        return Component ? <Component {...node}>{children}</Component> : <Paragraph>{children}</Paragraph>
       })
     }
   }, [])

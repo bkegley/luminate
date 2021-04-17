@@ -292,6 +292,7 @@ export type CreateVarietyInput = {
 export type CreateViewInput = {
   name: Scalars['String']
   description?: Maybe<Scalars['String']>
+  jsonString?: Maybe<Scalars['String']>
 }
 
 export type CuppingSession = {
@@ -1247,6 +1248,7 @@ export type UpdateVarietyInput = {
 export type UpdateViewInput = {
   name?: Maybe<Scalars['String']>
   description?: Maybe<Scalars['String']>
+  jsonString?: Maybe<Scalars['String']>
 }
 
 export type User = UserInterface & {
@@ -1315,6 +1317,7 @@ export type View = {
   id: Scalars['ID']
   name: Scalars['String']
   description?: Maybe<Scalars['String']>
+  jsonString?: Maybe<Scalars['String']>
 }
 
 export type ViewConnection = {
@@ -1925,7 +1928,7 @@ export type DeleteViewMutationVariables = Exact<{
 
 export type DeleteViewMutation = {__typename: 'Mutation'} & Pick<Mutation, 'deleteView'>
 
-export type ViewFragmentFragment = {__typename: 'View'} & Pick<View, 'id' | 'name' | 'description'>
+export type ViewFragmentFragment = {__typename: 'View'} & Pick<View, 'id' | 'name' | 'description' | 'jsonString'>
 
 export const BrewerFragmentFragmentDoc = gql`
   fragment BrewerFragment on Brewer {
@@ -2115,6 +2118,7 @@ export const ViewFragmentFragmentDoc = gql`
     id
     name
     description
+    jsonString
   }
 `
 export const CreateAccountDocument = gql`

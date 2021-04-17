@@ -5,5 +5,5 @@ export enum NodeType {
   PARAGRAPH = 'PARAGRAPH',
   CODE = 'CODE',
   MENTION = 'MENTION',
-  EMBEDDABLE = 'EMBEDDABLE',
+  VIEW = 'VIEW',
 }

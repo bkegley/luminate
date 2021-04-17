@@ -1,5 +1,7 @@
 import React from 'react'
+import {Button, Input} from '@luminate/components'
 import {DragDropContext, DraggableLocation, DropResult} from 'react-beautiful-dnd'
+import {useCreateViewMutation} from '../../graphql'
 import {Canvas} from './Canvas'
 import {ConfigurationPanel} from './ConfigurationPanel'
 import {INode, NodeType} from './types'
@@ -105,8 +107,9 @@ const reducer = (state: IState, action: Action): IState => {
   }
 }
 
-export const ViewCreator = () => {
+export const ViewCreator = (): JSX.Element => {
   const [state, dispatch] = React.useReducer(reducer, initialState)
+  const [createView, meta] = useCreateViewMutation()
 
   const addNew = React.useCallback((item: Exclude<INode, 'id'>) => {
     const id = Math.random().toString(36).substr(7)
@@ -151,12 +154,24 @@ export const ViewCreator = () => {
     }
   }, [state])
 
+  const [title, setTitle] = React.useState('')
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <ViewStateContext.Provider value={value}>
-        <div className="grid grid-cols-2 gap-10 mt-20">
-          <Canvas />
-          <ConfigurationPanel />
+        <div>
+          <div>
+            <Input value={title} onChange={e => setTitle(e.currentTarget.value)} />
+          </div>
+
+          <Button
+            onClick={() => createView({variables: {input: {name: title, jsonString: JSON.stringify(state.items)}}})}
+          >
+            Save
+          </Button>
+          <div className="grid grid-cols-2 gap-10 mt-20">
+            <Canvas />
+            <ConfigurationPanel />
+          </div>
         </div>
       </ViewStateContext.Provider>
     </DragDropContext>
