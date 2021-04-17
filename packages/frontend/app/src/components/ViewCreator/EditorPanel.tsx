@@ -1,6 +1,7 @@
 import React from 'react'
 import {HeadingEditor} from './Heading'
 import {LinkedFieldEditor} from './LinkedField/LinkedFieldEditor'
+import {LinkedGraphEditor} from './LinkedGraph/LinkedGraphEditor'
 import {ParagraphEditor} from './Paragraph'
 import {NodeType} from './types'
 import {useViewState} from './useViewState'
@@ -8,7 +9,14 @@ import {useViewState} from './useViewState'
 export const EditorPanel = () => {
   const {items, selectedItem} = useViewState()
 
-  const item = items.find(item => item.id === selectedItem)
+  const _item = items.find(item => item.id === selectedItem)
+
+  const [item, setItem] = React.useState(_item)
+
+  React.useEffect(() => {
+    console.log('we are here', _item)
+    setItem(_item)
+  }, [_item?.id])
 
   if (!item) {
     return null
@@ -26,6 +34,10 @@ export const EditorPanel = () => {
 
     case NodeType.LINKED_FIELD:
       Component = LinkedFieldEditor
+      break
+
+    case NodeType.LINKED_GRAPH:
+      Component = LinkedGraphEditor
       break
   }
 

@@ -1,7 +1,10 @@
+import {LineData} from '@luminate/charts'
+
 export enum NodeType {
   HEADING = 'HEADING',
   PARAGRAPH = 'PARAGRAPH',
   LINKED_FIELD = 'LINKED_FIELD',
+  LINKED_GRAPH = 'LINKED_GRAPH',
 }
 
 export interface BaseNode<T extends object = {}> {
@@ -31,6 +34,24 @@ export enum LinkedEntityType {
   COFFEE = 'COFFEE',
 }
 
+export interface LinkedGraphNode<T extends object = {}> extends BaseNode<T> {
+  type: NodeType.LINKED_GRAPH
+  graphType: LinkedGraphType
+}
+
+export enum LinkedGraphType {
+  TIMELINE = 'TIMELINE',
+}
+
+type Color = 'green' | 'yellow'
+
+export interface LinkedTimelineData {
+  type?: 'line' | 'area'
+  lines: LineData[]
+}
+
+export interface LinkedTimelineNode extends LinkedGraphNode<LinkedTimelineData> {}
+
 export interface CoffeeLinkNode extends LinkedFieldNode<{id: string; field: string; label: string}> {}
 
-export type INode = HeadingNode | ParagraphNode | LinkedFieldNode
+export type INode = HeadingNode | ParagraphNode | LinkedFieldNode | LinkedGraphNode
