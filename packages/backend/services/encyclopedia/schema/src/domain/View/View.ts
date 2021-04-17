@@ -3,6 +3,7 @@ import {AggregateRoot, EntityId} from '@luminate/services-shared'
 export interface ViewAggregateAttributes {
   name: string
   description?: string
+  jsonString?: string
 }
 
 export class ViewAggregate extends AggregateRoot<ViewAggregateAttributes> {
@@ -14,6 +15,10 @@ export class ViewAggregate extends AggregateRoot<ViewAggregateAttributes> {
     return this.attrs.description
   }
 
+  public get jsonString() {
+    return this.attrs.jsonString
+  }
+
   public update(attrs: Partial<ViewAggregateAttributes>) {
     if (attrs.name) {
       this.attrs.name = attrs.name
@@ -21,6 +26,10 @@ export class ViewAggregate extends AggregateRoot<ViewAggregateAttributes> {
 
     if (attrs.description) {
       this.attrs.description = attrs.description
+    }
+
+    if (attrs.jsonString) {
+      this.attrs.jsonString = attrs.jsonString
     }
 
     // TODO: register updated event

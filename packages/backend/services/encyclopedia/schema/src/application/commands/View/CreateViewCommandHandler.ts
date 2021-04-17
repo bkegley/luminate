@@ -12,6 +12,7 @@ export class CreateViewCommandHandler implements ICommandHandler<CreateViewComma
     const view = ViewAggregate.create({
       name: command.name,
       description: command.description,
+      jsonString: command.jsonString,
     })
 
     await this.viewsRepo.create(command.user, ViewMapper.toPersistence(view))
