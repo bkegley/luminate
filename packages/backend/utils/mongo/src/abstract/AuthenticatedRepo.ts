@@ -138,6 +138,10 @@ export abstract class AuthenticatedRepo<T extends AuthenticatedDocument>
       return super.delete(userOrId as string)
     }
     // @ts-ignore
-    return this.model.deleteOne({_id: id as string, ...this.getWriteConditionsForUser(userOrId as Token)})
+    const response = await this.model.deleteOne({
+      _id: id as string,
+      ...this.getWriteConditionsForUser(userOrId as Token),
+    })
+    return response.ok === 1
   }
 }
