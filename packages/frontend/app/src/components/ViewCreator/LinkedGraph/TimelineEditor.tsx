@@ -1,6 +1,8 @@
+import {Button} from '@luminate/components'
 import React from 'react'
 import {ComponentEditor} from '../ComponentEditor'
 import {LinkedTimelineNode} from '../types'
+import {useViewState} from '../useViewState'
 import {TimelineForm} from './TimelineForm'
 import {useTimeline} from './useTimeline'
 
@@ -15,12 +17,34 @@ export const TimelineEditor = ({item}: TimelineEditorProps) => {
     actions.setData(item.data.lines)
   }, [item.id])
 
+  const {
+    actions: {updateItem},
+  } = useViewState<LinkedTimelineNode>()
+
   return (
     <ComponentEditor title="Linked Graph">
       <ComponentEditor.Meta>
         <pre>{JSON.stringify(lines, null, 2)}</pre>
       </ComponentEditor.Meta>
-      <TimelineForm item={item} lines={lines} actions={actions} />
+      <TimelineForm lines={lines} actions={actions} />
+      <div className="mt-10 flex flex-row-reverse space-x-4 space-x-reverse">
+        <div>
+          <Button
+            variant="outline"
+            onClick={() =>
+              updateItem({
+                ...item,
+                data: {
+                  ...item.data,
+                  lines,
+                },
+              })
+            }
+          >
+            Save
+          </Button>
+        </div>
+      </div>
     </ComponentEditor>
   )
 }

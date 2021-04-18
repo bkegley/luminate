@@ -16,6 +16,7 @@ export type Accessor<T = Datum> = ((d: T) => number) | number;
 type ChartType = 'line' | 'bar';
 
 export interface ChartData {
+  id: string;
   type: ChartType;
 }
 

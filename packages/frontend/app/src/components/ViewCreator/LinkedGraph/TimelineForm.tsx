@@ -2,7 +2,6 @@ import React from 'react'
 import {Button, Icon, IconTypesEnum, Input, Label, Select} from '@luminate/components'
 import {UseTimeLineActions} from './useTimeline'
 import {LineData} from '@luminate/charts'
-import {useViewState} from '../useViewState'
 
 export interface TimelineFormProps {
   item?: any
@@ -10,11 +9,7 @@ export interface TimelineFormProps {
   actions: UseTimeLineActions
 }
 
-export const TimelineForm = ({item, lines, actions}: TimelineFormProps) => {
-  const {
-    actions: {updateItem},
-  } = useViewState()
-
+export const TimelineForm = ({lines, actions}: TimelineFormProps) => {
   return (
     <>
       <div>
@@ -31,24 +26,6 @@ export const TimelineForm = ({item, lines, actions}: TimelineFormProps) => {
               </div>
             </Button>
           </div>
-        </div>
-      </div>
-      <div className="mt-10 flex flex-row-reverse space-x-4 space-x-reverse">
-        <div>
-          <Button
-            variant="outline"
-            onClick={() =>
-              updateItem({
-                ...item,
-                data: {
-                  ...item.data,
-                  lines,
-                },
-              })
-            }
-          >
-            Save
-          </Button>
         </div>
       </div>
     </>

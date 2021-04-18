@@ -12,7 +12,11 @@ export interface TimelineDisplayProps {
 export const TimelineDisplay = ({item}: TimelineDisplayProps) => {
   return (
     <div className="w-full h-96">
-      <Timeline data={{type: 'line', lines: item.data.lines}} xAccessor={xAccessor} yAccessor={yAccessor} />
+      <Timeline
+        data={{id: item.id, type: 'line', lines: item.data.lines}}
+        xAccessor={xAccessor}
+        yAccessor={yAccessor}
+      />
     </div>
   )
 }

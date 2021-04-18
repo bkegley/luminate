@@ -9,7 +9,7 @@ export interface GridProps {
 export const Grid = ({ children }: GridProps) => {
   return (
     <GridContext.Provider value={{}}>
-      <div className="grid grid-cols-1 gap-6 lg:grid-flow-col-dense lg:grid-cols-3">
+      <div className="w-full grid grid-cols-1 gap-6 lg:grid-flow-col-dense lg:grid-cols-3">
         {children}
       </div>
     </GridContext.Provider>

@@ -31,7 +31,6 @@ export const useTimeline = (initialData?: LineData[]) => {
         )
       },
       updateLineCoord: (lineIndex: number, rowIndex: number, coord: Coord) => {
-        console.log({lineIndex, rowIndex, coord})
         setLines(lines =>
           lines.map((line, index) =>
             index === lineIndex

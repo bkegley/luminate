@@ -1,5 +1,5 @@
 import React from 'react'
-import {useRouteMatch} from 'react-router-dom'
+import {useHistory, useRouteMatch} from 'react-router-dom'
 import {useSerializer} from '../../components/Editor/useSerializer'
 import {useGetPostQuery} from '../../graphql'
 import {Node} from 'slate'
@@ -11,12 +11,21 @@ export const PostDetailView = () => {
     params: {id},
   } = useRouteMatch<{id: string}>()
 
+  const history = useHistory()
   const {error, loading, data} = useGetPostQuery({variables: {id}})
 
   const content: Node[] = data ? JSON.parse(data.getPost.content) : null
 
   return (
-    <Page title={data?.getPost.title}>
+    <Page
+      title={data?.getPost.title}
+      primaryAction={{
+        text: 'Update',
+        variant: 'outline',
+        onClick: () => history.push(`/posts/${id}/edit`),
+        as: 'a',
+      }}
+    >
       <p>{content ? serializer(content) : null}</p>
     </Page>
   )
