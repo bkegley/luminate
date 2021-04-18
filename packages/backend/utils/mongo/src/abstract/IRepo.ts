@@ -13,5 +13,5 @@ export interface IRepo<T extends Document> {
   create(input: any): Promise<T>
   updateOne(conditions: any, input: any): Promise<T | null>
   updateById(id: string, input: any): Promise<T | null>
-  delete(id: string): Promise<void>
+  delete(id: string): Promise<boolean>
 }

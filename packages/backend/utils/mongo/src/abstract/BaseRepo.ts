@@ -96,6 +96,7 @@ export abstract class BaseRepo<T extends BaseDocument> implements IRepo<T> {
   }
 
   public async delete(id: string) {
-    await this.model.findByIdAndDelete(id)
+    const response = await this.model.findByIdAndDelete(id)
+    return !!response
   }
 }
