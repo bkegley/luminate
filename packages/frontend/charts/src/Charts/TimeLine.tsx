@@ -2,6 +2,7 @@ import React from 'react';
 import * as d3 from 'd3';
 import { Chart, useChartDimensions } from '../Primitives';
 import { LineChartData } from '../types';
+import { Gradient } from '../Primitives/Gradient';
 
 const formatDate = d3.timeFormat('%-b %-d');
 
@@ -40,6 +41,7 @@ export const Timeline = ({
 
   const xAccessorScaled = (d: any) => xScale(xAccessor(d));
   const yAccessorScaled = (d: any) => yScale(yAccessor(d));
+  const y0AccessorScaled = yScale(yScale.domain()[0]);
 
   return (
     <Chart dimensions={dimensions} ref={ref}>
@@ -50,17 +52,39 @@ export const Timeline = ({
         numberOfTicks={20}
       />
       <Chart.Axis axis="y" scale={yScale} label={label} />
-      {data.lines.map((line) => {
+      {data.lines.map((line, index) => {
         const color = line.color ?? 'text-secondary-600';
+        const gradientId = `gradient-${data.id}-${index}`;
         return (
-          <Chart.Line
-            type={line.type}
-            className={`stroke-current stroke-2 ${color}`}
-            fill="none"
-            data={line}
-            xAccessor={xAccessorScaled}
-            yAccessor={yAccessorScaled}
-          />
+          <>
+            {line.type === 'area' ? (
+              <>
+                <defs className={color}>
+                  <Gradient
+                    id={gradientId}
+                    colors={['currentColor', 'white']}
+                    x2="0"
+                    y2="100%"
+                  />
+                </defs>
+                <Chart.Line
+                  type="area"
+                  data={line}
+                  xAccessor={xAccessorScaled}
+                  yAccessor={yAccessorScaled}
+                  y0Accessor={y0AccessorScaled}
+                  style={{ fill: `url(#${gradientId})` }}
+                />
+              </>
+            ) : null}
+            <Chart.Line
+              className={`stroke-current stroke-2 ${color}`}
+              fill="none"
+              data={line}
+              xAccessor={xAccessorScaled}
+              yAccessor={yAccessorScaled}
+            />
+          </>
         );
       })}
     </Chart>

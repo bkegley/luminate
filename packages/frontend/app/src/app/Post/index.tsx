@@ -2,7 +2,7 @@ import React from 'react'
 import {Switch, Route, useRouteMatch} from 'react-router-dom'
 import {PostDetailView} from './DetailView'
 import PostsListView from './ListView'
-import {PostCreatePage} from './PostCreatePage'
+import {PostCreatePage} from './CreatePage'
 import {PostUpdatePage} from './UpdatePage'
 
 export const PostsRouter = () => {

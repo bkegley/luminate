@@ -14,7 +14,6 @@ export const EditorPanel = () => {
   const [item, setItem] = React.useState(_item)
 
   React.useEffect(() => {
-    console.log('we are here', _item)
     setItem(_item)
   }, [_item?.id])
 

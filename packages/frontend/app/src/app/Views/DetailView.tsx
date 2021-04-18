@@ -1,7 +1,8 @@
 import React from 'react'
 import {Card, Page, Grid} from '@luminate/components'
 import {useGetViewQuery} from '../../graphql'
-import {useRouteMatch} from 'react-router-dom'
+import {useHistory, useRouteMatch} from 'react-router-dom'
+import {ViewDisplay} from '../../components/ViewCreator/ViewDisplay'
 
 interface Props {}
 
@@ -10,6 +11,7 @@ const ViewDetailView = ({}: Props) => {
     params: {id},
   } = useRouteMatch<{id: string}>()
   const {data, error, loading} = useGetViewQuery({variables: {id}})
+  const history = useHistory()
 
   if (error) {
     return <div>Error!</div>
@@ -24,7 +26,15 @@ const ViewDetailView = ({}: Props) => {
   }
 
   return (
-    <Page title={data.getView?.name}>
+    <Page
+      title={data.getView?.name}
+      primaryAction={{
+        text: 'Update',
+        variant: 'outline',
+        onClick: () => history.push(`/views/${id}/edit`),
+        as: 'a',
+      }}
+    >
       <div className="flex mb-4">
         <Grid>
           <Grid.Left>
@@ -33,9 +43,12 @@ const ViewDetailView = ({}: Props) => {
                 <p className="text-xs text-gray-500 uppercase tracking-wide">Information Section</p>
                 <p>{data.getView?.description}</p>
               </div>
-              <pre>{JSON.stringify(data.getView, null, 2)}</pre>
+              <ViewDisplay id={id} />
             </Card>
           </Grid.Left>
+          <Grid.Right>
+            <div className="bg-gray-600">hey there</div>
+          </Grid.Right>
         </Grid>
       </div>
     </Page>

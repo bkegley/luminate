@@ -13,6 +13,7 @@ import {
 } from '../../graphql'
 import {Formik, Form, Field} from 'formik'
 import {useHistory, useRouteMatch} from 'react-router-dom'
+import {IViewCreatorState, ViewCreator} from '../../components/ViewCreator'
 
 interface ViewUpdateFormProps {
   view: View
@@ -31,8 +32,6 @@ interface ViewUpdateFormProps {
 
 const ViewUpdateForm = ({
   view,
-  title,
-  isModal,
   fields,
   onUpdateSuccess,
   onUpdateError,
@@ -58,9 +57,11 @@ const ViewUpdateForm = ({
     refetchQueries: [{query: ListViewsDocument}],
     awaitRefetchQueries: true,
     onCompleted: data => {
+      console.log({data})
       if (onDeleteSuccess) {
         onDeleteSuccess(data)
       } else {
+        console.log(path.slice(0, path.indexOf('/:id')))
         history.push(path.slice(0, path.indexOf('/:id')))
       }
     },
@@ -72,11 +73,16 @@ const ViewUpdateForm = ({
   })
 
   const deleteDialog = useDialogState()
+  const initialState: IViewCreatorState = view.jsonString
+    ? {selectedItem: null, items: JSON.parse(view.jsonString)}
+    : null
 
   return (
     <Formik
       initialValues={{
         name: view.name || '',
+        description: view.description || '',
+        jsonString: view.jsonString || '',
       }}
       onSubmit={async (values, {setSubmitting}) => {
         await updateView({
@@ -88,7 +94,7 @@ const ViewUpdateForm = ({
         setSubmitting(false)
       }}
     >
-      {({}) => {
+      {({setFieldValue}) => {
         return (
           <Form>
             <Modal dialog={deleteDialog} className="bg-white p-3 rounded-md" top="100px" aria-label="Alert">
@@ -110,6 +116,27 @@ const ViewUpdateForm = ({
                       Name
                     </label>
                     <Field name="name" id="name" as={Input} />
+                  </div>
+                ) : null}
+                {!fields || fields.includes('description') ? (
+                  <div className="mb-3">
+                    <label className="block mb-1" htmlFor="description">
+                      Description
+                    </label>
+                    <Field name="description" id="description" as={Input} />
+                  </div>
+                ) : null}
+                {!fields || fields.includes('jsonString') ? (
+                  <div className="mb-3">
+                    <label className="block mb-1" htmlFor="jsonString">
+                      View
+                    </label>
+                    <ViewCreator
+                      initialState={initialState}
+                      onChange={state => {
+                        setFieldValue('jsonString', JSON.stringify(state.items))
+                      }}
+                    />
                   </div>
                 ) : null}
               </div>

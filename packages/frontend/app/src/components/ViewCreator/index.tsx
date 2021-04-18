@@ -1,7 +1,5 @@
 import React from 'react'
-import {Button, Input} from '@luminate/components'
 import {DragDropContext, DraggableLocation, DropResult} from 'react-beautiful-dnd'
-import {useCreateViewMutation} from '../../graphql'
 import {Canvas} from './Canvas'
 import {ConfigurationPanel} from './ConfigurationPanel'
 import {INode, NodeType} from './types'
@@ -53,12 +51,12 @@ type Action =
       id: string
     }
 
-interface IState {
+export interface IViewCreatorState {
   selectedItem: string | null
   items: INode[]
 }
 
-const initialState: IState = {
+const defaultState: IViewCreatorState = {
   selectedItem: null,
   items: [
     {
@@ -72,7 +70,7 @@ const initialState: IState = {
   ],
 }
 
-const reducer = (state: IState, action: Action): IState => {
+const reducer = (state: IViewCreatorState, action: Action): IViewCreatorState => {
   switch (action.type) {
     case ActionType.SELECT_ITEM:
       return {
@@ -107,9 +105,19 @@ const reducer = (state: IState, action: Action): IState => {
   }
 }
 
-export const ViewCreator = (): JSX.Element => {
-  const [state, dispatch] = React.useReducer(reducer, initialState)
-  const [createView, meta] = useCreateViewMutation()
+export interface ViewCreatorProps {
+  initialState?: IViewCreatorState
+  onChange?: (state: IViewCreatorState) => void
+}
+
+export const ViewCreator = ({initialState, onChange}: ViewCreatorProps): JSX.Element => {
+  const [state, dispatch] = React.useReducer(reducer, initialState ?? defaultState)
+
+  React.useEffect(() => {
+    if (onChange) {
+      onChange(state)
+    }
+  }, [state])
 
   const addNew = React.useCallback((item: Exclude<INode, 'id'>) => {
     const id = Math.random().toString(36).substr(7)
@@ -154,24 +162,12 @@ export const ViewCreator = (): JSX.Element => {
     }
   }, [state])
 
-  const [title, setTitle] = React.useState('')
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <ViewStateContext.Provider value={value}>
-        <div>
-          <div>
-            <Input value={title} onChange={e => setTitle(e.currentTarget.value)} />
-          </div>
-
-          <Button
-            onClick={() => createView({variables: {input: {name: title, jsonString: JSON.stringify(state.items)}}})}
-          >
-            Save
-          </Button>
-          <div className="grid grid-cols-2 gap-10 mt-20">
-            <Canvas />
-            <ConfigurationPanel />
-          </div>
+        <div className="grid grid-cols-2 gap-10">
+          <Canvas />
+          <ConfigurationPanel />
         </div>
       </ViewStateContext.Provider>
     </DragDropContext>

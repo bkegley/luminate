@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 export interface GradientProps
   extends React.SVGProps<SVGLinearGradientElement> {
@@ -7,7 +6,7 @@ export interface GradientProps
   colors: string[];
 }
 
-const Gradient = ({ id, colors, ...props }: GradientProps) => (
+export const Gradient = ({ id, colors, ...props }: GradientProps) => (
   <linearGradient
     id={id}
     gradientUnits="userSpaceOnUse"
@@ -15,14 +14,11 @@ const Gradient = ({ id, colors, ...props }: GradientProps) => (
     {...props}
   >
     {colors.map((color, i) => (
-      <stop offset={`${(i * 100) / (colors.length - 1)}%`} stopColor={color} />
+      <stop
+        offset={`${(i * 100) / (colors.length - 1)}%`}
+        stopColor={color}
+        stop-opacity={i === 0 ? 0.5 : undefined}
+      />
     ))}
   </linearGradient>
 );
-
-Gradient.propTypes = {
-  id: PropTypes.string,
-  colors: PropTypes.arrayOf(PropTypes.string),
-};
-
-export default Gradient;
