@@ -27,6 +27,6 @@ export interface IAuthenticatedRepo<T extends Document> extends IRepo<T> {
   updateById(id: string, input: any): Promise<T | null>
   updateById(user: Token, id: string, input: any): Promise<T | null>
 
-  delete(id: string): Promise<void>
-  delete(user: Token, id: string): Promise<void>
+  delete(id: string): Promise<boolean>
+  delete(user: Token, id: string): Promise<boolean>
 }

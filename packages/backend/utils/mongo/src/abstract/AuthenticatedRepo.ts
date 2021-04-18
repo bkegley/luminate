@@ -131,8 +131,8 @@ export abstract class AuthenticatedRepo<T extends AuthenticatedDocument>
   }
 
   // TODO: delete should remove user's account permissions from the entity instead of deleting
-  delete(user: Token, id: string): Promise<void>
-  delete(id: string): Promise<void>
+  delete(user: Token, id: string): Promise<boolean>
+  delete(id: string): Promise<boolean>
   public async delete(userOrId: Token | string, id?: string) {
     if (!id) {
       return super.delete(userOrId as string)
