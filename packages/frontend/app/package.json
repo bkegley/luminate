@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.3.9",
+    "@headlessui/react": "^1.0.0",
     "@luminate/charts": "*",
     "@luminate/components": "*",
     "@luminate/gatsby-theme-luminate": "*",
