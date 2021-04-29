@@ -54,28 +54,30 @@ export const PostCreateForm = () => {
           </Card>
         </Grid.Left>
         <Grid.Right>
-          <Card>
-            <Card.Title>
-              <Heading>Views</Heading>
-            </Card.Title>
-            <Card.Content>
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="view">View</Label>
-                  <Select options={options} onChange={e => setSelectedView(e.selectedItem?.value as string)} />
+          <div className="sticky">
+            <Card>
+              <Card.Title>
+                <Heading>Views</Heading>
+              </Card.Title>
+              <Card.Content>
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="view">View</Label>
+                    <Select options={options} onChange={e => setSelectedView(e.selectedItem?.value as string)} />
+                  </div>
                 </div>
-              </div>
-            </Card.Content>
-            <Card.Footer>
-              <div className="flex flex-col items-end">
-                <div>
-                  <Button variant="outline" onClick={() => actions.insertView(selectedView)}>
-                    Add View
-                  </Button>
+              </Card.Content>
+              <Card.Footer>
+                <div className="flex flex-col items-end">
+                  <div>
+                    <Button variant="outline" onClick={() => actions.insertView(selectedView)}>
+                      Add View
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            </Card.Footer>
-          </Card>
+              </Card.Footer>
+            </Card>
+          </div>
         </Grid.Right>
       </Grid>
     </Page>

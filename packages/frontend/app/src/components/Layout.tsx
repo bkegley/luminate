@@ -19,7 +19,7 @@ const InnerLayout = ({children}: LayoutProps) => {
         <div className="flex">
           <Sidebar open={open} setOpen={setOpen} />
           <div className="flex flex-col min-w-0 flex-1">
-            <main className="relative flex-1 overflow-y-auto focus:outline-none md:px-8 lg:px-12 mb-20" tabIndex={0}>
+            <main className="relative flex-1 flow-y-auto focus:outline-none md:px-8 lg:px-12 mb-20" tabIndex={0}>
               {children}
             </main>
           </div>

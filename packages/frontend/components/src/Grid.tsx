@@ -9,7 +9,7 @@ export interface GridProps {
 export const Grid = ({ children }: GridProps) => {
   return (
     <GridContext.Provider value={{}}>
-      <div className="w-full grid grid-cols-1 gap-6 lg:grid-flow-col-dense lg:grid-cols-3">
+      <div className="w-full grid grid-cols-1 gap-6 lg:grid-flow-col-dense lg:grid-cols-3 relative">
         {children}
       </div>
     </GridContext.Provider>
@@ -29,15 +29,22 @@ const Left = ({ children }: GridLeftProps) => {
 };
 
 interface GridRightProps {
+  sticky?: boolean;
   children: React.ReactNode;
 }
 
-const Right = ({ children }: GridRightProps) => {
+const Right = ({ children, sticky = false }: GridRightProps) => {
   const context = React.useContext(GridContext);
   if (!context) {
     throw new Error('Grid.Right must be wrapped in a Grid component');
   }
-  return <div className="lg:col-start-3 lg:col-span-1">{children}</div>;
+  return (
+    <div
+      className={`lg:col-start-3 lg:col-span-1 ${sticky ? 'sticky top-0' : ''}`}
+    >
+      {children}
+    </div>
+  );
 };
 
 Grid.Left = Left;
