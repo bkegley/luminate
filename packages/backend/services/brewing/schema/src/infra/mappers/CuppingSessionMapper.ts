@@ -8,6 +8,7 @@ export class CuppingSessionMapper {
       internalId: obj.internalId,
       description: obj.description,
       locked: obj.locked,
+      sessionCoffees: obj.sessionCoffees,
       createdAt: obj.createdAt,
       updatedAt: obj.updatedAt,
     }
@@ -22,6 +23,11 @@ export class CuppingSessionMapper {
       internalId: cuppingSession.internalId,
       description: cuppingSession.description,
       locked: cuppingSession.locked,
+      sessionCoffees: cuppingSession.sessionCoffees?.map(sessionCoffee => ({
+        id: sessionCoffee.id.toString(),
+        coffee: sessionCoffee.coffeeId,
+        sampleNumber: sessionCoffee.sampleNumber,
+      })),
       //createdAt: cuppingSession.createdAt.toISOString(),
       //updatedAt: cuppingSession.updatedAt.toISOString(),
       // TODO: fix dates
@@ -35,6 +41,7 @@ export class CuppingSessionMapper {
       id: cuppingSession.getEntityId().toString(),
       internalId: cuppingSession.internalId,
       description: cuppingSession.description,
+      sessionCoffees: cuppingSession.sessionCoffees,
       locked: !!cuppingSession.locked,
     }
   }

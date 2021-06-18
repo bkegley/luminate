@@ -1,11 +1,11 @@
-import {Args, Mutation, Query, Resolver, ResolveField, Parent, Context} from '@nestjs/graphql'
+import {Args, Mutation, Query, Resolver, ResolveField, Parent, Context, ResolveReference} from '@nestjs/graphql'
 import {CommandBus, QueryBus} from '@nestjs/cqrs'
 import {CreateCoffeeInput, QueryInput, UpdateCoffeeInput} from '../../types'
 import {CreateCoffeeCommand, DeleteCoffeeCommand, UpdateCoffeeCommand} from '../commands'
 import {CoffeeMapper, CountryMapper, RegionMapper, VarietyMapper} from '../../infra/mappers'
 import {CoffeeAggregate} from '../../domain/Coffee/Coffee'
 import {GetCoffeeQuery, ListCoffeesQuery} from '../queries'
-import {CountryLoader, RegionLoader, VarietyLoader} from '../../infra/loaders'
+import {CoffeeLoader, CountryLoader, RegionLoader, VarietyLoader} from '../../infra/loaders'
 import {VarietyAggregate} from '../../domain/Variety/Variety'
 import {AuthGuard} from '../AuthGuard'
 import {Scopes} from '@luminate/graphql-utils'
@@ -18,6 +18,7 @@ export class CoffeeResolvers {
   constructor(
     private readonly queryBus: QueryBus,
     private readonly commandBus: CommandBus,
+    private readonly coffeeLoader: CoffeeLoader,
     private readonly countryLoader: CountryLoader,
     private readonly regionLoader: RegionLoader,
     private readonly varietyLoader: VarietyLoader,
@@ -105,6 +106,16 @@ export class CoffeeResolvers {
     )
 
     return varieties.map(variety => (variety ? VarietyMapper.toDTO(variety) : null)).filter(Boolean)
+  }
+
+  @ResolveReference()
+  async resolveReference(reference: {__typename: string; id: string}) {
+    const coffee = await this.coffeeLoader.getById(reference.id)
+    if (!coffee) {
+      return null
+    }
+
+    return CoffeeMapper.toDTO(coffee)
   }
 }
 

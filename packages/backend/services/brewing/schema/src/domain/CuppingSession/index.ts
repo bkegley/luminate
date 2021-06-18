@@ -1,10 +1,11 @@
 import {AggregateRoot, EntityId} from '@luminate/services-shared'
+import {SessionCoffee} from './SessionCoffee'
 
 export interface CuppingSessionAggregateAttributes {
   internalId?: string
   description?: string
   locked?: boolean
-  sessionCoffees?: EntityId[]
+  sessionCoffees?: SessionCoffee[]
   createdAt?: Date
   updatedAt?: Date
 }
@@ -16,6 +17,10 @@ export class CuppingSessionAggregate extends AggregateRoot<CuppingSessionAggrega
 
   public get description() {
     return this.attrs.description
+  }
+
+  public get sessionCoffees() {
+    return this.attrs.sessionCoffees
   }
 
   public get createdAt() {
@@ -48,6 +53,10 @@ export class CuppingSessionAggregate extends AggregateRoot<CuppingSessionAggrega
     if (attrs.sessionCoffees) {
       this.attrs.sessionCoffees = attrs.sessionCoffees
     }
+  }
+
+  public lock() {
+    this.attrs.locked = true
   }
 
   public delete() {

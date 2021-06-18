@@ -3,7 +3,8 @@ export interface CuppingSessionDTO {
   internalId?: string
   description?: string
   locked?: boolean
-  sessionCoffees?: string[]
+  // TODO: fix this
+  sessionCoffees?: any[]
   createdAt?: string
   updatedAt?: string
 }

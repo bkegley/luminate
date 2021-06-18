@@ -67,6 +67,7 @@ const AddSessionCoffees = ({cuppingSession}: AddSessionCoffeesProps) => {
               })) || [],
           }}
           onSubmit={(values, {setSubmitting}) => {
+            console.log({values})
             updateCuppingSession({
               variables: {
                 id: cuppingSession.id,
@@ -82,7 +83,6 @@ const AddSessionCoffees = ({cuppingSession}: AddSessionCoffeesProps) => {
           }}
         >
           {({values}) => {
-            console.log({values})
             return (
               <Form className="w-full">
                 <div className="flex items-center justify-between mb-4 px-4 uppercase tracking-wide text-gray-600 text-sm">
@@ -178,7 +178,9 @@ const SessionCoffeeRow = ({index, coffeeOptions, onSubmit, onDelete, sampleNumbe
           index={index}
         />
       </Modal>
-      <div className={`flex items-center justify-between py-2 px-4 bg-${index % 2 === 0 ? 'gray-100' : 'transparent'}`}>
+      <div
+        className={`flex items-center py-3 px-4 ${index % 2 === 0 ? 'bg-transparent' : 'bg-gray-100 dark:bg-gray-800'}`}
+      >
         <div className="w-5/12">{sampleNumber}</div>
         <div className="w-5/12">{coffee?.name}</div>
         <div className="w-1/12">
@@ -187,16 +189,16 @@ const SessionCoffeeRow = ({index, coffeeOptions, onSubmit, onDelete, sampleNumbe
             type="button"
             onClick={() => sessionCoffeeDialog.toggle()}
           >
-            <span className="w-3 h-4">
+            <div className="w-4 h-4">
               <Icon type={IconTypesEnum.PENCIL} />
-            </span>
+            </div>
           </button>
         </div>
         <div className="w-1/12">
           <button className="border-none bg-transparent text-red-600" type="button" onClick={() => onDelete()}>
-            <span className="w-3 h-4">
+            <div className="w-4 h-4">
               <Icon type={IconTypesEnum.TRASH} />
-            </span>
+            </div>
           </button>
         </div>
       </div>

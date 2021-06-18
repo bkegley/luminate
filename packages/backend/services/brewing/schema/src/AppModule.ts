@@ -14,6 +14,8 @@ import {
   DeleteBrewingSessionCommandHandler,
   CreateCuppingSessionCommandHandler,
   UpdateCuppingSessionCommandHandler,
+  UpdateCuppingSessionCoffeesCommandHandler,
+  LockCuppingSessionCommandHandler,
   DeleteCuppingSessionCommandHandler,
   CreateEvaluationCommandHandler,
   UpdateEvaluationCommandHandler,
@@ -36,7 +38,7 @@ import {BrewerResolvers} from './application/schema/Brewer'
 import {BrewGuideResolvers} from './application/schema/BrewGuide'
 import {RecipeResolvers} from './application/schema/Recipe'
 import {GrinderResolvers} from './application/schema/Grinder'
-import {CuppingSessionResolvers} from './application/schema/CuppingSession'
+import {CuppingSessionResolvers, SessionCoffeeResolvers} from './application/schema/CuppingSession'
 import {
   InMemoryBrewerRepository,
   InMemoryBrewGuideRepository,
@@ -72,6 +74,8 @@ const CommandHandlers = [
   DeleteBrewingSessionCommandHandler,
   CreateCuppingSessionCommandHandler,
   UpdateCuppingSessionCommandHandler,
+  UpdateCuppingSessionCoffeesCommandHandler,
+  LockCuppingSessionCommandHandler,
   DeleteCuppingSessionCommandHandler,
   CreateEvaluationCommandHandler,
   UpdateEvaluationCommandHandler,
@@ -81,7 +85,14 @@ const CommandHandlers = [
 
 const EventHandlers: any[] = []
 
-const Resolvers = [BrewerResolvers, BrewGuideResolvers, GrinderResolvers, RecipeResolvers, CuppingSessionResolvers]
+const Resolvers = [
+  BrewerResolvers,
+  BrewGuideResolvers,
+  GrinderResolvers,
+  RecipeResolvers,
+  CuppingSessionResolvers,
+  SessionCoffeeResolvers,
+]
 
 const Repos = [
   InMemoryBrewerRepository,
