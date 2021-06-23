@@ -4,6 +4,7 @@ WORKDIR /app
 # frontend dependencies
 COPY ./packages/frontend/app/package.json ./packages/frontend/app/package.json
 COPY ./packages/frontend/components/package.json ./packages/frontend/components/package.json
+COPY ./packages/frontend/charts/package.json ./packages/frontend/charts/package.json
 COPY ./packages/frontend/gatsby-theme-luminate/package.json ./packages/frontend/gatsby-theme-luminate/package.json
 
 COPY lerna.json .
