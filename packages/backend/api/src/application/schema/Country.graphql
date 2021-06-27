@@ -1,0 +1,20 @@
+type Country {
+  id: ID!
+  name: String!
+  regions: [Region]
+}
+
+type CountryConnection {
+  pageInfo: PageInfo!
+  edges: [CountryEdge!]!
+}
+
+type CountryEdge {
+  cursor: String!
+  node: Country!
+}
+
+extend type Query {
+  listCountries(cursor: String, limit: Int, query: [QueryInput!]): CountryConnection!
+  getCountry(id: ID!): Country
+}

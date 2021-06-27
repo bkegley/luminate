@@ -1,0 +1,34 @@
+{
+  "name": "@luminate/api",
+  "version": "0.0.1",
+  "description": "GraphQL API for Luminate",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "author": "Bryan Kegley <hi@bryankegley.me>",
+  "license": "MIT",
+  "scripts": {
+    "develop": "nest start --watch",
+    "debug": "nest start --debug --watch",
+    "build": "nest build",
+    "start": "nest start",
+    "prestart": "yarn build",
+    "test": "jest",
+    "geo-populate": "ts-node src/scripts/geoPopulate.ts"
+  },
+  "dependencies": {
+    "@luminate/ddd": "*",
+    "@luminate/graphql-utils": "*",
+    "@luminate/mongo-utils": "*",
+    "@nestjs/common": "^7.6.18",
+    "@nestjs/core": "^7.6.18",
+    "@nestjs/cqrs": "^7.0.1",
+    "@nestjs/graphql": "^7.11.0",
+    "@nestjs/mongoose": "^7.2.4",
+    "@nestjs/platform-express": "^7.6.18",
+    "apollo-server-express": "^2.25.2",
+    "dataloader": "^2.0.0",
+    "express": "^4.17.1",
+    "lodash.merge": "^4.6.2",
+    "reflect-metadata": "^0.1.13"
+  }
+}

@@ -1,0 +1,62 @@
+type Post {
+  id: ID!
+  title: String
+  pinned(entityId: ID!): Boolean
+  relations: [EntityRelation]
+  content: String!
+  createdAt: String
+  updatedAt: String
+}
+
+type EntityRelation {
+  id: ID!
+  type: EntityType
+  pinned: Boolean
+}
+
+enum EntityType {
+  Coffee
+  Country
+  Variety
+}
+
+type PostConnection {
+  pageInfo: PageInfo!
+  edges: [PostEdge!]!
+}
+
+type PostEdge {
+  node: Post!
+  cursor: String!
+}
+
+input EntityRelationInput {
+  id: ID!
+  type: EntityType!
+  pinned: Boolean
+}
+
+input CreatePostInput {
+  title: String
+  relations: [EntityRelationInput]
+  content: String!
+}
+
+input UpdatePostInput {
+  title: String
+  relations: [EntityRelationInput]
+  content: String!
+}
+
+extend type Query {
+  listPosts(cursor: String, limit: Int, query: [QueryInput!]): PostConnection!
+  getEntityPosts(id: ID!): PostConnection!
+  getPost(id: ID!): Post
+}
+
+extend type Mutation {
+  createPost(input: CreatePostInput!): Post
+  updatePost(id: ID!, input: UpdatePostInput!): Post
+  deletePost(id: ID!): Post
+  togglePin(id: ID!, entityId: ID!): Boolean
+}
