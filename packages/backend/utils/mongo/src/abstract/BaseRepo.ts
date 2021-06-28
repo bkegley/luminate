@@ -1,4 +1,4 @@
-import {Model} from 'mongoose'
+import {FilterQuery, Model} from 'mongoose'
 import {Cursor} from '../utils/Cursor'
 import {BaseDocument} from './BaseDocument'
 import {QueryInputParser} from '../utils'
@@ -71,12 +71,11 @@ export abstract class BaseRepo<T extends BaseDocument> implements IRepo<T> {
     }
   }
 
-  public async list(): Promise<T[]>
-  public async list(args?: Parameters<typeof Model.find>) {
+  public async list(args?: FilterQuery<T>): Promise<T[]> {
     if (!args) {
       return this.model.find()
     }
-    return this.model.find(...args)
+    return this.model.find(args)
   }
 
   public async getById(id: string) {

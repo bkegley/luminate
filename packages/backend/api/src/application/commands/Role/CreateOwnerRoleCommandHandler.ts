@@ -1,6 +1,7 @@
 import {ScopeOperations, ScopeResources} from '@luminate/mongo-utils'
 import {CommandHandler, ICommandHandler} from '@nestjs/cqrs'
 import {RoleAggregate} from '../../../domain/role/Role'
+import {RoleMapper} from '../../../infra/mappers'
 import {RolesRepo} from '../../../infra/repos'
 import {CreateOwnerRoleCommand} from './CreateOwnerRoleComand'
 
@@ -15,11 +16,11 @@ export class CreateOwnerRoleCommandHandler implements ICommandHandler<CreateOwne
       })
       .reduce((acc, arr) => acc.concat(arr), [])
 
+    const ownerDocument = await this.rolesRepo.getByName('Owner')
     let ownerRole: RoleAggregate
 
-    ownerRole = await this.rolesRepo.getByName('Owner')
-
-    if (ownerRole) {
+    if (ownerDocument) {
+      ownerRole = RoleMapper.toDomain(ownerDocument)
       ownerRole.update({scopes})
     } else {
       ownerRole = RoleAggregate.create({

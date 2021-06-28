@@ -7,7 +7,7 @@ import {PostAggregate} from '../../domain/Post/Post'
 import {PostMapper} from '../../infra/mappers/PostMapper'
 import {PostDocument} from '../../infra/models'
 import {CreatePostInput, UpdatePostInput, QueryInput} from '../../types'
-import {AuthGuard} from '../AuthGuard'
+import {AuthGuard} from '../guards/AuthGuard'
 import {CreatePostCommand, DeletePostCommand, UpdatePostCommand, TogglePostPinCommand} from '../commands/Post'
 import {GetEntityPostsQuery, GetPostQuery, ListPostsQuery} from '../queries/Post'
 

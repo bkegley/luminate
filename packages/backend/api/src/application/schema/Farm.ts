@@ -6,7 +6,7 @@ import {IFarmDTO} from '../../infra/dtos'
 import {CountryLoader, RegionLoader} from '../../infra/loaders'
 import {CountryMapper, FarmMapper, RegionMapper} from '../../infra/mappers'
 import {CreateFarmInput, QueryInput, UpdateFarmInput} from '../../types'
-import {AuthGuard} from '../AuthGuard'
+import {AuthGuard} from '../guards/AuthGuard'
 import {CreateFarmCommand, DeleteFarmCommand, UpdateFarmCommand} from '../commands'
 import {GetFarmQuery, ListFarmsQuery} from '../queries'
 

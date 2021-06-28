@@ -3,6 +3,7 @@ import {LoginUserCommand} from './LoginUserCommand'
 import {ILoginUserCommandHandler} from '.'
 import {RefreshTokensRepo, UsersRepo} from '../../../infra/repos'
 import {TokenService} from '../../../infra/services/TokenService'
+import {UserMapper} from '../../../infra/mappers'
 
 @CommandHandler(LoginUserCommand)
 export class LoginUserCommandHandler implements ILoginUserCommandHandler {
@@ -16,12 +17,13 @@ export class LoginUserCommandHandler implements ILoginUserCommandHandler {
   public async execute(command: LoginUserCommand) {
     const {username, password} = command
 
-    // check for existing user
-    const user = await this.usersRepo.getByUsername(username)
+    const userDocument = await this.usersRepo.getByUsername(username)
 
-    if (!user) {
+    if (!userDocument) {
       return null
     }
+
+    const user = UserMapper.toDomain(userDocument)
 
     const matches = user.comparePassword(password)
 

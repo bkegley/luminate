@@ -1,6 +1,6 @@
 import {Args, Context, Mutation, Query, Resolver} from '@nestjs/graphql'
 import {CommandBus, QueryBus} from '@nestjs/cqrs'
-import {CreateRoleCommand, UpdateRoleCommand, DeleteRoleCommand} from '../../application/commands'
+import {CreateRoleCommand, UpdateRoleCommand, DeleteRoleCommand} from '../commands'
 import {CreateRoleInput, UpdateRoleInput} from '../../types'
 import {RoleMapper} from '../../infra/mappers/RoleMapper'
 import {GetRoleQuery, ListRolesQuery} from '../queries/Role'

@@ -2,6 +2,7 @@ import {CommandHandler, EventBus} from '@nestjs/cqrs'
 import {AddUserToAccountCommand} from './AddUserToAccountCommand'
 import {AccountsRepo, UsersRepo} from '../../../infra/repos'
 import {IAddUserToAccountCommandHandler} from './IAddUserToAccountCommandHandler'
+import {AccountMapper, UserMapper} from '../../../infra/mappers'
 
 @CommandHandler(AddUserToAccountCommand)
 export class AddUserToAccountCommandHandler implements IAddUserToAccountCommandHandler {
@@ -10,18 +11,21 @@ export class AddUserToAccountCommandHandler implements IAddUserToAccountCommandH
   public async execute(command: AddUserToAccountCommand) {
     const {accountId, userId} = command
 
-    const [existingAccount, existingUser] = await Promise.all([
+    const [existingAccountDocument, existingUserDocument] = await Promise.all([
       this.accountsRepo.getById(accountId),
       this.usersRepo.getById(userId),
     ])
 
-    if (!existingAccount) {
+    if (!existingAccountDocument) {
       throw new Error('Account does not exist')
     }
 
-    if (!existingUser) {
+    if (!existingUserDocument) {
       throw new Error('User does not exist')
     }
+
+    const existingUser = UserMapper.toDomain(existingUserDocument)
+    const existingAccount = AccountMapper.toDomain(existingAccountDocument)
 
     existingUser.addAccount(existingAccount.getEntityId())
 

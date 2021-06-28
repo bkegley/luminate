@@ -3,17 +3,20 @@ import {UsersRepo} from '../../../infra/repos'
 import {UpdateMeCommand, IUpdateMeCommandHandler} from '.'
 import {UserAggregate, UserAggregateAttributes} from '../../../domain/user/User'
 import {UserTheme} from '../../../domain/user/UserTheme'
+import {UserMapper} from '../../../infra/mappers'
 
 @CommandHandler(UpdateMeCommand)
 export class UpdateMeComandHandler implements IUpdateMeCommandHandler {
   constructor(private readonly usersRepo: UsersRepo) {}
 
   async execute(command: UpdateMeCommand): Promise<UserAggregate> {
-    const user = await this.usersRepo.getById(command.id)
+    const userDocument = await this.usersRepo.getById(command.id)
 
-    if (!user) {
+    if (!userDocument) {
       throw new Error('User not found!')
     }
+
+    const user = UserMapper.toDomain(userDocument)
     const attrs: Partial<UserAggregateAttributes> = {}
 
     if (command.theme) {

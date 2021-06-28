@@ -1,4 +1,4 @@
-import {Model} from 'mongoose'
+import {Model, QueryOptions} from 'mongoose'
 // FIX: types broken on current mongoose
 // @ts-ignore
 import {FilterQuery} from 'mongoose'
@@ -15,7 +15,8 @@ export abstract class AuthenticatedRepo<T extends AuthenticatedDocument>
     super(model)
   }
 
-  protected getReadConditionsForUser(user: Token) {
+  protected getReadConditionsForUser(user: Token): FilterQuery<T> {
+    // @ts-ignore
     return {
       $or: [
         {permissionType: 'public' as 'public' | 'private'},
@@ -77,6 +78,51 @@ export abstract class AuthenticatedRepo<T extends AuthenticatedDocument>
     }
 
     return super.getConnectionResults(userOrArgs)
+  }
+
+  list(user: Token, args: FilterQuery<T>, options?: QueryOptions | null): Promise<T[]>
+  list(user: Token, args: FilterQuery<T>): Promise<T[]>
+  list(args: FilterQuery<T>, options?: QueryOptions | null): Promise<T[]>
+  list(args: FilterQuery<T>): Promise<T[]>
+  list(user: Token): Promise<T[]>
+  list(): Promise<T[]>
+  public async list(
+    argsOrUser?: FilterQuery<T> | Token,
+    argsOrOptions?: FilterQuery<T> | QueryOptions,
+    options?: QueryOptions,
+  ): Promise<T[]> {
+    if (options) {
+      // @ts-ignore
+      const filter: FilterQuery<T> = {
+        $and: [this.getReadConditionsForUser(argsOrUser as Token), argsOrOptions],
+      }
+
+      return this.model.find(filter, options)
+    }
+
+    // 2 args
+    if (argsOrOptions) {
+      // user, filter
+      if (isToken(argsOrUser)) {
+        // @ts-ignore
+        const filter: FilterQuery<T> = {
+          $and: [argsOrOptions, this.getReadConditionsForUser(argsOrUser)],
+        }
+
+        return this.model.find(filter)
+      }
+      return this.model.find(argsOrUser, argsOrOptions)
+    }
+
+    if (argsOrUser) {
+      if (isToken(argsOrUser)) {
+        return this.model.find(this.getReadConditionsForUser(argsOrUser))
+      }
+
+      return this.model.find(argsOrUser)
+    }
+
+    return this.model.find()
   }
 
   getById(id: string): Promise<T>
@@ -144,4 +190,8 @@ export abstract class AuthenticatedRepo<T extends AuthenticatedDocument>
     })
     return response.ok === 1
   }
+}
+
+const isToken = <T>(argsOrToken: FilterQuery<T> | Token): argsOrToken is Token => {
+  return Boolean(argsOrToken.jti)
 }

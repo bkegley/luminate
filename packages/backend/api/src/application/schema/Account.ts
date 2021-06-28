@@ -6,7 +6,7 @@ import {
   UpdateAccountCommand,
   AddUserToAccountCommand,
   DeleteAccountCommand,
-} from '../../application/commands'
+} from '../commands'
 import {CreateAccountInput, UpdateAccountInput} from '../../types'
 import {AccountMapper} from '../../infra/mappers/AccountMapper'
 

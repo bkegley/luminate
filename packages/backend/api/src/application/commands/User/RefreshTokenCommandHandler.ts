@@ -2,9 +2,10 @@ import {CommandHandler} from '@nestjs/cqrs'
 import {RefreshTokensRepo, UsersRepo} from '../../../infra/repos'
 import {RefreshTokenCommand, IRefreshTokenCommandHandler} from '.'
 import {TokenService} from '../../../infra/services/TokenService'
+import {RefreshTokenMapper, UserMapper} from '../../../infra/mappers'
 
 @CommandHandler(RefreshTokenCommand)
-export class RefreshTokenComandHandler implements IRefreshTokenCommandHandler {
+export class RefreshTokenCommandHandler implements IRefreshTokenCommandHandler {
   constructor(
     private readonly refreshTokensRepo: RefreshTokensRepo,
     private readonly usersRepo: UsersRepo,
@@ -12,13 +13,16 @@ export class RefreshTokenComandHandler implements IRefreshTokenCommandHandler {
   ) {}
 
   async execute(command: RefreshTokenCommand): Promise<string> {
-    const refreshToken = await this.refreshTokensRepo.getByToken(command.refreshToken)
-    if (!refreshToken) {
+    const refreshTokenDocument = await this.refreshTokensRepo.getByToken(command.refreshToken)
+    if (!refreshTokenDocument) {
       return null
     }
 
+    const refreshToken = RefreshTokenMapper.toDomain(refreshTokenDocument)
+
     const {userId} = refreshToken
-    const user = await this.usersRepo.getById(userId.toString())
+    const userDocument = await this.usersRepo.getById(userId.toString())
+    const user = UserMapper.toDomain(userDocument)
 
     const token = await this.tokenService.createJwt(user, command.accessToken)
 

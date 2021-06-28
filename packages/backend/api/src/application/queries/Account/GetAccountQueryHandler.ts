@@ -1,5 +1,6 @@
 import {IQueryHandler, QueryHandler} from '@nestjs/cqrs'
 import {AccountAggregate} from '../../../domain/account/Account'
+import {AccountMapper} from '../../../infra/mappers'
 import {AccountsRepo} from '../../../infra/repos'
 import {GetAccountQuery} from './GetAccountQuery'
 
@@ -8,7 +9,11 @@ export class GetAccountQueryHandler implements IQueryHandler<GetAccountQuery, Ac
   constructor(private readonly accountsRepo: AccountsRepo) {}
 
   async execute(query: GetAccountQuery) {
-    const account = await this.accountsRepo.getById(query.id)
-    return account
+    const accountDocument = await this.accountsRepo.getById(query.id)
+
+    if (!accountDocument) {
+      return null
+    }
+    return AccountMapper.toDomain(accountDocument)
   }
 }

@@ -5,7 +5,7 @@ import {CountryLoader} from '../../infra/loaders'
 import {GetRegionQuery, ListRegionsQuery} from '../queries'
 import {IRegionDTO} from '../../infra/dtos'
 import {UseGuards} from '@nestjs/common'
-import {AuthGuard} from '../AuthGuard'
+import {AuthGuard} from '../guards/AuthGuard'
 import {Authenticated} from '@luminate/graphql-utils'
 
 @Resolver('Region')

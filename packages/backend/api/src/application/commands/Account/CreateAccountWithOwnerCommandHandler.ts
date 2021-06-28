@@ -6,6 +6,7 @@ import {AccountName} from '../../../domain/account/AccountName'
 import {UserAggregate} from '../../../domain/user/User'
 import {UserUsername} from '../../../domain/user/UserUsername'
 import {UserPassword} from '../../../domain/user/UserPassword'
+import {RoleMapper} from '../../../infra/mappers'
 
 @CommandHandler(CreateAccountWithOwnerCommand)
 export class CreateAccountWithOwnerCommandHandler implements ICreateAccountWithOwnerCommandHandler {
@@ -19,22 +20,24 @@ export class CreateAccountWithOwnerCommandHandler implements ICreateAccountWithO
   public async execute(command: CreateAccountWithOwnerCommand) {
     const {name, username, password} = command
 
-    const [existingAccount, existingUser, ownerRole] = await Promise.all([
+    const [existingAccountDocument, existingUserDocument, ownerRoleDocument] = await Promise.all([
       this.accountsRepo.getByName(name),
       this.usersRepo.getByUsername(username),
       this.rolesRepo.getByName('Owner'),
     ])
 
-    if (existingAccount) {
+    if (existingAccountDocument) {
       throw new Error('Account name taken')
     }
-    if (existingUser) {
+    if (existingUserDocument) {
       throw new Error('Username taken')
     }
 
-    if (!ownerRole) {
+    if (!ownerRoleDocument) {
       throw new Error('Owner role does not exist')
     }
+
+    const ownerRole = RoleMapper.toDomain(ownerRoleDocument)
 
     const account = AccountAggregate.create({name: AccountName.create(name)})
     const user = UserAggregate.create({

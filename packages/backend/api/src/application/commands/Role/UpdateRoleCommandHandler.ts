@@ -2,6 +2,7 @@ import {CommandHandler, EventBus} from '@nestjs/cqrs'
 import {IUpdateRoleCommandHandler, UpdateRoleCommand} from '.'
 import {RoleAggregateAttributes} from '../../../domain/role/Role'
 import {RoleScope} from '../../../domain/role/RoleScope'
+import {RoleMapper} from '../../../infra/mappers'
 import {RolesRepo} from '../../../infra/repos'
 
 @CommandHandler(UpdateRoleCommand)
@@ -9,11 +10,13 @@ export class UpdateRoleCommandHandler implements IUpdateRoleCommandHandler {
   constructor(private eventBus: EventBus, private rolesRepo: RolesRepo) {}
 
   public async execute(command: UpdateRoleCommand) {
-    const existingRole = await this.rolesRepo.getById(command.id)
+    const existingRoleDocument = await this.rolesRepo.getById(command.id)
 
-    if (!existingRole) {
+    if (!existingRoleDocument) {
       return null
     }
+
+    const existingRole = RoleMapper.toDomain(existingRoleDocument)
 
     let attrs: Partial<RoleAggregateAttributes> = {}
     if (command.name) {
