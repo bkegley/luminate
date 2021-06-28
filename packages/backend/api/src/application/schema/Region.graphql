@@ -15,7 +15,7 @@ type RegionEdge {
   node: Region!
 }
 
-extend type Query {
+type Query {
   listRegions(cursor: String, limit: Int, query: [QueryInput!]): RegionConnection!
   getRegion(id: ID!): Region
 }

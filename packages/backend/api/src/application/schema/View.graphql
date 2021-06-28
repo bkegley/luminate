@@ -40,12 +40,12 @@ input UpdateViewInput {
   jsonString: String
 }
 
-extend type Query {
+type Query {
   listViews(cursor: String, limit: Int, query: [QueryInput]): ViewConnection
   getView(id: ID!): View
 }
 
-extend type Mutation {
+type Mutation {
   createView(input: CreateViewInput!): View
   updateView(id: ID!, input: UpdateViewInput!): View
   deleteView(id: ID!): Boolean

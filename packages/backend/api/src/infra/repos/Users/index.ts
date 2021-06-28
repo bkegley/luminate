@@ -3,9 +3,9 @@ import {Injectable} from '@nestjs/common'
 import {InjectModel} from '@nestjs/mongoose'
 import {Model} from 'mongoose'
 import {IUsersRepo} from './IUsersRepo'
-import {UserDocument} from '../models'
-import {UserMapper} from '../mappers/UserMapper'
-import {UserAggregate} from '../../domain/user/User'
+import {UserDocument} from '../../models'
+import {UserMapper} from '../../mappers/UserMapper'
+import {UserAggregate} from '../../../domain/user/User'
 
 @Injectable()
 export class UsersRepo extends AuthenticatedRepo<UserDocument> implements IUsersRepo {

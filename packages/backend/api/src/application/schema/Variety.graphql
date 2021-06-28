@@ -25,12 +25,12 @@ input UpdateVarietyInput {
   name: String
 }
 
-extend type Query {
+type Query {
   listVarieties(cursor: String, limit: Int, query: [QueryInput!]): VarietyConnection!
   getVariety(id: ID!): Variety
 }
 
-extend type Mutation {
+type Mutation {
   createVariety(input: CreateVarietyInput!): Variety
   updateVariety(id: ID!, input: UpdateVarietyInput!): Variety
   deleteVariety(id: ID!): Variety

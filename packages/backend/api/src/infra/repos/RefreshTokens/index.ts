@@ -3,9 +3,9 @@ import {Injectable} from '@nestjs/common'
 import {InjectModel} from '@nestjs/mongoose'
 import {Model} from 'mongoose'
 import {IRefreshTokensRepo} from './IRefreshTokensRepo'
-import {RefreshTokenDocument} from '../models'
-import {RefreshTokenMapper} from '../mappers/RefreshTokenMapper'
-import {RefreshTokenAggregate} from '../../domain/refreshToken/RefreshToken'
+import {RefreshTokenDocument} from '../../models'
+import {RefreshTokenMapper} from '../../mappers/RefreshTokenMapper'
+import {RefreshTokenAggregate} from '../../../domain/refreshToken/RefreshToken'
 
 @Injectable()
 export class RefreshTokensRepo extends BaseRepo<RefreshTokenDocument> implements IRefreshTokensRepo {

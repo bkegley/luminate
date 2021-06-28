@@ -43,12 +43,12 @@ input UpdateFarmZoneInput {
   name: String!
 }
 
-extend type Query {
+type Query {
   listFarms(cursor: String, limit: Int, query: [QueryInput!]): FarmConnection!
   getFarm(id: ID!): Farm
 }
 
-extend type Mutation {
+type Mutation {
   createFarm(input: CreateFarmInput!): Farm
   updateFarm(id: ID!, input: UpdateFarmInput!): Farm
   deleteFarm(id: ID!): Farm

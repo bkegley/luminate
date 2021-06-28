@@ -1,11 +1,11 @@
 import {Injectable} from '@nestjs/common'
 import {InjectModel} from '@nestjs/mongoose'
+import {BaseRepo} from '@luminate/mongo-utils'
 import {Model} from 'mongoose'
 import {IVarietiesRepo} from './IVarietiesRepo'
-import {VarietyDocument} from '../models'
-import {VarietyMapper} from '../mappers/VarietyMapper'
-import {VarietyAggregate} from '../../domain/Variety/Variety'
-import {BaseRepo} from '@luminate/mongo-utils'
+import {VarietyDocument} from '../../models'
+import {VarietyMapper} from '../../mappers/VarietyMapper'
+import {VarietyAggregate} from '../../../domain/Variety/Variety'
 
 @Injectable()
 export class VarietiesRepo extends BaseRepo<VarietyDocument> implements IVarietiesRepo {

@@ -1,11 +1,11 @@
 import {Injectable} from '@nestjs/common'
 import {InjectModel} from '@nestjs/mongoose'
+import {AuthenticatedRepo, Token} from '@luminate/mongo-utils'
 import {Model} from 'mongoose'
 import {IFarmsRepo} from './IFarmsRepo'
-import {FarmDocument} from '../models'
-import {FarmMapper} from '../mappers/FarmMapper'
-import {AuthenticatedRepo, Token} from '@luminate/mongo-utils'
-import {FarmAggregate} from '../../domain/Farm/Farm'
+import {FarmDocument} from '../../models'
+import {FarmMapper} from '../../mappers/FarmMapper'
+import {FarmAggregate} from '../../../domain/Farm/Farm'
 
 @Injectable()
 export class FarmsRepo extends AuthenticatedRepo<FarmDocument> implements IFarmsRepo {

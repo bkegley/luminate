@@ -14,7 +14,7 @@ type CountryEdge {
   node: Country!
 }
 
-extend type Query {
+type Query {
   listCountries(cursor: String, limit: Int, query: [QueryInput!]): CountryConnection!
   getCountry(id: ID!): Country
 }
