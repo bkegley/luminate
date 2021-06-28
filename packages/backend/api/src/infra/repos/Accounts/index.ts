@@ -1,11 +1,11 @@
 import {Injectable} from '@nestjs/common'
 import {InjectModel} from '@nestjs/mongoose'
+import {AuthenticatedRepo, Token} from '@luminate/mongo-utils'
 import {Model} from 'mongoose'
 import {IAccountsRepo} from './IAccountsRepo'
-import {AccountDocument} from '../models'
-import {AccountMapper} from '../mappers/AccountMapper'
-import {AccountAggregate} from '../../domain/account/Account'
-import {AuthenticatedRepo, Token} from '@luminate/mongo-utils'
+import {AccountDocument} from '../../models'
+import {AccountMapper} from '../../mappers/AccountMapper'
+import {AccountAggregate} from '../../../domain/account/Account'
 
 @Injectable()
 export class AccountsRepo extends AuthenticatedRepo<AccountDocument> implements IAccountsRepo {

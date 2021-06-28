@@ -26,12 +26,12 @@ input UpdateRoleInput {
   scopes: [String!]
 }
 
-extend type Query {
+type Query {
   listRoles(cursor: String, limit: Int, query: [QueryInput!]): RoleConnection!
   getRole(id: ID!): Role
 }
 
-extend type Mutation {
+type Mutation {
   createRole(input: CreateRoleInput!): Role
   updateRole(id: ID!, input: UpdateRoleInput!): Role
   deleteRole(id: ID!): Role

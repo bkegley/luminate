@@ -1,4 +1,4 @@
-type Coffee @key(fields: "id") {
+type Coffee {
   id: ID!
   name: String!
   country: Country
@@ -57,18 +57,12 @@ input ComponentInput {
   percentage: Float!
 }
 
-extend type Query {
+type Query {
   listCoffees(cursor: String, limit: Int, query: [QueryInput!]): CoffeeConnection!
   getCoffee(id: ID!): Coffee
 }
 
-enum PermissionTypeEnum {
-  read
-  write
-  admin
-}
-
-extend type Mutation {
+type Mutation {
   createCoffee(input: CreateCoffeeInput!): Coffee
   updateCoffee(id: ID!, input: UpdateCoffeeInput!): Coffee
   deleteCoffee(id: ID!): Coffee

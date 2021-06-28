@@ -1,11 +1,11 @@
 import {Injectable} from '@nestjs/common'
 import {InjectModel} from '@nestjs/mongoose'
+import {AuthenticatedRepo, Token} from '@luminate/mongo-utils'
 import {Model} from 'mongoose'
 import {ICoffeesRepo} from './ICoffeesRepo'
-import {CoffeeDocument} from '../models'
-import {CoffeeMapper} from '../mappers/CoffeeMapper'
-import {AuthenticatedRepo, Token} from '@luminate/mongo-utils'
-import {CoffeeAggregate} from '../../domain/Coffee/Coffee'
+import {CoffeeDocument} from '../../models'
+import {CoffeeMapper} from '../../mappers/CoffeeMapper'
+import {CoffeeAggregate} from '../../../domain/Coffee/Coffee'
 
 @Injectable()
 export class CoffeesRepo extends AuthenticatedRepo<CoffeeDocument> implements ICoffeesRepo {

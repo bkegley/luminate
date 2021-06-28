@@ -3,9 +3,9 @@ import {Injectable} from '@nestjs/common'
 import {InjectModel} from '@nestjs/mongoose'
 import {Model} from 'mongoose'
 import {IRegionsRepo} from './IRegionsRepo'
-import {RegionDocument} from '../models'
-import {RegionMapper} from '../mappers/RegionMapper'
-import {RegionAggregate} from '../../domain/Region/Region'
+import {RegionDocument} from '../../models'
+import {RegionMapper} from '../../mappers/RegionMapper'
+import {RegionAggregate} from '../../../domain/Region/Region'
 
 @Injectable()
 export class RegionsRepo extends BaseRepo<RegionDocument> implements IRegionsRepo {

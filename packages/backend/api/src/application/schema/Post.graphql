@@ -48,13 +48,13 @@ input UpdatePostInput {
   content: String!
 }
 
-extend type Query {
+type Query {
   listPosts(cursor: String, limit: Int, query: [QueryInput!]): PostConnection!
   getEntityPosts(id: ID!): PostConnection!
   getPost(id: ID!): Post
 }
 
-extend type Mutation {
+type Mutation {
   createPost(input: CreatePostInput!): Post
   updatePost(id: ID!, input: UpdatePostInput!): Post
   deletePost(id: ID!): Post

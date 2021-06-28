@@ -16,7 +16,7 @@ export class RoleResolvers {
     return this.queryBus.execute(query)
   }
 
-  @Query('getRoles')
+  @Query('getRole')
   async getRoles(@Args('id') id: string) {
     const query = new GetRoleQuery(id)
     const role = await this.queryBus.execute(query)

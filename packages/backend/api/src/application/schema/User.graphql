@@ -11,7 +11,7 @@ interface UserInterface {
   updatedAt: String!
 }
 
-type User implements UserInterface @key(fields: "id") {
+type User implements UserInterface {
   id: ID!
   username: String!
   firstName: String
@@ -78,13 +78,13 @@ input UpdateMeInput {
   theme: Theme
 }
 
-extend type Query {
+type Query {
   listUsers(cursor: String, limit: Int, query: [QueryInput!]): UserConnection!
   getUser(id: ID!): User
   me: Me
 }
 
-extend type Mutation {
+type Mutation {
   createUser(input: CreateUserInput!): User
   updateUser(id: ID!, input: UpdateUserInput!): User
   updateUserRoles(id: ID!, roles: [ID!]): User

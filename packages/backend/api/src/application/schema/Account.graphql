@@ -26,12 +26,12 @@ input UpdateAccountInput {
   name: String
 }
 
-extend type Query {
+type Query {
   listAccounts(cursor: String, limit: Int, query: [QueryInput!]): AccountConnection!
   getAccount(id: ID!): Account
 }
 
-extend type Mutation {
+type Mutation {
   createAccount(input: CreateAccountInput!): Account
   updateAccount(id: ID!, input: UpdateAccountInput!): Account
   deleteAccount(id: ID!): Account

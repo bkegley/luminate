@@ -3,9 +3,9 @@ import {Injectable} from '@nestjs/common'
 import {InjectModel} from '@nestjs/mongoose'
 import {Model} from 'mongoose'
 import {IRolesRepo} from './IRolesRepo'
-import {RoleDocument} from '../models'
-import {RoleMapper} from '../mappers/RoleMapper'
-import {RoleAggregate} from '../../domain/role/Role'
+import {RoleDocument} from '../../models'
+import {RoleMapper} from '../../mappers/RoleMapper'
+import {RoleAggregate} from '../../../domain/role/Role'
 
 @Injectable()
 export class RolesRepo extends AuthenticatedRepo<RoleDocument> implements IRolesRepo {

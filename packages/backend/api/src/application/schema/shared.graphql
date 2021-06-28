@@ -15,6 +15,12 @@ enum OperatorEnum {
   containsSensitive
 }
 
+enum PermissionTypeEnum {
+  read
+  write
+  admin
+}
+
 input QueryInput {
   field: String!
   value: String

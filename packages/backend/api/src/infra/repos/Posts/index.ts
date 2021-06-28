@@ -3,9 +3,9 @@ import {Injectable} from '@nestjs/common'
 import {InjectModel} from '@nestjs/mongoose'
 import {Model} from 'mongoose'
 import {IPostsRepo} from './IPostsRepo'
-import {PostDocument} from '../models'
-import {PostMapper} from '../mappers/PostMapper'
-import {PostAggregate} from '../../domain/Post/Post'
+import {PostDocument} from '../../models'
+import {PostMapper} from '../../mappers/PostMapper'
+import {PostAggregate} from '../../../domain/Post/Post'
 
 @Injectable()
 export class PostsRepo extends AuthenticatedRepo<PostDocument> implements IPostsRepo {

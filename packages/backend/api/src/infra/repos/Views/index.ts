@@ -1,11 +1,11 @@
 import {Injectable} from '@nestjs/common'
 import {InjectModel} from '@nestjs/mongoose'
+import {AuthenticatedRepo, Token} from '@luminate/mongo-utils'
 import {Model} from 'mongoose'
 import {IViewsRepo} from './IViewsRepo'
-import {ViewDocument} from '../models'
-import {ViewMapper} from '../mappers/ViewMapper'
-import {ViewAggregate} from '../../domain/View/View'
-import {AuthenticatedRepo, Token} from '@luminate/mongo-utils'
+import {ViewDocument} from '../../models'
+import {ViewMapper} from '../../mappers/ViewMapper'
+import {ViewAggregate} from '../../../domain/View/View'
 
 @Injectable()
 export class ViewsRepo extends AuthenticatedRepo<ViewDocument> implements IViewsRepo {
