@@ -5,7 +5,7 @@ import {FilterQuery, QueryOptions} from 'mongoose'
 
 export interface IRepo<T extends Document> {
   list(filter: FilterQuery<T>, projection?: any | null, options?: QueryOptions | null): Promise<T[]>
-  list(filter: FilterQuery<T>): Promise<T[]>
+  list(filter?: FilterQuery<T>): Promise<T[]>
   list(): Promise<T[]>
 
   getById(id: string): Promise<T>

@@ -5,7 +5,7 @@ import {Args, Query, ResolveField, Resolver, Parent} from '@nestjs/graphql'
 import {RegionLoader} from '../../infra/loaders'
 import {RegionMapper} from '../../infra/mappers'
 import {QueryInput} from '../../types'
-import {AuthGuard} from '../AuthGuard'
+import {AuthGuard} from '../guards/AuthGuard'
 import {GetCountryQuery, ListCountriesQuery} from '../queries'
 
 @Resolver('Country')

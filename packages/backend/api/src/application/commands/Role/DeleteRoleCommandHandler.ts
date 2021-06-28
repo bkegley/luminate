@@ -2,6 +2,7 @@ import {CommandHandler, EventBus} from '@nestjs/cqrs'
 import {DeleteRoleCommand} from './DeleteRoleCommand'
 import {IDeleteRoleCommandHandler} from '.'
 import {RolesRepo} from '../../../infra/repos'
+import {RoleMapper} from '../../../infra/mappers'
 
 @CommandHandler(DeleteRoleCommand)
 export class DeleteRoleCommandHandler implements IDeleteRoleCommandHandler {
@@ -10,11 +11,13 @@ export class DeleteRoleCommandHandler implements IDeleteRoleCommandHandler {
   public async execute(command: DeleteRoleCommand) {
     const {id} = command
 
-    const existingRole = await this.rolesRepo.getById(id)
+    const existingRoleDocument = await this.rolesRepo.getById(id)
 
-    if (!existingRole) {
+    if (!existingRoleDocument) {
       throw new Error('Role not found')
     }
+
+    const existingRole = RoleMapper.toDomain(existingRoleDocument)
 
     try {
       await this.rolesRepo.delete(existingRole.getEntityId().toString())

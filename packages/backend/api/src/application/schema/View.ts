@@ -4,7 +4,7 @@ import {CommandBus, QueryBus} from '@nestjs/cqrs'
 import {Args, Context, Mutation, Query, Resolver} from '@nestjs/graphql'
 import {ViewMapper} from '../../infra/mappers'
 import {CreateViewInput, QueryInput} from '../../types'
-import {AuthGuard} from '../AuthGuard'
+import {AuthGuard} from '../guards/AuthGuard'
 import {CreateViewCommand, DeleteViewCommand, UpdateViewCommand} from '../commands'
 import {GetViewQuery, ListViewsQuery} from '../queries'
 

@@ -3,6 +3,7 @@ import {UpdateAccountCommand} from './UpdateAccountCommand'
 import {AccountName} from '../../../domain/account/AccountName'
 import {IUpdateAccountCommandHandler} from '.'
 import {AccountsRepo} from '../../../infra/repos'
+import {AccountMapper} from '../../../infra/mappers'
 
 @CommandHandler(UpdateAccountCommand)
 export class UpdateAccountCommandHandler implements IUpdateAccountCommandHandler {
@@ -11,14 +12,15 @@ export class UpdateAccountCommandHandler implements IUpdateAccountCommandHandler
   public async execute(command: UpdateAccountCommand) {
     const {id, name} = command
 
-    const [existingAccount, existingAccountName] = await Promise.all([
+    const [existingAccountDocument, existingAccountNameDocument] = await Promise.all([
       this.accountsRepo.getById(id),
       this.accountsRepo.getByName(name),
     ])
 
-    if (existingAccountName) {
+    if (existingAccountNameDocument) {
       throw new Error('Account name taken')
     }
+    const existingAccount = AccountMapper.toDomain(existingAccountDocument)
 
     const accountName = AccountName.create(name)
 

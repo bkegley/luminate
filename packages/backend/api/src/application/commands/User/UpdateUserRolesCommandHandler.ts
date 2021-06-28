@@ -2,6 +2,7 @@ import {CommandHandler, EventBus} from '@nestjs/cqrs'
 import {UpdateUserRolesCommand, IUpdateUserRolesCommandHandler} from '.'
 import {EntityId} from '@luminate/ddd'
 import {UsersRepo} from '../../../infra/repos'
+import {UserMapper} from '../../../infra/mappers'
 
 @CommandHandler(UpdateUserRolesCommand)
 export class UpdateUserRolesCommandHandler implements IUpdateUserRolesCommandHandler {
@@ -10,11 +11,13 @@ export class UpdateUserRolesCommandHandler implements IUpdateUserRolesCommandHan
   public async execute(command: UpdateUserRolesCommand) {
     const {id, roles, account} = command
 
-    const user = await this.usersRepo.getById(id)
+    const userDocument = await this.usersRepo.getById(id)
 
-    if (!user) {
+    if (!userDocument) {
       throw new Error('User not found')
     }
+
+    const user = UserMapper.toDomain(userDocument)
 
     user.updateRoles({account: EntityId.create(account), roles: roles.map(role => EntityId.create(role))})
 

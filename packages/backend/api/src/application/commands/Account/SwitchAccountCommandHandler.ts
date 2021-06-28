@@ -1,8 +1,9 @@
 import jwt from 'jsonwebtoken'
 import {CommandHandler, EventBus} from '@nestjs/cqrs'
 import {SwitchAccountCommand, ISwitchAccountCommandHandler} from '.'
-import {AccountSwitchFailedEvent, AccountSwitchedEvent} from '../../../domain/account/events'
+import {AccountSwitchedEvent} from '../../../domain/account/events'
 import {AccountsRepo, UsersRepo, RolesRepo} from '../../../infra/repos'
+import {AccountMapper, UserMapper} from '../../../infra/mappers'
 
 const USER_AUTH_TOKEN = process.env.USER_AUTH_TOKEN || 'localsecrettoken'
 
@@ -18,28 +19,34 @@ export class SwitchAccountCommandHandler implements ISwitchAccountCommandHandler
   public async execute(command: SwitchAccountCommand) {
     const {user: token, accountId} = command
 
-    const user = await this.usersRepo.getById(token.jti)
+    const userDocument = await this.usersRepo.getById(token.jti)
 
-    const newAccount = user?.accounts.find(account => account.toString() === accountId.toString())
+    const newAccountId = userDocument?.accounts.find(account => account.toString() === accountId.toString())
 
-    if (!user || !newAccount) {
-      const accountSwitchFailedEvent = new AccountSwitchFailedEvent(user.username.value, accountId)
-      this.eventBus.publish(accountSwitchFailedEvent)
-      return null
+    if (!userDocument || !newAccountId) {
+      throw new Error('Unable to switch account')
     }
+
+    const newAccountDocument = this.accountsRepo.getById(String(newAccountId))
+
+    if (!newAccountDocument) {
+      throw new Error('Unable to switch account')
+    }
+
+    const user = UserMapper.toDomain(userDocument)
 
     const [accountRoles, userAccounts] = await Promise.all([
       this.rolesRepo.list({
-        id: user.roles.map(role => role.toString()),
+        id: {$in: user.roles.map(role => role.toString())},
         account: command.accountId,
       }),
-      this.accountsRepo.list({id: user.accounts}),
+      this.accountsRepo.list({id: {$in: userDocument.accounts.map(String)}}),
     ])
 
-    const accounts = userAccounts.map(account => ({id: account.getEntityId().toString(), name: account.name})) || []
-    const account = accounts?.find(account => account.id === newAccount.toString()) || {}
+    const accounts = userAccounts.map(account => ({id: command.accountId, name: account.name})) || []
+    const account = accounts?.find(account => account.id === String(newAccountId)) || {}
 
-    const roles = accountRoles?.map(role => ({id: role.getEntityId().toString(), name: role.name}))
+    const roles = accountRoles?.map(role => ({id: role.id, name: role.name}))
 
     const scopes =
       accountRoles.reduce((acc, role) => {
