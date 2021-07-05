@@ -4,6 +4,7 @@ import {RoleAggregate} from '../../../domain/role/Role'
 import {EntityId} from '@luminate/ddd'
 import {RoleScope} from '../../../domain/role/RoleScope'
 import {RolesRepo} from '../../../infra/repos'
+import {RoleMapper} from '../../../infra/mappers'
 
 @CommandHandler(CreateRoleCommand)
 export class CreateRoleCommandHandler implements ICreateRoleCommandHandler {
@@ -22,7 +23,7 @@ export class CreateRoleCommandHandler implements ICreateRoleCommandHandler {
       scopes: command.scopes as RoleScope[],
     })
 
-    await this.rolesRepo.save(role)
+    await this.rolesRepo.create(RoleMapper.toPersistence(role))
     role.events.forEach(event => this.eventBus.publish(event))
     return role
   }

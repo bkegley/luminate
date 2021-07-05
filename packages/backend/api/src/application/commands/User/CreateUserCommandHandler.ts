@@ -31,7 +31,7 @@ export class CreateUserCommandHandler implements ICreateUserCommandHandler {
       ],
     })
 
-    await this.usersRepo.save(user)
+    await this.usersRepo.create(user)
 
     user.events.forEach(event => this.eventBus.publish(event))
 

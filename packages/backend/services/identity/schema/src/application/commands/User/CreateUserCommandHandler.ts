@@ -31,6 +31,7 @@ export class CreateUserCommandHandler implements ICreateUserCommandHandler {
       ],
     })
 
+    // TOOD: this should use `create` so that we can remove upsert
     await this.usersRepo.save(user)
 
     user.events.forEach(event => this.eventBus.publish(event))
