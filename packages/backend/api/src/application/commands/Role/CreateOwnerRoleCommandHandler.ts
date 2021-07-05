@@ -22,14 +22,16 @@ export class CreateOwnerRoleCommandHandler implements ICommandHandler<CreateOwne
     if (ownerDocument) {
       ownerRole = RoleMapper.toDomain(ownerDocument)
       ownerRole.update({scopes})
+
+      await this.rolesRepo.save(ownerRole)
     } else {
       ownerRole = RoleAggregate.create({
         name: 'Owner',
         scopes,
       })
-    }
 
-    await this.rolesRepo.save(ownerRole)
+      await this.rolesRepo.create(RoleMapper.toPersistence(ownerRole))
+    }
     console.log('Updated Owner role to have all scopes')
     return
   }

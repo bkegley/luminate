@@ -1,5 +1,6 @@
 import {CommandHandler, EventBus, ICommandHandler} from '@nestjs/cqrs'
 import {VarietyAggregate} from '../../../domain/Variety/Variety'
+import {VarietyMapper} from '../../../infra/mappers'
 import {VarietiesRepo} from '../../../infra/repos'
 import {CreateVarietyCommand} from './CreateVarietyCommand'
 
@@ -12,7 +13,7 @@ export class CreateVarietyCommandHandler implements ICommandHandler<CreateVariet
       name: command.name,
     })
 
-    await this.varietiesRepo.save(variety)
+    await this.varietiesRepo.create(VarietyMapper.toPersistence(variety))
     variety.events.forEach(event => this.eventBus.publish(event))
 
     return variety

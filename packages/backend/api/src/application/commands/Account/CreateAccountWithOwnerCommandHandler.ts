@@ -6,7 +6,7 @@ import {AccountName} from '../../../domain/account/AccountName'
 import {UserAggregate} from '../../../domain/user/User'
 import {UserUsername} from '../../../domain/user/UserUsername'
 import {UserPassword} from '../../../domain/user/UserPassword'
-import {RoleMapper} from '../../../infra/mappers'
+import {AccountMapper, RoleMapper, UserMapper} from '../../../infra/mappers'
 
 @CommandHandler(CreateAccountWithOwnerCommand)
 export class CreateAccountWithOwnerCommandHandler implements ICreateAccountWithOwnerCommandHandler {
@@ -48,7 +48,10 @@ export class CreateAccountWithOwnerCommandHandler implements ICreateAccountWithO
     })
 
     try {
-      await Promise.all([this.accountsRepo.save(account), this.usersRepo.save(user)])
+      await Promise.all([
+        this.accountsRepo.create(AccountMapper.toPersistence(account)),
+        this.usersRepo.create(UserMapper.toPersistence(user)),
+      ])
     } catch (error) {
       console.log({error})
       return null

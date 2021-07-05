@@ -42,6 +42,7 @@ export class UsersRepo implements IUsersRepo {
       {_id: id},
       // @ts-ignore
       userObj,
+      // TODO: this should be removed
       {upsert: true},
     )
   }

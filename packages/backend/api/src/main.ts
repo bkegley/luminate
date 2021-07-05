@@ -1,6 +1,8 @@
 import {NestFactory} from '@nestjs/core'
-import {AppModule} from './AppModule'
+import {CommandBus} from '@nestjs/cqrs'
 import cookieParser from 'cookie-parser'
+import {AppModule} from './AppModule'
+import {CreateOwnerRoleCommand} from './application/commands'
 
 const port = process.env.PORT || 3002
 
@@ -10,6 +12,10 @@ async function bootstrap() {
 
   await app.listen(port)
   console.log(`App listening on ${await app.getUrl()}`)
+
+  const commandBus = app.get(CommandBus)
+  const command = new CreateOwnerRoleCommand()
+  await commandBus.execute(command)
 }
 
 bootstrap()
