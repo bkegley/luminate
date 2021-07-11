@@ -30,5 +30,8 @@
     "express": "^4.17.1",
     "lodash.merge": "^4.6.2",
     "reflect-metadata": "^0.1.13"
+  },
+  "devDependencies": {
+    "@nestjs/testing": "^7.6.18"
   }
 }
