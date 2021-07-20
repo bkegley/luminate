@@ -41,13 +41,12 @@ export class AuthResolvers {
   }
 
   @Mutation('logout')
-  async logout(@Context('headers') headers: any, @Context('res') res: Response) {
-    const token = headers['x-refresh-token']
-    if (!token) {
+  async logout(@Context('refreshToken') refreshToken: string, @Context('res') res: Response) {
+    if (!refreshToken) {
       return false
     }
 
-    const command = new LogoutUserCommand(token)
+    const command = new LogoutUserCommand(refreshToken)
     const response = await this.commandBus.execute(command)
 
     res.clearCookie('lmt_ref')
@@ -56,9 +55,11 @@ export class AuthResolvers {
   }
 
   @Mutation('refreshToken')
-  async refreshToken(@Context('user') user: Token, @Context('headers') headers: any, @Context('res') res: Response) {
-    const refreshToken = headers['x-refresh-token']
-
+  async refreshToken(
+    @Context('user') user: Token,
+    @Context('refreshToken') refreshToken: string,
+    @Context('res') res: Response,
+  ) {
     const command = new RefreshTokenCommand(refreshToken, user)
     const token = await this.commandBus.execute(command)
 

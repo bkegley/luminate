@@ -21,9 +21,8 @@ export class TokenService {
 
   async createJwt(user: UserAggregate, currentAccessToken?: Token) {
     const account = currentAccessToken?.account?.id || user.defaultAccount.toString()
-
     const accountRoles = user.roles.find(role => role.account.toString() === account)
-    const roles = await this.rolesRepo.list({_id: accountRoles?.roles})
+    const roles = await this.rolesRepo.list({_id: accountRoles?.roles.map(role => role.toString())})
 
     const scopes =
       roles?.reduce((acc, role) => {
