@@ -41,7 +41,7 @@ const serverGenerates = {
     schema: ['./packages/backend/api/src/application/**/!(index.ts)*.graphql'],
     plugins: ['typescript', 'typescript-resolvers'],
     config: {
-      contextType: './main#Context',
+      contextType: './application/ApplicationModule#Context',
       useIndexSignature: true,
     },
   },
