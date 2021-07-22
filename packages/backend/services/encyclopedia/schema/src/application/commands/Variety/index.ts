@@ -1,6 +1,0 @@
-export * from './CreateVarietyCommand'
-export * from './CreateVarietyCommandHandler'
-export * from './DeleteVarietyCommand'
-export * from './DeleteVarietyCommandHandler'
-export * from './UpdateVarietyCommand'
-export * from './UpdateVarietyCommandHandler'

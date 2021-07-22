@@ -1,7 +1,0 @@
-export * from './ICoffeeDTO'
-export * from './ICountryDTO'
-export * from './IFarmDTO'
-export * from './IPostDTO'
-export * from './IRegionDTO'
-export * from './IVarietyDTO'
-export * from './IViewDTO'

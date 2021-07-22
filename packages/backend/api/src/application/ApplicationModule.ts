@@ -8,7 +8,7 @@ import {CommandModule} from './commands/CommandModule'
 import {QueryModule} from './queries/QueryModule'
 import {SchemaModule} from './schema/SchemaModule'
 
-const port = process.env.PORT || 3002
+const port = process.env.PORT || 3000
 const frontend = process.env.FRONTEND_URL || 'http://localhost:8000'
 
 export interface Context {

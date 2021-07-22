@@ -2,11 +2,18 @@ import {Module} from '@nestjs/common'
 import {MongooseModule} from '@nestjs/mongoose'
 import {
   AccountSchema,
+  BrewGuideSchema,
+  BrewerSchema,
+  BrewingSessionSchema,
   CoffeeSchema,
   CountrySchema,
+  CuppingSessionSchema,
+  EvaluationSchema,
   FarmSchema,
+  GrinderSchema,
   PersonSchema,
   PostSchema,
+  RecipeSchema,
   RefreshTokenSchema,
   RegionSchema,
   RoleSchema,
@@ -23,6 +30,18 @@ const schemas = MongooseModule.forFeature([
     schema: AccountSchema,
   },
   {
+    name: 'brewGuide',
+    schema: BrewGuideSchema,
+  },
+  {
+    name: 'brewer',
+    schema: BrewerSchema,
+  },
+  {
+    name: 'brewingSession',
+    schema: BrewingSessionSchema,
+  },
+  {
     name: 'coffee',
     schema: CoffeeSchema,
   },
@@ -31,8 +50,20 @@ const schemas = MongooseModule.forFeature([
     schema: CountrySchema,
   },
   {
+    name: 'cuppingSession',
+    schema: CuppingSessionSchema,
+  },
+  {
+    name: 'evaluation',
+    schema: EvaluationSchema,
+  },
+  {
     name: 'farm',
     schema: FarmSchema,
+  },
+  {
+    name: 'grinder',
+    schema: GrinderSchema,
   },
   {
     name: 'person',
@@ -41,6 +72,10 @@ const schemas = MongooseModule.forFeature([
   {
     name: 'post',
     schema: PostSchema,
+  },
+  {
+    name: 'recipe',
+    schema: RecipeSchema,
   },
   {
     name: 'refreshToken',
