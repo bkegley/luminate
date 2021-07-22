@@ -11,20 +11,6 @@ services:
     image: mongo:3.6.17-xenial
     container_name: db
 
-  mongo-utils:
-    build:
-      context: .
-      dockerfile: packages/backend/utils/mongo/Dockerfile
-    image: mongo-utils
-
-  graphql-utils:
-    build:
-      context: .
-      dockerfile: packages/backend/utils/graphql/Dockerfile
-    image: graphql-utils
-    depends_on:
-      - mongo-utils
-
   app:
     build:
       context: .
@@ -32,46 +18,11 @@ services:
     image: app
     container_name: app
 
-  identity-schema:
+  api:
     build:
       context: .
-      dockerfile: packages/backend/services/identity/schema/Dockerfile
-    image: identity-schema
-    container_name: identity-schema
+      dockerfile: packages/backend/api/Dockerfile
+    image: api
+    container_name: api
     depends_on:
       - db
-      - mongo-utils
-      - graphql-utils
-
-  encyclopedia-schema:
-    build:
-      context: .
-      dockerfile: packages/backend/services/encyclopedia/schema/Dockerfile
-    image: encyclopedia-schema
-    container_name: encyclopedia-schema
-    depends_on:
-      - db
-      - mongo-utils
-      - graphql-utils
-
-  brewing-schema:
-    build:
-      context: .
-      dockerfile: packages/backend/services/brewing/schema/Dockerfile
-    image: brewing-schema
-    container_name: brewing-schema
-    depends_on:
-      - db
-      - mongo-utils
-      - graphql-utils
-
-  gateway-luminate:
-    build:
-      context: .
-      dockerfile: packages/backend/gateways/luminate/Dockerfile
-    image: gateway-luminate
-    container_name: gateway-luminate
-    depends_on:
-      - identity-schema
-      - encyclopedia-schema
-      - brewing-schema

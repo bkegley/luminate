@@ -6,9 +6,15 @@
   "author": "Bryan Kegley",
   "license": "MIT",
   "workspaces": {
-    "nohoist": ["@tailwindcss/forms", "@tailwindcss/forms/**"]
+    "nohoist": [
+      "@tailwindcss/forms",
+      "@tailwindcss/forms/**"
+    ]
   },
-  "files": ["dist", "src"],
+  "files": [
+    "dist",
+    "src"
+  ],
   "engines": {
     "node": ">=10"
   },
