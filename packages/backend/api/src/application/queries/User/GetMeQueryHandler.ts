@@ -7,6 +7,6 @@ export class GetMeQueryHandler implements IQueryHandler<GetMeQuery> {
   constructor(private readonly usersRepo: UsersRepo) {}
 
   async execute(query: GetMeQuery) {
-    return this.usersRepo.getById(query.id)
+    return this.usersRepo.getById(query.user, query.user.jti)
   }
 }

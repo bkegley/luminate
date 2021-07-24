@@ -21,7 +21,8 @@ export class RefreshTokenCommandHandler implements IRefreshTokenCommandHandler {
     const refreshToken = RefreshTokenMapper.toDomain(refreshTokenDocument)
 
     const {userId} = refreshToken
-    const userDocument = await this.usersRepo.getById(userId.toString())
+
+    const userDocument = await this.usersRepo.getByIdForRefreshToken(userId.toString())
     const user = UserMapper.toDomain(userDocument)
 
     const token = await this.tokenService.createJwt(user, command.accessToken)

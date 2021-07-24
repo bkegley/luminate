@@ -17,6 +17,10 @@ export class UsersRepo extends AuthenticatedRepo<UserDocument> implements IUsers
     return this.userModel.findOne({username})
   }
 
+  public async getByIdForRefreshToken(id: string) {
+    return this.userModel.findById(id)
+  }
+
   save(token: Token, user: UserAggregate): Promise<void>
   save(user: UserAggregate): Promise<void>
   public async save(tokenOrUser: Token | UserAggregate, user?: UserAggregate) {

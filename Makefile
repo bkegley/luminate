@@ -15,5 +15,5 @@ build-utils:
 dev-api:
 	yarn workspace @luminate/api develop
 
-dev-app:
+dev-frontend:
 	yarn workspace @luminate/app develop
