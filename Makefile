@@ -17,3 +17,6 @@ dev-api:
 
 dev-frontend:
 	yarn workspace @luminate/app develop
+
+seed-db:
+	yarn workspace @luminate/api geo-populate
