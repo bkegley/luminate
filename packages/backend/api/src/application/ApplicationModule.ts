@@ -7,13 +7,17 @@ import {InfraModule} from '../infra/InfraModule'
 import {CommandModule} from './commands/CommandModule'
 import {QueryModule} from './queries/QueryModule'
 import {SchemaModule} from './schema/SchemaModule'
+import {Token} from '@luminate/mongo-utils'
+import {parseTokenFromRequest} from '@luminate/graphql-utils'
 
 const port = process.env.PORT || 3000
 const frontend = process.env.FRONTEND_URL || 'http://localhost:8000'
 
+const tokenSecret = process.env.USER_AUTH_TOKEN || 'supersecretpassword'
+
 export interface Context {
   res: Response
-  headers: Request['headers']
+  user?: Token
   refreshToken: string
 }
 
@@ -34,9 +38,15 @@ const cors: CorsOptions = {
     GraphQLModule.forRoot({
       typePaths: ['./src/application/schema/*.graphql'],
       context: ({req, res}: {req: Request; res: Response}): Context => {
+        let user: Token
+
+        try {
+          user = parseTokenFromRequest(req, tokenSecret)
+        } catch {}
+
         return {
           res,
-          headers: req.headers,
+          user,
           refreshToken: req.cookies.lmt_ref,
         }
       },
