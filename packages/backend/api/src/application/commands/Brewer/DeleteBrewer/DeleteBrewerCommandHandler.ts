@@ -10,7 +10,7 @@ export class DeleteBrewerCommandHandler implements IDeleteBrewerCommandHandler {
 
   public async execute(command: DeleteBrewerCommand) {
     return new Promise<Brewer>(async (resolve, reject) => {
-      const brewerDocument = await this.brewersRepo.getById(command.id)
+      const brewerDocument = await this.brewersRepo.getById(command.user, command.id)
 
       if (!brewerDocument) {
         reject('Brewer does not exist')

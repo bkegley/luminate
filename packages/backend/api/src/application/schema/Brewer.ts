@@ -4,6 +4,7 @@ import {CommandBus, QueryBus} from '@nestjs/cqrs'
 import {Mutation, Query, Resolver, Args, Context} from '@nestjs/graphql'
 import {Brewer} from '../../domain/Brewer'
 import {BrewerMapper} from '../../infra/mappers'
+import {CreateBrewerInput, UpdateBrewerInput} from '../../types'
 import {CreateBrewerCommand, DeleteBrewerCommand, UpdateBrewerCommand} from '../commands'
 import {AuthGuard} from '../guards'
 import {ListBrewersQuery} from '../queries'
@@ -28,24 +29,24 @@ export class BrewerResolvers {
   }
 
   @Mutation('createBrewer')
-  async createBrewer(@Args('input') input: any) {
-    const command = new CreateBrewerCommand(input)
+  async createBrewer(@Args('input') input: CreateBrewerInput, @Context('user') user: Token) {
+    const command = new CreateBrewerCommand(user, input)
     const brewer: Brewer = await this.commandBus.execute(command)
 
     return BrewerMapper.toDTO(brewer)
   }
 
   @Mutation('updateBrewer')
-  async updateBrewer(@Args('id') id: string, @Args('input') input: any) {
-    const command = new UpdateBrewerCommand(id, input)
+  async updateBrewer(@Args('id') id: string, @Args('input') input: UpdateBrewerInput, @Context('user') user: Token) {
+    const command = new UpdateBrewerCommand(user, id, input)
     const brewer: Brewer = await this.commandBus.execute(command)
 
     return BrewerMapper.toDTO(brewer)
   }
 
   @Mutation('deleteBrewer')
-  async deleteBrewer(@Args('id') id: string) {
-    const command = new DeleteBrewerCommand(id)
+  async deleteBrewer(@Args('id') id: string, @Context('user') user: Token) {
+    const command = new DeleteBrewerCommand(user, id)
     await this.commandBus.execute(command)
 
     return true
