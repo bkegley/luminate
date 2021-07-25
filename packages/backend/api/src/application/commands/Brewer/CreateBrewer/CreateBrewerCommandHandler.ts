@@ -11,7 +11,7 @@ export class CreateBrewerCommandHandler implements ICreateBrewerCommandHandler {
   public async execute(command: CreateBrewerCommand) {
     return new Promise<Brewer>(async (resolve, reject) => {
       // Brewer name cannot already exist
-      const existingBrewer = await this.brewerRepo.getByName(command.name)
+      const existingBrewer = await this.brewerRepo.getByName(command.user, command.name)
       if (existingBrewer) {
         reject('Brewer already exists')
         return
@@ -20,7 +20,7 @@ export class CreateBrewerCommandHandler implements ICreateBrewerCommandHandler {
       const brewer = BrewerMapper.toDomain(command)
 
       this.brewerRepo
-        .save(brewer)
+        .create(command.user, BrewerMapper.toPersistence(brewer))
         .then(() => {
           brewer.events.forEach(event => this.eventBus.publish(event))
           resolve(brewer)

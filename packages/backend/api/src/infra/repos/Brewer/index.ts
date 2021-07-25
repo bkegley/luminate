@@ -13,8 +13,9 @@ export class BrewersRepo extends AuthenticatedRepo<BrewerDocument> implements IB
     super(brewerModel)
   }
 
-  public async getByName(name: string) {
-    return this.brewerModel.findOne({name})
+  public async getByName(user: Token, name: string) {
+    const readConditions = this.getReadConditionsForUser(user)
+    return this.brewerModel.findOne({$and: [readConditions, {name}]})
   }
 
   save(user: Token, brewer: Brewer): Promise<void>

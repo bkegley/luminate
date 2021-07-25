@@ -1,3 +1,4 @@
+import {Token} from '@luminate/mongo-utils'
 import {CreateBrewerInput, BrewerType} from '../../../../types'
 
 export class CreateBrewerCommand {
@@ -5,7 +6,7 @@ export class CreateBrewerCommand {
   description: string
   type: BrewerType
 
-  constructor(input: CreateBrewerInput) {
+  constructor(public user: Token, input: CreateBrewerInput) {
     this.name = input.name
     this.description = input.description
     this.type = input.type

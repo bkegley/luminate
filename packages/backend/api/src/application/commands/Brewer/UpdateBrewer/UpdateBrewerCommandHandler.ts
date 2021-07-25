@@ -11,8 +11,8 @@ export class UpdateBrewerCommandHandler implements IUpdateBrewerCommandHandler {
   public async execute(command: UpdateBrewerCommand) {
     return new Promise<Brewer>(async (resolve, reject) => {
       const [brewerDocument, existingBrewerNameDocument] = await Promise.all([
-        this.brewerRepo.getById(command.id),
-        this.brewerRepo.getByName(command.name),
+        this.brewerRepo.getById(command.user, command.id),
+        this.brewerRepo.getByName(command.user, command.name),
       ])
 
       if (!brewerDocument) {
