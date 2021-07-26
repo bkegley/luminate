@@ -29,20 +29,24 @@ export class EvaluationResolvers {
   }
 
   @Mutation('createEvaluation')
-  async createEvaluation(@Args('input') input: CreateEvaluationInput) {
-    const command = new CreateEvaluationCommand(input)
+  async createEvaluation(@Args('input') input: CreateEvaluationInput, @Context('user') user: Token) {
+    const command = new CreateEvaluationCommand(user, input)
     return this.commandBus.execute(command)
   }
 
   @Mutation('updateEvaluation')
-  async updateEvaluation(@Args('id') id: string, @Args('input') input: UpdateEvaluationInput) {
-    const command = new UpdateEvaluationCommand(id, input)
+  async updateEvaluation(
+    @Args('id') id: string,
+    @Args('input') input: UpdateEvaluationInput,
+    @Context('user') user: Token,
+  ) {
+    const command = new UpdateEvaluationCommand(user, id, input)
     return this.commandBus.execute(command)
   }
 
   @Mutation('deleteEvaluation')
-  async deleteEvaluation(@Args('id') id: string) {
-    const command = new DeleteEvaluationCommand(id)
+  async deleteEvaluation(@Args('id') id: string, @Context('user') user: Token) {
+    const command = new DeleteEvaluationCommand(user, id)
     return this.commandBus.execute(command)
   }
 }

@@ -11,7 +11,7 @@ export class CreateGrinderCommandHandler implements ICreateGrinderCommandHandler
   public async execute(command: CreateGrinderCommand) {
     return new Promise<Grinder>(async (resolve, reject) => {
       // Grinder name cannot already exist
-      const existingGrinder = await this.grinderRepo.getByName(command.name)
+      const existingGrinder = await this.grinderRepo.getByName(command.user, command.name)
       if (existingGrinder) {
         reject('Grinder already exists')
         return
@@ -20,7 +20,7 @@ export class CreateGrinderCommandHandler implements ICreateGrinderCommandHandler
       const grinder = GrinderMapper.toDomain(command)
 
       this.grinderRepo
-        .save(grinder)
+        .create(command.user, grinder)
         .then(() => {
           grinder.events.forEach(event => this.eventBus.publish(event))
           resolve(grinder)

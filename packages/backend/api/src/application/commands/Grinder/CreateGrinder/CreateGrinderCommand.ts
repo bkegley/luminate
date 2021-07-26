@@ -1,3 +1,4 @@
+import {Token} from '@luminate/mongo-utils'
 import {CreateGrinderInput} from '../../../../types'
 
 export class CreateGrinderCommand {
@@ -5,7 +6,7 @@ export class CreateGrinderCommand {
   description: string
   burrSet: string
 
-  constructor(input: CreateGrinderInput) {
+  constructor(public user: Token, input: CreateGrinderInput) {
     this.name = input.name
     this.description = input.description
     this.burrSet = input.burrSet

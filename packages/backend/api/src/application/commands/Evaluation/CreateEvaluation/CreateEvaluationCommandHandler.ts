@@ -13,7 +13,7 @@ export class CreateEvaluationCommandHandler implements ICreateEvaluationCommandH
       const evaluation = EvaluationMapper.toDomain(command)
 
       this.evaluationRepo
-        .save(evaluation)
+        .create(command.user, evaluation)
         .then(() => {
           evaluation.events.forEach(event => this.eventBus.publish(event))
           resolve(evaluation)

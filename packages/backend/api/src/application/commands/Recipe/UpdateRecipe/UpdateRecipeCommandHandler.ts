@@ -16,12 +16,10 @@ export class UpdateRecipeCommandHandler implements IUpdateRecipeCommandHandler {
 
   async execute(command: UpdateRecipeCommand) {
     return new Promise<Recipe>(async (resolve, reject) => {
-      const {input, id} = command
-
       const [existingRecipe, brewer, grinder] = await Promise.all([
-        this.recipeRepo.getById(id),
-        this.brewerRepo.getById(input.brewerId),
-        this.grinderRepo.getById(input.grinderId),
+        this.recipeRepo.getById(command.user, command.id),
+        this.brewerRepo.getById(command.user, command.brewerId),
+        this.grinderRepo.getById(command.user, command.grinderId),
       ])
 
       if (!existingRecipe) {
@@ -40,12 +38,12 @@ export class UpdateRecipeCommandHandler implements IUpdateRecipeCommandHandler {
       }
 
       const recipe = RecipeMapper.toDomain(existingRecipe)
-      const attrs = RecipeMapper.toAttrs(input)
+      const attrs = RecipeMapper.toAttrs(command)
 
       recipe.update(attrs)
 
       await this.recipeRepo
-        .save(recipe)
+        .save(command.user, recipe)
         .then(() => {
           recipe.events.forEach(event => this.eventBus.publish(event))
           resolve(recipe)

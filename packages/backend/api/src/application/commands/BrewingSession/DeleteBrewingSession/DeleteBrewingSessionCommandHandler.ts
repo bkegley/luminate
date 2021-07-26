@@ -10,7 +10,7 @@ export class DeleteBrewingSessionCommandHandler implements IDeleteBrewingSession
 
   public execute(command: DeleteBrewingSessionCommand) {
     return new Promise<BrewingSession>(async (resolve, reject) => {
-      const brewingSessionDoc = await this.brewingSessionRepo.getById(command.id)
+      const brewingSessionDoc = await this.brewingSessionRepo.getById(command.user, command.id)
 
       if (!brewingSessionDoc) {
         reject('BrewingSession does not exist')
@@ -22,7 +22,7 @@ export class DeleteBrewingSessionCommandHandler implements IDeleteBrewingSession
       brewingSession.delete()
 
       await this.brewingSessionRepo
-        .delete(command.id)
+        .delete(command.user, command.id)
         .then(() => {
           brewingSession.events.forEach(event => this.eventBus.publish(event))
           resolve(brewingSession)

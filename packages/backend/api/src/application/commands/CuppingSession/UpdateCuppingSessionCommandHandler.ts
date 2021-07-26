@@ -10,7 +10,7 @@ export class UpdateCuppingSessionCommandHandler implements ICommandHandler<Updat
 
   async execute(command: UpdateCuppingSessionCommand) {
     return new Promise<CuppingSessionAggregate>(async (resolve, reject) => {
-      const cuppingSessionDoc = await this.cuppingSessionsRepo.getById(command.id)
+      const cuppingSessionDoc = await this.cuppingSessionsRepo.getById(command.user, command.id)
 
       if (!cuppingSessionDoc) {
         return reject('Cupping session not found')
@@ -22,7 +22,7 @@ export class UpdateCuppingSessionCommandHandler implements ICommandHandler<Updat
       cuppingSession.update(attrs)
 
       await this.cuppingSessionsRepo
-        .save(cuppingSession)
+        .save(command.user, cuppingSession)
         .then(() => {
           cuppingSession.events.forEach(event => this.eventBus.publish(event))
           resolve(cuppingSession)

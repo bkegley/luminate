@@ -6,6 +6,7 @@ import {CreateBrewingSessionCommand, UpdateBrewingSessionCommand, DeleteBrewingS
 import {Token} from '@luminate/mongo-utils'
 import {UseGuards} from '@nestjs/common'
 import {AuthGuard} from '../guards'
+import {CreateBrewingSessionInput, UpdateBrewingSessionInput} from '../../types'
 
 @Resolver('BrewingSession')
 @UseGuards(AuthGuard)
@@ -26,25 +27,29 @@ export class BrewingSessionResolvers {
   }
 
   @Mutation('createBrewingSession')
-  async createBrewingSession(@Args('input') input: any) {
-    const command = new CreateBrewingSessionCommand(input)
+  async createBrewingSession(@Args('input') input: CreateBrewingSessionInput, @Context('user') user: Token) {
+    const command = new CreateBrewingSessionCommand(user, input)
     const brewingSession = await this.commandBus.execute(command)
 
     return BrewingSessionMapper.toDTO(brewingSession)
   }
 
   @Mutation('updateBrewingSession')
-  async updateBrewingSession(@Args('id') id: string, @Args('input') input: any) {
-    const command = new UpdateBrewingSessionCommand(id, input)
+  async updateBrewingSession(
+    @Args('id') id: string,
+    @Args('input') input: UpdateBrewingSessionInput,
+    @Context('user') user: Token,
+  ) {
+    const command = new UpdateBrewingSessionCommand(user, id, input)
     const brewingSession = await this.commandBus.execute(command)
 
     return BrewingSessionMapper.toDTO(brewingSession)
   }
 
   @Mutation('deleteBrewingSession')
-  async deleteBrewingSession(@Args('id') id: string) {
-    const command = new DeleteBrewingSessionCommand(id)
-    const brewingSession = await this.commandBus.execute(command)
+  async deleteBrewingSession(@Args('id') id: string, @Context('user') user: Token) {
+    const command = new DeleteBrewingSessionCommand(user, id)
+    await this.commandBus.execute(command)
 
     return true
   }

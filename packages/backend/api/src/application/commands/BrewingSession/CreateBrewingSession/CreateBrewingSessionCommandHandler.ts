@@ -14,7 +14,7 @@ export class CreateBrewingSessionCommandHandler implements ICreateBrewingSession
 
   public async execute(command: CreateBrewingSessionCommand) {
     return new Promise<BrewingSession>(async (resolve, reject) => {
-      const existingBrewGuide = await this.brewGuideRepo.getById(command.brewGuideId)
+      const existingBrewGuide = await this.brewGuideRepo.getById(command.user, command.brewGuideId)
       if (!existingBrewGuide) {
         reject('Brew guide not found')
         return
@@ -23,7 +23,7 @@ export class CreateBrewingSessionCommandHandler implements ICreateBrewingSession
       const brewingSession = BrewingSessionMapper.toDomain(command)
 
       this.brewingSessionRepo
-        .save(brewingSession)
+        .create(command.user, brewingSession)
         .then(() => {
           brewingSession.events.forEach(event => this.eventBus.publish(event))
           resolve(brewingSession)

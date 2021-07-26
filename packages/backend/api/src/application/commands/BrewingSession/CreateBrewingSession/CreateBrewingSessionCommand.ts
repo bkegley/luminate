@@ -1,3 +1,4 @@
+import {Token} from '@luminate/mongo-utils'
 import {CreateBrewingSessionInput} from '../../../../types'
 
 export class CreateBrewingSessionCommand {
@@ -5,15 +6,9 @@ export class CreateBrewingSessionCommand {
   description?: string
   brewGuideId: string
 
-  constructor(input: CreateBrewingSessionInput) {
+  constructor(public user: Token, input: CreateBrewingSessionInput) {
     this.brewGuideId = input.brewGuideId
-
-    if (input.date) {
-      this.date = input.date
-    }
-
-    if (input.description) {
-      this.description = input.description
-    }
+    this.date = input.date
+    this.description = input.description
   }
 }

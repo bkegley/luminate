@@ -11,7 +11,7 @@ export class CreateCuppingSessionCommandHandler implements ICommandHandler<Creat
   async execute(command: CreateCuppingSessionCommand) {
     return new Promise<CuppingSessionAggregate>(async (resolve, reject) => {
       if (command.internalId) {
-        const existingCuppingSession = await this.cuppingSessionsRepo.getByInternalId(command.internalId)
+        const existingCuppingSession = await this.cuppingSessionsRepo.getByInternalId(command.user, command.internalId)
         if (existingCuppingSession) {
           throw new Error('Cupping session already exists')
         }
@@ -20,7 +20,7 @@ export class CreateCuppingSessionCommandHandler implements ICommandHandler<Creat
       const cuppingSession = CuppingSessionMapper.toDomain(command)
 
       await this.cuppingSessionsRepo
-        .save(cuppingSession)
+        .create(command.user, cuppingSession)
         .then(() => {
           cuppingSession.events.forEach(event => this.eventBus.publish(event))
           resolve(cuppingSession)
