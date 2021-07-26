@@ -16,9 +16,9 @@ export class CreateRecipeCommandHandler implements ICreateRecipeCommandHandler {
   public execute(command: CreateRecipeCommand) {
     return new Promise<Recipe>(async (resolve, reject) => {
       const [existingRecipe, brewer, grinder] = await Promise.all([
-        this.recipeRepo.getByName(command.name),
-        this.brewerRepo.getById(command.brewerId),
-        this.grinderRepo.getById(command.grinderId),
+        this.recipeRepo.getByName(command.user, command.name),
+        this.brewerRepo.getById(command.user, command.brewerId),
+        this.grinderRepo.getById(command.user, command.grinderId),
       ])
 
       if (existingRecipe) {
@@ -39,7 +39,7 @@ export class CreateRecipeCommandHandler implements ICreateRecipeCommandHandler {
       const recipe = RecipeMapper.toDomain(command)
 
       this.recipeRepo
-        .save(recipe)
+        .create(command.user, recipe)
         .then(() => {
           recipe.events.forEach(event => this.eventBus.publish(event))
           resolve(recipe)

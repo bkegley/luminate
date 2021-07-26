@@ -3,7 +3,7 @@ import {UseGuards} from '@nestjs/common'
 import {CommandBus, QueryBus} from '@nestjs/cqrs'
 import {Args, Query, Resolver, Mutation, Context} from '@nestjs/graphql'
 import {CuppingSessionMapper} from '../../infra/mappers'
-import {UpdateCuppingSessionInput} from '../../types'
+import {CreateCuppingSessionInput, UpdateCuppingSessionInput} from '../../types'
 import {CreateCuppingSessionCommand} from '../commands'
 import {DeleteCuppingSessionCommand} from '../commands/CuppingSession/DeleteCuppingSessionCommand'
 import {UpdateCuppingSessionCommand} from '../commands/CuppingSession/UpdateCuppingSessionCommand'
@@ -34,16 +34,20 @@ export class CuppingSessionResolvers {
   }
 
   @Mutation('createCuppingSession')
-  async createCuppingSession(@Args('input') input: any) {
-    const command = new CreateCuppingSessionCommand(input)
+  async createCuppingSession(@Args('input') input: CreateCuppingSessionInput, @Context('user') user: Token) {
+    const command = new CreateCuppingSessionCommand(user, input)
     const cuppingSession = await this.commandBus.execute(command)
 
     return CuppingSessionMapper.toDTO(cuppingSession)
   }
 
   @Mutation('updateCuppingSession')
-  async updateCuppingSession(@Args('id') id: string, @Args('input') input: UpdateCuppingSessionInput) {
-    const command = new UpdateCuppingSessionCommand(id, input)
+  async updateCuppingSession(
+    @Args('id') id: string,
+    @Args('input') input: UpdateCuppingSessionInput,
+    @Context('user') user: Token,
+  ) {
+    const command = new UpdateCuppingSessionCommand(user, id, input)
     const cuppingSession = await this.commandBus.execute(command)
     if (!cuppingSession) {
       return null
@@ -53,8 +57,8 @@ export class CuppingSessionResolvers {
   }
 
   @Mutation('deleteCuppingSession')
-  async deleteCuppingSession(@Args('id') id: string) {
-    const command = new DeleteCuppingSessionCommand(id)
+  async deleteCuppingSession(@Args('id') id: string, @Context('user') user: Token) {
+    const command = new DeleteCuppingSessionCommand(user, id)
     return this.commandBus.execute(command)
   }
 }

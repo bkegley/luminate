@@ -3,7 +3,7 @@ import {UseGuards} from '@nestjs/common'
 import {CommandBus, QueryBus} from '@nestjs/cqrs'
 import {Args, Context, Mutation, Query, Resolver} from '@nestjs/graphql'
 import {BrewerMapper, GrinderMapper, RecipeMapper} from '../../infra/mappers'
-import {UpdateRecipeInput} from '../../types'
+import {CreateRecipeInput, UpdateRecipeInput} from '../../types'
 import {CreateRecipeCommand} from '../commands'
 import {DeleteRecipeCommand} from '../commands/Recipe/DeleteRecipe'
 import {UpdateRecipeCommand} from '../commands/Recipe/UpdateRecipe'
@@ -30,8 +30,8 @@ export class RecipeResolvers {
   }
 
   @Mutation('createRecipe')
-  async createRecipe(@Args('input') input: any) {
-    const command = new CreateRecipeCommand(input)
+  async createRecipe(@Args('input') input: CreateRecipeInput, @Context('user') user: Token) {
+    const command = new CreateRecipeCommand(user, input)
     const response = await this.commandBus.execute(command)
     const recipeDTO = RecipeMapper.toDTO(response.recipe)
     return {
@@ -42,16 +42,16 @@ export class RecipeResolvers {
   }
 
   @Mutation('updateRecipe')
-  async updateRecipe(@Args('id') id: string, @Args('input') input: UpdateRecipeInput) {
-    const command = new UpdateRecipeCommand(id, input)
+  async updateRecipe(@Args('id') id: string, @Args('input') input: UpdateRecipeInput, @Context('user') user: Token) {
+    const command = new UpdateRecipeCommand(user, id, input)
     const recipe = await this.commandBus.execute(command)
 
     return RecipeMapper.toDTO(recipe)
   }
 
   @Mutation('deleteRecipe')
-  async deleteRecipe(@Args('id') id: string) {
-    const command = new DeleteRecipeCommand(id)
+  async deleteRecipe(@Args('id') id: string, @Context('user') user: Token) {
+    const command = new DeleteRecipeCommand(user, id)
     return await this.commandBus.execute(command)
   }
 }

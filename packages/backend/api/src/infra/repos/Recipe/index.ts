@@ -13,8 +13,8 @@ export class RecipesRepo extends AuthenticatedRepo<RecipeDocument> implements IR
     super(recipeModel)
   }
 
-  public async getByName(name: string) {
-    return this.recipeModel.findOne({name})
+  public async getByName(user: Token, name: string) {
+    return this.recipeModel.findOne({$and: [this.getReadConditionsForUser(user), {name}]})
   }
 
   save(user: Token, recipe: Recipe): Promise<void>

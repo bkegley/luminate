@@ -10,7 +10,7 @@ export class DeleteRecipeCommandHandler implements IDeleteRecipeCommandHandler {
 
   async execute(command: DeleteRecipeCommand) {
     return new Promise<Recipe>(async (resolve, reject) => {
-      const recipeDoc = await this.recipeRepo.getById(command.id)
+      const recipeDoc = await this.recipeRepo.getById(command.user, command.id)
 
       if (!recipeDoc) {
         reject('Recipe does not exist')
@@ -21,7 +21,7 @@ export class DeleteRecipeCommandHandler implements IDeleteRecipeCommandHandler {
       recipe.delete()
 
       this.recipeRepo
-        .delete(command.id)
+        .delete(command.user, command.id)
         .then(() => {
           recipe.events.forEach(event => this.eventBus.publish(event))
           resolve(recipe)

@@ -1,12 +1,11 @@
+import {Token} from '@luminate/mongo-utils'
 import {UpdateCuppingSessionInput} from '../../../types'
 
 export class UpdateCuppingSessionCommand {
-  id: string
   internalId?: string
   description?: string
 
-  constructor(id: string, input: UpdateCuppingSessionInput) {
-    this.id = id
+  constructor(public user: Token, public id: string, input: UpdateCuppingSessionInput) {
     this.internalId = input.internalId
     this.description = input.description
   }

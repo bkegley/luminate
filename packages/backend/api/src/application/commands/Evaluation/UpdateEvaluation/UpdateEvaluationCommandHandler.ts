@@ -8,7 +8,7 @@ export class UpdateEvaluationCommandHandler implements IUpdateEvaluationCommandH
 
   public execute(command: UpdateEvaluationCommand) {
     return new Promise<any>(async (resolve, reject) => {
-      const evaluationDoc = await this.evaluationRepo.getById(command.id)
+      const evaluationDoc = await this.evaluationRepo.getById(command.user, command.id)
 
       if (!evaluationDoc) {
         reject('Evaluation does not exist')
@@ -21,7 +21,7 @@ export class UpdateEvaluationCommandHandler implements IUpdateEvaluationCommandH
       evaluation.update(attrs)
 
       this.evaluationRepo
-        .save(evaluation)
+        .save(command.user, evaluation)
         .then(() => {
           evaluation.events.forEach(event => this.eventBus.publish(event))
           resolve(evaluation)

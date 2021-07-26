@@ -13,8 +13,8 @@ export class GrindersRepo extends AuthenticatedRepo<GrinderDocument> implements 
     super(grinderModel)
   }
 
-  public async getByName(name: string) {
-    return this.grinderModel.findOne({name})
+  public async getByName(user: Token, name: string) {
+    return this.grinderModel.findOne({$and: [this.getReadConditionsForUser(user), {name}]})
   }
 
   save(user: Token, grinder: Grinder): Promise<void>

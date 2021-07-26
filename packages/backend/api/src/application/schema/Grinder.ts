@@ -28,21 +28,21 @@ export class GrinderResolvers {
   }
 
   @Mutation('createGrinder')
-  async createGrinder(@Args('input') input: CreateGrinderInput) {
-    const command = new CreateGrinderCommand(input)
+  async createGrinder(@Args('input') input: CreateGrinderInput, @Context('user') user: Token) {
+    const command = new CreateGrinderCommand(user, input)
     const grinder = await this.commandBus.execute(command)
     return GrinderMapper.toDTO(grinder)
   }
 
   @Mutation('updateGrinder')
-  async updateGrinder(@Args('id') id: string, @Args('input') input: UpdateGrinderInput) {
-    const command = new UpdateGrinderCommand(id, input)
+  async updateGrinder(@Args('id') id: string, @Args('input') input: UpdateGrinderInput, @Context('user') user: Token) {
+    const command = new UpdateGrinderCommand(user, id, input)
     return this.commandBus.execute(command)
   }
 
   @Mutation('deleteGrinder')
-  async deleteGrinder(@Args('id') id: string) {
-    const command = new DeleteGrinderCommand(id)
+  async deleteGrinder(@Args('id') id: string, @Context('user') user: Token) {
+    const command = new DeleteGrinderCommand(user, id)
     return this.commandBus.execute(command)
   }
 }

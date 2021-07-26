@@ -1,8 +1,6 @@
 import {UpdateBrewGuideCommand, IUpdateBrewGuideCommandHandler} from '.'
 import {BrewGuidesRepo} from '../../../../infra/repos'
-import {BrewGuideAttributes, BrewGuide} from '../../../../domain/BrewGuide'
-import {BrewGuideName} from '../../../../domain/BrewGuide/BrewGuideName'
-import {EntityId} from '@luminate/ddd'
+import {BrewGuide} from '../../../../domain/BrewGuide'
 import {CommandHandler, EventBus} from '@nestjs/cqrs'
 import {BrewGuideMapper} from '../../../../infra/mappers'
 
@@ -12,7 +10,7 @@ export class UpdateBrewGuideCommandHandler implements IUpdateBrewGuideCommandHan
 
   public async execute(command: UpdateBrewGuideCommand) {
     return new Promise<BrewGuide>(async (resolve, reject) => {
-      const brewGuideDoc = await this.brewGuideRepo.getById(command.id)
+      const brewGuideDoc = await this.brewGuideRepo.getById(command.user, command.id)
 
       if (!brewGuideDoc) {
         reject('BrewGuide does not exist')
@@ -25,7 +23,7 @@ export class UpdateBrewGuideCommandHandler implements IUpdateBrewGuideCommandHan
       brewGuide.update(attrs)
 
       this.brewGuideRepo
-        .save(brewGuide)
+        .save(command.user, brewGuide)
         .then(() => {
           brewGuide.events.forEach(event => this.eventBus.publish(event))
           resolve(brewGuide)

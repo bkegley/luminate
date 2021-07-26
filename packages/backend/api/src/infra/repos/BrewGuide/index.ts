@@ -13,8 +13,8 @@ export class BrewGuidesRepo extends AuthenticatedRepo<BrewGuideDocument> impleme
     super(brewGuideModel)
   }
 
-  public async getByName(name: string) {
-    return this.brewGuideModel.findOne({name})
+  public async getByName(user: Token, name: string) {
+    return this.brewGuideModel.findOne({$and: [this.getReadConditionsForUser(user), {name}]})
   }
 
   save(user: Token, brewGuide: BrewGuide): Promise<void>

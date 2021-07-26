@@ -13,8 +13,8 @@ export class CuppingSessionsRepo extends AuthenticatedRepo<CuppingSessionDocumen
     super(cuppingSessionModel)
   }
 
-  public async getByInternalId(internalId: string) {
-    return this.cuppingSessionModel.findOne({internalId})
+  public async getByInternalId(user: Token, internalId: string) {
+    return this.cuppingSessionModel.findOne({$and: [this.getReadConditionsForUser(user), {internalId}]})
   }
 
   save(user: Token, cuppingSession: CuppingSessionAggregate): Promise<void>

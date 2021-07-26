@@ -11,8 +11,8 @@ export class UpdateGrinderCommandHandler implements IUpdateGrinderCommandHandler
   public async execute(command: UpdateGrinderCommand) {
     return new Promise<Grinder>(async (resolve, reject) => {
       const [grinderDoc, existingGrinderName] = await Promise.all([
-        this.grinderRepo.getById(command.id),
-        this.grinderRepo.getByName(command.name),
+        this.grinderRepo.getById(command.user, command.id),
+        this.grinderRepo.getByName(command.user, command.name),
       ])
 
       if (!grinderDoc) {
@@ -31,7 +31,7 @@ export class UpdateGrinderCommandHandler implements IUpdateGrinderCommandHandler
       grinder.update(attrs)
 
       this.grinderRepo
-        .save(grinder)
+        .save(command.user, grinder)
         .then(() => {
           grinder.events.forEach(event => this.eventBus.publish(event))
           resolve(grinder)

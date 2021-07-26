@@ -15,8 +15,8 @@ export class UpdateBrewingSessionCommandHandler implements IUpdateBrewingSession
   public execute(command: UpdateBrewingSessionCommand) {
     return new Promise<BrewingSession>(async (resolve, reject) => {
       const [brewingSessionDoc, brewGuide] = await Promise.all([
-        this.brewingSessionRepo.getById(command.id),
-        this.brewGuideRepo.getById(command.brewGuideId),
+        this.brewingSessionRepo.getById(command.user, command.id),
+        this.brewGuideRepo.getById(command.user, command.brewGuideId),
       ])
 
       if (!brewingSessionDoc) {
@@ -35,7 +35,7 @@ export class UpdateBrewingSessionCommandHandler implements IUpdateBrewingSession
       brewingSession.update(attrs)
 
       this.brewingSessionRepo
-        .save(brewingSession)
+        .save(command.user, brewingSession)
         .then(() => {
           brewingSession.events.forEach(event => this.eventBus.publish(event))
           resolve(brewingSession)

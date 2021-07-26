@@ -9,7 +9,7 @@ export class DeleteEvaluationCommandHandler implements IDeleteEvaluationCommandH
 
   public execute(command: DeleteEvaluationCommand) {
     return new Promise<Evaluation>(async (resolve, reject) => {
-      const evaluationDoc = await this.evaluationRepo.getById(command.id)
+      const evaluationDoc = await this.evaluationRepo.getById(command.user, command.id)
 
       if (!evaluationDoc) {
         reject('Evaluation does not exist')
@@ -20,7 +20,7 @@ export class DeleteEvaluationCommandHandler implements IDeleteEvaluationCommandH
       evaluation.delete()
 
       this.evaluationRepo
-        .delete(evaluation.id)
+        .delete(command.user, evaluation.id)
         .then(() => {
           evaluation.events.forEach(event => this.eventBus.publish(event))
           resolve(evaluation)

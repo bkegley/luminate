@@ -1,3 +1,4 @@
+import {Token} from '@luminate/mongo-utils'
 import {CreateRecipeInput} from '../../../../types'
 
 export class CreateRecipeCommand {
@@ -7,15 +8,11 @@ export class CreateRecipeCommand {
   grindSetting?: number
   note?: string
 
-  constructor(input: CreateRecipeInput) {
+  constructor(public user: Token, input: CreateRecipeInput) {
     this.name = input.name
     this.brewerId = input.brewerId
     this.grinderId = input.grinderId
-    if (input.note) {
-      this.note = input.note
-    }
-    if (input.grindSetting) {
-      this.grindSetting = input.grindSetting
-    }
+    this.note = input.note
+    this.grindSetting = input.grindSetting
   }
 }

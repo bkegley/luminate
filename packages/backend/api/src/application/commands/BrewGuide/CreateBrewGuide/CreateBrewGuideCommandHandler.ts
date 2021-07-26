@@ -12,8 +12,8 @@ export class CreateBrewGuideCommandHander implements ICreateBrewGuideCommandHand
   public execute(command: CreateBrewGuideCommand) {
     return new Promise<BrewGuide>(async (resolve, reject) => {
       const [existingBrewGuide, existingRecipe] = await Promise.all([
-        this.brewGuideRepo.getByName(command.name),
-        this.recipeRepo.getById(command.recipeId),
+        this.brewGuideRepo.getByName(command.user, command.name),
+        this.recipeRepo.getById(command.user, command.recipeId),
       ])
 
       if (existingBrewGuide) {
@@ -32,7 +32,7 @@ export class CreateBrewGuideCommandHander implements ICreateBrewGuideCommandHand
       })
 
       this.brewGuideRepo
-        .save(brewGuide)
+        .create(command.user, brewGuide)
         .then(() => {
           brewGuide.events.forEach(event => this.eventBus.publish(event))
           resolve(brewGuide)

@@ -10,7 +10,7 @@ export class DeleteCuppingSessionCommandHandler implements ICommandHandler<Delet
 
   async execute(command: DeleteCuppingSessionCommand) {
     return new Promise<CuppingSessionAggregate>(async (resolve, reject) => {
-      const cuppingSessionDoc = await this.cuppingSessionsRepo.getById(command.id)
+      const cuppingSessionDoc = await this.cuppingSessionsRepo.getById(command.user, command.id)
 
       if (!cuppingSessionDoc) {
         return false
@@ -21,7 +21,7 @@ export class DeleteCuppingSessionCommandHandler implements ICommandHandler<Delet
       cuppingSession.delete()
 
       await this.cuppingSessionsRepo
-        .delete(command.id)
+        .delete(command.user, command.id)
         .then(() => {
           cuppingSession.events.forEach(event => this.eventBus.publish(event))
           resolve(cuppingSession)

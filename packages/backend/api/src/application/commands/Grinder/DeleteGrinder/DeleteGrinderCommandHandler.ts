@@ -10,7 +10,7 @@ export class DeleteGrinderCommandHandler implements IDeleteGrinderCommandHandler
 
   public async execute(command: DeleteGrinderCommand) {
     return new Promise<Grinder>(async (resolve, reject) => {
-      const grinderDoc = await this.grindersRepo.getById(command.id)
+      const grinderDoc = await this.grindersRepo.getById(command.user, command.id)
 
       if (!grinderDoc) {
         reject('Grinder does not exist')
@@ -21,7 +21,7 @@ export class DeleteGrinderCommandHandler implements IDeleteGrinderCommandHandler
       grinder.delete()
 
       this.grindersRepo
-        .delete(command.id)
+        .delete(command.user, command.id)
         .then(() => {
           grinder.events.forEach(event => this.eventBus.publish(event))
           resolve(grinder)

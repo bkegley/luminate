@@ -10,7 +10,7 @@ export class DeleteBrewGuideCommandHandler implements IDeleteBrewGuideCommandHan
 
   public execute(command: DeleteBrewGuideCommand) {
     return new Promise<BrewGuide>(async (resolve, reject) => {
-      const brewGuideDoc = await this.brewGuideRepo.getById(command.id)
+      const brewGuideDoc = await this.brewGuideRepo.getById(command.user, command.id)
 
       if (!brewGuideDoc) {
         reject('BrewGuide does not exist')
@@ -21,7 +21,7 @@ export class DeleteBrewGuideCommandHandler implements IDeleteBrewGuideCommandHan
       brewGuide.delete()
 
       this.brewGuideRepo
-        .delete(command.id.toString())
+        .delete(command.user, command.id)
         .then(() => {
           brewGuide.events.forEach(event => this.eventBus.publish(event))
           resolve(brewGuide)
