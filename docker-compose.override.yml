@@ -4,9 +4,6 @@ services:
   zookeeper:
     ports:
       - 2181:2181
-    #volumes:
-    #- ./kafka/zk/data:/opt/zookeeper-3.4.13/data
-    #- ./kafka/zk/conf:/opt/zookeeper-3.4.13/conf
 
   kafka:
     ports:
@@ -20,7 +17,6 @@ services:
       KAFKA_BROKER_ID: 1
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      #- ./kafka/kafka/data:/logs
 
   db:
     ports:
@@ -32,7 +28,7 @@ services:
     build:
       target: install
     ports:
-      - 8003:8000
+      - 8000:8000
     environment:
       - API_URL=http://localhost:3000/graphql
     user: 1000:1000

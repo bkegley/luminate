@@ -1,6 +1,6 @@
 import {CommandHandler, EventBus} from '@nestjs/cqrs'
 import {UpdateUserCommand, IUpdateUserCommandHandler} from '.'
-import {UserUsername} from '../../../domain/user/UserUsername'
+import {UserUsername} from '../../../domain/User/UserUsername'
 import {UserMapper} from '../../../infra/mappers'
 import {UsersRepo} from '../../../infra/repos'
 

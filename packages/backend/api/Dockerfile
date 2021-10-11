@@ -5,7 +5,6 @@ WORKDIR /app
 COPY ./packages/backend/utils/graphql/package.json ./packages/backend/utils/graphql/package.json
 COPY ./packages/backend/utils/mongo/package.json ./packages/backend/utils/mongo/package.json
 COPY ./packages/backend/utils/ddd/package.json ./packages/backend/utils/ddd/package.json
-COPY ./packages/backend/services/encyclopedia/schema ./packages/backend/services/encyclopedia/schema
 
 COPY lerna.json .
 COPY package.json .

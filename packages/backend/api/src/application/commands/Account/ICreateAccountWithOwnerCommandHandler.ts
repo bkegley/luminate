@@ -1,5 +1,5 @@
 import {ICommandHandler} from '@nestjs/cqrs'
-import {AccountAggregate} from '../../../domain/account/Account'
+import {AccountAggregate} from '../../../domain/Account/Account'
 import {CreateAccountWithOwnerCommand} from './CreateAccountWithOwnerCommand'
 
 export interface ICreateAccountWithOwnerCommandHandler

@@ -1,9 +1,9 @@
+import {ScopeOperations, ScopeResources} from '@luminate/mongo-utils'
 import {KafkaClient, Consumer} from 'kafka-node'
 import {RoleDocument, RoleModel} from '../../models'
 import {IRolesProjection} from './IRolesProjection'
-import {ScopeOperations, ScopeResources} from '@luminate/mongo-utils'
 import {QueryListRolesArgs, Role} from '../../../types'
-import {RoleCreatedEvent, RoleUpdatedEvent, RoleDeletedEvent} from '../../../domain/role/events'
+import {RoleCreatedEvent, RoleUpdatedEvent, RoleDeletedEvent} from '../../../domain/Role/events'
 import {EventType} from '../../../domain/EventType'
 
 export class RolesProjection implements IRolesProjection {

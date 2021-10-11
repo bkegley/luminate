@@ -1,6 +1,6 @@
 import {Account} from '../../types'
-import {AccountAggregate, AccountAggregateAttributes} from '../../domain/account/Account'
-import {AccountName} from '../../domain/account/AccountName'
+import {AccountAggregate, AccountAggregateAttributes} from '../../domain/Account/Account'
+import {AccountName} from '../../domain/Account/AccountName'
 import {EntityId} from '@luminate/ddd'
 
 export class AccountMapper {

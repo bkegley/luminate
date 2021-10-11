@@ -5,7 +5,7 @@ import {Model} from 'mongoose'
 import {IRolesRepo} from './IRolesRepo'
 import {RoleDocument} from '../../models'
 import {RoleMapper} from '../../mappers/RoleMapper'
-import {RoleAggregate} from '../../../domain/role/Role'
+import {RoleAggregate} from '../../../domain/Role/Role'
 
 @Injectable()
 export class RolesRepo extends AuthenticatedRepo<RoleDocument> implements IRolesRepo {

@@ -4,7 +4,7 @@ import {IAccountsProjection} from './IAccountsProjection'
 import {IListDocumentsArgs} from '@luminate/mongo-utils'
 import {Account, AccountConnection} from '../../../types'
 import {EventType} from '../../../domain/EventType'
-import {IAccountCreatedEvent, IAccountUpdatedEvent, AccountDeletedEvent} from '../../../domain/account/events'
+import {IAccountCreatedEvent, IAccountUpdatedEvent, AccountDeletedEvent} from '../../../domain/Account/events'
 
 export class AccountsProjection implements IAccountsProjection {
   private client: KafkaClient

@@ -1,11 +1,11 @@
 import {CommandHandler, EventBus} from '@nestjs/cqrs'
 import {CreateAccountWithOwnerCommand, ICreateAccountWithOwnerCommandHandler} from '.'
 import {AccountsRepo, UsersRepo, RolesRepo} from '../../../infra/repos'
-import {AccountAggregate} from '../../../domain/account/Account'
-import {AccountName} from '../../../domain/account/AccountName'
-import {UserAggregate} from '../../../domain/user/User'
-import {UserUsername} from '../../../domain/user/UserUsername'
-import {UserPassword} from '../../../domain/user/UserPassword'
+import {AccountAggregate} from '../../../domain/Account/Account'
+import {AccountName} from '../../../domain/Account/AccountName'
+import {UserAggregate} from '../../../domain/User/User'
+import {UserUsername} from '../../../domain/User/UserUsername'
+import {UserPassword} from '../../../domain/User/UserPassword'
 import {AccountMapper, RoleMapper, UserMapper} from '../../../infra/mappers'
 
 @CommandHandler(CreateAccountWithOwnerCommand)

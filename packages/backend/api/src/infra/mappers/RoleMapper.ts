@@ -1,6 +1,6 @@
 import {EntityId} from '@luminate/ddd'
 import mongoose from 'mongoose'
-import {RoleAggregate} from '../../domain/role/Role'
+import {RoleAggregate} from '../../domain/Role/Role'
 import {Role} from '../../types'
 
 export class RoleMapper {

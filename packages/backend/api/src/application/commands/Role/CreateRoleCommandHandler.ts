@@ -1,8 +1,8 @@
+import {EntityId} from '@luminate/ddd'
 import {CommandHandler, EventBus} from '@nestjs/cqrs'
 import {CreateRoleCommand, ICreateRoleCommandHandler} from '.'
-import {RoleAggregate} from '../../../domain/role/Role'
-import {EntityId} from '@luminate/ddd'
-import {RoleScope} from '../../../domain/role/RoleScope'
+import {RoleAggregate} from '../../../domain/Role/Role'
+import {RoleScope} from '../../../domain/Role/RoleScope'
 import {RolesRepo} from '../../../infra/repos'
 import {RoleMapper} from '../../../infra/mappers'
 

@@ -1,5 +1,5 @@
 import {IQueryHandler, QueryHandler} from '@nestjs/cqrs'
-import {RoleAggregate} from '../../../domain/role/Role'
+import {RoleAggregate} from '../../../domain/Role/Role'
 import {RoleMapper} from '../../../infra/mappers'
 import {RolesRepo} from '../../../infra/repos'
 import {GetRoleQuery} from './GetRoleQuery'

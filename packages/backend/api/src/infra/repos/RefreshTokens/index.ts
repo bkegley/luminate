@@ -5,7 +5,7 @@ import {Model} from 'mongoose'
 import {IRefreshTokensRepo} from './IRefreshTokensRepo'
 import {RefreshTokenDocument} from '../../models'
 import {RefreshTokenMapper} from '../../mappers/RefreshTokenMapper'
-import {RefreshTokenAggregate} from '../../../domain/refreshToken/RefreshToken'
+import {RefreshTokenAggregate} from '../../../domain/RefreshToken/RefreshToken'
 
 @Injectable()
 export class RefreshTokensRepo extends BaseRepo<RefreshTokenDocument> implements IRefreshTokensRepo {

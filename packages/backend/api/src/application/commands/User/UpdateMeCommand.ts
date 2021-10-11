@@ -1,5 +1,5 @@
 import {UpdateMeInput} from '../../../types'
-import {UserThemeEnum} from '../../../domain/user/UserTheme'
+import {UserThemeEnum} from '../../../domain/User/UserTheme'
 
 export class UpdateMeCommand {
   id: string

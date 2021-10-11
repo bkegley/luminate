@@ -5,7 +5,7 @@ import {Model} from 'mongoose'
 import {IRecipesRepo} from './IRecipeRepo'
 import {RecipeDocument} from '../../models'
 import {RecipeMapper} from '../../mappers/RecipeMapper'
-import {Recipe} from '../../../domain/recipe'
+import {Recipe} from '../../../domain/Recipe'
 
 @Injectable()
 export class RecipesRepo extends AuthenticatedRepo<RecipeDocument> implements IRecipesRepo {

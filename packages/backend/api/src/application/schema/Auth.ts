@@ -28,7 +28,9 @@ export class AuthResolvers {
     const command = new LoginUserCommand(username, password)
     const response = await this.commandBus.execute(command)
 
-    if (!response) return false
+    if (!response) {
+      throw new Error('Login failed')
+    }
 
     const {jwtToken, refreshToken} = response
 

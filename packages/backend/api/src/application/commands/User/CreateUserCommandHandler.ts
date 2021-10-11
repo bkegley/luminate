@@ -1,9 +1,9 @@
 import {CommandHandler, EventBus} from '@nestjs/cqrs'
 import {EntityId} from '@luminate/ddd'
 import {CreateUserCommand} from './CreateUserCommand'
-import {UserAggregate} from '../../../domain/user/User'
-import {UserUsername} from '../../../domain/user/UserUsername'
-import {UserPassword} from '../../../domain/user/UserPassword'
+import {UserAggregate} from '../../../domain/User/User'
+import {UserUsername} from '../../../domain/User/UserUsername'
+import {UserPassword} from '../../../domain/User/UserPassword'
 import {ICreateUserCommandHandler} from '.'
 import {UsersRepo} from '../../../infra/repos'
 

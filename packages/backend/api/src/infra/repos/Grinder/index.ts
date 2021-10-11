@@ -5,7 +5,7 @@ import {Model} from 'mongoose'
 import {IGrindersRepo} from './IGrinderRepo'
 import {GrinderDocument} from '../../models'
 import {GrinderMapper} from '../../mappers/GrinderMapper'
-import {Grinder} from '../../../domain/grinder'
+import {Grinder} from '../../../domain/Grinder'
 
 @Injectable()
 export class GrindersRepo extends AuthenticatedRepo<GrinderDocument> implements IGrindersRepo {

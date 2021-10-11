@@ -1,9 +1,9 @@
 import {EntityId} from '@luminate/ddd'
-import {UserAggregate, UserAggregateAttributes} from '../../domain/user/User'
-import {UserPassword} from '../../domain/user/UserPassword'
-import {UserUsername} from '../../domain/user/UserUsername'
+import {UserAggregate, UserAggregateAttributes} from '../../domain/User/User'
+import {UserPassword} from '../../domain/User/UserPassword'
+import {UserUsername} from '../../domain/User/UserUsername'
 import {User, Theme} from '../../types'
-import {UserTheme} from '../../domain/user/UserTheme'
+import {UserTheme} from '../../domain/User/UserTheme'
 
 export interface IUserGraphQL extends Omit<User, 'accounts' | 'roles' | 'scopes'> {
   accounts: string[]

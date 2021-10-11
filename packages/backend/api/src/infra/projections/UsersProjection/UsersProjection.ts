@@ -10,9 +10,9 @@ import {
   UserDeletedEvent,
   UserPasswordUpdatedEvent,
   UserAddedToAccountEvent,
-} from '../../../domain/user/events'
-import {IUserUpdatedEvent} from '../../../domain/user/events/IUserUpdatedEvent'
-import {IUserRolesUpdatedEvent} from '../../../domain/user/events/IUserRolesUpdatedEvent'
+} from '../../../domain/User/events'
+import {IUserUpdatedEvent} from '../../../domain/User/events/IUserUpdatedEvent'
+import {IUserRolesUpdatedEvent} from '../../../domain/User/events/IUserRolesUpdatedEvent'
 
 export class UsersProjection implements IUsersProjection {
   private client: KafkaClient

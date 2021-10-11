@@ -1,5 +1,5 @@
 import {IQueryHandler, QueryHandler} from '@nestjs/cqrs'
-import {AccountAggregate} from '../../../domain/account/Account'
+import {AccountAggregate} from '../../../domain/Account/Account'
 import {AccountMapper} from '../../../infra/mappers'
 import {AccountsRepo} from '../../../infra/repos'
 import {GetAccountQuery} from './GetAccountQuery'

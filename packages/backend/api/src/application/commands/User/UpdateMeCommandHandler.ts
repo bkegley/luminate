@@ -1,8 +1,8 @@
 import {CommandHandler} from '@nestjs/cqrs'
 import {UsersRepo} from '../../../infra/repos'
 import {UpdateMeCommand, IUpdateMeCommandHandler} from '.'
-import {UserAggregate, UserAggregateAttributes} from '../../../domain/user/User'
-import {UserTheme} from '../../../domain/user/UserTheme'
+import {UserAggregate, UserAggregateAttributes} from '../../../domain/User/User'
+import {UserTheme} from '../../../domain/User/UserTheme'
 import {UserMapper} from '../../../infra/mappers'
 
 @CommandHandler(UpdateMeCommand)

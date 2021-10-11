@@ -5,7 +5,7 @@ import {Model} from 'mongoose'
 import {IEvaluationsRepo} from './IEvaluationRepo'
 import {EvaluationDocument} from '../../models'
 import {EvaluationMapper} from '../../mappers/EvaluationMapper'
-import {Evaluation} from '../../../domain/evaluation'
+import {Evaluation} from '../../../domain/Evaluation'
 
 @Injectable()
 export class EvaluationsRepo extends AuthenticatedRepo<EvaluationDocument> implements IEvaluationsRepo {

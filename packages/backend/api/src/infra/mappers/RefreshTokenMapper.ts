@@ -1,7 +1,7 @@
-import {RefreshTokenAggregate, RefreshTokenAggregateAttributes} from '../../domain/refreshToken/RefreshToken'
 import {EntityId} from '@luminate/ddd'
-import {RefreshTokenToken} from '../../domain/refreshToken/RefreshTokenToken'
-import {RefreshTokenExpiration} from '../../domain/refreshToken/RefreshTokenExpiration'
+import {RefreshTokenAggregate, RefreshTokenAggregateAttributes} from '../../domain/RefreshToken/RefreshToken'
+import {RefreshTokenToken} from '../../domain/RefreshToken/RefreshTokenToken'
+import {RefreshTokenExpiration} from '../../domain/RefreshToken/RefreshTokenExpiration'
 
 export class RefreshTokenMapper {
   public static toDomain(obj: any) {

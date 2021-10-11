@@ -5,7 +5,7 @@ import {Model} from 'mongoose'
 import {ICuppingSessionsRepo} from './ICuppingSessionRepo'
 import {CuppingSessionDocument} from '../../models'
 import {CuppingSessionMapper} from '../../mappers/CuppingSessionMapper'
-import {CuppingSessionAggregate} from '../../../domain/cuppingSession'
+import {CuppingSessionAggregate} from '../../../domain/CuppingSession'
 
 @Injectable()
 export class CuppingSessionsRepo extends AuthenticatedRepo<CuppingSessionDocument> implements ICuppingSessionsRepo {

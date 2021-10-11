@@ -1,6 +1,6 @@
 import {ScopeOperations, ScopeResources} from '@luminate/mongo-utils'
 import {CommandHandler, ICommandHandler} from '@nestjs/cqrs'
-import {RoleAggregate} from '../../../domain/role/Role'
+import {RoleAggregate} from '../../../domain/Role/Role'
 import {RoleMapper} from '../../../infra/mappers'
 import {RolesRepo} from '../../../infra/repos'
 import {CreateOwnerRoleCommand} from './CreateOwnerRoleComand'

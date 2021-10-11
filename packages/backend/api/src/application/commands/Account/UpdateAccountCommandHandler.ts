@@ -1,6 +1,6 @@
 import {CommandHandler, EventBus} from '@nestjs/cqrs'
 import {UpdateAccountCommand} from './UpdateAccountCommand'
-import {AccountName} from '../../../domain/account/AccountName'
+import {AccountName} from '../../../domain/Account/AccountName'
 import {IUpdateAccountCommandHandler} from '.'
 import {AccountsRepo} from '../../../infra/repos'
 import {AccountMapper} from '../../../infra/mappers'

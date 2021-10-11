@@ -1,7 +1,7 @@
 import {CommandHandler, EventBus} from '@nestjs/cqrs'
 import {IUpdateRoleCommandHandler, UpdateRoleCommand} from '.'
-import {RoleAggregateAttributes} from '../../../domain/role/Role'
-import {RoleScope} from '../../../domain/role/RoleScope'
+import {RoleAggregateAttributes} from '../../../domain/Role/Role'
+import {RoleScope} from '../../../domain/Role/RoleScope'
 import {RoleMapper} from '../../../infra/mappers'
 import {RolesRepo} from '../../../infra/repos'
 

@@ -1,8 +1,8 @@
 import jwt from 'jsonwebtoken'
 import {Injectable} from '@nestjs/common'
-import {UserAggregate} from '../../domain/user/User'
+import {UserAggregate} from '../../domain/User/User'
 import {RolesRepo} from '../repos'
-import {RefreshTokenAggregate} from '../../domain/refreshToken/RefreshToken'
+import {RefreshTokenAggregate} from '../../domain/RefreshToken/RefreshToken'
 import {Token} from '@luminate/mongo-utils'
 
 const tokenSecret = process.env.USER_AUTH_TOKEN || 'supersecretpassword'

@@ -5,7 +5,7 @@ import {Model} from 'mongoose'
 import {IUsersRepo} from './IUsersRepo'
 import {UserDocument} from '../../models'
 import {UserMapper} from '../../mappers/UserMapper'
-import {UserAggregate} from '../../../domain/user/User'
+import {UserAggregate} from '../../../domain/User/User'
 
 @Injectable()
 export class UsersRepo extends AuthenticatedRepo<UserDocument> implements IUsersRepo {

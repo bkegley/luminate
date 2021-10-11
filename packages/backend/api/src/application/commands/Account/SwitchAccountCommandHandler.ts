@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken'
 import {CommandHandler, EventBus} from '@nestjs/cqrs'
 import {SwitchAccountCommand, ISwitchAccountCommandHandler} from '.'
-import {AccountSwitchedEvent} from '../../../domain/account/events'
+import {AccountSwitchedEvent} from '../../../domain/Account/events'
 import {AccountsRepo, UsersRepo, RolesRepo} from '../../../infra/repos'
 import {AccountMapper, UserMapper} from '../../../infra/mappers'
 

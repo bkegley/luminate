@@ -5,7 +5,7 @@ import {Model} from 'mongoose'
 import {IBrewersRepo} from './IBrewerRepo'
 import {BrewerDocument} from '../../models'
 import {BrewerMapper} from '../../mappers/BrewerMapper'
-import {Brewer} from '../../../domain/brewer'
+import {Brewer} from '../../../domain/Brewer'
 
 @Injectable()
 export class BrewersRepo extends AuthenticatedRepo<BrewerDocument> implements IBrewersRepo {
