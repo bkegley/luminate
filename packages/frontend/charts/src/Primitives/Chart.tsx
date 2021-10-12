@@ -9,6 +9,7 @@ export const ChartContext = React.createContext<IDimensions | undefined>(
 
 export interface ChartProps {
   dimensions: IDimensions;
+  center?: boolean;
   children: React.ReactNode;
 }
 
@@ -21,11 +22,21 @@ interface Chart
 }
 
 export const Chart = React.forwardRef<HTMLDivElement, ChartProps>(
-  ({ dimensions, children }, ref) => {
+  ({ dimensions, center, children }, ref) => {
     return (
       <div className="w-full h-full" ref={ref}>
         <ChartContext.Provider value={dimensions}>
-          <svg width={dimensions.width} height={dimensions.height}>
+          <svg
+            width={dimensions.width}
+            height={dimensions.height}
+            viewBox={
+              center
+                ? `-${dimensions.width / 2} -${dimensions.height / 2} ${
+                    dimensions.width
+                  } ${dimensions.height}`
+                : undefined
+            }
+          >
             <g
               transform={`translate(${dimensions.marginLeft}, ${dimensions.marginTop})`}
             >
