@@ -9,9 +9,9 @@ export interface IDimensions {
   boundedHeight: number;
 }
 
-export type Datum = [number, number];
+export type LineDatum = [number, number];
 
-export type Accessor<T = Datum> = ((d: T) => number) | number;
+export type Accessor<T = LineDatum> = ((d: T) => number) | number;
 
 type ChartType = 'line' | 'bar';
 
@@ -21,7 +21,7 @@ export interface ChartData {
 }
 
 export interface LineData {
-  data: Datum[];
+  data: LineDatum[];
   type?: 'line' | 'area';
   label?: string;
   color?: string;

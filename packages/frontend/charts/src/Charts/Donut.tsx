@@ -3,11 +3,12 @@ import { Chart, Arc, useChartDimensions } from '../Primitives';
 import { ArcDatum } from '../Primitives/Arc';
 import { useArcs } from '../Primitives/useArcs';
 
-export interface PieProps {
+export interface DonutProps {
   data: Array<ArcDatum>;
+  innerRadius?: number;
 }
 
-export const Pie = ({ data }: PieProps) => {
+export const Donut = ({ data, innerRadius }: DonutProps) => {
   const [ref, dimensions] = useChartDimensions({ marginLeft: 0, marginTop: 0 });
   const arcs = useArcs(data);
 
@@ -15,7 +16,12 @@ export const Pie = ({ data }: PieProps) => {
     <Chart ref={ref} dimensions={dimensions} center>
       {arcs.map((datum) => {
         return (
-          <Arc key={datum.data.name} datum={datum} color={datum.data.color} />
+          <Arc
+            key={datum.data.name}
+            datum={datum}
+            color={datum.data.color}
+            innerRadius={innerRadius}
+          />
         );
       })}
     </Chart>
